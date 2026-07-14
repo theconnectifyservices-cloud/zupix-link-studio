@@ -1,6 +1,12 @@
 import { create } from "zustand";
 import type { Block, BioContent } from "./types";
 import { EMPTY_CONTENT } from "./types";
+import type { PageTheme, ThemeCard, ThemeColors, ThemePresetId, ThemeSpacing, ThemeTypography } from "./theme";
+import {
+  DEFAULT_THEME, applyPresetTheme, resetColors as resetColorsFn,
+  resetTypography as resetTypographyFn, resetSpacing as resetSpacingFn,
+  resetCard as resetCardFn,
+} from "./theme";
 
 export type SaveStatus = "idle" | "dirty" | "saving" | "saved" | "error";
 
@@ -67,6 +73,19 @@ interface BuilderState {
   snapshotVersion: (label?: string) => void;
   restoreVersion: (versionId: string) => void;
   deleteVersion: (versionId: string) => void;
+
+  // theme
+  patchTheme: (patch: Partial<PageTheme>) => void;
+  patchThemeColors: (patch: Partial<ThemeColors>) => void;
+  patchThemeTypography: (patch: Partial<ThemeTypography>) => void;
+  patchThemeSpacing: (patch: Partial<ThemeSpacing>) => void;
+  patchThemeCard: (patch: Partial<ThemeCard>) => void;
+  applyThemePreset: (id: ThemePresetId) => void;
+  resetThemeColors: () => void;
+  resetThemeTypography: () => void;
+  resetThemeSpacing: () => void;
+  resetThemeCard: () => void;
+  resetThemeAll: () => void;
 
   // save wiring
   markSaving: () => void;
@@ -448,6 +467,100 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const next = versions.filter((v) => v.id !== versionId);
     set({ versions: next });
     if (pageId) saveVersionsToStorage(pageId, next);
+  },
+
+  patchTheme: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, ...patch } },
+      saveStatus: "dirty",
+    });
+  },
+  patchThemeColors: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, colors: { ...current.colors, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  patchThemeTypography: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, typography: { ...current.typography, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  patchThemeSpacing: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, spacing: { ...current.spacing, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  patchThemeCard: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, card: { ...current.card, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  applyThemePreset: (id) => {
+    const { content, history } = get();
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: applyPresetTheme(id) },
+      saveStatus: "dirty",
+    });
+  },
+  resetThemeColors: () => {
+    const { content, history } = get();
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: resetColorsFn(content.theme ?? DEFAULT_THEME) },
+      saveStatus: "dirty",
+    });
+  },
+  resetThemeTypography: () => {
+    const { content, history } = get();
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: resetTypographyFn(content.theme ?? DEFAULT_THEME) },
+      saveStatus: "dirty",
+    });
+  },
+  resetThemeSpacing: () => {
+    const { content, history } = get();
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: resetSpacingFn(content.theme ?? DEFAULT_THEME) },
+      saveStatus: "dirty",
+    });
+  },
+  resetThemeCard: () => {
+    const { content, history } = get();
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: resetCardFn(content.theme ?? DEFAULT_THEME) },
+      saveStatus: "dirty",
+    });
+  },
+  resetThemeAll: () => {
+    const { content, history } = get();
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...DEFAULT_THEME } },
+      saveStatus: "dirty",
+    });
   },
 
   markSaving: () => set({ saveStatus: "saving" }),
