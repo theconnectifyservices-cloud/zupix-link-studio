@@ -1,8 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Settings2, User } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Plus, Link2, Images, BarChart3, ArrowRight, Sparkles, Clock, Rocket } from "lucide-react";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/auth/hooks/use-profile";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCurrentWorkspace, useBioPages, CreateProjectModal } from "@/features/bio-pages";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { PageHeader } from "@/shared/navigation/page-header";
+import { formatDistanceToNow } from "date-fns";
 
 export const Route = createFileRoute("/_authenticated/app/")({
   component: Overview,
@@ -12,52 +19,220 @@ function Overview() {
   const session = useSession();
   const userId = session.status === "authenticated" ? session.session.user.id : undefined;
   const { data: profile } = useProfile(userId);
+  const { workspace } = useCurrentWorkspace();
+  const { data: pages, isLoading } = useBioPages(workspace?.id);
+  const [createOpen, setCreateOpen] = useState(false);
+
+  const recent = useMemo(() => (pages ?? []).slice(0, 4), [pages]);
+  const stats = useMemo(() => {
+    const list = pages ?? [];
+    return {
+      total: list.length,
+      published: list.filter((p) => p.status === "published").length,
+      draft: list.filter((p) => p.status === "draft").length,
+    };
+  }, [pages]);
+
+  const displayName = profile?.display_name ?? profile?.username ?? "there";
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Phase LS-02 · Authentication ready
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-          Welcome{profile?.display_name ? `, ${profile.display_name}` : ""}
-        </h1>
-        <p className="mt-1 text-muted-foreground">
-          Your account and workspace are set up. Business features arrive in later phases.
-        </p>
+    <div className="mx-auto max-w-6xl">
+      <PageHeader
+        title={`Welcome back, ${displayName}`}
+        description={workspace ? `Workspace: ${workspace.name}` : "Set up your first bio page."}
+        actions={
+          <Button onClick={() => setCreateOpen(true)} className="gap-1">
+            <Plus className="h-4 w-4" /> New bio page
+          </Button>
+        }
+      />
+
+      {/* Stat cards */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        <StatCard label="Total projects" value={stats.total} icon={Link2} loading={isLoading} />
+        <StatCard label="Published" value={stats.published} icon={Rocket} loading={isLoading} />
+        <StatCard label="Drafts" value={stats.draft} icon={Clock} loading={isLoading} />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Your handle</CardTitle>
-            <User className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-semibold">
-              zupix.link/{profile?.username ?? "—"}
-            </div>
-            <CardDescription className="mt-1">
-              Your public bio link (available after Phase LS-03).
-            </CardDescription>
-          </CardContent>
-        </Card>
+      {/* Quick actions */}
+      <section className="mt-8">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Quick actions
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <QuickTile
+            icon={Plus}
+            title="New bio page"
+            description="Start a fresh project"
+            onClick={() => setCreateOpen(true)}
+          />
+          <QuickTile
+            icon={Link2}
+            title="My projects"
+            description="Manage all bio pages"
+            to="/app/projects"
+          />
+          <QuickTile
+            icon={Images}
+            title="Media library"
+            description="Assets & uploads"
+            to="/app/media"
+          />
+          <QuickTile
+            icon={BarChart3}
+            title="Analytics"
+            description="Coming soon"
+            to="/app/analytics"
+            soon
+          />
+        </div>
+      </section>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Account settings</CardTitle>
-            <Settings2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <Link
-              to="/app/settings/profile"
-              className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-            >
-              Manage your profile <ArrowRight className="h-3 w-3" />
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Recent projects */}
+      <section className="mt-8">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Recent projects
+          </h2>
+          <Link
+            to="/app/projects"
+            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            View all <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
+        {isLoading ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[0, 1].map((i) => (
+              <Skeleton key={i} className="h-24 rounded-lg" />
+            ))}
+          </div>
+        ) : recent.length === 0 ? (
+          <EmptyState
+            icon={<Sparkles className="h-8 w-8" />}
+            title="No projects yet"
+            description="Create your first bio page to reserve your link."
+            action={
+              <Button onClick={() => setCreateOpen(true)} className="gap-1">
+                <Plus className="h-4 w-4" /> Create first project
+              </Button>
+            }
+          />
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {recent.map((p) => (
+              <Card key={p.id} className="transition-colors hover:bg-accent/30">
+                <CardContent className="flex items-center gap-3 p-4">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary/10 text-sm font-bold text-primary">
+                    {p.name.charAt(0)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-medium">{p.name}</div>
+                    <div className="truncate text-xs text-muted-foreground">
+                      zupix.link/{p.slug} · {p.status}
+                    </div>
+                  </div>
+                  <div className="hidden text-right text-xs text-muted-foreground sm:block">
+                    {formatDistanceToNow(new Date(p.updated_at), { addSuffix: true })}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Recent activity — placeholder empty state */}
+      <section className="mt-8">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Recent activity
+        </h2>
+        <EmptyState
+          icon={<Clock className="h-8 w-8" />}
+          title="No activity yet"
+          description="Your recent edits and events will show up here."
+        />
+      </section>
+
+      {workspace && userId && (
+        <CreateProjectModal
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          workspaceId={workspace.id}
+          ownerId={userId}
+        />
+      )}
     </div>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  loading,
+}: {
+  label: string;
+  value: number;
+  icon: typeof Link2;
+  loading?: boolean;
+}) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
+        <Icon className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        {loading ? (
+          <Skeleton className="h-8 w-16" />
+        ) : (
+          <div className="text-3xl font-semibold tracking-tight">{value}</div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function QuickTile({
+  icon: Icon,
+  title,
+  description,
+  to,
+  onClick,
+  soon,
+}: {
+  icon: typeof Plus;
+  title: string;
+  description: string;
+  to?: string;
+  onClick?: () => void;
+  soon?: boolean;
+}) {
+  const inner = (
+    <Card className="group h-full cursor-pointer transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm">
+      <CardContent className="flex items-start gap-3 p-4">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <div className="font-medium">{title}</div>
+            {soon && (
+              <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase text-muted-foreground">
+                Soon
+              </span>
+            )}
+          </div>
+          <CardDescription>{description}</CardDescription>
+        </div>
+      </CardContent>
+    </Card>
+  );
+  if (to) return <Link to={to}>{inner}</Link>;
+  return (
+    <button type="button" onClick={onClick} className="text-left">
+      {inner}
+    </button>
   );
 }
