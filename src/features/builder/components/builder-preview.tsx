@@ -43,12 +43,15 @@ const FRAME: Record<Viewport, string> = {
 /** Live phone-frame preview. Sortable canvas + drop target for palette items. */
 export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport }) {
   const blocks = useBuilderStore((s) => s.content.blocks);
+  const theme = useBuilderStore((s) => s.content.theme) ?? DEFAULT_THEME;
   const clearSelection = useBuilderStore((s) => s.clearSelection);
   const items = blocks.map((b) => b.id);
 
   const { setNodeRef, isOver } = useDroppable({ id: "canvas-empty" });
 
   const isPhone = viewport === "mobile";
+  const resolvedMode = resolveMode(theme.mode);
+  const themeStyle = themeToCssVars(theme);
 
   return (
     <div className="flex h-full items-start justify-center overflow-auto bg-muted/30 p-4 md:p-8">
@@ -65,15 +68,28 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
             <div className="absolute left-1/2 top-0 z-10 h-5 w-24 -translate-x-1/2 rounded-b-2xl bg-foreground/90" />
           )}
           <div
+            data-theme-mode={resolvedMode}
             className={cn(
-              "overflow-y-auto bg-background",
+              resolvedMode === "dark" && "dark",
+              "overflow-y-auto",
               isPhone
                 ? "max-h-[720px] min-h-[560px] rounded-[26px]"
                 : "max-h-[820px] min-h-[560px] rounded-xl",
             )}
+            style={themeStyle}
             onClick={() => clearSelection()}
           >
-            <div className={cn("space-y-2 pb-10 pt-10", isPhone ? "px-5" : "px-8")}>
+            <div
+              style={{
+                paddingInline: "var(--zx-page-pad-x)",
+                paddingBlock: "var(--zx-page-pad-y)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--zx-block-gap)",
+                maxWidth: "var(--zx-content-max)",
+                marginInline: "auto",
+              }}
+            >
               <SortableContext items={items} strategy={verticalListSortingStrategy}>
                 {blocks.length === 0 ? (
                   <div
