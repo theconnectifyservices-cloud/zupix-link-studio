@@ -494,6 +494,15 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
+function ToggleRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between py-1">
+      <Label className="text-[11px] text-muted-foreground">{label}</Label>
+      <Switch checked={checked} onCheckedChange={onChange} />
+    </div>
+  );
+}
+
 function ModeSwitch({ value, onChange }: { value: ThemeMode; onChange: (m: ThemeMode) => void }) {
   const items = [
     { v: "light" as const, Icon: Sun, l: "Light" },
