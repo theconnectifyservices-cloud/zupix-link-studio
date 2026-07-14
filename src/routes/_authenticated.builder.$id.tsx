@@ -6,6 +6,7 @@ import {
   BuilderLeftPanel,
   BuilderRightPanel,
   BuilderPreview,
+  BuilderDndProvider,
   fetchBuilderPage,
   useBuilderStore,
   useAutoSave,
