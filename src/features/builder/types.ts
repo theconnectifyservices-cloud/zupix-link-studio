@@ -44,6 +44,7 @@ export interface BaseBlock {
   id: string;
   type: BlockType;
   hidden?: boolean;
+  locked?: boolean;
   name?: string;
   settings?: BlockSettings;
 }
