@@ -27,6 +27,8 @@ interface BuilderState {
 
   // mutations (record history)
   addBlock: (block: Block) => void;
+  insertBlock: (block: Block, index: number) => void;
+  reorderBlocks: (fromIndex: number, toIndex: number) => void;
   updateBlock: (id: string, patch: Partial<Block>) => void;
   removeBlock: (id: string) => void;
   duplicateBlock: (id: string) => void;
@@ -91,6 +93,34 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       history: pushHistory(history, content),
       content: { blocks: [...content.blocks, block] },
       selectedId: block.id,
+      saveStatus: "dirty",
+    });
+  },
+
+  insertBlock: (block, index) => {
+    const { content, history } = get();
+    const blocks = [...content.blocks];
+    const i = Math.max(0, Math.min(index, blocks.length));
+    blocks.splice(i, 0, block);
+    set({
+      history: pushHistory(history, content),
+      content: { blocks },
+      selectedId: block.id,
+      saveStatus: "dirty",
+    });
+  },
+
+  reorderBlocks: (fromIndex, toIndex) => {
+    const { content, history } = get();
+    if (fromIndex === toIndex) return;
+    if (fromIndex < 0 || fromIndex >= content.blocks.length) return;
+    const blocks = [...content.blocks];
+    const [item] = blocks.splice(fromIndex, 1);
+    const target = Math.max(0, Math.min(toIndex, blocks.length));
+    blocks.splice(target, 0, item);
+    set({
+      history: pushHistory(history, content),
+      content: { blocks },
       saveStatus: "dirty",
     });
   },
