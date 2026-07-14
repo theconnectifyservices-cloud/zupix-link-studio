@@ -5,9 +5,7 @@
  */
 
 import { Crown, Monitor, Smartphone, X } from "lucide-react";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MiniPreview } from "./mini-preview";
@@ -23,11 +21,17 @@ interface Props {
 }
 
 export function PreviewDialog({ template, onClose, onApply }: Props) {
-  const cat = TEMPLATE_CATEGORIES.find((c) => c.id === template.category)?.label ?? template.category;
+  const cat =
+    TEMPLATE_CATEGORIES.find((c) => c.id === template.category)?.label ?? template.category;
   const hasStarterBlocks = (template.blocks?.length ?? 0) > 0;
 
   return (
-    <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent className="max-w-5xl gap-0 p-0">
         <DialogHeader className="flex-row items-start justify-between gap-4 border-b p-4">
           <div className="min-w-0">
@@ -45,7 +49,9 @@ export function PreviewDialog({ template, onClose, onApply }: Props) {
               <Badge variant="outline">{cat}</Badge>
               {template.style && <Badge variant="outline">{template.style}</Badge>}
               {(template.tags ?? []).map((t) => (
-                <Badge key={t} variant="outline" className="text-muted-foreground">{t}</Badge>
+                <Badge key={t} variant="outline" className="text-muted-foreground">
+                  {t}
+                </Badge>
               ))}
             </div>
           </div>
@@ -87,8 +93,8 @@ export function PreviewDialog({ template, onClose, onApply }: Props) {
         {onApply && (
           <div className="flex flex-wrap items-center justify-between gap-3 border-t p-4">
             <p className="text-xs text-muted-foreground">
-              Applying replaces the current design tokens. Your blocks are kept
-              unless you choose to replace content.
+              Applying replaces the current design tokens. Your blocks are kept unless you choose to
+              replace content.
             </p>
             <div className="flex gap-2">
               {hasStarterBlocks && (

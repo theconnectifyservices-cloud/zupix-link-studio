@@ -36,7 +36,10 @@ function ResetPassword() {
   }
 
   return (
-    <AuthShell title="Set a new password" subtitle="Choose a strong password you don't use elsewhere.">
+    <AuthShell
+      title="Set a new password"
+      subtitle="Choose a strong password you don't use elsewhere."
+    >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="rp-password">New password</Label>

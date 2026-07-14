@@ -57,8 +57,7 @@ export function LayersPanel() {
 
   const selectionCount = selectedIds.length;
   const allHidden =
-    selectionCount > 0 &&
-    blocks.filter((b) => selectedIds.includes(b.id)).every((b) => b.hidden);
+    selectionCount > 0 && blocks.filter((b) => selectedIds.includes(b.id)).every((b) => b.hidden);
 
   return (
     <div className="flex flex-col gap-2">
@@ -216,10 +215,7 @@ function LayerItem({ block, dimmed }: { block: Block; dimmed: boolean }) {
         >
           {isEditing ? <Check className="h-3.5 w-3.5" /> : <Pencil className="h-3.5 w-3.5" />}
         </IconBtn>
-        <IconBtn
-          label={block.locked ? "Unlock" : "Lock"}
-          onClick={() => toggleLocked(block.id)}
-        >
+        <IconBtn label={block.locked ? "Unlock" : "Lock"} onClick={() => toggleLocked(block.id)}>
           {block.locked ? <Unlock className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
         </IconBtn>
         <IconBtn label={block.hidden ? "Show" : "Hide"} onClick={() => toggle(block.id)}>

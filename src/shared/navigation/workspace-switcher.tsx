@@ -29,9 +29,7 @@ export function WorkspaceSwitcher() {
       <DropdownMenuContent align="start" className="w-60">
         <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {workspaces.length === 0 && (
-          <DropdownMenuItem disabled>No workspaces</DropdownMenuItem>
-        )}
+        {workspaces.length === 0 && <DropdownMenuItem disabled>No workspaces</DropdownMenuItem>}
         {workspaces.map((w) => (
           <DropdownMenuItem key={w.id} className="justify-between">
             <span className="truncate">{w.name}</span>

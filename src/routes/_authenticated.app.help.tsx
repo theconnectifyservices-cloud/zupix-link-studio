@@ -10,7 +10,12 @@ export const Route = createFileRoute("/_authenticated/app/help")({
 const items = [
   { icon: BookOpen, title: "Documentation", description: "Guides and best practices.", href: "#" },
   { icon: MessageCircle, title: "Community", description: "Ask questions, share tips.", href: "#" },
-  { icon: Mail, title: "Contact support", description: "Reach out to our team.", href: "mailto:support@zupix.link" },
+  {
+    icon: Mail,
+    title: "Contact support",
+    description: "Reach out to our team.",
+    href: "mailto:support@zupix.link",
+  },
 ];
 
 function HelpPage() {

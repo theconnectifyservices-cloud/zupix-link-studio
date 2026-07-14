@@ -11,12 +11,37 @@ import type { PageTheme } from "@/features/builder/theme";
 import type { Block } from "@/features/builder/types";
 
 export type TemplateCategoryId =
-  | "creator" | "business" | "minimal" | "luxury" | "modern" | "neon" | "glass"
-  | "musician" | "photographer" | "fitness" | "coach" | "restaurant" | "cafe"
-  | "fashion" | "beauty" | "realestate" | "agency" | "consultant"
-  | "developer" | "designer" | "writer" | "podcaster" | "influencer"
-  | "nonprofit" | "event" | "wedding" | "portfolio" | "startup"
-  | "ecommerce" | "education" | "travel";
+  | "creator"
+  | "business"
+  | "minimal"
+  | "luxury"
+  | "modern"
+  | "neon"
+  | "glass"
+  | "musician"
+  | "photographer"
+  | "fitness"
+  | "coach"
+  | "restaurant"
+  | "cafe"
+  | "fashion"
+  | "beauty"
+  | "realestate"
+  | "agency"
+  | "consultant"
+  | "developer"
+  | "designer"
+  | "writer"
+  | "podcaster"
+  | "influencer"
+  | "nonprofit"
+  | "event"
+  | "wedding"
+  | "portfolio"
+  | "startup"
+  | "ecommerce"
+  | "education"
+  | "travel";
 
 export interface TemplateCategory {
   id: TemplateCategoryId;

@@ -29,10 +29,18 @@ export function BuilderLeftPanel() {
           </TabsList>
         </div>
         <div className="flex-1 overflow-y-auto p-3">
-          <TabsContent value="blocks" className="mt-0"><BlocksPanel /></TabsContent>
-          <TabsContent value="layers" className="mt-0"><LayersPanel /></TabsContent>
-          <TabsContent value="theme" className="mt-0"><ThemePanel /></TabsContent>
-          <TabsContent value="pages" className="mt-0"><PagesPanel /></TabsContent>
+          <TabsContent value="blocks" className="mt-0">
+            <BlocksPanel />
+          </TabsContent>
+          <TabsContent value="layers" className="mt-0">
+            <LayersPanel />
+          </TabsContent>
+          <TabsContent value="theme" className="mt-0">
+            <ThemePanel />
+          </TabsContent>
+          <TabsContent value="pages" className="mt-0">
+            <PagesPanel />
+          </TabsContent>
         </div>
       </Tabs>
     </div>

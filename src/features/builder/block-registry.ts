@@ -233,7 +233,13 @@ export const BLOCK_DEFS: BlockDef[] = [
       type: "testimonials",
       title: "What people say",
       items: [
-        { id: newId(), name: "Jane Doe", role: "Customer", rating: 5, review: "Absolutely fantastic!" },
+        {
+          id: newId(),
+          name: "Jane Doe",
+          role: "Customer",
+          rating: 5,
+          review: "Absolutely fantastic!",
+        },
       ],
     }),
   },
@@ -248,9 +254,7 @@ export const BLOCK_DEFS: BlockDef[] = [
       id: newId(),
       type: "faq",
       title: "Frequently asked",
-      items: [
-        { id: newId(), question: "How does it work?", answer: "Add your answer here." },
-      ],
+      items: [{ id: newId(), question: "How does it work?", answer: "Add your answer here." }],
     }),
   },
   {
@@ -329,10 +333,42 @@ export const BLOCK_DEFS: BlockDef[] = [
     }),
   },
   // Reserved / later phases
-  { type: "html", label: "HTML", description: "Coming soon", icon: FileCode, group: "advanced", available: false, create: () => ({ id: newId(), type: "html" }) },
-  { type: "form", label: "Form", description: "Coming soon", icon: ClipboardList, group: "advanced", available: false, create: () => ({ id: newId(), type: "form" }) },
-  { type: "store", label: "Store", description: "Coming soon", icon: ShoppingBag, group: "commerce", available: false, create: () => ({ id: newId(), type: "store" }) },
-  { type: "booking", label: "Booking", description: "Coming soon", icon: CalendarClock, group: "commerce", available: false, create: () => ({ id: newId(), type: "booking" }) },
+  {
+    type: "html",
+    label: "HTML",
+    description: "Coming soon",
+    icon: FileCode,
+    group: "advanced",
+    available: false,
+    create: () => ({ id: newId(), type: "html" }),
+  },
+  {
+    type: "form",
+    label: "Form",
+    description: "Coming soon",
+    icon: ClipboardList,
+    group: "advanced",
+    available: false,
+    create: () => ({ id: newId(), type: "form" }),
+  },
+  {
+    type: "store",
+    label: "Store",
+    description: "Coming soon",
+    icon: ShoppingBag,
+    group: "commerce",
+    available: false,
+    create: () => ({ id: newId(), type: "store" }),
+  },
+  {
+    type: "booking",
+    label: "Booking",
+    description: "Coming soon",
+    icon: CalendarClock,
+    group: "commerce",
+    available: false,
+    create: () => ({ id: newId(), type: "booking" }),
+  },
 ];
 
 // keep unused imports referenced to satisfy tree-shaking noise

@@ -7,8 +7,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  deleteCustomTemplate, loadCustomTemplates, loadFavorites, loadRecent,
-  newTemplateId, pushRecent, saveCustomTemplates, toggleFavorite,
+  deleteCustomTemplate,
+  loadCustomTemplates,
+  loadFavorites,
+  loadRecent,
+  newTemplateId,
+  pushRecent,
+  saveCustomTemplates,
+  toggleFavorite,
   upsertCustomTemplate,
 } from "./storage";
 import type { Template } from "./types";
@@ -18,15 +24,22 @@ export function useCustomTemplates() {
   const [list, setList] = useState<Template[]>([]);
   useEffect(() => setList(loadCustomTemplates()), []);
 
-  const create = useCallback((partial: Omit<Template, "id" | "version" | "isCustom" | "createdAt" | "updatedAt">) => {
-    const now = Date.now();
-    const t: Template = {
-      id: newTemplateId(), version: 1, isCustom: true,
-      createdAt: now, updatedAt: now, ...partial,
-    };
-    setList(upsertCustomTemplate(t));
-    return t;
-  }, []);
+  const create = useCallback(
+    (partial: Omit<Template, "id" | "version" | "isCustom" | "createdAt" | "updatedAt">) => {
+      const now = Date.now();
+      const t: Template = {
+        id: newTemplateId(),
+        version: 1,
+        isCustom: true,
+        createdAt: now,
+        updatedAt: now,
+        ...partial,
+      };
+      setList(upsertCustomTemplate(t));
+      return t;
+    },
+    [],
+  );
 
   const update = useCallback((id: string, patch: Partial<Template>) => {
     const cur = loadCustomTemplates().find((x) => x.id === id);
@@ -43,7 +56,13 @@ export function useCustomTemplates() {
     const t = parseTemplate(raw);
     if (!t) return null;
     const now = Date.now();
-    const dup: Template = { ...t, id: newTemplateId(), isCustom: true, createdAt: now, updatedAt: now };
+    const dup: Template = {
+      ...t,
+      id: newTemplateId(),
+      isCustom: true,
+      createdAt: now,
+      updatedAt: now,
+    };
     setList(upsertCustomTemplate(dup));
     return dup;
   }, []);
@@ -75,7 +94,16 @@ export function useRecent() {
 export function useAllTemplates() {
   const { list: custom, reload, remove, importTemplate, create, update } = useCustomTemplates();
   const all = useMemo<Template[]>(() => [...custom, ...BUILTIN_TEMPLATES], [custom]);
-  return { all, custom, builtin: BUILTIN_TEMPLATES, reload, remove, importTemplate, create, update };
+  return {
+    all,
+    custom,
+    builtin: BUILTIN_TEMPLATES,
+    reload,
+    remove,
+    importTemplate,
+    create,
+    update,
+  };
 }
 
 /**
@@ -93,7 +121,9 @@ export function parseTemplate(raw: unknown): Template | null {
     name: t.name,
     description: typeof t.description === "string" ? t.description : undefined,
     category: (typeof t.category === "string" ? t.category : "modern") as Template["category"],
-    tags: Array.isArray(t.tags) ? (t.tags as string[]).filter((x) => typeof x === "string") : undefined,
+    tags: Array.isArray(t.tags)
+      ? (t.tags as string[]).filter((x) => typeof x === "string")
+      : undefined,
     style: (typeof t.style === "string" ? t.style : undefined) as Template["style"],
     isPremium: !!t.isPremium,
     isCustom: true,
@@ -115,5 +145,10 @@ export function exportTemplateFile(t: Template) {
 }
 
 function slugify(s: string) {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "template";
+  return (
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "template"
+  );
 }

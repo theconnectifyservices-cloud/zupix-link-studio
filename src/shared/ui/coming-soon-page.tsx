@@ -23,11 +23,7 @@ export function ComingSoonPage({
   return (
     <div className="mx-auto max-w-5xl">
       <PageHeader title={title} description={description} breadcrumbs={breadcrumbs} />
-      <EmptyState
-        icon={<Icon className="h-8 w-8" />}
-        title="Coming soon"
-        description={message}
-      />
+      <EmptyState icon={<Icon className="h-8 w-8" />} title="Coming soon" description={message} />
     </div>
   );
 }

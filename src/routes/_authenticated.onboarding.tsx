@@ -8,10 +8,7 @@ import { Check, Loader2, X } from "lucide-react";
 
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { onboardingSchema, type OnboardingInput } from "@/features/auth/schemas";
-import {
-  checkUsernameAvailable,
-  updateProfile,
-} from "@/features/auth/api";
+import { checkUsernameAvailable, updateProfile } from "@/features/auth/api";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/auth/hooks/use-profile";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -61,9 +58,9 @@ function Onboarding() {
 
   const usernameValue = watch("username");
   const debouncedUsername = useDebounce(usernameValue, 350);
-  const [usernameStatus, setUsernameStatus] = useState<
-    "idle" | "checking" | "available" | "taken"
-  >("idle");
+  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">(
+    "idle",
+  );
 
   useEffect(() => {
     if (!debouncedUsername || debouncedUsername.length < 3) {
@@ -128,9 +125,7 @@ function Onboarding() {
                 {usernameStatus === "checking" && (
                   <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                 )}
-                {usernameStatus === "available" && (
-                  <Check className="h-4 w-4 text-green-600" />
-                )}
+                {usernameStatus === "available" && <Check className="h-4 w-4 text-green-600" />}
                 {usernameStatus === "taken" && <X className="h-4 w-4 text-destructive" />}
               </span>
             </div>

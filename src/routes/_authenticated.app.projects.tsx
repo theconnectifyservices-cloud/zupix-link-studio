@@ -156,13 +156,7 @@ function ProjectsPage() {
 
       {/* Content */}
       {isLoading ? (
-        <div
-          className={
-            view === "grid"
-              ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-              : "space-y-2"
-          }
-        >
+        <div className={view === "grid" ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3" : "space-y-2"}>
           {[0, 1, 2, 3].map((i) => (
             <Skeleton key={i} className={view === "grid" ? "h-56 rounded-lg" : "h-16 rounded-lg"} />
           ))}
@@ -187,13 +181,7 @@ function ProjectsPage() {
           />
         )
       ) : (
-        <div
-          className={
-            view === "grid"
-              ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-              : "space-y-2"
-          }
-        >
+        <div className={view === "grid" ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3" : "space-y-2"}>
           {filtered.map((p) => (
             <ProjectCard key={p.id} project={p} view={view} />
           ))}

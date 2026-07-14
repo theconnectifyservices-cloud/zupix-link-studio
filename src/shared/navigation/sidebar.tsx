@@ -55,7 +55,9 @@ export function Sidebar({ variant = "app", className }: SidebarProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const isActive = (item: Item) =>
-    item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/");
+    item.exact
+      ? pathname === item.href
+      : pathname === item.href || pathname.startsWith(item.href + "/");
 
   return (
     <TooltipProvider delayDuration={0}>

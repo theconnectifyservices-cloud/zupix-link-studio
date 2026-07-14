@@ -110,11 +110,13 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
       <div className="ml-auto flex items-center gap-1">
         {onViewportChange && (
           <div className="mr-1 hidden items-center gap-0.5 rounded-md border p-0.5 md:flex">
-            {([
-              ["mobile", Smartphone, "Mobile"],
-              ["tablet", Tablet, "Tablet"],
-              ["desktop", Monitor, "Desktop"],
-            ] as const).map(([v, Icon, label]) => (
+            {(
+              [
+                ["mobile", Smartphone, "Mobile"],
+                ["tablet", Tablet, "Tablet"],
+                ["desktop", Monitor, "Desktop"],
+              ] as const
+            ).map(([v, Icon, label]) => (
               <Button
                 key={v}
                 variant={viewport === v ? "secondary" : "ghost"}
@@ -128,10 +130,24 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
             ))}
           </div>
         )}
-        <Button variant="ghost" size="icon" aria-label="Undo" title="Undo (⌘Z)" onClick={undo} disabled={past === 0}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Undo"
+          title="Undo (⌘Z)"
+          onClick={undo}
+          disabled={past === 0}
+        >
           <Undo2 className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon" aria-label="Redo" title="Redo (⌘⇧Z)" onClick={redo} disabled={future === 0}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Redo"
+          title="Redo (⌘⇧Z)"
+          onClick={redo}
+          disabled={future === 0}
+        >
           <Redo2 className="h-4 w-4" />
         </Button>
         <TemplatesDialog />
@@ -146,7 +162,13 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
           <Eye className="h-4 w-4" />
           <span className="hidden sm:inline">Preview</span>
         </Button>
-        <Button variant="outline" size="sm" onClick={handleSave} className="gap-1.5" title="Save (⌘S)">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSave}
+          className="gap-1.5"
+          title="Save (⌘S)"
+        >
           <Save className="h-4 w-4" />
           <span className="hidden sm:inline">Save</span>
         </Button>
@@ -202,10 +224,7 @@ function VersionHistoryDialog() {
         </div>
         <div className="max-h-72 overflow-y-auto rounded-md border">
           {versions.length === 0 ? (
-            <EmptyState
-              title="No versions yet"
-              description="Save a version to see it here."
-            />
+            <EmptyState title="No versions yet" description="Save a version to see it here." />
           ) : (
             <ul className="divide-y">
               {versions.map((v) => (
@@ -255,7 +274,11 @@ function VersionHistoryDialog() {
   );
 }
 
-function SaveIndicator({ status }: { status: ReturnType<typeof useBuilderStore.getState>["saveStatus"] }) {
+function SaveIndicator({
+  status,
+}: {
+  status: ReturnType<typeof useBuilderStore.getState>["saveStatus"];
+}) {
   const items = {
     idle: { icon: CircleDot, label: "Ready", cls: "text-muted-foreground" },
     dirty: { icon: CircleDot, label: "Unsaved changes", cls: "text-amber-600" },
@@ -311,16 +334,20 @@ function SaveAsTemplateButton() {
   return (
     <>
       <Button
-        variant="ghost" size="icon" aria-label="Save as template" title="Save as template"
+        variant="ghost"
+        size="icon"
+        aria-label="Save as template"
+        title="Save as template"
         onClick={() => setOpen(true)}
       >
         <BookmarkPlus className="h-4 w-4" />
       </Button>
       <SaveTemplateDialog
-        open={open} onOpenChange={setOpen}
-        theme={theme} blocks={content.blocks}
+        open={open}
+        onOpenChange={setOpen}
+        theme={theme}
+        blocks={content.blocks}
       />
     </>
   );
 }
-

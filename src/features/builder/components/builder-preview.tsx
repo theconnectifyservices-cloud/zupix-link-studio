@@ -69,9 +69,7 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
         <div
           className={cn(
             "relative bg-background shadow-2xl",
-            isPhone
-              ? "rounded-[36px] border-[10px] border-foreground/90"
-              : "rounded-2xl border",
+            isPhone ? "rounded-[36px] border-[10px] border-foreground/90" : "rounded-2xl border",
           )}
         >
           {isPhone && (
@@ -169,16 +167,8 @@ function SortableCanvasBlock({
 
   const [collapsed, setCollapsed] = useState(false);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-    isOver,
-    active,
-  } = useSortable({ id: block.id, disabled: block.locked });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging, isOver, active } =
+    useSortable({ id: block.id, disabled: block.locked });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -208,10 +198,18 @@ function SortableCanvasBlock({
           )}
           {primary && (
             <div className="absolute -top-8 right-0 z-20 flex items-center gap-0.5 rounded-md border bg-background p-0.5 shadow-md">
-              <ToolBtn label="Move up" onClick={stop(() => move(block.id, -1))} disabled={block.locked}>
+              <ToolBtn
+                label="Move up"
+                onClick={stop(() => move(block.id, -1))}
+                disabled={block.locked}
+              >
                 <ArrowUp className="h-3.5 w-3.5" />
               </ToolBtn>
-              <ToolBtn label="Move down" onClick={stop(() => move(block.id, 1))} disabled={block.locked}>
+              <ToolBtn
+                label="Move down"
+                onClick={stop(() => move(block.id, 1))}
+                disabled={block.locked}
+              >
                 <ArrowDown className="h-3.5 w-3.5" />
               </ToolBtn>
               <ToolBtn
@@ -228,18 +226,30 @@ function SortableCanvasBlock({
                 label={block.locked ? "Unlock" : "Lock"}
                 onClick={stop(() => toggleLocked(block.id))}
               >
-                {block.locked ? <Unlock className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
+                {block.locked ? (
+                  <Unlock className="h-3.5 w-3.5" />
+                ) : (
+                  <Lock className="h-3.5 w-3.5" />
+                )}
               </ToolBtn>
               <ToolBtn
                 label={block.hidden ? "Show" : "Hide"}
                 onClick={stop(() => toggleHidden(block.id))}
               >
-                {block.hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                {block.hidden ? (
+                  <EyeOff className="h-3.5 w-3.5" />
+                ) : (
+                  <Eye className="h-3.5 w-3.5" />
+                )}
               </ToolBtn>
               <ToolBtn label="Duplicate" onClick={stop(() => dup(block.id))}>
                 <Copy className="h-3.5 w-3.5" />
               </ToolBtn>
-              <ToolBtn label="Delete" onClick={stop(() => remove(block.id))} disabled={block.locked}>
+              <ToolBtn
+                label="Delete"
+                onClick={stop(() => remove(block.id))}
+                disabled={block.locked}
+              >
                 <Trash2 className="h-3.5 w-3.5 text-destructive" />
               </ToolBtn>
             </div>
@@ -274,7 +284,11 @@ function SortableCanvasBlock({
               {...(block.locked ? {} : listeners)}
               onClick={(e) => e.stopPropagation()}
             >
-              {block.locked ? <Lock className="h-3 w-3" /> : <GripVertical className="h-3.5 w-3.5" />}
+              {block.locked ? (
+                <Lock className="h-3 w-3" />
+              ) : (
+                <GripVertical className="h-3.5 w-3.5" />
+              )}
             </button>
             <div className="min-w-0 flex-1 p-1">
               {collapsed ? (
@@ -289,7 +303,6 @@ function SortableCanvasBlock({
                   staggerStep={staggerStep}
                   reduceMotion={reduceMotion}
                 />
-
               )}
             </div>
           </div>
@@ -322,16 +335,24 @@ function SortableCanvasBlock({
         <ContextMenuSeparator />
         <ContextMenuItem onSelect={() => toggleHidden(block.id)}>
           {block.hidden ? (
-            <><Eye className="mr-2 h-4 w-4" /> Show</>
+            <>
+              <Eye className="mr-2 h-4 w-4" /> Show
+            </>
           ) : (
-            <><EyeOff className="mr-2 h-4 w-4" /> Hide</>
+            <>
+              <EyeOff className="mr-2 h-4 w-4" /> Hide
+            </>
           )}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => toggleLocked(block.id)}>
           {block.locked ? (
-            <><Unlock className="mr-2 h-4 w-4" /> Unlock</>
+            <>
+              <Unlock className="mr-2 h-4 w-4" /> Unlock
+            </>
           ) : (
-            <><Lock className="mr-2 h-4 w-4" /> Lock</>
+            <>
+              <Lock className="mr-2 h-4 w-4" /> Lock
+            </>
           )}
         </ContextMenuItem>
         <ContextMenuSeparator />

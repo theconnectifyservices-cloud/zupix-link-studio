@@ -45,14 +45,14 @@ export interface ThemeTypography {
   fontFamily: string;
   headingFamily: string;
   buttonFamily: string;
-  baseSize: number;       // px — body base
-  lineHeight: number;     // unitless
-  letterSpacing: number;  // em
+  baseSize: number; // px — body base
+  lineHeight: number; // unitless
+  letterSpacing: number; // em
   headingWeight: 400 | 500 | 600 | 700 | 800 | 900;
   bodyWeight: 300 | 400 | 500 | 600;
   /** LS-07B additions. */
-  headingScale?: number;      // multiplier applied to heading sizes (default 1)
-  buttonSize?: number;        // px, button label size (default 14)
+  headingScale?: number; // multiplier applied to heading sizes (default 1)
+  buttonSize?: number; // px, button label size (default 14)
   textTransform?: TextTransform;
   /** LS-07C — per-viewport font-size multipliers. Default 1. */
   mobileScale?: number;
@@ -79,14 +79,13 @@ export interface ThemeCard {
   shadow: string;
   opacity: number;
   /** LS-07B additions. */
-  padding?: number;   // px, inner padding
-  margin?: number;    // px, outer margin
+  padding?: number; // px, inner padding
+  margin?: number; // px, outer margin
 }
 
 // ── Buttons (LS-07B) ────────────────────────────────────────────────────
 
-export type ButtonVariantId =
-  | "filled" | "outline" | "soft" | "ghost" | "glass" | "gradient";
+export type ButtonVariantId = "filled" | "outline" | "soft" | "ghost" | "glass" | "gradient";
 export type ButtonShapeId = "pill" | "rounded" | "square";
 export type ButtonAlignId = "left" | "center" | "right" | "stretch";
 export type IconPositionId = "left" | "right" | "none";
@@ -94,13 +93,13 @@ export type IconPositionId = "left" | "right" | "none";
 export interface ThemeButtons {
   variant: ButtonVariantId;
   shape: ButtonShapeId;
-  height: number;          // px
-  radius: number;          // px (ignored when shape=pill)
-  paddingX: number;        // px horizontal padding
-  border: number;          // px border width
-  shadow: string;          // css box-shadow
+  height: number; // px
+  radius: number; // px (ignored when shape=pill)
+  paddingX: number; // px horizontal padding
+  border: number; // px border width
+  shadow: string; // css box-shadow
   iconPosition: IconPositionId;
-  iconSize: number;        // px
+  iconSize: number; // px
   align: ButtonAlignId;
 }
 
@@ -119,28 +118,34 @@ export const DEFAULT_BUTTONS: ThemeButtons = {
 
 // ── Background (LS-07B) ─────────────────────────────────────────────────
 
-export type BackgroundKind =
-  | "color" | "gradient" | "image" | "pattern" | "glass" | "video";
+export type BackgroundKind = "color" | "gradient" | "image" | "pattern" | "glass" | "video";
 export type BackgroundSize = "cover" | "contain" | "auto";
 export type BackgroundPosition =
-  | "center" | "top" | "bottom" | "left" | "right"
-  | "top left" | "top right" | "bottom left" | "bottom right";
+  | "center"
+  | "top"
+  | "bottom"
+  | "left"
+  | "right"
+  | "top left"
+  | "top right"
+  | "bottom left"
+  | "bottom right";
 
 export interface ThemeBackground {
   kind: BackgroundKind;
   imageUrl?: string;
-  videoUrl?: string;       // architecture only — not rendered yet
-  patternId?: string;      // key into BACKGROUND_PATTERNS
+  videoUrl?: string; // architecture only — not rendered yet
+  patternId?: string; // key into BACKGROUND_PATTERNS
   size?: BackgroundSize;
   position?: BackgroundPosition;
-  blur?: number;           // px, background blur
-  overlay?: string;        // css overlay color (rgba)
+  blur?: number; // px, background blur
+  overlay?: string; // css overlay color (rgba)
   overlayOpacity?: number; // 0..1
   /** LS-07C — background effects. */
   noise?: boolean;
-  noiseOpacity?: number;      // 0..1, default 0.08
+  noiseOpacity?: number; // 0..1, default 0.08
   animatedGradient?: boolean; // shift gradient position over time
-  meshGradient?: boolean;     // soft blurred radial mesh overlay
+  meshGradient?: boolean; // soft blurred radial mesh overlay
 }
 
 export const DEFAULT_BACKGROUND: ThemeBackground = {
@@ -158,14 +163,26 @@ export const DEFAULT_BACKGROUND: ThemeBackground = {
 
 /** Built-in SVG data-URI patterns — trusted, no external requests. */
 export const BACKGROUND_PATTERNS: { id: string; label: string; url: string }[] = [
-  { id: "dots", label: "Dots",
-    url: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><circle cx='2' cy='2' r='1.2' fill='%23000' fill-opacity='0.15'/></svg>\")" },
-  { id: "grid", label: "Grid",
-    url: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='M24 0H0v24' fill='none' stroke='%23000' stroke-opacity='0.08'/></svg>\")" },
-  { id: "diagonal", label: "Diagonal",
-    url: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12'><path d='M0 12L12 0' stroke='%23000' stroke-opacity='0.08'/></svg>\")" },
-  { id: "waves", label: "Waves",
-    url: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='12'><path d='M0 6 Q10 0 20 6 T40 6' fill='none' stroke='%23000' stroke-opacity='0.1'/></svg>\")" },
+  {
+    id: "dots",
+    label: "Dots",
+    url: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><circle cx='2' cy='2' r='1.2' fill='%23000' fill-opacity='0.15'/></svg>\")",
+  },
+  {
+    id: "grid",
+    label: "Grid",
+    url: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='M24 0H0v24' fill='none' stroke='%23000' stroke-opacity='0.08'/></svg>\")",
+  },
+  {
+    id: "diagonal",
+    label: "Diagonal",
+    url: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12'><path d='M0 12L12 0' stroke='%23000' stroke-opacity='0.08'/></svg>\")",
+  },
+  {
+    id: "waves",
+    label: "Waves",
+    url: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='12'><path d='M0 6 Q10 0 20 6 T40 6' fill='none' stroke='%23000' stroke-opacity='0.1'/></svg>\")",
+  },
 ];
 
 // ── Profile (LS-07B) ────────────────────────────────────────────────────
@@ -176,21 +193,21 @@ export type BadgePosition = "inline" | "top-right" | "bottom-right";
 
 export interface ThemeProfile {
   avatarShape: AvatarShape;
-  avatarSize: AvatarSize;   // sm=64, md=80, lg=96, xl=128
+  avatarSize: AvatarSize; // sm=64, md=80, lg=96, xl=128
   avatarBorderWidth: number; // px
   avatarBorderColor: string;
-  coverHeight: number;       // px
+  coverHeight: number; // px
   nameWeight: 400 | 500 | 600 | 700 | 800 | 900;
-  nameSize: number;          // px
-  bioSize: number;           // px
+  nameSize: number; // px
+  bioSize: number; // px
   bioWeight: 300 | 400 | 500 | 600;
   verifiedPosition: BadgePosition;
   /** LS-07C — profile effects. */
   avatarGlow?: boolean;
-  avatarRing?: boolean;      // solid outer ring
+  avatarRing?: boolean; // solid outer ring
   avatarRotatingRing?: boolean; // conic-gradient rotating ring
-  avatarFloating?: boolean;  // gentle float animation
-  badgeAnimation?: boolean;  // pulse the verified badge
+  avatarFloating?: boolean; // gentle float animation
+  badgeAnimation?: boolean; // pulse the verified badge
 }
 
 export const DEFAULT_PROFILE: ThemeProfile = {
@@ -213,11 +230,19 @@ export const DEFAULT_PROFILE: ThemeProfile = {
 
 const AVATAR_PX: Record<AvatarSize, number> = { sm: 64, md: 80, lg: 96, xl: 128 };
 const AVATAR_RADIUS: Record<AvatarShape, string> = {
-  circle: "9999px", rounded: "20px", square: "6px",
+  circle: "9999px",
+  rounded: "20px",
+  square: "6px",
 };
 
 export type ThemePresetId =
-  | "minimal" | "creator" | "business" | "luxury" | "neon" | "glass" | "modern";
+  | "minimal"
+  | "creator"
+  | "business"
+  | "luxury"
+  | "neon"
+  | "glass"
+  | "modern";
 
 // ── Motion (LS-07C) ─────────────────────────────────────────────────────
 
@@ -295,12 +320,9 @@ export const DEFAULT_COLORS_DARK: ThemeColors = {
 };
 
 export const DEFAULT_TYPOGRAPHY: ThemeTypography = {
-  fontFamily:
-    'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
-  headingFamily:
-    'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
-  buttonFamily:
-    'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
+  fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
+  headingFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
+  buttonFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
   baseSize: 14,
   lineHeight: 1.5,
   letterSpacing: 0,
@@ -355,161 +377,268 @@ export interface ThemePreset {
 }
 
 const PRESET_MINIMAL: ThemePreset = {
-  id: "minimal", label: "Minimal",
-  description: "Clean, monochrome, editorial.", mode: "light",
+  id: "minimal",
+  label: "Minimal",
+  description: "Clean, monochrome, editorial.",
+  mode: "light",
   theme: { ...DEFAULT_THEME },
 };
 
 const PRESET_CREATOR: ThemePreset = {
-  id: "creator", label: "Creator",
-  description: "Warm gradient background, expressive.", mode: "light",
+  id: "creator",
+  label: "Creator",
+  description: "Warm gradient background, expressive.",
+  mode: "light",
   theme: {
     ...DEFAULT_THEME,
     mode: "light",
-    colors: { ...DEFAULT_COLORS_LIGHT,
+    colors: {
+      ...DEFAULT_COLORS_LIGHT,
       background: "linear-gradient(180deg,#ffd5c2 0%,#ffe8d6 45%,#fff5ea 100%)",
       backgroundSolid: "#ffe8d6",
-      surface: "#fff5ea", card: "#ffffff",
-      text: "#2b1a12", textMuted: "#7b5a48", border: "#f4d9c4",
-      primary: "#ff5a5f", primaryText: "#ffffff",
-      secondary: "#ffe0d0", secondaryText: "#2b1a12",
-      accent: "#ff9f1c", icon: "#ff5a5f", link: "#ff5a5f",
+      surface: "#fff5ea",
+      card: "#ffffff",
+      text: "#2b1a12",
+      textMuted: "#7b5a48",
+      border: "#f4d9c4",
+      primary: "#ff5a5f",
+      primaryText: "#ffffff",
+      secondary: "#ffe0d0",
+      secondaryText: "#2b1a12",
+      accent: "#ff9f1c",
+      icon: "#ff5a5f",
+      link: "#ff5a5f",
     },
     typography: { ...DEFAULT_TYPOGRAPHY, headingWeight: 800 },
     spacing: { ...DEFAULT_SPACING, radius: 18, blockGap: 10 },
-    card: { ...DEFAULT_CARD, radius: 18, border: "1px solid #f4d9c4",
-      shadow: "0 6px 20px -12px rgba(255,90,95,0.35)" },
+    card: {
+      ...DEFAULT_CARD,
+      radius: 18,
+      border: "1px solid #f4d9c4",
+      shadow: "0 6px 20px -12px rgba(255,90,95,0.35)",
+    },
     buttons: { ...DEFAULT_BUTTONS, variant: "gradient", shape: "pill", height: 52 },
   },
 };
 
 const PRESET_BUSINESS: ThemePreset = {
-  id: "business", label: "Business",
-  description: "Corporate navy, structured.", mode: "light",
+  id: "business",
+  label: "Business",
+  description: "Corporate navy, structured.",
+  mode: "light",
   theme: {
     ...DEFAULT_THEME,
     mode: "light",
-    colors: { ...DEFAULT_COLORS_LIGHT,
-      background: "#f4f6fb", backgroundSolid: "#f4f6fb",
-      surface: "#ffffff", card: "#ffffff",
-      text: "#0f172a", textMuted: "#64748b", border: "#e2e8f0",
-      primary: "#0f2e5c", primaryText: "#ffffff",
-      secondary: "#e2e8f0", secondaryText: "#0f2e5c",
-      accent: "#0ea5e9", icon: "#0f2e5c", link: "#0ea5e9",
+    colors: {
+      ...DEFAULT_COLORS_LIGHT,
+      background: "#f4f6fb",
+      backgroundSolid: "#f4f6fb",
+      surface: "#ffffff",
+      card: "#ffffff",
+      text: "#0f172a",
+      textMuted: "#64748b",
+      border: "#e2e8f0",
+      primary: "#0f2e5c",
+      primaryText: "#ffffff",
+      secondary: "#e2e8f0",
+      secondaryText: "#0f2e5c",
+      accent: "#0ea5e9",
+      icon: "#0f2e5c",
+      link: "#0ea5e9",
     },
     typography: { ...DEFAULT_TYPOGRAPHY, headingWeight: 600 },
     spacing: { ...DEFAULT_SPACING, radius: 8, blockGap: 12 },
-    card: { ...DEFAULT_CARD, radius: 8, border: "1px solid #e2e8f0",
-      shadow: "0 1px 3px rgba(15,46,92,0.06)" },
+    card: {
+      ...DEFAULT_CARD,
+      radius: 8,
+      border: "1px solid #e2e8f0",
+      shadow: "0 1px 3px rgba(15,46,92,0.06)",
+    },
     buttons: { ...DEFAULT_BUTTONS, variant: "filled", shape: "rounded", radius: 8, height: 44 },
   },
 };
 
 const PRESET_LUXURY: ThemePreset = {
-  id: "luxury", label: "Luxury",
-  description: "Deep black with gold accents.", mode: "dark",
+  id: "luxury",
+  label: "Luxury",
+  description: "Deep black with gold accents.",
+  mode: "dark",
   theme: {
     ...DEFAULT_THEME,
     mode: "dark",
-    colors: { ...DEFAULT_COLORS_DARK,
-      background: "#0a0a0a", backgroundSolid: "#0a0a0a",
-      surface: "#141414", card: "#161616",
-      text: "#f5f2ea", textMuted: "#a29a86", border: "#2a2620",
-      primary: "#c9a24c", primaryText: "#0a0a0a",
-      secondary: "#1c1a15", secondaryText: "#f5f2ea",
-      accent: "#e8c98a", icon: "#c9a24c", link: "#e8c98a",
+    colors: {
+      ...DEFAULT_COLORS_DARK,
+      background: "#0a0a0a",
+      backgroundSolid: "#0a0a0a",
+      surface: "#141414",
+      card: "#161616",
+      text: "#f5f2ea",
+      textMuted: "#a29a86",
+      border: "#2a2620",
+      primary: "#c9a24c",
+      primaryText: "#0a0a0a",
+      secondary: "#1c1a15",
+      secondaryText: "#f5f2ea",
+      accent: "#e8c98a",
+      icon: "#c9a24c",
+      link: "#e8c98a",
     },
-    typography: { ...DEFAULT_TYPOGRAPHY,
+    typography: {
+      ...DEFAULT_TYPOGRAPHY,
       fontFamily: '"Cormorant Garamond", Georgia, serif',
       headingFamily: '"Cormorant Garamond", Georgia, serif',
-      headingWeight: 600, letterSpacing: 0.02 },
+      headingWeight: 600,
+      letterSpacing: 0.02,
+    },
     spacing: { ...DEFAULT_SPACING, radius: 4, blockGap: 14 },
-    card: { ...DEFAULT_CARD, background: "#161616", radius: 4,
+    card: {
+      ...DEFAULT_CARD,
+      background: "#161616",
+      radius: 4,
       border: "1px solid #2a2620",
-      shadow: "0 8px 24px -12px rgba(201,162,76,0.15)" },
-    buttons: { ...DEFAULT_BUTTONS, variant: "outline", shape: "square",
-      radius: 2, height: 48, border: 1 },
+      shadow: "0 8px 24px -12px rgba(201,162,76,0.15)",
+    },
+    buttons: {
+      ...DEFAULT_BUTTONS,
+      variant: "outline",
+      shape: "square",
+      radius: 2,
+      height: 48,
+      border: 1,
+    },
   },
 };
 
 const PRESET_NEON: ThemePreset = {
-  id: "neon", label: "Neon",
-  description: "Cyberpunk, glowing accents.", mode: "dark",
+  id: "neon",
+  label: "Neon",
+  description: "Cyberpunk, glowing accents.",
+  mode: "dark",
   theme: {
     ...DEFAULT_THEME,
     mode: "dark",
-    colors: { ...DEFAULT_COLORS_DARK,
+    colors: {
+      ...DEFAULT_COLORS_DARK,
       background: "radial-gradient(circle at 30% 20%,#3d0066 0%,#0a0018 55%,#000 100%)",
       backgroundSolid: "#0a0018",
-      surface: "#150029", card: "#1a0033",
-      text: "#f6f0ff", textMuted: "#a58bd9", border: "#3a1466",
-      primary: "#ff3cac", primaryText: "#ffffff",
-      secondary: "#28004d", secondaryText: "#f6f0ff",
-      accent: "#00e5ff", icon: "#00e5ff", link: "#00e5ff",
+      surface: "#150029",
+      card: "#1a0033",
+      text: "#f6f0ff",
+      textMuted: "#a58bd9",
+      border: "#3a1466",
+      primary: "#ff3cac",
+      primaryText: "#ffffff",
+      secondary: "#28004d",
+      secondaryText: "#f6f0ff",
+      accent: "#00e5ff",
+      icon: "#00e5ff",
+      link: "#00e5ff",
     },
     typography: { ...DEFAULT_TYPOGRAPHY, headingWeight: 800 },
     spacing: { ...DEFAULT_SPACING, radius: 20, blockGap: 10 },
-    card: { ...DEFAULT_CARD, background: "rgba(26,0,51,0.7)", radius: 20,
+    card: {
+      ...DEFAULT_CARD,
+      background: "rgba(26,0,51,0.7)",
+      radius: 20,
       border: "1px solid rgba(255,60,172,0.35)",
-      shadow: "0 0 32px -8px rgba(255,60,172,0.45)", opacity: 0.9 },
-    buttons: { ...DEFAULT_BUTTONS, variant: "gradient", shape: "pill",
-      shadow: "0 0 20px -2px rgba(255,60,172,0.55)", height: 50 },
+      shadow: "0 0 32px -8px rgba(255,60,172,0.45)",
+      opacity: 0.9,
+    },
+    buttons: {
+      ...DEFAULT_BUTTONS,
+      variant: "gradient",
+      shape: "pill",
+      shadow: "0 0 20px -2px rgba(255,60,172,0.55)",
+      height: 50,
+    },
   },
 };
 
 const PRESET_GLASS: ThemePreset = {
-  id: "glass", label: "Glass",
-  description: "Frosted glass on soft gradient.", mode: "light",
+  id: "glass",
+  label: "Glass",
+  description: "Frosted glass on soft gradient.",
+  mode: "light",
   theme: {
     ...DEFAULT_THEME,
     mode: "light",
-    colors: { ...DEFAULT_COLORS_LIGHT,
+    colors: {
+      ...DEFAULT_COLORS_LIGHT,
       background: "linear-gradient(135deg,#a5b4fc 0%,#c4b5fd 50%,#f0abfc 100%)",
       backgroundSolid: "#c4b5fd",
       surface: "rgba(255,255,255,0.55)",
       card: "rgba(255,255,255,0.55)",
-      text: "#1e1b4b", textMuted: "#4c4a6a",
+      text: "#1e1b4b",
+      textMuted: "#4c4a6a",
       border: "rgba(255,255,255,0.65)",
-      primary: "#1e1b4b", primaryText: "#ffffff",
-      secondary: "rgba(255,255,255,0.55)", secondaryText: "#1e1b4b",
-      accent: "#7c3aed", icon: "#1e1b4b", link: "#7c3aed",
+      primary: "#1e1b4b",
+      primaryText: "#ffffff",
+      secondary: "rgba(255,255,255,0.55)",
+      secondaryText: "#1e1b4b",
+      accent: "#7c3aed",
+      icon: "#1e1b4b",
+      link: "#7c3aed",
     },
     typography: { ...DEFAULT_TYPOGRAPHY, headingWeight: 700 },
     spacing: { ...DEFAULT_SPACING, radius: 20, blockGap: 12 },
-    card: { ...DEFAULT_CARD, background: "rgba(255,255,255,0.5)", radius: 20,
+    card: {
+      ...DEFAULT_CARD,
+      background: "rgba(255,255,255,0.5)",
+      radius: 20,
       border: "1px solid rgba(255,255,255,0.6)",
-      shadow: "0 8px 32px -8px rgba(31,27,75,0.18)", opacity: 0.85 },
+      shadow: "0 8px 32px -8px rgba(31,27,75,0.18)",
+      opacity: 0.85,
+    },
     background: { ...DEFAULT_BACKGROUND, kind: "glass", blur: 10 },
     buttons: { ...DEFAULT_BUTTONS, variant: "glass", shape: "pill", height: 50 },
   },
 };
 
 const PRESET_MODERN: ThemePreset = {
-  id: "modern", label: "Modern",
-  description: "Bold indigo on cool white.", mode: "light",
+  id: "modern",
+  label: "Modern",
+  description: "Bold indigo on cool white.",
+  mode: "light",
   theme: {
     ...DEFAULT_THEME,
     mode: "light",
-    colors: { ...DEFAULT_COLORS_LIGHT,
-      background: "#fafafa", backgroundSolid: "#fafafa",
-      surface: "#ffffff", card: "#ffffff",
-      text: "#0b1220", textMuted: "#5b6478", border: "#e5e7eb",
-      primary: "#4f46e5", primaryText: "#ffffff",
-      secondary: "#eef2ff", secondaryText: "#4f46e5",
-      accent: "#22d3ee", icon: "#4f46e5", link: "#4f46e5",
+    colors: {
+      ...DEFAULT_COLORS_LIGHT,
+      background: "#fafafa",
+      backgroundSolid: "#fafafa",
+      surface: "#ffffff",
+      card: "#ffffff",
+      text: "#0b1220",
+      textMuted: "#5b6478",
+      border: "#e5e7eb",
+      primary: "#4f46e5",
+      primaryText: "#ffffff",
+      secondary: "#eef2ff",
+      secondaryText: "#4f46e5",
+      accent: "#22d3ee",
+      icon: "#4f46e5",
+      link: "#4f46e5",
     },
     typography: { ...DEFAULT_TYPOGRAPHY, headingWeight: 700 },
     spacing: { ...DEFAULT_SPACING, radius: 14, blockGap: 10 },
-    card: { ...DEFAULT_CARD, radius: 14, border: "1px solid #e5e7eb",
-      shadow: "0 4px 14px -8px rgba(79,70,229,0.25)" },
-    buttons: { ...DEFAULT_BUTTONS, variant: "filled", shape: "rounded",
-      radius: 14, height: 48 },
+    card: {
+      ...DEFAULT_CARD,
+      radius: 14,
+      border: "1px solid #e5e7eb",
+      shadow: "0 4px 14px -8px rgba(79,70,229,0.25)",
+    },
+    buttons: { ...DEFAULT_BUTTONS, variant: "filled", shape: "rounded", radius: 14, height: 48 },
   },
 };
 
 export const THEME_PRESETS: ThemePreset[] = [
-  PRESET_MINIMAL, PRESET_CREATOR, PRESET_BUSINESS,
-  PRESET_LUXURY, PRESET_NEON, PRESET_GLASS, PRESET_MODERN,
+  PRESET_MINIMAL,
+  PRESET_CREATOR,
+  PRESET_BUSINESS,
+  PRESET_LUXURY,
+  PRESET_NEON,
+  PRESET_GLASS,
+  PRESET_MODERN,
 ];
 
 export function getPreset(id: ThemePresetId): ThemePreset | undefined {
@@ -577,41 +706,77 @@ export function ensureGoogleFont(family: string) {
 }
 
 export const GOOGLE_FONTS: string[] = [
-  "Inter", "Manrope", "Poppins", "DM Sans", "Space Grotesk",
-  "Playfair Display", "Cormorant Garamond", "Lora",
-  "JetBrains Mono", "Fira Code",
-  "Bebas Neue", "Anton", "Archivo", "Outfit", "Sora", "Plus Jakarta Sans",
+  "Inter",
+  "Manrope",
+  "Poppins",
+  "DM Sans",
+  "Space Grotesk",
+  "Playfair Display",
+  "Cormorant Garamond",
+  "Lora",
+  "JetBrains Mono",
+  "Fira Code",
+  "Bebas Neue",
+  "Anton",
+  "Archivo",
+  "Outfit",
+  "Sora",
+  "Plus Jakarta Sans",
 ];
 
 // ── Button variant → CSS ────────────────────────────────────────────────
 
 function buttonVariantCss(theme: PageTheme): {
-  background: string; color: string; border: string; extra: string;
+  background: string;
+  color: string;
+  border: string;
+  extra: string;
 } {
   const b = theme.buttons ?? DEFAULT_BUTTONS;
   const c = theme.colors;
   switch (b.variant) {
     case "filled":
-      return { background: c.primary, color: c.primaryText,
-        border: `${b.border}px solid transparent`, extra: "" };
+      return {
+        background: c.primary,
+        color: c.primaryText,
+        border: `${b.border}px solid transparent`,
+        extra: "",
+      };
     case "outline":
-      return { background: "transparent", color: c.primary,
-        border: `${b.border}px solid ${c.primary}`, extra: "" };
+      return {
+        background: "transparent",
+        color: c.primary,
+        border: `${b.border}px solid ${c.primary}`,
+        extra: "",
+      };
     case "soft":
-      return { background: c.secondary, color: c.secondaryText,
-        border: `${b.border}px solid transparent`, extra: "" };
+      return {
+        background: c.secondary,
+        color: c.secondaryText,
+        border: `${b.border}px solid transparent`,
+        extra: "",
+      };
     case "ghost":
-      return { background: "transparent", color: c.primary,
-        border: `${b.border}px solid transparent`, extra: "" };
+      return {
+        background: "transparent",
+        color: c.primary,
+        border: `${b.border}px solid transparent`,
+        extra: "",
+      };
     case "glass":
-      return { background: "rgba(255,255,255,0.18)", color: c.text,
+      return {
+        background: "rgba(255,255,255,0.18)",
+        color: c.text,
         border: `${b.border}px solid rgba(255,255,255,0.35)`,
-        extra: "backdrop-filter:blur(14px) saturate(140%);" };
+        extra: "backdrop-filter:blur(14px) saturate(140%);",
+      };
     case "gradient":
       return {
         background: `linear-gradient(135deg, ${c.primary}, ${c.accent})`,
         color: c.primaryText,
-        border: `${b.border}px solid transparent`, extra: "" };
+        border: `${b.border}px solid transparent`,
+        extra: "",
+      };
   }
 }
 
@@ -646,10 +811,7 @@ export function pageTransitionClass(theme: PageTheme): string | null {
  *
  * `viewport` (LS-07C) picks per-viewport typography scale and page padding.
  */
-export function themeToCssVars(
-  theme: PageTheme,
-  viewport: Viewport = "mobile",
-): CSSProperties {
+export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"): CSSProperties {
   const c = theme.colors;
   const t = theme.typography;
   const s = theme.spacing;
@@ -741,8 +903,8 @@ export function themeToCssVars(
     "--zx-btn-bg": btnCss.background,
     "--zx-btn-fg": btnCss.color,
     "--zx-btn-border": btnCss.border,
-    "--zx-btn-radius": btn.shape === "pill" ? "9999px"
-      : btn.shape === "square" ? "4px" : `${btn.radius}px`,
+    "--zx-btn-radius":
+      btn.shape === "pill" ? "9999px" : btn.shape === "square" ? "4px" : `${btn.radius}px`,
     "--zx-btn-h": `${btn.height}px`,
     "--zx-btn-px": `${btn.paddingX}px`,
     "--zx-btn-shadow": btn.shadow,

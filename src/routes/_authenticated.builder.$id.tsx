@@ -57,13 +57,11 @@ function BuilderPage() {
   useAutoSave(data?.id ?? null);
   useBuilderShortcuts(!previewMode);
 
-  const bannerAt = useMemo(
-    () => (draft ? new Date(draft.at).toLocaleString() : ""),
-    [draft],
-  );
+  const bannerAt = useMemo(() => (draft ? new Date(draft.at).toLocaleString() : ""), [draft]);
 
   if (isLoading) return <PageLoader />;
-  if (error) return <ErrorState title="Couldn't load page" description={(error as Error).message} />;
+  if (error)
+    return <ErrorState title="Couldn't load page" description={(error as Error).message} />;
   if (!data) throw notFound();
 
   return (
@@ -78,9 +76,7 @@ function BuilderPage() {
         {draft && (
           <div className="flex items-center gap-2 border-b bg-amber-500/10 px-3 py-2 text-xs text-amber-900 dark:text-amber-200">
             <AlertTriangle className="h-4 w-4 shrink-0" />
-            <span className="min-w-0 flex-1">
-              Unsaved changes recovered from {bannerAt}.
-            </span>
+            <span className="min-w-0 flex-1">Unsaved changes recovered from {bannerAt}.</span>
             <Button
               size="sm"
               variant="outline"

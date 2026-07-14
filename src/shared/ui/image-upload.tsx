@@ -38,12 +38,7 @@ export function ImageUpload({
           <img src={preview} alt="Preview" className="h-40 w-full object-cover" />
         </div>
       )}
-      <FileUpload
-        accept="image/*"
-        maxSizeMb={maxSizeMb}
-        onFiles={handleFiles}
-        label={label}
-      />
+      <FileUpload accept="image/*" maxSizeMb={maxSizeMb} onFiles={handleFiles} label={label} />
     </div>
   );
 }

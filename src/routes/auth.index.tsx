@@ -109,15 +109,8 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="login-email">Email</Label>
-          <Input
-            id="login-email"
-            type="email"
-            autoComplete="email"
-            {...register("email")}
-          />
-          {errors.email && (
-            <p className="text-xs text-destructive">{errors.email.message}</p>
-          )}
+          <Input id="login-email" type="email" autoComplete="email" {...register("email")} />
+          {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -134,9 +127,7 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
             autoComplete="current-password"
             {...register("password")}
           />
-          {errors.password && (
-            <p className="text-xs text-destructive">{errors.password.message}</p>
-          )}
+          {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
         </div>
         <div className="flex items-center gap-2">
           <Checkbox id="remember" {...register("remember")} />
@@ -176,15 +167,8 @@ function SignupForm({ onDone }: { onDone: () => void }) {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="signup-email">Email</Label>
-          <Input
-            id="signup-email"
-            type="email"
-            autoComplete="email"
-            {...register("email")}
-          />
-          {errors.email && (
-            <p className="text-xs text-destructive">{errors.email.message}</p>
-          )}
+          <Input id="signup-email" type="email" autoComplete="email" {...register("email")} />
+          {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="signup-password">Password</Label>

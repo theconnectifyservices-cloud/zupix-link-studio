@@ -6,8 +6,12 @@
 
 import { useState } from "react";
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +19,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { TEMPLATE_CATEGORIES } from "../catalog";
@@ -42,8 +50,11 @@ export function SaveTemplateDialog({ open, onOpenChange, theme, blocks, onSaved 
   const [busy, setBusy] = useState(false);
 
   function reset() {
-    setName(""); setDescription(""); setCategory("modern");
-    setTags(""); setIncludeBlocks(false);
+    setName("");
+    setDescription("");
+    setCategory("modern");
+    setTags("");
+    setIncludeBlocks(false);
   }
 
   function handleSave() {
@@ -57,7 +68,10 @@ export function SaveTemplateDialog({ open, onOpenChange, theme, blocks, onSaved 
         name: name.trim(),
         description: description.trim() || undefined,
         category,
-        tags: tags.split(",").map((s) => s.trim()).filter(Boolean),
+        tags: tags
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
         style: theme.mode === "dark" ? "dark" : "light",
         theme,
         blocks: includeBlocks ? blocks : undefined,
@@ -74,13 +88,19 @@ export function SaveTemplateDialog({ open, onOpenChange, theme, blocks, onSaved 
   }
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) reset(); onOpenChange(o); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) reset();
+        onOpenChange(o);
+      }}
+    >
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Save as template</DialogTitle>
           <DialogDescription>
-            Bundle the current design (and optionally your blocks) into a
-            reusable template you can apply to other pages.
+            Bundle the current design (and optionally your blocks) into a reusable template you can
+            apply to other pages.
           </DialogDescription>
         </DialogHeader>
 
@@ -88,7 +108,9 @@ export function SaveTemplateDialog({ open, onOpenChange, theme, blocks, onSaved 
           <div className="space-y-1.5">
             <Label htmlFor="tpl-name">Name</Label>
             <Input
-              id="tpl-name" autoFocus value={name}
+              id="tpl-name"
+              autoFocus
+              value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Studio Portfolio"
             />
@@ -96,7 +118,9 @@ export function SaveTemplateDialog({ open, onOpenChange, theme, blocks, onSaved 
           <div className="space-y-1.5">
             <Label htmlFor="tpl-desc">Description</Label>
             <Textarea
-              id="tpl-desc" rows={2} value={description}
+              id="tpl-desc"
+              rows={2}
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Optional — what makes this template useful?"
             />
@@ -105,10 +129,14 @@ export function SaveTemplateDialog({ open, onOpenChange, theme, blocks, onSaved 
             <div className="space-y-1.5">
               <Label>Category</Label>
               <Select value={category} onValueChange={(v) => setCategory(v as TemplateCategoryId)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {TEMPLATE_CATEGORIES.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.label}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -116,7 +144,8 @@ export function SaveTemplateDialog({ open, onOpenChange, theme, blocks, onSaved 
             <div className="space-y-1.5">
               <Label htmlFor="tpl-tags">Tags</Label>
               <Input
-                id="tpl-tags" value={tags}
+                id="tpl-tags"
+                value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="comma, separated"
               />
@@ -137,7 +166,9 @@ export function SaveTemplateDialog({ open, onOpenChange, theme, blocks, onSaved 
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={busy}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={busy}>Save template</Button>
+          <Button onClick={handleSave} disabled={busy}>
+            Save template
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

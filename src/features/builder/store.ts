@@ -2,14 +2,27 @@ import { create } from "zustand";
 import type { Block, BioContent } from "./types";
 import { EMPTY_CONTENT } from "./types";
 import type {
-  PageTheme, ThemeBackground, ThemeButtons, ThemeCard, ThemeColors,
-  ThemeMotion, ThemePresetId, ThemeProfile, ThemeSpacing, ThemeTypography,
+  PageTheme,
+  ThemeBackground,
+  ThemeButtons,
+  ThemeCard,
+  ThemeColors,
+  ThemeMotion,
+  ThemePresetId,
+  ThemeProfile,
+  ThemeSpacing,
+  ThemeTypography,
 } from "./theme";
 import {
-  DEFAULT_THEME, applyPresetTheme, resetColors as resetColorsFn,
-  resetTypography as resetTypographyFn, resetSpacing as resetSpacingFn,
-  resetCard as resetCardFn, resetButtons as resetButtonsFn,
-  resetBackground as resetBackgroundFn, resetProfile as resetProfileFn,
+  DEFAULT_THEME,
+  applyPresetTheme,
+  resetColors as resetColorsFn,
+  resetTypography as resetTypographyFn,
+  resetSpacing as resetSpacingFn,
+  resetCard as resetCardFn,
+  resetButtons as resetButtonsFn,
+  resetBackground as resetBackgroundFn,
+  resetProfile as resetProfileFn,
   resetMotion as resetMotionFn,
 } from "./theme";
 
@@ -166,8 +179,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       lastSavedAt: null,
     }),
 
-  select: (selectedId) =>
-    set({ selectedId, selectedIds: selectedId ? [selectedId] : [] }),
+  select: (selectedId) => set({ selectedId, selectedIds: selectedId ? [selectedId] : [] }),
 
   toggleSelect: (id) => {
     const { selectedIds } = get();
@@ -353,9 +365,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       history: pushHistory(history, content),
       content: {
-        blocks: content.blocks.map((b) =>
-          ids.includes(b.id) ? ({ ...b, hidden } as Block) : b,
-        ),
+        blocks: content.blocks.map((b) => (ids.includes(b.id) ? ({ ...b, hidden } as Block) : b)),
       },
       saveStatus: "dirty",
     });
@@ -500,7 +510,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const current = content.theme ?? DEFAULT_THEME;
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: { ...current, colors: { ...current.colors, ...patch }, preset: "custom" } },
+      content: {
+        ...content,
+        theme: { ...current, colors: { ...current.colors, ...patch }, preset: "custom" },
+      },
       saveStatus: "dirty",
     });
   },
@@ -509,7 +522,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const current = content.theme ?? DEFAULT_THEME;
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: { ...current, typography: { ...current.typography, ...patch }, preset: "custom" } },
+      content: {
+        ...content,
+        theme: { ...current, typography: { ...current.typography, ...patch }, preset: "custom" },
+      },
       saveStatus: "dirty",
     });
   },
@@ -518,7 +534,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const current = content.theme ?? DEFAULT_THEME;
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: { ...current, spacing: { ...current.spacing, ...patch }, preset: "custom" } },
+      content: {
+        ...content,
+        theme: { ...current, spacing: { ...current.spacing, ...patch }, preset: "custom" },
+      },
       saveStatus: "dirty",
     });
   },
@@ -527,7 +546,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const current = content.theme ?? DEFAULT_THEME;
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: { ...current, card: { ...current.card, ...patch }, preset: "custom" } },
+      content: {
+        ...content,
+        theme: { ...current, card: { ...current.card, ...patch }, preset: "custom" },
+      },
       saveStatus: "dirty",
     });
   },
@@ -537,7 +559,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const base = current.buttons ?? DEFAULT_THEME.buttons!;
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: { ...current, buttons: { ...base, ...patch }, preset: "custom" } },
+      content: {
+        ...content,
+        theme: { ...current, buttons: { ...base, ...patch }, preset: "custom" },
+      },
       saveStatus: "dirty",
     });
   },
@@ -547,7 +572,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const base = current.background ?? DEFAULT_THEME.background!;
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: { ...current, background: { ...base, ...patch }, preset: "custom" } },
+      content: {
+        ...content,
+        theme: { ...current, background: { ...base, ...patch }, preset: "custom" },
+      },
       saveStatus: "dirty",
     });
   },
@@ -557,7 +585,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const base = current.profile ?? DEFAULT_THEME.profile!;
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: { ...current, profile: { ...base, ...patch }, preset: "custom" } },
+      content: {
+        ...content,
+        theme: { ...current, profile: { ...base, ...patch }, preset: "custom" },
+      },
       saveStatus: "dirty",
     });
   },
@@ -567,7 +598,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const base = current.motion ?? DEFAULT_THEME.motion!;
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: { ...current, motion: { ...base, ...patch }, preset: "custom" } },
+      content: {
+        ...content,
+        theme: { ...current, motion: { ...base, ...patch }, preset: "custom" },
+      },
       saveStatus: "dirty",
     });
   },

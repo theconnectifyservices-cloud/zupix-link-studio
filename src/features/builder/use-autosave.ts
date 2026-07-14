@@ -96,4 +96,3 @@ export function useAutoSave(pageId: string | null) {
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [status]);
 }
-
