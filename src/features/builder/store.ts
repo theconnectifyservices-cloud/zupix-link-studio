@@ -614,6 +614,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       content: { ...content, theme: resetCardFn(content.theme ?? DEFAULT_THEME) },
       saveStatus: "dirty",
     });
+  },
   resetThemeButtons: () => {
     const { content, history } = get();
     set({
