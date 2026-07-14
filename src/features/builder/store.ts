@@ -43,6 +43,7 @@ export interface Version {
 interface BuilderState {
   pageId: string | null;
   pageName: string;
+  pageSlug: string;
   content: BioContent;
   selectedId: string | null; // primary / last selected
   selectedIds: string[];
@@ -53,7 +54,7 @@ interface BuilderState {
   lastSavedAt: number | null;
 
   // lifecycle
-  load: (pageId: string, name: string, content: BioContent) => void;
+  load: (pageId: string, name: string, content: BioContent, slug?: string) => void;
   reset: () => void;
 
   // selection
@@ -143,6 +144,7 @@ function cloneBlock(b: Block): Block {
 export const useBuilderStore = create<BuilderState>((set, get) => ({
   pageId: null,
   pageName: "",
+  pageSlug: "",
   content: EMPTY_CONTENT,
   selectedId: null,
   selectedIds: [],
@@ -152,10 +154,11 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   saveStatus: "idle",
   lastSavedAt: null,
 
-  load: (pageId, pageName, content) =>
+  load: (pageId, pageName, content, slug) =>
     set({
       pageId,
       pageName,
+      pageSlug: slug ?? "",
       content: content ?? EMPTY_CONTENT,
       selectedId: null,
       selectedIds: [],
@@ -169,6 +172,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       pageId: null,
       pageName: "",
+      pageSlug: "",
       content: EMPTY_CONTENT,
       selectedId: null,
       selectedIds: [],

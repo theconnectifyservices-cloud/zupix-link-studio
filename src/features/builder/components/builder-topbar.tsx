@@ -39,6 +39,7 @@ import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { TemplateGallery, SaveTemplateDialog } from "@/features/templates";
 import { PublishDialog } from "@/features/publishing";
+import { SeoDialog } from "@/features/seo";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -53,6 +54,7 @@ interface Props {
 export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewportChange }: Props) {
   const pageId = useBuilderStore((s) => s.pageId);
   const pageName = useBuilderStore((s) => s.pageName);
+  const pageSlug = useBuilderStore((s) => s.pageSlug);
   const status = useBuilderStore((s) => s.saveStatus);
   const past = useBuilderStore((s) => s.history.past.length);
   const future = useBuilderStore((s) => s.history.future.length);
@@ -153,6 +155,9 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
         </Button>
         <TemplatesDialog />
         <SaveAsTemplateButton />
+        {pageId && (
+          <SeoDialog pageId={pageId} pageName={pageName} slug={pageSlug} />
+        )}
         <VersionHistoryDialog />
         <Button
           variant={previewMode ? "default" : "ghost"}
