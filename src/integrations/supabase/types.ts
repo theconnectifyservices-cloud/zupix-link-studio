@@ -236,12 +236,14 @@ export type Database = {
       }
       bio_pages: {
         Row: {
+          apple_touch_icon_url: string | null
           archived_at: string | null
           category: string | null
           content: Json
           created_at: string
           deleted_at: string | null
           description: string | null
+          favicon_url: string | null
           id: string
           last_saved_at: string | null
           name: string
@@ -252,6 +254,7 @@ export type Database = {
           published_version_id: string | null
           scheduled_publish_at: string | null
           scheduled_unpublish_at: string | null
+          seo: Json
           slug: string
           status: Database["public"]["Enums"]["bio_page_status"]
           updated_at: string
@@ -259,12 +262,14 @@ export type Database = {
           workspace_id: string
         }
         Insert: {
+          apple_touch_icon_url?: string | null
           archived_at?: string | null
           category?: string | null
           content?: Json
           created_at?: string
           deleted_at?: string | null
           description?: string | null
+          favicon_url?: string | null
           id?: string
           last_saved_at?: string | null
           name: string
@@ -275,6 +280,7 @@ export type Database = {
           published_version_id?: string | null
           scheduled_publish_at?: string | null
           scheduled_unpublish_at?: string | null
+          seo?: Json
           slug: string
           status?: Database["public"]["Enums"]["bio_page_status"]
           updated_at?: string
@@ -282,12 +288,14 @@ export type Database = {
           workspace_id: string
         }
         Update: {
+          apple_touch_icon_url?: string | null
           archived_at?: string | null
           category?: string | null
           content?: Json
           created_at?: string
           deleted_at?: string | null
           description?: string | null
+          favicon_url?: string | null
           id?: string
           last_saved_at?: string | null
           name?: string
@@ -298,6 +306,7 @@ export type Database = {
           published_version_id?: string | null
           scheduled_publish_at?: string | null
           scheduled_unpublish_at?: string | null
+          seo?: Json
           slug?: string
           status?: Database["public"]["Enums"]["bio_page_status"]
           updated_at?: string
