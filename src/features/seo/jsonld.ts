@@ -54,7 +54,7 @@ export function buildJsonLd(seo: SeoSettings, ctx: JsonLdCtx): Record<string, un
         "@type": "ProfilePage",
         mainEntity: {
           "@type": "Person",
-          name: seo.author || ctx.pageName,
+          name: seo.author || ctx.title || ctx.pageName,
           url: ctx.url,
           image: seo.ogImage || ctx.image,
         },
