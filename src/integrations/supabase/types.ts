@@ -128,6 +128,112 @@ export type Database = {
           },
         ]
       }
+      bio_page_publish_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          id: string
+          meta: Json
+          page_id: string
+          version_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          page_id: string
+          version_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          page_id?: string
+          version_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bio_page_publish_events_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bio_page_publish_events_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "bio_page_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bio_page_publish_events_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bio_page_versions: {
+        Row: {
+          content: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          is_publish: boolean
+          label: string
+          notes: string | null
+          page_id: string
+          workspace_id: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_publish?: boolean
+          label?: string
+          notes?: string | null
+          page_id: string
+          workspace_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_publish?: boolean
+          label?: string
+          notes?: string | null
+          page_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bio_page_versions_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bio_page_versions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bio_pages: {
         Row: {
           archived_at: string | null
@@ -140,6 +246,12 @@ export type Database = {
           last_saved_at: string | null
           name: string
           owner_id: string
+          password_hash: string | null
+          published_at: string | null
+          published_content: Json | null
+          published_version_id: string | null
+          scheduled_publish_at: string | null
+          scheduled_unpublish_at: string | null
           slug: string
           status: Database["public"]["Enums"]["bio_page_status"]
           updated_at: string
@@ -157,6 +269,12 @@ export type Database = {
           last_saved_at?: string | null
           name: string
           owner_id: string
+          password_hash?: string | null
+          published_at?: string | null
+          published_content?: Json | null
+          published_version_id?: string | null
+          scheduled_publish_at?: string | null
+          scheduled_unpublish_at?: string | null
           slug: string
           status?: Database["public"]["Enums"]["bio_page_status"]
           updated_at?: string
@@ -174,6 +292,12 @@ export type Database = {
           last_saved_at?: string | null
           name?: string
           owner_id?: string
+          password_hash?: string | null
+          published_at?: string | null
+          published_content?: Json | null
+          published_version_id?: string | null
+          scheduled_publish_at?: string | null
+          scheduled_unpublish_at?: string | null
           slug?: string
           status?: Database["public"]["Enums"]["bio_page_status"]
           updated_at?: string
@@ -883,8 +1007,13 @@ export type Database = {
         | "invitation.accept"
         | "settings.update"
       app_role: "admin" | "moderator" | "user"
-      bio_page_status: "draft" | "published" | "archived"
-      bio_page_visibility: "public" | "private" | "unlisted"
+      bio_page_status:
+        | "draft"
+        | "published"
+        | "archived"
+        | "scheduled"
+        | "unpublished"
+      bio_page_visibility: "public" | "private" | "unlisted" | "password"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
       media_kind: "image" | "video" | "audio" | "document" | "other"
       notification_channel: "in_app" | "email" | "push" | "sms"
@@ -1053,8 +1182,14 @@ export const Constants = {
         "settings.update",
       ],
       app_role: ["admin", "moderator", "user"],
-      bio_page_status: ["draft", "published", "archived"],
-      bio_page_visibility: ["public", "private", "unlisted"],
+      bio_page_status: [
+        "draft",
+        "published",
+        "archived",
+        "scheduled",
+        "unpublished",
+      ],
+      bio_page_visibility: ["public", "private", "unlisted", "password"],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
       media_kind: ["image", "video", "audio", "document", "other"],
       notification_channel: ["in_app", "email", "push", "sms"],
