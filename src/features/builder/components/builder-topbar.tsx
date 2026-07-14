@@ -17,6 +17,8 @@ import {
   Plus,
   Trash2,
   RotateCcw,
+  LayoutTemplate,
+  BookmarkPlus,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -35,6 +37,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/shared/ui/empty-state";
+import { TemplateGallery, SaveTemplateDialog } from "@/features/templates";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -131,6 +134,8 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
         <Button variant="ghost" size="icon" aria-label="Redo" title="Redo (⌘⇧Z)" onClick={redo} disabled={future === 0}>
           <Redo2 className="h-4 w-4" />
         </Button>
+        <TemplatesDialog />
+        <SaveAsTemplateButton />
         <VersionHistoryDialog />
         <Button
           variant={previewMode ? "default" : "ghost"}
@@ -266,3 +271,56 @@ function SaveIndicator({ status }: { status: ReturnType<typeof useBuilderStore.g
     </span>
   );
 }
+
+function TemplatesDialog() {
+  const [open, setOpen] = useState(false);
+  const applyTemplate = useBuilderStore((s) => s.applyTemplate);
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="sm" className="gap-1.5" title="Templates">
+          <LayoutTemplate className="h-4 w-4" />
+          <span className="hidden sm:inline">Templates</span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="flex h-[80vh] max-w-6xl flex-col gap-3 p-4">
+        <DialogHeader className="text-left">
+          <DialogTitle>Template Library</DialogTitle>
+          <DialogDescription>
+            Apply a professional design to this page in one click.
+          </DialogDescription>
+        </DialogHeader>
+        <TemplateGallery
+          mode="apply"
+          onApply={(t, opts) => {
+            applyTemplate(t.theme, { blocks: t.blocks, replaceContent: opts.replaceContent });
+            toast.success(`Applied "${t.name}"`);
+            setOpen(false);
+          }}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function SaveAsTemplateButton() {
+  const [open, setOpen] = useState(false);
+  const content = useBuilderStore((s) => s.content);
+  const theme = content.theme;
+  if (!theme) return null;
+  return (
+    <>
+      <Button
+        variant="ghost" size="icon" aria-label="Save as template" title="Save as template"
+        onClick={() => setOpen(true)}
+      >
+        <BookmarkPlus className="h-4 w-4" />
+      </Button>
+      <SaveTemplateDialog
+        open={open} onOpenChange={setOpen}
+        theme={theme} blocks={content.blocks}
+      />
+    </>
+  );
+}
+

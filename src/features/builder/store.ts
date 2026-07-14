@@ -101,6 +101,8 @@ interface BuilderState {
   resetThemeProfile: () => void;
   resetThemeMotion: () => void;
   resetThemeAll: () => void;
+  /** Replace the theme (and optionally blocks) with a template's design. */
+  applyTemplate: (theme: PageTheme, opts?: { blocks?: Block[]; replaceContent?: boolean }) => void;
 
   // save wiring
   markSaving: () => void;
@@ -665,6 +667,19 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       history: pushHistory(history, content),
       content: { ...content, theme: { ...DEFAULT_THEME } },
+      saveStatus: "dirty",
+    });
+  },
+  applyTemplate: (theme, opts) => {
+    const { content, history } = get();
+    const blocks = opts?.replaceContent
+      ? (opts.blocks ?? []).map((b) => structuredClone(b))
+      : content.blocks;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, blocks, theme: { ...theme } },
+      selectedId: null,
+      selectedIds: [],
       saveStatus: "dirty",
     });
   },
