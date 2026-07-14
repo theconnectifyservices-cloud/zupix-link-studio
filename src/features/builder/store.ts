@@ -74,6 +74,19 @@ interface BuilderState {
   restoreVersion: (versionId: string) => void;
   deleteVersion: (versionId: string) => void;
 
+  // theme
+  patchTheme: (patch: Partial<PageTheme>) => void;
+  patchThemeColors: (patch: Partial<ThemeColors>) => void;
+  patchThemeTypography: (patch: Partial<ThemeTypography>) => void;
+  patchThemeSpacing: (patch: Partial<ThemeSpacing>) => void;
+  patchThemeCard: (patch: Partial<ThemeCard>) => void;
+  applyThemePreset: (id: ThemePresetId) => void;
+  resetThemeColors: () => void;
+  resetThemeTypography: () => void;
+  resetThemeSpacing: () => void;
+  resetThemeCard: () => void;
+  resetThemeAll: () => void;
+
   // save wiring
   markSaving: () => void;
   markSaved: () => void;
