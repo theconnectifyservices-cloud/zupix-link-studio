@@ -84,11 +84,19 @@ interface BuilderState {
   patchThemeTypography: (patch: Partial<ThemeTypography>) => void;
   patchThemeSpacing: (patch: Partial<ThemeSpacing>) => void;
   patchThemeCard: (patch: Partial<ThemeCard>) => void;
+  patchThemeButtons: (patch: Partial<ThemeButtons>) => void;
+  patchThemeBackground: (patch: Partial<ThemeBackground>) => void;
+  patchThemeProfile: (patch: Partial<ThemeProfile>) => void;
+  addBrandColor: (hex: string) => void;
+  removeBrandColor: (hex: string) => void;
   applyThemePreset: (id: ThemePresetId) => void;
   resetThemeColors: () => void;
   resetThemeTypography: () => void;
   resetThemeSpacing: () => void;
   resetThemeCard: () => void;
+  resetThemeButtons: () => void;
+  resetThemeBackground: () => void;
+  resetThemeProfile: () => void;
   resetThemeAll: () => void;
 
   // save wiring
