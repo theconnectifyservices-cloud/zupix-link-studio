@@ -467,6 +467,32 @@ export function ThemePanel() {
             value={theme.spacing.radius} suffix="px"
             onChange={(v) => patchSpace({ radius: v })} />
         </TabsContent>
+
+        {/* ── MOTION ───────────────────────────────────────────────── */}
+        <TabsContent value="motion" className="mt-3 space-y-3">
+          <SectionHead label="Motion" onReset={resetMotion} />
+          <Field label="Page transition">
+            <Select value={theme.motion?.pageTransition ?? "fade"}
+              onValueChange={(v) => patchMotion({ pageTransition: v as PageTheme["motion"] extends infer M ? M extends { pageTransition?: infer P } ? P : never : never })}>
+              <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="fade">Fade</SelectItem>
+                <SelectItem value="slide">Slide</SelectItem>
+                <SelectItem value="scale">Scale</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          <ToggleRow label="Stagger block entrances"
+            checked={theme.motion?.stagger !== false}
+            onChange={(v) => patchMotion({ stagger: v })} />
+          <NumField label="Stagger step" min={0} max={400} step={10}
+            value={theme.motion?.staggerStep ?? 60} suffix="ms"
+            onChange={(v) => patchMotion({ staggerStep: v })} />
+          <ToggleRow label="Reduce motion (disable all)"
+            checked={!!theme.motion?.reduce}
+            onChange={(v) => patchMotion({ reduce: v })} />
+        </TabsContent>
       </Tabs>
     </div>
   );
