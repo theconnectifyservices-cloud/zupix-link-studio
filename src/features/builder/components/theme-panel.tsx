@@ -333,6 +333,17 @@ export function ThemePanel() {
               Video backgrounds ship in a later phase. Architecture is ready.
             </div>
           )}
+
+          <div className="mt-2 border-t pt-3">
+            <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Effects</div>
+            <ToggleRow label="Noise texture" checked={!!bg.noise} onChange={(v) => patchBg({ noise: v })} />
+            {bg.noise && (
+              <NumField label="Noise opacity" min={0} max={1} step={0.02}
+                value={bg.noiseOpacity ?? 0.08} suffix=""
+                onChange={(v) => patchBg({ noiseOpacity: v })} />
+            )}
+            <ToggleRow label="Animated gradient" checked={!!bg.animatedGradient} onChange={(v) => patchBg({ animatedGradient: v })} />
+          </div>
         </TabsContent>
 
         {/* ── CARD STUDIO ──────────────────────────────────────────── */}
