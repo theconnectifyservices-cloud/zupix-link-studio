@@ -128,6 +128,62 @@ export type Database = {
           },
         ]
       }
+      bio_pages: {
+        Row: {
+          archived_at: string | null
+          category: string | null
+          created_at: string
+          deleted_at: string | null
+          description: string | null
+          id: string
+          name: string
+          owner_id: string
+          slug: string
+          status: Database["public"]["Enums"]["bio_page_status"]
+          updated_at: string
+          visibility: Database["public"]["Enums"]["bio_page_visibility"]
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          category?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          owner_id: string
+          slug: string
+          status?: Database["public"]["Enums"]["bio_page_status"]
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["bio_page_visibility"]
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          category?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+          slug?: string
+          status?: Database["public"]["Enums"]["bio_page_status"]
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["bio_page_visibility"]
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bio_pages_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feature_flags: {
         Row: {
           config: Json
@@ -821,6 +877,8 @@ export type Database = {
         | "invitation.accept"
         | "settings.update"
       app_role: "admin" | "moderator" | "user"
+      bio_page_status: "draft" | "published" | "archived"
+      bio_page_visibility: "public" | "private" | "unlisted"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
       media_kind: "image" | "video" | "audio" | "document" | "other"
       notification_channel: "in_app" | "email" | "push" | "sms"
@@ -989,6 +1047,8 @@ export const Constants = {
         "settings.update",
       ],
       app_role: ["admin", "moderator", "user"],
+      bio_page_status: ["draft", "published", "archived"],
+      bio_page_visibility: ["public", "private", "unlisted"],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
       media_kind: ["image", "video", "audio", "document", "other"],
       notification_channel: ["in_app", "email", "push", "sms"],
