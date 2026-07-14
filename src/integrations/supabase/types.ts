@@ -14,16 +14,175 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"] | null
+          active_workspace_id: string | null
+          avatar_url: string | null
+          country: string | null
+          created_at: string
+          display_name: string | null
+          email: string
+          id: string
+          language: string | null
+          last_login_at: string | null
+          onboarding_completed: boolean
+          phone: string | null
+          status: Database["public"]["Enums"]["account_status"]
+          subscription_tier: string
+          timezone: string | null
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          active_workspace_id?: string | null
+          avatar_url?: string | null
+          country?: string | null
+          created_at?: string
+          display_name?: string | null
+          email: string
+          id: string
+          language?: string | null
+          last_login_at?: string | null
+          onboarding_completed?: boolean
+          phone?: string | null
+          status?: Database["public"]["Enums"]["account_status"]
+          subscription_tier?: string
+          timezone?: string | null
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          active_workspace_id?: string | null
+          avatar_url?: string | null
+          country?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string
+          id?: string
+          language?: string | null
+          last_login_at?: string | null
+          onboarding_completed?: boolean
+          phone?: string | null
+          status?: Database["public"]["Enums"]["account_status"]
+          subscription_tier?: string
+          timezone?: string | null
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      workspace_members: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["workspace_role"]
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["workspace_role"]
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["workspace_role"]
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspaces: {
+        Row: {
+          created_at: string
+          id: string
+          logo_url: string | null
+          name: string
+          owner_id: string
+          settings: Json
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name: string
+          owner_id: string
+          settings?: Json
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          owner_id?: string
+          settings?: Json
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_reserved_username: { Args: { _username: string }; Returns: boolean }
+      is_workspace_member: {
+        Args: { _user_id: string; _workspace_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      account_status: "active" | "suspended" | "deleted"
+      account_type: "creator" | "business" | "agency" | "personal"
+      app_role: "admin" | "moderator" | "user"
+      workspace_role: "owner" | "admin" | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +309,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      account_status: ["active", "suspended", "deleted"],
+      account_type: ["creator", "business", "agency", "personal"],
+      app_role: ["admin", "moderator", "user"],
+      workspace_role: ["owner", "admin", "member"],
+    },
   },
 } as const
