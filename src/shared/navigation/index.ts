@@ -7,3 +7,5 @@ export * from "./notification-panel";
 export * from "./profile-menu";
 export * from "./quick-actions";
 export * from "./command-palette";
+export * from "./mobile-sidebar-trigger";
+export * from "./page-header";
