@@ -13,7 +13,7 @@ import {
 import { PageLoader } from "@/shared/ui/page-loader";
 import { ErrorState } from "@/shared/ui/error-state";
 
-export const Route = createFileRoute("/_authenticated/app/builder/$id")({
+export const Route = createFileRoute("/_authenticated/builder/$id")({
   ssr: false,
   component: BuilderPage,
 });
