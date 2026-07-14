@@ -173,10 +173,7 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
           <Save className="h-4 w-4" />
           <span className="hidden sm:inline">Save</span>
         </Button>
-        <Button size="sm" disabled className="gap-1.5">
-          <Rocket className="h-4 w-4" />
-          <span className="hidden sm:inline">Publish</span>
-        </Button>
+        {pageId && <PublishDialog pageId={pageId} content={content} />}
       </div>
     </header>
   );
