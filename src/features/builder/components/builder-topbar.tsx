@@ -97,6 +97,26 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
       </div>
 
       <div className="ml-auto flex items-center gap-1">
+        {onViewportChange && (
+          <div className="mr-1 hidden items-center gap-0.5 rounded-md border p-0.5 md:flex">
+            {([
+              ["mobile", Smartphone, "Mobile"],
+              ["tablet", Tablet, "Tablet"],
+              ["desktop", Monitor, "Desktop"],
+            ] as const).map(([v, Icon, label]) => (
+              <Button
+                key={v}
+                variant={viewport === v ? "secondary" : "ghost"}
+                size="icon"
+                className="h-7 w-7"
+                aria-label={label}
+                onClick={() => onViewportChange(v)}
+              >
+                <Icon className="h-3.5 w-3.5" />
+              </Button>
+            ))}
+          </div>
+        )}
         <Button variant="ghost" size="icon" aria-label="Undo" onClick={undo} disabled={past === 0}>
           <Undo2 className="h-4 w-4" />
         </Button>
