@@ -133,6 +133,8 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
         <Button variant="ghost" size="icon" aria-label="Redo" title="Redo (⌘⇧Z)" onClick={redo} disabled={future === 0}>
           <Redo2 className="h-4 w-4" />
         </Button>
+        <TemplatesDialog />
+        <SaveAsTemplateButton />
         <VersionHistoryDialog />
         <Button
           variant={previewMode ? "default" : "ghost"}
