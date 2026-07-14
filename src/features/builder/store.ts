@@ -144,6 +144,7 @@ function cloneBlock(b: Block): Block {
 export const useBuilderStore = create<BuilderState>((set, get) => ({
   pageId: null,
   pageName: "",
+  pageSlug: "",
   content: EMPTY_CONTENT,
   selectedId: null,
   selectedIds: [],
@@ -153,10 +154,11 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   saveStatus: "idle",
   lastSavedAt: null,
 
-  load: (pageId, pageName, content) =>
+  load: (pageId, pageName, content, slug) =>
     set({
       pageId,
       pageName,
+      pageSlug: slug ?? "",
       content: content ?? EMPTY_CONTENT,
       selectedId: null,
       selectedIds: [],
