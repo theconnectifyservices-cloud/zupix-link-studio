@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Palette, Type, Ruler, Square, Sparkles, RotateCcw, Moon, Sun, Monitor,
-  MousePointer2, ImageIcon, UserCircle2, Plus, X,
+  MousePointer2, ImageIcon, UserCircle2, Plus, X, Zap,
 } from "lucide-react";
 import { useBuilderStore } from "../store";
 import {
