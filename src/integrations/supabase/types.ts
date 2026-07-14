@@ -323,6 +323,75 @@ export type Database = {
           },
         ]
       }
+      domains: {
+        Row: {
+          created_at: string
+          host: string
+          id: string
+          is_primary: boolean
+          kind: string
+          last_checked_at: string | null
+          redirect_to: string | null
+          redirect_type: string
+          ssl_status: string
+          status: string
+          target_page_id: string | null
+          updated_at: string
+          verification_method: string
+          verification_token: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          host: string
+          id?: string
+          is_primary?: boolean
+          kind?: string
+          last_checked_at?: string | null
+          redirect_to?: string | null
+          redirect_type?: string
+          ssl_status?: string
+          status?: string
+          target_page_id?: string | null
+          updated_at?: string
+          verification_method?: string
+          verification_token?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          host?: string
+          id?: string
+          is_primary?: boolean
+          kind?: string
+          last_checked_at?: string | null
+          redirect_to?: string | null
+          redirect_type?: string
+          ssl_status?: string
+          status?: string
+          target_page_id?: string | null
+          updated_at?: string
+          verification_method?: string
+          verification_token?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "domains_target_page_id_fkey"
+            columns: ["target_page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "domains_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feature_flags: {
         Row: {
           config: Json
@@ -910,9 +979,11 @@ export type Database = {
       }
       workspaces: {
         Row: {
+          brand_name: string | null
           created_at: string
           deleted_at: string | null
           description: string | null
+          favicon_url: string | null
           id: string
           logo_url: string | null
           name: string
@@ -920,12 +991,16 @@ export type Database = {
           owner_id: string
           settings: Json
           slug: string
+          social_image_url: string | null
+          subdomain: string | null
           updated_at: string
         }
         Insert: {
+          brand_name?: string | null
           created_at?: string
           deleted_at?: string | null
           description?: string | null
+          favicon_url?: string | null
           id?: string
           logo_url?: string | null
           name: string
@@ -933,12 +1008,16 @@ export type Database = {
           owner_id: string
           settings?: Json
           slug: string
+          social_image_url?: string | null
+          subdomain?: string | null
           updated_at?: string
         }
         Update: {
+          brand_name?: string | null
           created_at?: string
           deleted_at?: string | null
           description?: string | null
+          favicon_url?: string | null
           id?: string
           logo_url?: string | null
           name?: string
@@ -946,6 +1025,8 @@ export type Database = {
           owner_id?: string
           settings?: Json
           slug?: string
+          social_image_url?: string | null
+          subdomain?: string | null
           updated_at?: string
         }
         Relationships: [

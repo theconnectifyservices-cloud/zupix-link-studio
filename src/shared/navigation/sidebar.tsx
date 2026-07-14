@@ -37,7 +37,7 @@ const appItems: Item[] = [
   { icon: Images, label: "Media Library", href: "/app/media" },
   { icon: LayoutTemplate, label: "Templates", href: "/app/templates", soon: true },
   { icon: BarChart3, label: "Analytics", href: "/app/analytics", soon: true },
-  { icon: Globe, label: "Domains", href: "/app/domains", soon: true },
+  { icon: Globe, label: "Domains", href: "/app/domains" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
