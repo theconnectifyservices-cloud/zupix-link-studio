@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Palette, Type, Ruler, Square, Sparkles, RotateCcw, Moon, Sun, Monitor,
-  MousePointer2, ImageIcon, UserCircle2, Plus, X,
+  MousePointer2, ImageIcon, UserCircle2, Plus, X, Zap,
 } from "lucide-react";
 import { useBuilderStore } from "../store";
 import {
@@ -18,6 +18,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
 /**
@@ -37,6 +38,7 @@ export function ThemePanel() {
   const patchButtons = useBuilderStore((s) => s.patchThemeButtons);
   const patchBg = useBuilderStore((s) => s.patchThemeBackground);
   const patchProfile = useBuilderStore((s) => s.patchThemeProfile);
+  const patchMotion = useBuilderStore((s) => s.patchThemeMotion);
   const addBrand = useBuilderStore((s) => s.addBrandColor);
   const removeBrand = useBuilderStore((s) => s.removeBrandColor);
   const applyPreset = useBuilderStore((s) => s.applyThemePreset);
@@ -47,6 +49,7 @@ export function ThemePanel() {
   const resetButtons = useBuilderStore((s) => s.resetThemeButtons);
   const resetBg = useBuilderStore((s) => s.resetThemeBackground);
   const resetProfile = useBuilderStore((s) => s.resetThemeProfile);
+  const resetMotion = useBuilderStore((s) => s.resetThemeMotion);
   const resetAll = useBuilderStore((s) => s.resetThemeAll);
 
   const [tab, setTab] = useState("presets");
@@ -81,11 +84,12 @@ export function ThemePanel() {
           <TabIcon value="type" icon={Type} label="Type" />
           <TabIcon value="buttons" icon={MousePointer2} label="Btn" />
         </TabsList>
-        <TabsList className="mt-1 grid w-full grid-cols-4">
+        <TabsList className="mt-1 grid w-full grid-cols-5">
           <TabIcon value="bg" icon={ImageIcon} label="BG" />
           <TabIcon value="card" icon={Square} label="Card" />
           <TabIcon value="profile" icon={UserCircle2} label="Profile" />
           <TabIcon value="space" icon={Ruler} label="Space" />
+          <TabIcon value="motion" icon={Zap} label="Motion" />
         </TabsList>
 
         <TabsContent value="presets" className="mt-3">
@@ -330,6 +334,17 @@ export function ThemePanel() {
               Video backgrounds ship in a later phase. Architecture is ready.
             </div>
           )}
+
+          <div className="mt-2 border-t pt-3">
+            <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Effects</div>
+            <ToggleRow label="Noise texture" checked={!!bg.noise} onChange={(v) => patchBg({ noise: v })} />
+            {bg.noise && (
+              <NumField label="Noise opacity" min={0} max={1} step={0.02}
+                value={bg.noiseOpacity ?? 0.08} suffix=""
+                onChange={(v) => patchBg({ noiseOpacity: v })} />
+            )}
+            <ToggleRow label="Animated gradient" checked={!!bg.animatedGradient} onChange={(v) => patchBg({ animatedGradient: v })} />
+          </div>
         </TabsContent>
 
         {/* ── CARD STUDIO ──────────────────────────────────────────── */}
@@ -422,6 +437,15 @@ export function ThemePanel() {
           <WeightSelect label="Bio weight" value={profile.bioWeight}
             onChange={(v) => patchProfile({ bioWeight: v as PageTheme["profile"] extends infer P ? P extends { bioWeight: infer W } ? W : never : never })}
             values={[300, 400, 500, 600]} />
+
+          <div className="mt-2 border-t pt-3">
+            <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Effects</div>
+            <ToggleRow label="Avatar glow" checked={!!profile.avatarGlow} onChange={(v) => patchProfile({ avatarGlow: v })} />
+            <ToggleRow label="Avatar ring" checked={!!profile.avatarRing} onChange={(v) => patchProfile({ avatarRing: v })} />
+            <ToggleRow label="Rotating ring" checked={!!profile.avatarRotatingRing} onChange={(v) => patchProfile({ avatarRotatingRing: v })} />
+            <ToggleRow label="Floating avatar" checked={!!profile.avatarFloating} onChange={(v) => patchProfile({ avatarFloating: v })} />
+            <ToggleRow label="Verified badge pulse" checked={!!profile.badgeAnimation} onChange={(v) => patchProfile({ badgeAnimation: v })} />
+          </div>
         </TabsContent>
 
         {/* ── SPACING ──────────────────────────────────────────────── */}
@@ -442,6 +466,32 @@ export function ThemePanel() {
           <NumField label="Radius" min={0} max={40} step={1}
             value={theme.spacing.radius} suffix="px"
             onChange={(v) => patchSpace({ radius: v })} />
+        </TabsContent>
+
+        {/* ── MOTION ───────────────────────────────────────────────── */}
+        <TabsContent value="motion" className="mt-3 space-y-3">
+          <SectionHead label="Motion" onReset={resetMotion} />
+          <Field label="Page transition">
+            <Select value={theme.motion?.pageTransition ?? "fade"}
+              onValueChange={(v) => patchMotion({ pageTransition: v as PageTheme["motion"] extends infer M ? M extends { pageTransition?: infer P } ? P : never : never })}>
+              <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="fade">Fade</SelectItem>
+                <SelectItem value="slide">Slide</SelectItem>
+                <SelectItem value="scale">Scale</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          <ToggleRow label="Stagger block entrances"
+            checked={theme.motion?.stagger !== false}
+            onChange={(v) => patchMotion({ stagger: v })} />
+          <NumField label="Stagger step" min={0} max={400} step={10}
+            value={theme.motion?.staggerStep ?? 60} suffix="ms"
+            onChange={(v) => patchMotion({ staggerStep: v })} />
+          <ToggleRow label="Reduce motion (disable all)"
+            checked={!!theme.motion?.reduce}
+            onChange={(v) => patchMotion({ reduce: v })} />
         </TabsContent>
       </Tabs>
     </div>
@@ -475,6 +525,15 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     <div className="space-y-1">
       <Label className="text-[11px] text-muted-foreground">{label}</Label>
       {children}
+    </div>
+  );
+}
+
+function ToggleRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between py-1">
+      <Label className="text-[11px] text-muted-foreground">{label}</Label>
+      <Switch checked={checked} onCheckedChange={onChange} />
     </div>
   );
 }

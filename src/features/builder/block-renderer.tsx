@@ -5,6 +5,7 @@ import type {
   ContactBlock,
   CountdownBlock,
   EmbedBlock,
+  EntranceAnim,
   FaqBlock,
   FileBlock,
   FontSize,
@@ -16,6 +17,7 @@ import type {
   TestimonialsBlock,
   VideoBlock,
   ButtonGroupBlock,
+  Viewport,
 } from "./types";
 import { cn } from "@/lib/utils";
 import {
@@ -28,6 +30,8 @@ import {
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useBuilderStore } from "./store";
+import { DEFAULT_PROFILE } from "./theme";
 
 const SOCIAL_ICON: Record<SocialPlatform, LucideIcon> = {
   instagram: Instagram, facebook: Facebook, youtube: Youtube, tiktok: Music2,
@@ -50,89 +54,101 @@ const RADIUS_CLASS: Record<NonNullable<BlockSettings["radius"]>, string> = {
   lg: "rounded-lg", xl: "rounded-2xl", full: "rounded-full",
 };
 
-function settingsStyle(s?: BlockSettings): CSSProperties {
-  if (!s) return {};
-  return {
-    paddingTop: s.paddingY, paddingBottom: s.paddingY,
-    paddingLeft: s.paddingX, paddingRight: s.paddingX,
-    marginTop: s.marginTop, marginBottom: s.marginBottom,
-    background: s.background,
-  };
+/** Normalize legacy animation ids. */
+function normalizeAnim(a?: BlockSettings["animation"]): EntranceAnim {
+  if (!a || a === "none") return "none";
+  if (a === "zoom") return "zoom-in";
+  return a;
 }
 
-export function BlockRenderer({ block }: { block: Block }) {
+interface RenderProps {
+  block: Block;
+  /** Active preview viewport. Drives responsive overrides + visibility. */
+  viewport?: Viewport;
+  /** Zero-based index in the block list — used to stagger entrance timing. */
+  index?: number;
+  /** Global stagger step in ms (from theme.motion). */
+  staggerStep?: number;
+  /** Force-disable animations regardless of block settings. */
+  reduceMotion?: boolean;
+}
+
+export function BlockRenderer({
+  block,
+  viewport = "mobile",
+  index = 0,
+  staggerStep = 0,
+  reduceMotion = false,
+}: RenderProps) {
   if (block.hidden) return null;
-  const wrapCls = cn(block.settings?.radius && RADIUS_CLASS[block.settings.radius]);
-  const style = settingsStyle(block.settings);
-  const hasWrap = block.settings && (
-    block.settings.background || block.settings.paddingX || block.settings.paddingY ||
-    block.settings.marginTop || block.settings.marginBottom || block.settings.radius
+  const s = block.settings ?? {};
+
+  // Visibility per viewport (undefined = shown)
+  const vis = s.visibility ?? {};
+  if (viewport === "mobile" && vis.mobile === false) return null;
+  if (viewport === "tablet" && vis.tablet === false) return null;
+  if (viewport === "desktop" && vis.desktop === false) return null;
+
+  // Per-viewport overrides
+  const rOver = s.responsive?.[viewport] ?? {};
+  const paddingX = rOver.paddingX ?? s.paddingX;
+  const paddingY = rOver.paddingY ?? s.paddingY;
+  const marginTop = rOver.marginTop ?? s.marginTop;
+  const marginBottom = rOver.marginBottom ?? s.marginBottom;
+  const fontScale = rOver.fontScale;
+
+  const anim = reduceMotion ? "none" : normalizeAnim(s.animation);
+  const hover = s.hover && s.hover !== "none" ? s.hover : null;
+  const btnFx =
+    block.type === "button" || block.type === "buttonGroup"
+      ? s.buttonEffect && s.buttonEffect !== "none" ? s.buttonEffect : null
+      : null;
+
+  const wrapCls = cn(
+    s.radius && RADIUS_CLASS[s.radius],
+    anim !== "none" && `zx-anim zx-anim-${anim}`,
+    hover && `zx-hover zx-hover-${hover}`,
+    btnFx && `zx-btn-fx zx-btn-fx-${btnFx}`,
   );
+
+  const style: CSSProperties = {
+    paddingTop: paddingY, paddingBottom: paddingY,
+    paddingLeft: paddingX, paddingRight: paddingX,
+    marginTop, marginBottom,
+    background: s.background,
+  };
+  if (fontScale && fontScale !== 1) style.fontSize = `${fontScale}em`;
+  if (anim !== "none") {
+    (style as Record<string, string>)["--zx-anim-dur"] = `${s.animationDuration ?? 600}ms`;
+    (style as Record<string, string>)["--zx-anim-delay"] =
+      `${(s.animationDelay ?? 0) + index * staggerStep}ms`;
+    (style as Record<string, string>)["--zx-anim-repeat"] =
+      s.animationRepeat === "infinite" ? "infinite" : "1";
+  }
+
+  const hasWrap =
+    !!s.background || !!paddingX || !!paddingY || !!marginTop || !!marginBottom ||
+    !!s.radius || anim !== "none" || !!hover || !!btnFx || (fontScale && fontScale !== 1);
+
   const inner = renderInner(block);
   if (!hasWrap) return inner;
-  return <div className={wrapCls} style={style}>{inner}</div>;
+  return (
+    <div
+      className={wrapCls}
+      style={style}
+      data-hide-mobile={vis.mobile === false || undefined}
+      data-hide-tablet={vis.tablet === false || undefined}
+      data-hide-desktop={vis.desktop === false || undefined}
+    >
+      {inner}
+    </div>
+  );
 }
 
 function renderInner(block: Block) {
   switch (block.type) {
     case "profile":
-      return (
-        <div className="flex flex-col items-center gap-3 py-2 text-center">
-          {block.coverUrl && (
-            <div
-              className="-mx-5 -mt-10 mb-2 w-[calc(100%+2.5rem)] overflow-hidden bg-muted"
-              style={{ height: "var(--zx-cover-h, 96px)" }}
-            >
-              <img src={block.coverUrl} alt="" className="h-full w-full object-cover" />
-            </div>
-          )}
-          <div
-            className="grid place-items-center overflow-hidden bg-muted text-2xl font-semibold text-muted-foreground"
-            style={{
-              width: "var(--zx-avatar-size, 80px)",
-              height: "var(--zx-avatar-size, 80px)",
-              borderRadius: "var(--zx-avatar-radius, 9999px)",
-              border: "var(--zx-avatar-border-w, 4px) solid var(--zx-avatar-border-c, #fff)",
-            }}
-          >
-            {block.avatarUrl
-              ? <img src={block.avatarUrl} alt="" className="h-full w-full object-cover" />
-              : (block.displayName ?? "?").charAt(0).toUpperCase()}
-          </div>
-          <div className="relative space-y-0.5">
-            <div
-              className="flex items-center justify-center gap-1"
-              style={{
-                fontSize: "var(--zx-name-size, 18px)",
-                fontWeight: "var(--zx-name-weight, 700)",
-                fontFamily: "var(--zx-heading-family)",
-                textTransform: "var(--zx-text-transform, none)" as CSSProperties["textTransform"],
-              }}
-            >
-              <span>{block.displayName}</span>
-              {block.verified && <BadgeCheck className="h-4 w-4 text-primary" />}
-            </div>
-            {block.username && <div className="text-xs text-muted-foreground">@{block.username}</div>}
-            {block.location && (
-              <div className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
-                <MapPin className="h-3 w-3" />{block.location}
-              </div>
-            )}
-            {block.bio && (
-              <div
-                className="mt-1 text-muted-foreground"
-                style={{
-                  fontSize: "var(--zx-bio-size, 12px)",
-                  fontWeight: "var(--zx-bio-weight, 400)",
-                }}
-              >
-                {block.bio}
-              </div>
-            )}
-            {block.shortDescription && <div className="mt-1 text-[11px] text-muted-foreground/80">{block.shortDescription}</div>}
-          </div>
-        </div>
-      );
+      return <ProfileRender block={block} />;
 
     case "heading":
       return (
@@ -639,3 +655,81 @@ function EmbedRender({ block }: { block: EmbedBlock }) {
 
 // keep icons referenced
 void ChevronDown;
+
+// ── Profile block with theme.profile effects (LS-07C) ────────────────────
+function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }) {
+  const theme = useBuilderStore((s) => s.content.theme);
+  const prof = theme?.profile ?? DEFAULT_PROFILE;
+  const avatarFxCls = cn(
+    prof.avatarGlow && "zx-avatar-glow",
+    prof.avatarRing && "zx-avatar-ring",
+    prof.avatarRotatingRing && "zx-avatar-rotating-ring",
+    prof.avatarFloating && "zx-avatar-floating",
+  );
+  return (
+    <div className="flex flex-col items-center gap-3 py-2 text-center">
+      {block.coverUrl && (
+        <div
+          className="-mx-5 -mt-10 mb-2 w-[calc(100%+2.5rem)] overflow-hidden bg-muted"
+          style={{ height: "var(--zx-cover-h, 96px)" }}
+        >
+          <img src={block.coverUrl} alt="" className="h-full w-full object-cover" />
+        </div>
+      )}
+      <div
+        className={cn(
+          "grid place-items-center overflow-hidden bg-muted text-2xl font-semibold text-muted-foreground",
+          avatarFxCls,
+        )}
+        style={{
+          width: "var(--zx-avatar-size, 80px)",
+          height: "var(--zx-avatar-size, 80px)",
+          borderRadius: "var(--zx-avatar-radius, 9999px)",
+          border: "var(--zx-avatar-border-w, 4px) solid var(--zx-avatar-border-c, #fff)",
+        }}
+      >
+        {block.avatarUrl
+          ? <img src={block.avatarUrl} alt="" className="h-full w-full object-cover" />
+          : (block.displayName ?? "?").charAt(0).toUpperCase()}
+      </div>
+      <div className="relative space-y-0.5">
+        <div
+          className="flex items-center justify-center gap-1"
+          style={{
+            fontSize: "var(--zx-name-size, 18px)",
+            fontWeight: "var(--zx-name-weight, 700)",
+            fontFamily: "var(--zx-heading-family)",
+            textTransform: "var(--zx-text-transform, none)" as CSSProperties["textTransform"],
+          }}
+        >
+          <span>{block.displayName}</span>
+          {block.verified && (
+            <BadgeCheck
+              className={cn("h-4 w-4 text-primary", prof.badgeAnimation && "zx-badge-anim")}
+            />
+          )}
+        </div>
+        {block.username && <div className="text-xs text-muted-foreground">@{block.username}</div>}
+        {block.location && (
+          <div className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
+            <MapPin className="h-3 w-3" />{block.location}
+          </div>
+        )}
+        {block.bio && (
+          <div
+            className="mt-1 text-muted-foreground"
+            style={{
+              fontSize: "var(--zx-bio-size, 12px)",
+              fontWeight: "var(--zx-bio-weight, 400)",
+            }}
+          >
+            {block.bio}
+          </div>
+        )}
+        {block.shortDescription && (
+          <div className="mt-1 text-[11px] text-muted-foreground/80">{block.shortDescription}</div>
+        )}
+      </div>
+    </div>
+  );
+}

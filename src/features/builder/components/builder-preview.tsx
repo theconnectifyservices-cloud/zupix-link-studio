@@ -21,7 +21,14 @@ import {
 import { useBuilderStore } from "../store";
 import { BlockRenderer } from "../block-renderer";
 import type { Block } from "../types";
-import { DEFAULT_THEME, resolveMode, themeToCssVars } from "../theme";
+import {
+  DEFAULT_MOTION,
+  DEFAULT_THEME,
+  bgEffectClasses,
+  pageTransitionClass,
+  resolveMode,
+  themeToCssVars,
+} from "../theme";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,7 +58,10 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
 
   const isPhone = viewport === "mobile";
   const resolvedMode = resolveMode(theme.mode);
-  const themeStyle = themeToCssVars(theme);
+  const themeStyle = themeToCssVars(theme, viewport);
+  const motion = theme.motion ?? DEFAULT_MOTION;
+  const bgCls = bgEffectClasses(theme).join(" ");
+  const pageCls = pageTransitionClass(theme);
 
   return (
     <div className="flex h-full items-start justify-center overflow-auto bg-muted/30 p-4 md:p-8">
@@ -71,7 +81,9 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
             data-theme-mode={resolvedMode}
             className={cn(
               resolvedMode === "dark" && "dark",
-              "overflow-y-auto",
+              "overflow-y-auto overflow-x-hidden",
+              `zx-vp-${viewport}`,
+              bgCls,
               isPhone
                 ? "max-h-[720px] min-h-[560px] rounded-[26px]"
                 : "max-h-[820px] min-h-[560px] rounded-xl",
@@ -80,6 +92,7 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
             onClick={() => clearSelection()}
           >
             <div
+              className={cn("relative", pageCls)}
               style={{
                 paddingInline: "var(--zx-page-pad-x)",
                 paddingBlock: "var(--zx-page-pad-y)",
@@ -106,7 +119,16 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
                     </p>
                   </div>
                 ) : (
-                  blocks.map((b) => <SortableCanvasBlock key={b.id} block={b} />)
+                  blocks.map((b, i) => (
+                    <SortableCanvasBlock
+                      key={b.id}
+                      block={b}
+                      index={i}
+                      viewport={viewport}
+                      staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
+                      reduceMotion={!!motion.reduce}
+                    />
+                  ))
                 )}
               </SortableContext>
             </div>
@@ -117,7 +139,19 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
   );
 }
 
-function SortableCanvasBlock({ block }: { block: Block }) {
+function SortableCanvasBlock({
+  block,
+  index = 0,
+  viewport = "mobile",
+  staggerStep = 0,
+  reduceMotion = false,
+}: {
+  block: Block;
+  index?: number;
+  viewport?: Viewport;
+  staggerStep?: number;
+  reduceMotion?: boolean;
+}) {
   const selectedId = useBuilderStore((s) => s.selectedId);
   const selectedIds = useBuilderStore((s) => s.selectedIds);
   const select = useBuilderStore((s) => s.select);
@@ -248,7 +282,14 @@ function SortableCanvasBlock({ block }: { block: Block }) {
                   {block.name || block.type} · collapsed
                 </div>
               ) : (
-                <BlockRenderer block={block} />
+                <BlockRenderer
+                  block={block}
+                  index={index}
+                  viewport={viewport}
+                  staggerStep={staggerStep}
+                  reduceMotion={reduceMotion}
+                />
+
               )}
             </div>
           </div>

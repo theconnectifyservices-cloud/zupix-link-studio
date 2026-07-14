@@ -607,10 +607,75 @@ function SharedSettings({ settings, onChange }: {
             <Input value={s.background ?? ""} onChange={(e) => onChange({ background: e.target.value || undefined })} placeholder="transparent" />
           </div>
         </Field>
-        <Field label="Animation (preview)">
-          <SelectSimple value={s.animation ?? "none"} onChange={(v) => onChange({ animation: v as BlockSettings["animation"] })}
-            options={[["none","None"],["fade","Fade"],["slide-up","Slide up"],["zoom","Zoom"]]} />
-        </Field>
+
+        <div className="mt-2 border-t pt-3">
+          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Motion</div>
+          <div className="grid gap-2">
+            <Field label="Entrance animation">
+              <SelectSimple value={s.animation ?? "none"} onChange={(v) => onChange({ animation: v as BlockSettings["animation"] })}
+                options={[
+                  ["none","None"],["fade","Fade"],["fade-up","Fade up"],["fade-down","Fade down"],
+                  ["slide-up","Slide up"],["slide-down","Slide down"],["slide-left","Slide left"],["slide-right","Slide right"],
+                  ["zoom","Zoom"],["zoom-in","Zoom in"],["zoom-out","Zoom out"],
+                  ["rotate","Rotate"],["flip","Flip"],["bounce","Bounce"],
+                ]} />
+            </Field>
+            <div className="grid grid-cols-3 gap-2">
+              <Field label="Duration (ms)">
+                <Input type="number" min={0} max={4000} value={s.animationDuration ?? ""}
+                  onChange={(e) => onChange({ animationDuration: numOrUndef(e.target.value) })} />
+              </Field>
+              <Field label="Delay (ms)">
+                <Input type="number" min={0} max={4000} value={s.animationDelay ?? ""}
+                  onChange={(e) => onChange({ animationDelay: numOrUndef(e.target.value) })} />
+              </Field>
+              <Field label="Repeat">
+                <SelectSimple value={s.animationRepeat ?? "once"} onChange={(v) => onChange({ animationRepeat: v as BlockSettings["animationRepeat"] })}
+                  options={[["once","Once"],["infinite","Infinite"]]} />
+              </Field>
+            </div>
+            <Field label="Hover effect">
+              <SelectSimple value={s.hover ?? "none"} onChange={(v) => onChange({ hover: v as BlockSettings["hover"] })}
+                options={[["none","None"],["lift","Lift"],["scale","Scale"],["glow","Glow"],["pulse","Pulse"],["tilt","Tilt"],["shine","Shine"]]} />
+            </Field>
+            <Field label="Button effect">
+              <SelectSimple value={s.buttonEffect ?? "none"} onChange={(v) => onChange({ buttonEffect: v as BlockSettings["buttonEffect"] })}
+                options={[["none","None"],["shine","Shine"],["ripple","Ripple"],["neon","Neon"],["floating","Floating"]]} />
+            </Field>
+          </div>
+        </div>
+
+        <div className="mt-2 border-t pt-3">
+          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Responsive</div>
+          <div className="grid grid-cols-3 gap-2">
+            <Field label="Desktop">
+              <Switch checked={s.visibility?.desktop !== false}
+                onCheckedChange={(v) => onChange({ visibility: { ...(s.visibility ?? {}), desktop: v } })} />
+            </Field>
+            <Field label="Tablet">
+              <Switch checked={s.visibility?.tablet !== false}
+                onCheckedChange={(v) => onChange({ visibility: { ...(s.visibility ?? {}), tablet: v } })} />
+            </Field>
+            <Field label="Mobile">
+              <Switch checked={s.visibility?.mobile !== false}
+                onCheckedChange={(v) => onChange({ visibility: { ...(s.visibility ?? {}), mobile: v } })} />
+            </Field>
+          </div>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <Field label="Mobile font ×">
+              <Input type="number" step="0.05" min={0.5} max={2} value={s.responsive?.mobile?.fontScale ?? ""}
+                onChange={(e) => onChange({ responsive: { ...(s.responsive ?? {}), mobile: { ...(s.responsive?.mobile ?? {}), fontScale: numOrUndef(e.target.value) } } })} />
+            </Field>
+            <Field label="Tablet font ×">
+              <Input type="number" step="0.05" min={0.5} max={2} value={s.responsive?.tablet?.fontScale ?? ""}
+                onChange={(e) => onChange({ responsive: { ...(s.responsive ?? {}), tablet: { ...(s.responsive?.tablet ?? {}), fontScale: numOrUndef(e.target.value) } } })} />
+            </Field>
+            <Field label="Desktop font ×">
+              <Input type="number" step="0.05" min={0.5} max={2} value={s.responsive?.desktop?.fontScale ?? ""}
+                onChange={(e) => onChange({ responsive: { ...(s.responsive ?? {}), desktop: { ...(s.responsive?.desktop ?? {}), fontScale: numOrUndef(e.target.value) } } })} />
+            </Field>
+          </div>
+        </div>
       </div>
     </details>
   );

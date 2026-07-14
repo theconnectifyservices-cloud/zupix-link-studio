@@ -54,6 +54,10 @@ export interface ThemeTypography {
   headingScale?: number;      // multiplier applied to heading sizes (default 1)
   buttonSize?: number;        // px, button label size (default 14)
   textTransform?: TextTransform;
+  /** LS-07C — per-viewport font-size multipliers. Default 1. */
+  mobileScale?: number;
+  tabletScale?: number;
+  desktopScale?: number;
 }
 
 export interface ThemeSpacing {
@@ -62,6 +66,10 @@ export interface ThemeSpacing {
   blockGap: number;
   contentWidth: number;
   radius: number;
+  /** LS-07C — per-viewport horizontal padding overrides. */
+  pagePaddingMobile?: number;
+  pagePaddingTablet?: number;
+  pagePaddingDesktop?: number;
 }
 
 export interface ThemeCard {
@@ -128,6 +136,11 @@ export interface ThemeBackground {
   blur?: number;           // px, background blur
   overlay?: string;        // css overlay color (rgba)
   overlayOpacity?: number; // 0..1
+  /** LS-07C — background effects. */
+  noise?: boolean;
+  noiseOpacity?: number;      // 0..1, default 0.08
+  animatedGradient?: boolean; // shift gradient position over time
+  meshGradient?: boolean;     // soft blurred radial mesh overlay
 }
 
 export const DEFAULT_BACKGROUND: ThemeBackground = {
@@ -137,6 +150,10 @@ export const DEFAULT_BACKGROUND: ThemeBackground = {
   blur: 0,
   overlay: "#000000",
   overlayOpacity: 0,
+  noise: false,
+  noiseOpacity: 0.08,
+  animatedGradient: false,
+  meshGradient: false,
 };
 
 /** Built-in SVG data-URI patterns — trusted, no external requests. */
@@ -168,6 +185,12 @@ export interface ThemeProfile {
   bioSize: number;           // px
   bioWeight: 300 | 400 | 500 | 600;
   verifiedPosition: BadgePosition;
+  /** LS-07C — profile effects. */
+  avatarGlow?: boolean;
+  avatarRing?: boolean;      // solid outer ring
+  avatarRotatingRing?: boolean; // conic-gradient rotating ring
+  avatarFloating?: boolean;  // gentle float animation
+  badgeAnimation?: boolean;  // pulse the verified badge
 }
 
 export const DEFAULT_PROFILE: ThemeProfile = {
@@ -181,6 +204,11 @@ export const DEFAULT_PROFILE: ThemeProfile = {
   bioSize: 12,
   bioWeight: 400,
   verifiedPosition: "inline",
+  avatarGlow: false,
+  avatarRing: false,
+  avatarRotatingRing: false,
+  avatarFloating: false,
+  badgeAnimation: false,
 };
 
 const AVATAR_PX: Record<AvatarSize, number> = { sm: 64, md: 80, lg: 96, xl: 128 };
@@ -190,6 +218,28 @@ const AVATAR_RADIUS: Record<AvatarShape, string> = {
 
 export type ThemePresetId =
   | "minimal" | "creator" | "business" | "luxury" | "neon" | "glass" | "modern";
+
+// ── Motion (LS-07C) ─────────────────────────────────────────────────────
+
+export type PageTransition = "none" | "fade" | "slide" | "scale";
+
+export interface ThemeMotion {
+  /** Force-disable all animations regardless of user preference. */
+  reduce?: boolean;
+  /** Container-level entrance played when the page mounts. */
+  pageTransition?: PageTransition;
+  /** Stagger block entrance animations. */
+  stagger?: boolean;
+  /** ms between successive block entrances when stagger is on. */
+  staggerStep?: number;
+}
+
+export const DEFAULT_MOTION: ThemeMotion = {
+  reduce: false,
+  pageTransition: "fade",
+  stagger: true,
+  staggerStep: 60,
+};
 
 export interface PageTheme {
   mode: ThemeMode;
@@ -204,6 +254,8 @@ export interface PageTheme {
   profile?: ThemeProfile;
   brandColors?: string[]; // saved swatches
   googleFonts?: string[]; // families to preload via <link>
+  /** LS-07C additions. */
+  motion?: ThemeMotion;
 }
 
 // ── Defaults ────────────────────────────────────────────────────────────
@@ -289,6 +341,7 @@ export const DEFAULT_THEME: PageTheme = {
   profile: DEFAULT_PROFILE,
   brandColors: [],
   googleFonts: [],
+  motion: DEFAULT_MOTION,
 };
 
 // ── Presets ─────────────────────────────────────────────────────────────
@@ -497,6 +550,9 @@ export function resetBackground(current: PageTheme): PageTheme {
 export function resetProfile(current: PageTheme): PageTheme {
   return { ...current, profile: { ...DEFAULT_PROFILE }, preset: "custom" };
 }
+export function resetMotion(current: PageTheme): PageTheme {
+  return { ...current, motion: { ...DEFAULT_MOTION }, preset: "custom" };
+}
 
 // ── Google Fonts loader ─────────────────────────────────────────────────
 
@@ -561,12 +617,39 @@ function buttonVariantCss(theme: PageTheme): {
 
 // ── CSS variable generator ──────────────────────────────────────────────
 
+import type { Viewport } from "./types";
+
+/** Class names for background effects applied on the preview root. */
+export function bgEffectClasses(theme: PageTheme): string[] {
+  const bg = theme.background;
+  if (!bg) return [];
+  const cls: string[] = [];
+  if (bg.noise) cls.push("zx-bg-noise");
+  if (bg.animatedGradient && (bg.kind === "color" || bg.kind === "gradient")) {
+    cls.push("zx-bg-animated-gradient");
+  }
+  if (bg.meshGradient) cls.push("zx-bg-mesh");
+  return cls;
+}
+
+/** Class name for the container-level page transition. */
+export function pageTransitionClass(theme: PageTheme): string | null {
+  const t = theme.motion?.pageTransition ?? DEFAULT_MOTION.pageTransition;
+  if (!t || t === "none") return null;
+  return `zx-page-${t}`;
+}
+
 /**
  * Turns a PageTheme into a `style` object that overrides Tailwind tokens
  * and adds ZUPIX-specific tokens. Placed on the preview root, it cascades
  * to every block instantly.
+ *
+ * `viewport` (LS-07C) picks per-viewport typography scale and page padding.
  */
-export function themeToCssVars(theme: PageTheme): CSSProperties {
+export function themeToCssVars(
+  theme: PageTheme,
+  viewport: Viewport = "mobile",
+): CSSProperties {
   const c = theme.colors;
   const t = theme.typography;
   const s = theme.spacing;
@@ -575,6 +658,20 @@ export function themeToCssVars(theme: PageTheme): CSSProperties {
   const btn = theme.buttons ?? DEFAULT_BUTTONS;
   const prof = theme.profile ?? DEFAULT_PROFILE;
   const btnCss = buttonVariantCss(theme);
+
+  // Per-viewport font scale + page padding
+  const fontScale =
+    (viewport === "mobile"
+      ? t.mobileScale
+      : viewport === "tablet"
+        ? t.tabletScale
+        : t.desktopScale) ?? 1;
+  const padX =
+    (viewport === "mobile"
+      ? s.pagePaddingMobile
+      : viewport === "tablet"
+        ? s.pagePaddingTablet
+        : s.pagePaddingDesktop) ?? s.pagePadding;
 
   // Resolve final background — image/pattern override the colors.background
   let finalBg = c.background;
@@ -626,8 +723,8 @@ export function themeToCssVars(theme: PageTheme): CSSProperties {
     "--zx-card-pad": `${card.padding ?? 12}px`,
     "--zx-card-margin": `${card.margin ?? 0}px`,
 
-    // Layout
-    "--zx-page-pad-x": `${s.pagePadding}px`,
+    // Layout (per-viewport)
+    "--zx-page-pad-x": `${padX}px`,
     "--zx-page-pad-y": `${s.pagePaddingY}px`,
     "--zx-block-gap": `${s.blockGap}px`,
     "--zx-content-max": `${s.contentWidth}px`,
@@ -636,8 +733,9 @@ export function themeToCssVars(theme: PageTheme): CSSProperties {
     "--zx-heading-family": t.headingFamily,
     "--zx-button-family": t.buttonFamily,
     "--zx-heading-weight": String(t.headingWeight),
-    "--zx-heading-scale": String(t.headingScale ?? 1),
+    "--zx-heading-scale": String((t.headingScale ?? 1) * fontScale),
     "--zx-text-transform": t.textTransform ?? "none",
+    "--zx-font-scale": String(fontScale),
 
     // Buttons
     "--zx-btn-bg": btnCss.background,
@@ -657,11 +755,16 @@ export function themeToCssVars(theme: PageTheme): CSSProperties {
     "--zx-avatar-radius": AVATAR_RADIUS[prof.avatarShape],
     "--zx-avatar-border-w": `${prof.avatarBorderWidth}px`,
     "--zx-avatar-border-c": prof.avatarBorderColor,
+    "--zx-avatar-glow-c": c.primary,
+    "--zx-avatar-ring-c": prof.avatarBorderColor || c.primary,
     "--zx-cover-h": `${prof.coverHeight}px`,
-    "--zx-name-size": `${prof.nameSize}px`,
+    "--zx-name-size": `${prof.nameSize * fontScale}px`,
     "--zx-name-weight": String(prof.nameWeight),
-    "--zx-bio-size": `${prof.bioSize}px`,
+    "--zx-bio-size": `${prof.bioSize * fontScale}px`,
     "--zx-bio-weight": String(prof.bioWeight),
+
+    // Background noise strength
+    "--zx-bg-noise-op": String(bg.noiseOpacity ?? 0.08),
   };
 
   const style: CSSProperties = {
@@ -669,10 +772,11 @@ export function themeToCssVars(theme: PageTheme): CSSProperties {
     background: finalBg,
     color: c.text,
     fontFamily: t.fontFamily,
-    fontSize: `${t.baseSize}px`,
+    fontSize: `${t.baseSize * fontScale}px`,
     lineHeight: t.lineHeight,
     letterSpacing: `${t.letterSpacing}em`,
     fontWeight: t.bodyWeight,
+    position: "relative",
   };
   if (backgroundImage) {
     style.backgroundImage = backgroundImage;
