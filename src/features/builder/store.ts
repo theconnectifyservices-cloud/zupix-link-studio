@@ -1,11 +1,15 @@
 import { create } from "zustand";
 import type { Block, BioContent } from "./types";
 import { EMPTY_CONTENT } from "./types";
-import type { PageTheme, ThemeCard, ThemeColors, ThemePresetId, ThemeSpacing, ThemeTypography } from "./theme";
+import type {
+  PageTheme, ThemeBackground, ThemeButtons, ThemeCard, ThemeColors,
+  ThemePresetId, ThemeProfile, ThemeSpacing, ThemeTypography,
+} from "./theme";
 import {
   DEFAULT_THEME, applyPresetTheme, resetColors as resetColorsFn,
   resetTypography as resetTypographyFn, resetSpacing as resetSpacingFn,
-  resetCard as resetCardFn,
+  resetCard as resetCardFn, resetButtons as resetButtonsFn,
+  resetBackground as resetBackgroundFn, resetProfile as resetProfileFn,
 } from "./theme";
 
 export type SaveStatus = "idle" | "dirty" | "saving" | "saved" | "error";
