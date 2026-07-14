@@ -1,11 +1,15 @@
 import { create } from "zustand";
 import type { Block, BioContent } from "./types";
 import { EMPTY_CONTENT } from "./types";
-import type { PageTheme, ThemeCard, ThemeColors, ThemePresetId, ThemeSpacing, ThemeTypography } from "./theme";
+import type {
+  PageTheme, ThemeBackground, ThemeButtons, ThemeCard, ThemeColors,
+  ThemePresetId, ThemeProfile, ThemeSpacing, ThemeTypography,
+} from "./theme";
 import {
   DEFAULT_THEME, applyPresetTheme, resetColors as resetColorsFn,
   resetTypography as resetTypographyFn, resetSpacing as resetSpacingFn,
-  resetCard as resetCardFn,
+  resetCard as resetCardFn, resetButtons as resetButtonsFn,
+  resetBackground as resetBackgroundFn, resetProfile as resetProfileFn,
 } from "./theme";
 
 export type SaveStatus = "idle" | "dirty" | "saving" | "saved" | "error";
@@ -80,11 +84,19 @@ interface BuilderState {
   patchThemeTypography: (patch: Partial<ThemeTypography>) => void;
   patchThemeSpacing: (patch: Partial<ThemeSpacing>) => void;
   patchThemeCard: (patch: Partial<ThemeCard>) => void;
+  patchThemeButtons: (patch: Partial<ThemeButtons>) => void;
+  patchThemeBackground: (patch: Partial<ThemeBackground>) => void;
+  patchThemeProfile: (patch: Partial<ThemeProfile>) => void;
+  addBrandColor: (hex: string) => void;
+  removeBrandColor: (hex: string) => void;
   applyThemePreset: (id: ThemePresetId) => void;
   resetThemeColors: () => void;
   resetThemeTypography: () => void;
   resetThemeSpacing: () => void;
   resetThemeCard: () => void;
+  resetThemeButtons: () => void;
+  resetThemeBackground: () => void;
+  resetThemeProfile: () => void;
   resetThemeAll: () => void;
 
   // save wiring
@@ -514,6 +526,55 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       saveStatus: "dirty",
     });
   },
+  patchThemeButtons: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const base = current.buttons ?? DEFAULT_THEME.buttons!;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, buttons: { ...base, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  patchThemeBackground: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const base = current.background ?? DEFAULT_THEME.background!;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, background: { ...base, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  patchThemeProfile: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const base = current.profile ?? DEFAULT_THEME.profile!;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, profile: { ...base, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  addBrandColor: (hex) => {
+    const { content } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const list = current.brandColors ?? [];
+    if (list.includes(hex)) return;
+    set({
+      content: { ...content, theme: { ...current, brandColors: [...list, hex] } },
+      saveStatus: "dirty",
+    });
+  },
+  removeBrandColor: (hex) => {
+    const { content } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const list = (current.brandColors ?? []).filter((c) => c !== hex);
+    set({
+      content: { ...content, theme: { ...current, brandColors: list } },
+      saveStatus: "dirty",
+    });
+  },
   applyThemePreset: (id) => {
     const { content, history } = get();
     set({
@@ -551,6 +612,30 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       history: pushHistory(history, content),
       content: { ...content, theme: resetCardFn(content.theme ?? DEFAULT_THEME) },
+      saveStatus: "dirty",
+    });
+  },
+  resetThemeButtons: () => {
+    const { content, history } = get();
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: resetButtonsFn(content.theme ?? DEFAULT_THEME) },
+      saveStatus: "dirty",
+    });
+  },
+  resetThemeBackground: () => {
+    const { content, history } = get();
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: resetBackgroundFn(content.theme ?? DEFAULT_THEME) },
+      saveStatus: "dirty",
+    });
+  },
+  resetThemeProfile: () => {
+    const { content, history } = get();
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: resetProfileFn(content.theme ?? DEFAULT_THEME) },
       saveStatus: "dirty",
     });
   },
