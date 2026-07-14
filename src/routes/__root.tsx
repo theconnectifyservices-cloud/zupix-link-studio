@@ -135,12 +135,36 @@ function ThemeApplier() {
   return null;
 }
 
+function AuthSubscriber() {
+  const { queryClient } = Route.useRouteContext();
+  useEffect(() => {
+    let ignore = true;
+    // Dynamic import so SSR bundle doesn't load supabase client eagerly here
+    import("@/integrations/supabase/client").then(({ supabase }) => {
+      if (!ignore) return;
+      const { data } = supabase.auth.onAuthStateChange((event) => {
+        queryClient.invalidateQueries({ queryKey: ["profile"] });
+        if (event === "SIGNED_OUT") queryClient.clear();
+      });
+      // store cleanup on window to unsub on unmount
+      (window as unknown as { __authSub?: () => void }).__authSub = () =>
+        data.subscription.unsubscribe();
+    });
+    ignore = true;
+    return () => {
+      (window as unknown as { __authSub?: () => void }).__authSub?.();
+    };
+  }, [queryClient]);
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeApplier />
+      <AuthSubscriber />
       <ErrorBoundary>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
@@ -150,3 +174,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
