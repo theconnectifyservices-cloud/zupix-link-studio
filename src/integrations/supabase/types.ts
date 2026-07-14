@@ -883,8 +883,13 @@ export type Database = {
         | "invitation.accept"
         | "settings.update"
       app_role: "admin" | "moderator" | "user"
-      bio_page_status: "draft" | "published" | "archived"
-      bio_page_visibility: "public" | "private" | "unlisted"
+      bio_page_status:
+        | "draft"
+        | "published"
+        | "archived"
+        | "scheduled"
+        | "unpublished"
+      bio_page_visibility: "public" | "private" | "unlisted" | "password"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
       media_kind: "image" | "video" | "audio" | "document" | "other"
       notification_channel: "in_app" | "email" | "push" | "sms"
@@ -1053,8 +1058,14 @@ export const Constants = {
         "settings.update",
       ],
       app_role: ["admin", "moderator", "user"],
-      bio_page_status: ["draft", "published", "archived"],
-      bio_page_visibility: ["public", "private", "unlisted"],
+      bio_page_status: [
+        "draft",
+        "published",
+        "archived",
+        "scheduled",
+        "unpublished",
+      ],
+      bio_page_visibility: ["public", "private", "unlisted", "password"],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
       media_kind: ["image", "video", "audio", "document", "other"],
       notification_channel: ["in_app", "email", "push", "sms"],
