@@ -83,11 +83,12 @@ export function ThemePanel() {
           <TabIcon value="type" icon={Type} label="Type" />
           <TabIcon value="buttons" icon={MousePointer2} label="Btn" />
         </TabsList>
-        <TabsList className="mt-1 grid w-full grid-cols-4">
+        <TabsList className="mt-1 grid w-full grid-cols-5">
           <TabIcon value="bg" icon={ImageIcon} label="BG" />
           <TabIcon value="card" icon={Square} label="Card" />
           <TabIcon value="profile" icon={UserCircle2} label="Profile" />
           <TabIcon value="space" icon={Ruler} label="Space" />
+          <TabIcon value="motion" icon={Zap} label="Motion" />
         </TabsList>
 
         <TabsContent value="presets" className="mt-3">
