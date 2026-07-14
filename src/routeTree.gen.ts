@@ -18,6 +18,7 @@ import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.app'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
+import { Route as AuthenticatedBuilderIdRouteImport } from './routes/_authenticated.builder.$id'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated.app.templates'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated.app.settings'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
@@ -76,6 +77,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedBuilderIdRoute = AuthenticatedBuilderIdRouteImport.update({
+  id: '/builder/$id',
+  path: '/builder/$id',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAppTemplatesRoute =
   AuthenticatedAppTemplatesRouteImport.update({
@@ -175,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -198,6 +205,7 @@ export interface FileRoutesByTo {
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -224,6 +232,7 @@ export interface FileRoutesById {
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/_authenticated/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/settings'
     | '/app/templates'
+    | '/builder/$id'
     | '/app/'
     | '/app/settings/notifications'
     | '/app/settings/password'
@@ -273,6 +283,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/settings'
     | '/app/templates'
+    | '/builder/$id'
     | '/app'
     | '/app/settings/notifications'
     | '/app/settings/password'
@@ -298,6 +309,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/projects'
     | '/_authenticated/app/settings'
     | '/_authenticated/app/templates'
+    | '/_authenticated/builder/$id'
     | '/_authenticated/app/'
     | '/_authenticated/app/settings/notifications'
     | '/_authenticated/app/settings/password'
@@ -380,6 +392,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/builder/$id': {
+      id: '/_authenticated/builder/$id'
+      path: '/builder/$id'
+      fullPath: '/builder/$id'
+      preLoaderRoute: typeof AuthenticatedBuilderIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/app/templates': {
       id: '/_authenticated/app/templates'
@@ -541,11 +560,13 @@ const AuthenticatedAppRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedBuilderIdRoute: typeof AuthenticatedBuilderIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedBuilderIdRoute: AuthenticatedBuilderIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

@@ -16,6 +16,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -122,6 +123,11 @@ export function ProjectCard({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuItem asChild>
+          <Link to="/builder/$id" params={{ id: project.id }}>
+            <FileEdit className="mr-2 h-4 w-4" /> Edit in builder
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setRenameOpen(true)}>
           <Pencil className="mr-2 h-4 w-4" /> Rename
         </DropdownMenuItem>

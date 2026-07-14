@@ -132,10 +132,12 @@ export type Database = {
         Row: {
           archived_at: string | null
           category: string | null
+          content: Json
           created_at: string
           deleted_at: string | null
           description: string | null
           id: string
+          last_saved_at: string | null
           name: string
           owner_id: string
           slug: string
@@ -147,10 +149,12 @@ export type Database = {
         Insert: {
           archived_at?: string | null
           category?: string | null
+          content?: Json
           created_at?: string
           deleted_at?: string | null
           description?: string | null
           id?: string
+          last_saved_at?: string | null
           name: string
           owner_id: string
           slug: string
@@ -162,10 +166,12 @@ export type Database = {
         Update: {
           archived_at?: string | null
           category?: string | null
+          content?: Json
           created_at?: string
           deleted_at?: string | null
           description?: string | null
           id?: string
+          last_saved_at?: string | null
           name?: string
           owner_id?: string
           slug?: string
