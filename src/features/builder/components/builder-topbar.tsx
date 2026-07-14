@@ -10,6 +10,9 @@ import {
   CheckCircle2,
   CircleDot,
   AlertCircle,
+  Smartphone,
+  Tablet,
+  Monitor,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -18,9 +21,13 @@ import { saveBuilderContent } from "../api";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+type Viewport = "mobile" | "tablet" | "desktop";
+
 interface Props {
   onTogglePreview: () => void;
   previewMode: boolean;
+  viewport?: Viewport;
+  onViewportChange?: (v: Viewport) => void;
 }
 
 /** Builder top bar: title, status, undo/redo, preview, save. */
