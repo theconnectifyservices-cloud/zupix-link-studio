@@ -437,6 +437,15 @@ export function ThemePanel() {
           <WeightSelect label="Bio weight" value={profile.bioWeight}
             onChange={(v) => patchProfile({ bioWeight: v as PageTheme["profile"] extends infer P ? P extends { bioWeight: infer W } ? W : never : never })}
             values={[300, 400, 500, 600]} />
+
+          <div className="mt-2 border-t pt-3">
+            <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Effects</div>
+            <ToggleRow label="Avatar glow" checked={!!profile.avatarGlow} onChange={(v) => patchProfile({ avatarGlow: v })} />
+            <ToggleRow label="Avatar ring" checked={!!profile.avatarRing} onChange={(v) => patchProfile({ avatarRing: v })} />
+            <ToggleRow label="Rotating ring" checked={!!profile.avatarRotatingRing} onChange={(v) => patchProfile({ avatarRotatingRing: v })} />
+            <ToggleRow label="Floating avatar" checked={!!profile.avatarFloating} onChange={(v) => patchProfile({ avatarFloating: v })} />
+            <ToggleRow label="Verified badge pulse" checked={!!profile.badgeAnimation} onChange={(v) => patchProfile({ badgeAnimation: v })} />
+          </div>
         </TabsContent>
 
         {/* ── SPACING ──────────────────────────────────────────────── */}
