@@ -230,7 +230,7 @@ export async function schedulePage(pageId: string, input: ScheduleInput) {
     state.workspace_id,
     input.publishAt ? "scheduled" : "scheduled_cancelled",
     null,
-    input,
+    input as unknown as Record<string, unknown>,
   );
 }
 
