@@ -1,11 +1,12 @@
 import type { SeoSettings } from "./types";
 
-interface JsonLdCtx {
-  pageName: string;
-  description: string;
+export interface JsonLdCtx {
+  pageName?: string;
+  title?: string;
+  description?: string;
   url: string;
   image?: string;
-  siteName: string;
+  siteName?: string;
 }
 
 /**
