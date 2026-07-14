@@ -46,21 +46,21 @@ export function MiniPreview({ template, className, size = "md", frame = true }: 
       >
         {/* Avatar */}
         <div
-          className="mt-2 h-10 w-10 shrink-0 rounded-full ring-2"
+          className="mt-2 h-10 w-10 shrink-0 rounded-full"
           style={{
-            background: "var(--zx-primary)",
-            borderColor: "var(--zx-border)",
+            background: "var(--primary)",
+            border: "2px solid var(--border)",
             boxShadow: "var(--zx-card-shadow, 0 2px 6px rgba(0,0,0,0.08))",
           }}
         />
         {/* Name */}
         <div
           className="font-semibold"
-          style={{ color: "var(--zx-text)", fontFamily: "var(--zx-heading-family)" }}
+          style={{ color: "var(--foreground)", fontFamily: "var(--zx-heading-family)" }}
         >
           Your Name
         </div>
-        <div className="opacity-70" style={{ color: "var(--zx-text-muted)" }}>
+        <div className="opacity-70" style={{ color: "var(--muted-foreground)" }}>
           @yourhandle
         </div>
 
@@ -72,11 +72,11 @@ export function MiniPreview({ template, className, size = "md", frame = true }: 
               className="w-full truncate px-2 py-1.5 text-center font-medium"
               style={{
                 background: "var(--zx-btn-bg)",
-                color: "var(--zx-btn-text)",
+                color: "var(--zx-btn-fg)",
                 border: "var(--zx-btn-border)",
                 borderRadius: "var(--zx-btn-radius, 12px)",
                 boxShadow: "var(--zx-btn-shadow, none)",
-                fontFamily: "var(--zx-btn-family, var(--zx-font-family))",
+                fontFamily: "var(--zx-btn-font)",
               }}
             >
               {label}
@@ -91,7 +91,7 @@ export function MiniPreview({ template, className, size = "md", frame = true }: 
             background: "var(--zx-card-bg)",
             border: "var(--zx-card-border)",
             borderRadius: "var(--zx-card-radius, 8px)",
-            color: "var(--zx-text)",
+            color: "var(--foreground)",
           }}
         >
           <div className="opacity-80">Say hi 👋</div>
