@@ -630,8 +630,8 @@ function SharedSettings({ settings, onChange }: {
                   onChange={(e) => onChange({ animationDelay: numOrUndef(e.target.value) })} />
               </Field>
               <Field label="Repeat">
-                <Input type="number" min={0} max={20} value={s.animationRepeat ?? ""}
-                  onChange={(e) => onChange({ animationRepeat: numOrUndef(e.target.value) })} />
+                <SelectSimple value={s.animationRepeat ?? "once"} onChange={(v) => onChange({ animationRepeat: v as BlockSettings["animationRepeat"] })}
+                  options={[["once","Once"],["infinite","Infinite"]]} />
               </Field>
             </div>
             <Field label="Hover effect">
