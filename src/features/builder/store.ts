@@ -43,6 +43,7 @@ export interface Version {
 interface BuilderState {
   pageId: string | null;
   pageName: string;
+  pageSlug: string;
   content: BioContent;
   selectedId: string | null; // primary / last selected
   selectedIds: string[];
@@ -53,7 +54,7 @@ interface BuilderState {
   lastSavedAt: number | null;
 
   // lifecycle
-  load: (pageId: string, name: string, content: BioContent) => void;
+  load: (pageId: string, name: string, content: BioContent, slug?: string) => void;
   reset: () => void;
 
   // selection
