@@ -101,6 +101,8 @@ interface BuilderState {
   resetThemeProfile: () => void;
   resetThemeMotion: () => void;
   resetThemeAll: () => void;
+  /** Replace the theme (and optionally blocks) with a template's design. */
+  applyTemplate: (theme: PageTheme, opts?: { blocks?: Block[]; replaceContent?: boolean }) => void;
 
   // save wiring
   markSaving: () => void;
