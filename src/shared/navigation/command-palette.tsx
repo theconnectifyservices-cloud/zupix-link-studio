@@ -24,7 +24,7 @@ export function CommandPalette() {
   }, []);
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen} title="Command palette" description="Search across the app">
+    <CommandDialog open={open} onOpenChange={setOpen}>
       <CommandInput placeholder="Type a command or search…" />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
