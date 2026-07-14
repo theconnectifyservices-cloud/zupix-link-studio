@@ -6,6 +6,7 @@ import {
   MousePointerClick,
   Image as ImageIcon,
   Minus,
+  MoveVertical,
   Share2,
   Video,
   Images,
