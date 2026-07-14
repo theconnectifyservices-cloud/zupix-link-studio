@@ -19,9 +19,12 @@ export const Route = createFileRoute("/_authenticated/builder/$id")({
   component: BuilderPage,
 });
 
+export type PreviewViewport = "mobile" | "tablet" | "desktop";
+
 function BuilderPage() {
   const { id } = Route.useParams();
   const [previewMode, setPreviewMode] = useState(false);
+  const [viewport, setViewport] = useState<PreviewViewport>("mobile");
   const load = useBuilderStore((s) => s.load);
   const reset = useBuilderStore((s) => s.reset);
 
@@ -47,6 +50,8 @@ function BuilderPage() {
         <BuilderTopbar
           onTogglePreview={() => setPreviewMode((v) => !v)}
           previewMode={previewMode}
+          viewport={viewport}
+          onViewportChange={setViewport}
         />
         <div className="flex min-h-0 flex-1">
           {!previewMode && (
@@ -55,7 +60,7 @@ function BuilderPage() {
             </aside>
           )}
           <div className="min-w-0 flex-1">
-            <BuilderPreview />
+            <BuilderPreview viewport={viewport} />
           </div>
           {!previewMode && (
             <aside className="hidden w-80 shrink-0 border-l bg-background lg:flex">
@@ -67,3 +72,4 @@ function BuilderPage() {
     </div>
   );
 }
+

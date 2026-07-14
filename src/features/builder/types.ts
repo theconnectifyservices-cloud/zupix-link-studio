@@ -10,6 +10,7 @@ export type BlockType =
   | "button"
   | "image"
   | "divider"
+  | "spacer"
   | "social"
   | "video"
   | "gallery"
@@ -33,45 +34,111 @@ export interface BaseBlock {
 export interface ProfileBlock extends BaseBlock {
   type: "profile";
   avatarUrl?: string;
+  coverUrl?: string;
   displayName: string;
+  username?: string;
   bio?: string;
+  location?: string;
+  shortDescription?: string;
+  verified?: boolean;
 }
+
+export type TextAlign = "left" | "center" | "right";
+export type TextKind = "heading" | "paragraph";
+export type FontSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
+export type FontWeight = "normal" | "medium" | "semibold" | "bold";
 
 export interface HeadingBlock extends BaseBlock {
   type: "heading";
   text: string;
-  align: "left" | "center" | "right";
+  align: TextAlign;
+  fontSize?: FontSize;
+  fontWeight?: FontWeight;
+  color?: string;
 }
 
 export interface TextBlock extends BaseBlock {
   type: "text";
   text: string;
-  align: "left" | "center" | "right";
+  kind?: TextKind;
+  align: TextAlign;
+  fontSize?: FontSize;
+  fontWeight?: FontWeight;
+  color?: string;
 }
+
+export type ButtonAction =
+  | "website"
+  | "whatsapp"
+  | "phone"
+  | "email"
+  | "telegram"
+  | "instagram"
+  | "facebook"
+  | "youtube"
+  | "x"
+  | "linkedin"
+  | "custom";
+
+export type ButtonWidth = "full" | "auto" | "half";
+export type ButtonAlign = "left" | "center" | "right";
 
 export interface ButtonBlock extends BaseBlock {
   type: "button";
   label: string;
   url: string;
+  action?: ButtonAction;
+  newTab?: boolean;
+  disabled?: boolean;
   style: "filled" | "outline" | "soft";
+  width?: ButtonWidth;
+  align?: ButtonAlign;
 }
 
+export type ImageFit = "cover" | "contain";
 export interface ImageBlock extends BaseBlock {
   type: "image";
   url: string;
   alt?: string;
+  link?: string;
   rounded?: "none" | "sm" | "md" | "lg" | "full";
+  fit?: ImageFit;
 }
 
+export type DividerStyle = "solid" | "dashed" | "dotted";
+export type DividerSpacing = "sm" | "md" | "lg";
 export interface DividerBlock extends BaseBlock {
   type: "divider";
+  style?: DividerStyle;
+  spacing?: DividerSpacing;
   thickness: "thin" | "medium" | "thick";
 }
 
+export interface SpacerBlock extends BaseBlock {
+  type: "spacer";
+  height: number; // px
+}
+
+export type SocialPlatform =
+  | "instagram"
+  | "facebook"
+  | "youtube"
+  | "tiktok"
+  | "threads"
+  | "linkedin"
+  | "pinterest"
+  | "telegram"
+  | "whatsapp"
+  | "github"
+  | "twitter"
+  | "website"
+  | "custom";
+
 export interface SocialLink {
   id: string;
-  platform: "twitter" | "instagram" | "youtube" | "tiktok" | "linkedin" | "github" | "website";
+  platform: SocialPlatform;
   url: string;
+  label?: string;
 }
 export interface SocialBlock extends BaseBlock {
   type: "social";
@@ -81,7 +148,7 @@ export interface SocialBlock extends BaseBlock {
 export interface GenericBlock extends BaseBlock {
   type: Exclude<
     BlockType,
-    "profile" | "heading" | "text" | "button" | "image" | "divider" | "social"
+    "profile" | "heading" | "text" | "button" | "image" | "divider" | "spacer" | "social"
   >;
   [key: string]: unknown;
 }
@@ -93,6 +160,7 @@ export type Block =
   | ButtonBlock
   | ImageBlock
   | DividerBlock
+  | SpacerBlock
   | SocialBlock
   | GenericBlock;
 

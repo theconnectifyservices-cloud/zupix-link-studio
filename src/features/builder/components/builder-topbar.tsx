@@ -10,6 +10,9 @@ import {
   CheckCircle2,
   CircleDot,
   AlertCircle,
+  Smartphone,
+  Tablet,
+  Monitor,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -18,13 +21,17 @@ import { saveBuilderContent } from "../api";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+type Viewport = "mobile" | "tablet" | "desktop";
+
 interface Props {
   onTogglePreview: () => void;
   previewMode: boolean;
+  viewport?: Viewport;
+  onViewportChange?: (v: Viewport) => void;
 }
 
 /** Builder top bar: title, status, undo/redo, preview, save. */
-export function BuilderTopbar({ onTogglePreview, previewMode }: Props) {
+export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewportChange }: Props) {
   const pageId = useBuilderStore((s) => s.pageId);
   const pageName = useBuilderStore((s) => s.pageName);
   const status = useBuilderStore((s) => s.saveStatus);
@@ -90,6 +97,26 @@ export function BuilderTopbar({ onTogglePreview, previewMode }: Props) {
       </div>
 
       <div className="ml-auto flex items-center gap-1">
+        {onViewportChange && (
+          <div className="mr-1 hidden items-center gap-0.5 rounded-md border p-0.5 md:flex">
+            {([
+              ["mobile", Smartphone, "Mobile"],
+              ["tablet", Tablet, "Tablet"],
+              ["desktop", Monitor, "Desktop"],
+            ] as const).map(([v, Icon, label]) => (
+              <Button
+                key={v}
+                variant={viewport === v ? "secondary" : "ghost"}
+                size="icon"
+                className="h-7 w-7"
+                aria-label={label}
+                onClick={() => onViewportChange(v)}
+              >
+                <Icon className="h-3.5 w-3.5" />
+              </Button>
+            ))}
+          </div>
+        )}
         <Button variant="ghost" size="icon" aria-label="Undo" onClick={undo} disabled={past === 0}>
           <Undo2 className="h-4 w-4" />
         </Button>
