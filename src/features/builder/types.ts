@@ -340,8 +340,13 @@ export type Block =
   | EmbedBlock
   | GenericBlock;
 
+import type { PageTheme } from "./theme";
+
 export interface BioContent {
   blocks: Block[];
+  /** Global theme controlling the entire page appearance. Optional for
+   * backward compatibility — renderer falls back to DEFAULT_THEME. */
+  theme?: PageTheme;
 }
 
 export const EMPTY_CONTENT: BioContent = { blocks: [] };
