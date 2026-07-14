@@ -32,9 +32,7 @@ function SecuritySettings() {
       </div>
       <div className="rounded-lg border bg-card p-4">
         <p className="font-medium">Two-factor authentication</p>
-        <p className="text-sm text-muted-foreground">
-          Coming in a future phase — foundation only.
-        </p>
+        <p className="text-sm text-muted-foreground">Coming in a future phase — foundation only.</p>
       </div>
     </div>
   );

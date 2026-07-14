@@ -17,13 +17,7 @@ export function GoogleButton({ label = "Continue with Google" }: { label?: strin
   }
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      className="w-full"
-      onClick={onClick}
-      disabled={loading}
-    >
+    <Button type="button" variant="outline" className="w-full" onClick={onClick} disabled={loading}>
       <GoogleIcon className="mr-2 h-4 w-4" />
       {label}
     </Button>

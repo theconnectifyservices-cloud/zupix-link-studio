@@ -36,9 +36,9 @@ interface Props {
 
 export function CreateProjectModal({ open, onOpenChange, workspaceId, ownerId }: Props) {
   const qc = useQueryClient();
-  const [slugState, setSlugState] = useState<"idle" | "checking" | "available" | "taken" | "invalid">(
-    "idle",
-  );
+  const [slugState, setSlugState] = useState<
+    "idle" | "checking" | "available" | "taken" | "invalid"
+  >("idle");
 
   const form = useForm<CreateProjectInput>({
     resolver: zodResolver(createProjectSchema),
@@ -122,9 +122,7 @@ export function CreateProjectModal({ open, onOpenChange, workspaceId, ownerId }:
                   {slugState === "checking" && (
                     <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                   )}
-                  {slugState === "available" && (
-                    <Check className="h-4 w-4 text-emerald-600" />
-                  )}
+                  {slugState === "available" && <Check className="h-4 w-4 text-emerald-600" />}
                   {(slugState === "taken" || slugState === "invalid") && (
                     <X className="h-4 w-4 text-destructive" />
                   )}
@@ -177,7 +175,9 @@ export function CreateProjectModal({ open, onOpenChange, workspaceId, ownerId }:
             </Button>
             <Button
               type="submit"
-              disabled={form.formState.isSubmitting || slugState === "checking" || slugState === "taken"}
+              disabled={
+                form.formState.isSubmitting || slugState === "checking" || slugState === "taken"
+              }
             >
               {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create project

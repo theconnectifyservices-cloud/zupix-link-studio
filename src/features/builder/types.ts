@@ -32,20 +32,45 @@ export type BlockType =
 /** Entrance animation played once as the block appears. */
 export type EntranceAnim =
   | "none"
-  | "fade" | "fade-up" | "fade-down" | "fade-left" | "fade-right"
-  | "zoom-in" | "zoom-out" | "scale"
-  | "slide-up" | "slide-down"
-  | "rotate-in" | "flip" | "bounce";
+  | "fade"
+  | "fade-up"
+  | "fade-down"
+  | "fade-left"
+  | "fade-right"
+  | "zoom-in"
+  | "zoom-out"
+  | "scale"
+  | "slide-up"
+  | "slide-down"
+  | "rotate-in"
+  | "flip"
+  | "bounce";
 
 /** Continuous hover effect applied on pointer-over. */
 export type HoverEffect =
-  | "none" | "lift" | "scale" | "glow" | "shadow" | "border"
-  | "pulse" | "tilt" | "brightness" | "blur";
+  | "none"
+  | "lift"
+  | "scale"
+  | "glow"
+  | "shadow"
+  | "border"
+  | "pulse"
+  | "tilt"
+  | "brightness"
+  | "blur";
 
 /** Rich effect layered onto button-like blocks. */
 export type ButtonEffect =
-  | "none" | "shine" | "ripple" | "pulse" | "glow" | "neon"
-  | "floating" | "bounce" | "expand" | "press";
+  | "none"
+  | "shine"
+  | "ripple"
+  | "pulse"
+  | "glow"
+  | "neon"
+  | "floating"
+  | "bounce"
+  | "expand"
+  | "press";
 
 /** Per-viewport spacing / typography overrides. */
 export interface ResponsiveOverrides {
@@ -61,16 +86,16 @@ export type Viewport = "mobile" | "tablet" | "desktop";
 
 /** Shared visual/behavior settings available on every advanced block. */
 export interface BlockSettings {
-  paddingY?: number;   // px
-  paddingX?: number;   // px
-  marginTop?: number;  // px
+  paddingY?: number; // px
+  paddingX?: number; // px
+  marginTop?: number; // px
   marginBottom?: number; // px
   radius?: "none" | "sm" | "md" | "lg" | "xl" | "full";
   background?: string; // css color
   /** Entrance animation. Legacy "zoom" is normalized to "zoom-in" at render time. */
   animation?: EntranceAnim | "zoom";
-  animationDuration?: number;   // ms (default 600)
-  animationDelay?: number;      // ms (added on top of stagger)
+  animationDuration?: number; // ms (default 600)
+  animationDelay?: number; // ms (added on top of stagger)
   animationRepeat?: "once" | "infinite";
   hover?: HoverEffect;
   /** Only meaningful for button / buttonGroup blocks. */
@@ -247,7 +272,7 @@ export interface SocialFeedBlock extends BaseBlock {
   type: "socialFeed";
   provider: SocialFeedProvider;
   handle?: string; // @user or channel
-  limit?: number;  // desired items to show once connected
+  limit?: number; // desired items to show once connected
 }
 
 // ── Testimonials ─────────────────────────────────────────────────────────
@@ -281,7 +306,7 @@ export interface FaqBlock extends BaseBlock {
 export interface CountdownBlock extends BaseBlock {
   type: "countdown";
   title?: string;
-  target: string;  // ISO datetime
+  target: string; // ISO datetime
   timezone?: string;
   finishedLabel?: string;
 }
@@ -289,7 +314,7 @@ export interface CountdownBlock extends BaseBlock {
 // ── Map ──────────────────────────────────────────────────────────────────
 export interface MapBlock extends BaseBlock {
   type: "map";
-  mapUrl: string;   // Google Maps share url or embed src
+  mapUrl: string; // Google Maps share url or embed src
   locationName?: string;
   address?: string;
 }
@@ -352,9 +377,25 @@ export interface EmbedBlock extends BaseBlock {
 export interface GenericBlock extends BaseBlock {
   type: Exclude<
     BlockType,
-    | "profile" | "heading" | "text" | "button" | "image" | "divider" | "spacer" | "social"
-    | "video" | "gallery" | "socialFeed" | "testimonials" | "faq" | "countdown" | "map"
-    | "file" | "contact" | "buttonGroup" | "embed"
+    | "profile"
+    | "heading"
+    | "text"
+    | "button"
+    | "image"
+    | "divider"
+    | "spacer"
+    | "social"
+    | "video"
+    | "gallery"
+    | "socialFeed"
+    | "testimonials"
+    | "faq"
+    | "countdown"
+    | "map"
+    | "file"
+    | "contact"
+    | "buttonGroup"
+    | "embed"
   >;
   [key: string]: unknown;
 }

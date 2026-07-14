@@ -14,10 +14,7 @@ function NotificationsSettings() {
         { id: "email-security", label: "Security alerts by email" },
         { id: "email-marketing", label: "Marketing & tips" },
       ].map((n) => (
-        <div
-          key={n.id}
-          className="flex items-center justify-between rounded-lg border bg-card p-4"
-        >
+        <div key={n.id} className="flex items-center justify-between rounded-lg border bg-card p-4">
           <Label htmlFor={n.id} className="font-normal">
             {n.label}
           </Label>

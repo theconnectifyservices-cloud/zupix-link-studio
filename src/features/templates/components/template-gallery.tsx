@@ -10,25 +10,48 @@
 
 import { useMemo, useRef, useState } from "react";
 import {
-  Search, Star, Sparkles, Crown, Check, Download, Upload, Trash2,
-  MoreHorizontal, Copy, Eye, Pencil,
+  Search,
+  Star,
+  Sparkles,
+  Crown,
+  Check,
+  Download,
+  Upload,
+  Trash2,
+  MoreHorizontal,
+  Copy,
+  Eye,
+  Pencil,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
-  DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { TEMPLATE_CATEGORIES } from "../catalog";
-import { useAllTemplates, useFavorites, useRecent, exportTemplateFile, parseTemplate } from "../hooks";
+import {
+  useAllTemplates,
+  useFavorites,
+  useRecent,
+  exportTemplateFile,
+  parseTemplate,
+} from "../hooks";
 import { upsertCustomTemplate, newTemplateId } from "../storage";
 import type { Template, TemplateCategoryId, TemplateStyle } from "../types";
 import { MiniPreview } from "./mini-preview";
@@ -56,7 +79,7 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
   const [previewId, setPreviewId] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const previewTemplate = previewId ? all.find((t) => t.id === previewId) ?? null : null;
+  const previewTemplate = previewId ? (all.find((t) => t.id === previewId) ?? null) : null;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -69,7 +92,8 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
       if (category !== "all" && t.category !== category) return false;
       if (style !== "all" && t.style !== style) return false;
       if (q) {
-        const hay = `${t.name} ${t.description ?? ""} ${(t.tags ?? []).join(" ")} ${t.category}`.toLowerCase();
+        const hay =
+          `${t.name} ${t.description ?? ""} ${(t.tags ?? []).join(" ")} ${t.category}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -103,8 +127,12 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
   function handleDuplicate(t: Template) {
     const now = Date.now();
     const dup: Template = {
-      ...t, id: newTemplateId(), name: `${t.name} copy`, isCustom: true,
-      createdAt: now, updatedAt: now,
+      ...t,
+      id: newTemplateId(),
+      name: `${t.name} copy`,
+      isCustom: true,
+      createdAt: now,
+      updatedAt: now,
     };
     upsertCustomTemplate(dup);
     toast.success("Template duplicated");
@@ -125,16 +153,22 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
             />
           </div>
           <Select value={category} onValueChange={(v) => setCategory(v as typeof category)}>
-            <SelectTrigger className="h-9 w-[170px]"><SelectValue placeholder="Category" /></SelectTrigger>
+            <SelectTrigger className="h-9 w-[170px]">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All categories</SelectItem>
               {TEMPLATE_CATEGORIES.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>
+                <SelectItem key={c.id} value={c.id}>
+                  {c.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select value={style} onValueChange={(v) => setStyle(v as typeof style)}>
-            <SelectTrigger className="h-9 w-[140px]"><SelectValue placeholder="Style" /></SelectTrigger>
+            <SelectTrigger className="h-9 w-[140px]">
+              <SelectValue placeholder="Style" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All styles</SelectItem>
               <SelectItem value="light">Light</SelectItem>
@@ -148,21 +182,26 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
             <Upload className="h-3.5 w-3.5" /> Import
           </Button>
           <input
-            ref={fileRef} type="file" accept="application/json,.json" className="hidden"
+            ref={fileRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
             onChange={handleImportChange}
           />
         </div>
 
         {/* Filter chips */}
         <div className="flex flex-wrap items-center gap-1.5">
-          {([
-            ["all", "All"],
-            ["favorites", "★ Favorites"],
-            ["recent", "Recent"],
-            ["mine", "My templates"],
-            ["free", "Free"],
-            ["premium", "Premium"],
-          ] as const).map(([id, label]) => (
+          {(
+            [
+              ["all", "All"],
+              ["favorites", "★ Favorites"],
+              ["recent", "Recent"],
+              ["mine", "My templates"],
+              ["free", "Free"],
+              ["premium", "Premium"],
+            ] as const
+          ).map(([id, label]) => (
             <Button
               key={id}
               size="sm"
@@ -193,8 +232,22 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
                 favorite={favs.has(t.id)}
                 onToggleFavorite={() => favs.toggle(t.id)}
                 onPreview={() => setPreviewId(t.id)}
-                onDelete={t.isCustom ? () => { remove(t.id); toast.success("Template deleted"); } : undefined}
-                onRename={t.isCustom ? (name) => { update(t.id, { name }); toast.success("Renamed"); } : undefined}
+                onDelete={
+                  t.isCustom
+                    ? () => {
+                        remove(t.id);
+                        toast.success("Template deleted");
+                      }
+                    : undefined
+                }
+                onRename={
+                  t.isCustom
+                    ? (name) => {
+                        update(t.id, { name });
+                        toast.success("Renamed");
+                      }
+                    : undefined
+                }
                 onDuplicate={() => handleDuplicate(t)}
                 onExport={() => exportTemplateFile(t)}
                 onApply={mode === "apply" ? () => handleApply(t, false) : undefined}
@@ -210,7 +263,10 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
           onClose={() => setPreviewId(null)}
           onApply={
             mode === "apply" && onApply
-              ? (replaceContent) => { handleApply(previewTemplate, replaceContent); setPreviewId(null); }
+              ? (replaceContent) => {
+                  handleApply(previewTemplate, replaceContent);
+                  setPreviewId(null);
+                }
               : undefined
           }
         />
@@ -234,8 +290,15 @@ interface CardProps {
 }
 
 function TemplateCard({
-  template, favorite, onToggleFavorite, onPreview, onApply,
-  onDelete, onRename, onDuplicate, onExport,
+  template,
+  favorite,
+  onToggleFavorite,
+  onPreview,
+  onApply,
+  onDelete,
+  onRename,
+  onDuplicate,
+  onExport,
 }: CardProps) {
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border bg-card transition hover:shadow-md">
@@ -258,14 +321,19 @@ function TemplateCard({
               <Crown className="h-3 w-3" /> Premium
             </Badge>
           ) : (
-            <Badge variant="secondary" className="bg-emerald-500/90 text-white">Free</Badge>
+            <Badge variant="secondary" className="bg-emerald-500/90 text-white">
+              Free
+            </Badge>
           )}
           {template.isCustom && <Badge variant="secondary">Mine</Badge>}
         </div>
         <button
           type="button"
           aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-          onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite();
+          }}
           className="absolute right-2 top-2 rounded-full bg-background/90 p-1.5 text-foreground shadow-sm transition hover:bg-background"
         >
           <Star className={cn("h-3.5 w-3.5", favorite && "fill-amber-400 text-amber-400")} />
@@ -276,7 +344,8 @@ function TemplateCard({
         <div className="min-w-0">
           <div className="truncate text-sm font-semibold">{template.name}</div>
           <div className="truncate text-xs text-muted-foreground">
-            {TEMPLATE_CATEGORIES.find((c) => c.id === template.category)?.label ?? template.category}
+            {TEMPLATE_CATEGORIES.find((c) => c.id === template.category)?.label ??
+              template.category}
           </div>
         </div>
         <DropdownMenu>

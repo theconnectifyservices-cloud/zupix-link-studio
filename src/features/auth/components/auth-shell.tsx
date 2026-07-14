@@ -24,20 +24,12 @@ export function AuthShell({
         <div className="w-full max-w-md">
           <div className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8">
             <div className="mb-6 space-y-1">
-              <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-                {title}
-              </h1>
-              {subtitle && (
-                <p className="text-sm text-muted-foreground">{subtitle}</p>
-              )}
+              <h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
+              {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
             </div>
             {children}
           </div>
-          {footer && (
-            <p className="mt-6 text-center text-sm text-muted-foreground">
-              {footer}
-            </p>
-          )}
+          {footer && <p className="mt-6 text-center text-sm text-muted-foreground">{footer}</p>}
         </div>
       </main>
     </div>

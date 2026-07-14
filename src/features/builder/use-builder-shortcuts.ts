@@ -19,18 +19,12 @@ export function useBuilderShortcuts(enabled = true) {
       const target = e.target as HTMLElement | null;
       if (target) {
         const tag = target.tagName;
-        if (
-          target.isContentEditable ||
-          tag === "INPUT" ||
-          tag === "TEXTAREA" ||
-          tag === "SELECT"
-        ) {
+        if (target.isContentEditable || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
           // still allow undo/redo/save globally
           const mod = e.metaKey || e.ctrlKey;
           const isUndo = mod && !e.shiftKey && e.key.toLowerCase() === "z";
           const isRedo =
-            mod &&
-            ((e.shiftKey && e.key.toLowerCase() === "z") || e.key.toLowerCase() === "y");
+            mod && ((e.shiftKey && e.key.toLowerCase() === "z") || e.key.toLowerCase() === "y");
           if (!isUndo && !isRedo) return;
         }
       }

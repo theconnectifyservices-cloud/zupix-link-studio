@@ -9,9 +9,7 @@ export function QuickActions() {
       size="sm"
       className="gap-1"
       aria-label="Create new bio page"
-      onClick={() =>
-        navigate({ to: "/app/projects", search: { new: "1" } as never })
-      }
+      onClick={() => navigate({ to: "/app/projects", search: { new: "1" } as never })}
     >
       <Plus className="h-4 w-4" aria-hidden />
       <span className="hidden sm:inline">New</span>

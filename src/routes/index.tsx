@@ -28,8 +28,8 @@ function Index() {
           {APP_CONFIG.name}
         </h1>
         <p className="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
-          Premium bio link platform. Authentication, user identity, and workspace
-          foundation are live. Create an account to try the flow.
+          Premium bio link platform. Authentication, user identity, and workspace foundation are
+          live. Create an account to try the flow.
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">

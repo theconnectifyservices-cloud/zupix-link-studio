@@ -21,37 +21,88 @@ import type {
 } from "./types";
 import { cn } from "@/lib/utils";
 import {
-  Twitter, Instagram, Youtube, Linkedin, Github, Globe, Music2, Facebook,
-  MessageCircle, Send, AtSign, Image as ImageIcon, BadgeCheck, MapPin, Link as LinkIcon,
-  ChevronDown, Star, Download, Phone, Mail, MessageSquare, Sparkles, Play,
-  FileText, FileArchive, File as FileIcon,
+  Twitter,
+  Instagram,
+  Youtube,
+  Linkedin,
+  Github,
+  Globe,
+  Music2,
+  Facebook,
+  MessageCircle,
+  Send,
+  AtSign,
+  Image as ImageIcon,
+  BadgeCheck,
+  MapPin,
+  Link as LinkIcon,
+  ChevronDown,
+  Star,
+  Download,
+  Phone,
+  Mail,
+  MessageSquare,
+  Sparkles,
+  Play,
+  FileText,
+  FileArchive,
+  File as FileIcon,
   type LucideIcon,
 } from "lucide-react";
 import {
-  Accordion, AccordionContent, AccordionItem, AccordionTrigger,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useBuilderStore } from "./store";
 import { DEFAULT_PROFILE } from "./theme";
 
 const SOCIAL_ICON: Record<SocialPlatform, LucideIcon> = {
-  instagram: Instagram, facebook: Facebook, youtube: Youtube, tiktok: Music2,
-  threads: AtSign, linkedin: Linkedin, pinterest: ImageIcon, telegram: Send,
-  whatsapp: MessageCircle, github: Github, twitter: Twitter, website: Globe, custom: LinkIcon,
+  instagram: Instagram,
+  facebook: Facebook,
+  youtube: Youtube,
+  tiktok: Music2,
+  threads: AtSign,
+  linkedin: Linkedin,
+  pinterest: ImageIcon,
+  telegram: Send,
+  whatsapp: MessageCircle,
+  github: Github,
+  twitter: Twitter,
+  website: Globe,
+  custom: LinkIcon,
 };
 
 const FONT_SIZE: Record<FontSize, string> = {
-  xs: "text-xs", sm: "text-sm", base: "text-base", lg: "text-lg",
-  xl: "text-xl", "2xl": "text-2xl", "3xl": "text-3xl",
+  xs: "text-xs",
+  sm: "text-sm",
+  base: "text-base",
+  lg: "text-lg",
+  xl: "text-xl",
+  "2xl": "text-2xl",
+  "3xl": "text-3xl",
 };
 const FONT_WEIGHT: Record<FontWeight, string> = {
-  normal: "font-normal", medium: "font-medium", semibold: "font-semibold", bold: "font-bold",
+  normal: "font-normal",
+  medium: "font-medium",
+  semibold: "font-semibold",
+  bold: "font-bold",
 };
 const WIDTH_CLASS = { full: "w-full", auto: "w-auto px-6", half: "w-1/2" } as const;
-const ALIGN_WRAP = { left: "justify-start", center: "justify-center", right: "justify-end" } as const;
+const ALIGN_WRAP = {
+  left: "justify-start",
+  center: "justify-center",
+  right: "justify-end",
+} as const;
 
 const RADIUS_CLASS: Record<NonNullable<BlockSettings["radius"]>, string> = {
-  none: "rounded-none", sm: "rounded-sm", md: "rounded-md",
-  lg: "rounded-lg", xl: "rounded-2xl", full: "rounded-full",
+  none: "rounded-none",
+  sm: "rounded-sm",
+  md: "rounded-md",
+  lg: "rounded-lg",
+  xl: "rounded-2xl",
+  full: "rounded-full",
 };
 
 /** Normalize legacy animation ids. */
@@ -101,7 +152,9 @@ export function BlockRenderer({
   const hover = s.hover && s.hover !== "none" ? s.hover : null;
   const btnFx =
     block.type === "button" || block.type === "buttonGroup"
-      ? s.buttonEffect && s.buttonEffect !== "none" ? s.buttonEffect : null
+      ? s.buttonEffect && s.buttonEffect !== "none"
+        ? s.buttonEffect
+        : null
       : null;
 
   const wrapCls = cn(
@@ -112,9 +165,12 @@ export function BlockRenderer({
   );
 
   const style: CSSProperties = {
-    paddingTop: paddingY, paddingBottom: paddingY,
-    paddingLeft: paddingX, paddingRight: paddingX,
-    marginTop, marginBottom,
+    paddingTop: paddingY,
+    paddingBottom: paddingY,
+    paddingLeft: paddingX,
+    paddingRight: paddingX,
+    marginTop,
+    marginBottom,
     background: s.background,
   };
   if (fontScale && fontScale !== 1) style.fontSize = `${fontScale}em`;
@@ -127,8 +183,16 @@ export function BlockRenderer({
   }
 
   const hasWrap =
-    !!s.background || !!paddingX || !!paddingY || !!marginTop || !!marginBottom ||
-    !!s.radius || anim !== "none" || !!hover || !!btnFx || (fontScale && fontScale !== 1);
+    !!s.background ||
+    !!paddingX ||
+    !!paddingY ||
+    !!marginTop ||
+    !!marginBottom ||
+    !!s.radius ||
+    anim !== "none" ||
+    !!hover ||
+    !!btnFx ||
+    (fontScale && fontScale !== 1);
 
   const inner = renderInner(block);
   if (!hasWrap) return inner;
@@ -152,24 +216,36 @@ function renderInner(block: Block) {
 
     case "heading":
       return (
-        <h2 style={{
-          ...(block.color ? { color: block.color } : {}),
-          fontFamily: "var(--zx-heading-family)",
-          fontWeight: "var(--zx-heading-weight, 700)",
-          textTransform: "var(--zx-text-transform, none)" as CSSProperties["textTransform"],
-        }}
-          className={cn(FONT_SIZE[block.fontSize ?? "xl"], FONT_WEIGHT[block.fontWeight ?? "bold"],
-            block.align === "center" && "text-center", block.align === "right" && "text-right")}>
+        <h2
+          style={{
+            ...(block.color ? { color: block.color } : {}),
+            fontFamily: "var(--zx-heading-family)",
+            fontWeight: "var(--zx-heading-weight, 700)",
+            textTransform: "var(--zx-text-transform, none)" as CSSProperties["textTransform"],
+          }}
+          className={cn(
+            FONT_SIZE[block.fontSize ?? "xl"],
+            FONT_WEIGHT[block.fontWeight ?? "bold"],
+            block.align === "center" && "text-center",
+            block.align === "right" && "text-right",
+          )}
+        >
           {block.text || "Heading"}
         </h2>
       );
 
     case "text":
       return (
-        <p style={block.color ? { color: block.color } : undefined}
-          className={cn("whitespace-pre-wrap text-foreground/80", FONT_SIZE[block.fontSize ?? "sm"],
+        <p
+          style={block.color ? { color: block.color } : undefined}
+          className={cn(
+            "whitespace-pre-wrap text-foreground/80",
+            FONT_SIZE[block.fontSize ?? "sm"],
             FONT_WEIGHT[block.fontWeight ?? "normal"],
-            block.align === "center" && "text-center", block.align === "right" && "text-right")}>
+            block.align === "center" && "text-center",
+            block.align === "right" && "text-right",
+          )}
+        >
           {block.text}
         </p>
       );
@@ -209,15 +285,25 @@ function renderInner(block: Block) {
 
     case "image": {
       if (!block.url) {
-        return <div className="flex h-32 items-center justify-center rounded-md border border-dashed text-xs text-muted-foreground">Add an image URL</div>;
+        return (
+          <div className="flex h-32 items-center justify-center rounded-md border border-dashed text-xs text-muted-foreground">
+            Add an image URL
+          </div>
+        );
       }
       return (
-        <img src={block.url} alt={block.alt ?? ""}
-          className={cn("w-full", block.fit === "contain" ? "object-contain" : "object-cover",
+        <img
+          src={block.url}
+          alt={block.alt ?? ""}
+          className={cn(
+            "w-full",
+            block.fit === "contain" ? "object-contain" : "object-cover",
             block.rounded === "full" && "rounded-full",
             block.rounded === "lg" && "rounded-2xl",
             block.rounded === "md" && "rounded-lg",
-            block.rounded === "sm" && "rounded")}/>
+            block.rounded === "sm" && "rounded",
+          )}
+        />
       );
     }
 
@@ -236,8 +322,11 @@ function renderInner(block: Block) {
           {block.links.map((l) => {
             const Icon = SOCIAL_ICON[l.platform] ?? Globe;
             return (
-              <span key={l.id} className="grid h-9 w-9 place-items-center rounded-full bg-muted text-foreground"
-                aria-label={l.label || l.platform}>
+              <span
+                key={l.id}
+                className="grid h-9 w-9 place-items-center rounded-full bg-muted text-foreground"
+                aria-label={l.label || l.platform}
+              >
                 <Icon className="h-4 w-4" />
               </span>
             );
@@ -245,16 +334,26 @@ function renderInner(block: Block) {
         </div>
       );
 
-    case "video": return <VideoRender block={block} />;
-    case "gallery": return <GalleryRender block={block} />;
-    case "socialFeed": return <SocialFeedRender block={block} />;
-    case "testimonials": return <TestimonialsRender block={block} />;
-    case "faq": return <FaqRender block={block} />;
-    case "countdown": return <CountdownRender block={block} />;
-    case "map": return <MapRender block={block} />;
-    case "file": return <FileRender block={block} />;
-    case "contact": return <ContactRender block={block} />;
-    case "embed": return <EmbedRender block={block} />;
+    case "video":
+      return <VideoRender block={block} />;
+    case "gallery":
+      return <GalleryRender block={block} />;
+    case "socialFeed":
+      return <SocialFeedRender block={block} />;
+    case "testimonials":
+      return <TestimonialsRender block={block} />;
+    case "faq":
+      return <FaqRender block={block} />;
+    case "countdown":
+      return <CountdownRender block={block} />;
+    case "map":
+      return <MapRender block={block} />;
+    case "file":
+      return <FileRender block={block} />;
+    case "contact":
+      return <ContactRender block={block} />;
+    case "embed":
+      return <EmbedRender block={block} />;
 
     default:
       return (
@@ -274,9 +373,13 @@ function DividerRender({ block }: { block: Extract<Block, { type: "divider" }> }
     const to = block.gradientTo ?? "transparent";
     const mid = block.gradientFrom ?? "currentColor";
     return (
-      <div className={spacing}
-        style={{ height: block.thickness === "thick" ? 4 : block.thickness === "medium" ? 2 : 1,
-          background: `linear-gradient(to right, ${from}, ${mid}, ${to})` }}/>
+      <div
+        className={spacing}
+        style={{
+          height: block.thickness === "thick" ? 4 : block.thickness === "medium" ? 2 : 1,
+          background: `linear-gradient(to right, ${from}, ${mid}, ${to})`,
+        }}
+      />
     );
   }
   if (variant === "icon") {
@@ -290,38 +393,70 @@ function DividerRender({ block }: { block: Extract<Block, { type: "divider" }> }
   }
   if (variant === "text") {
     return (
-      <div className={cn("flex items-center gap-3 text-[11px] uppercase tracking-widest text-muted-foreground", spacing)}>
+      <div
+        className={cn(
+          "flex items-center gap-3 text-[11px] uppercase tracking-widest text-muted-foreground",
+          spacing,
+        )}
+      >
         <span className="h-px flex-1 bg-foreground/20" />
         <span>{block.label || "Section"}</span>
         <span className="h-px flex-1 bg-foreground/20" />
       </div>
     );
   }
-  const style = block.style === "dashed" ? "border-dashed" : block.style === "dotted" ? "border-dotted" : "border-solid";
+  const style =
+    block.style === "dashed"
+      ? "border-dashed"
+      : block.style === "dotted"
+        ? "border-dotted"
+        : "border-solid";
   return (
-    <hr className={cn("border-foreground/20", style, spacing,
-      block.thickness === "medium" && "border-t-2",
-      block.thickness === "thick" && "border-t-4")} />
+    <hr
+      className={cn(
+        "border-foreground/20",
+        style,
+        spacing,
+        block.thickness === "medium" && "border-t-2",
+        block.thickness === "thick" && "border-t-4",
+      )}
+    />
   );
 }
 
 // ── Button group ─────────────────────────────────────────────────────────
 function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
   if (block.buttons.length === 0) {
-    return <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">No buttons yet</div>;
+    return (
+      <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+        No buttons yet
+      </div>
+    );
   }
-  const cls = block.layout === "horizontal" ? "flex flex-wrap gap-2"
-    : block.layout === "grid" ? `grid gap-2 grid-cols-${block.columns ?? 2}`
-    : "flex flex-col gap-2";
+  const cls =
+    block.layout === "horizontal"
+      ? "flex flex-wrap gap-2"
+      : block.layout === "grid"
+        ? `grid gap-2 grid-cols-${block.columns ?? 2}`
+        : "flex flex-col gap-2";
   return (
     <div className={cls}>
       {block.buttons.map((b) => {
-        const v = b.style === "outline" ? "border border-foreground/30 text-foreground"
-          : b.style === "soft" ? "bg-muted text-foreground" : "bg-foreground text-background";
+        const v =
+          b.style === "outline"
+            ? "border border-foreground/30 text-foreground"
+            : b.style === "soft"
+              ? "bg-muted text-foreground"
+              : "bg-foreground text-background";
         return (
-          <div key={b.id}
-            className={cn("rounded-full px-4 py-2.5 text-center text-sm font-medium", v,
-              block.layout === "vertical" && "w-full")}>
+          <div
+            key={b.id}
+            className={cn(
+              "rounded-full px-4 py-2.5 text-center text-sm font-medium",
+              v,
+              block.layout === "vertical" && "w-full",
+            )}
+          >
             {b.label}
           </div>
         );
@@ -340,16 +475,42 @@ function extractVimeoId(url: string): string | null {
   return m ? m[1] : null;
 }
 function VideoRender({ block }: { block: VideoBlock }) {
-  const roundedCls = block.rounded === "xl" ? "rounded-2xl" : block.rounded === "lg" ? "rounded-xl"
-    : block.rounded === "md" ? "rounded-lg" : block.rounded === "sm" ? "rounded" : "rounded-none";
+  const roundedCls =
+    block.rounded === "xl"
+      ? "rounded-2xl"
+      : block.rounded === "lg"
+        ? "rounded-xl"
+        : block.rounded === "md"
+          ? "rounded-lg"
+          : block.rounded === "sm"
+            ? "rounded"
+            : "rounded-none";
   if (!block.url) {
-    return <div className={cn("flex aspect-video items-center justify-center border border-dashed text-xs text-muted-foreground", roundedCls)}>
-      <div className="flex flex-col items-center gap-2"><Play className="h-6 w-6" /> Add a video URL</div>
-    </div>;
+    return (
+      <div
+        className={cn(
+          "flex aspect-video items-center justify-center border border-dashed text-xs text-muted-foreground",
+          roundedCls,
+        )}
+      >
+        <div className="flex flex-col items-center gap-2">
+          <Play className="h-6 w-6" /> Add a video URL
+        </div>
+      </div>
+    );
   }
   if (block.provider === "mp4") {
-    return <video src={block.url} controls muted={block.muted} loop={block.loop} autoPlay={block.autoplay}
-      poster={block.thumbnailUrl} className={cn("aspect-video w-full bg-black", roundedCls)} />;
+    return (
+      <video
+        src={block.url}
+        controls
+        muted={block.muted}
+        loop={block.loop}
+        autoPlay={block.autoplay}
+        poster={block.thumbnailUrl}
+        className={cn("aspect-video w-full bg-black", roundedCls)}
+      />
+    );
   }
   const params = new URLSearchParams();
   if (block.autoplay) params.set("autoplay", "1");
@@ -358,17 +519,32 @@ function VideoRender({ block }: { block: VideoBlock }) {
   let src = "";
   if (block.provider === "youtube") {
     const id = extractYouTubeId(block.url);
-    if (!id) return <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">Invalid YouTube URL</div>;
+    if (!id)
+      return (
+        <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+          Invalid YouTube URL
+        </div>
+      );
     src = `https://www.youtube.com/embed/${id}?${params.toString()}`;
   } else {
     const id = extractVimeoId(block.url);
-    if (!id) return <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">Invalid Vimeo URL</div>;
+    if (!id)
+      return (
+        <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+          Invalid Vimeo URL
+        </div>
+      );
     src = `https://player.vimeo.com/video/${id}?${params.toString()}`;
   }
   return (
     <div className={cn("aspect-video w-full overflow-hidden bg-black", roundedCls)}>
-      <iframe src={src} className="h-full w-full" allow="autoplay; encrypted-media; picture-in-picture"
-        allowFullScreen title="Video" />
+      <iframe
+        src={src}
+        className="h-full w-full"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowFullScreen
+        title="Video"
+      />
     </div>
   );
 }
@@ -376,19 +552,33 @@ function VideoRender({ block }: { block: VideoBlock }) {
 // ── Gallery ──────────────────────────────────────────────────────────────
 function GalleryRender({ block }: { block: GalleryBlock }) {
   const [preview, setPreview] = useState<string | null>(null);
-  const rounded = block.rounded === "lg" ? "rounded-xl" : block.rounded === "md" ? "rounded-lg"
-    : block.rounded === "sm" ? "rounded" : "rounded-none";
+  const rounded =
+    block.rounded === "lg"
+      ? "rounded-xl"
+      : block.rounded === "md"
+        ? "rounded-lg"
+        : block.rounded === "sm"
+          ? "rounded"
+          : "rounded-none";
   const gap = block.gap === "lg" ? "gap-4" : block.gap === "sm" ? "gap-1" : "gap-2";
   if (block.images.length === 0) {
-    return <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">Add gallery images</div>;
+    return (
+      <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">
+        Add gallery images
+      </div>
+    );
   }
   if (block.layout === "carousel") {
     return (
       <div className={cn("flex snap-x snap-mandatory overflow-x-auto", gap)}>
         {block.images.map((img) => (
-          <img key={img.id} src={img.url} alt={img.alt ?? ""}
+          <img
+            key={img.id}
+            src={img.url}
+            alt={img.alt ?? ""}
             className={cn("h-40 w-40 shrink-0 cursor-pointer snap-start object-cover", rounded)}
-            onClick={() => setPreview(img.url)} />
+            onClick={() => setPreview(img.url)}
+          />
         ))}
         {preview && <LightBox url={preview} onClose={() => setPreview(null)} />}
       </div>
@@ -399,9 +589,13 @@ function GalleryRender({ block }: { block: GalleryBlock }) {
     return (
       <div className={cn("columns-2", cols === 3 && "columns-3", cols === 4 && "columns-4", gap)}>
         {block.images.map((img) => (
-          <img key={img.id} src={img.url} alt={img.alt ?? ""}
+          <img
+            key={img.id}
+            src={img.url}
+            alt={img.alt ?? ""}
             className={cn("mb-2 w-full cursor-pointer break-inside-avoid object-cover", rounded)}
-            onClick={() => setPreview(img.url)} />
+            onClick={() => setPreview(img.url)}
+          />
         ))}
         {preview && <LightBox url={preview} onClose={() => setPreview(null)} />}
       </div>
@@ -412,9 +606,13 @@ function GalleryRender({ block }: { block: GalleryBlock }) {
   return (
     <div className={cn("grid", gridCols, gap)}>
       {block.images.map((img) => (
-        <img key={img.id} src={img.url} alt={img.alt ?? ""}
+        <img
+          key={img.id}
+          src={img.url}
+          alt={img.alt ?? ""}
           className={cn("aspect-square w-full cursor-pointer object-cover", rounded)}
-          onClick={() => setPreview(img.url)} />
+          onClick={() => setPreview(img.url)}
+        />
       ))}
       {preview && <LightBox url={preview} onClose={() => setPreview(null)} />}
     </div>
@@ -422,8 +620,10 @@ function GalleryRender({ block }: { block: GalleryBlock }) {
 }
 function LightBox({ url, onClose }: { url: string; onClose: () => void }) {
   return (
-    <div onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+    >
       <img src={url} alt="" className="max-h-full max-w-full rounded" />
     </div>
   );
@@ -435,7 +635,9 @@ function SocialFeedRender({ block }: { block: SocialFeedBlock }) {
     <div className="rounded-lg border bg-muted/30 p-4 text-center">
       <div className="text-xs font-medium capitalize">{block.provider} feed</div>
       <div className="mt-1 text-[11px] text-muted-foreground">
-        {block.handle ? `@${block.handle.replace(/^@/, "")}` : "Connect an account to load the feed"}
+        {block.handle
+          ? `@${block.handle.replace(/^@/, "")}`
+          : "Connect an account to load the feed"}
       </div>
       <div className="mt-3 grid grid-cols-3 gap-1.5">
         {Array.from({ length: Math.min(block.limit ?? 6, 6) }).map((_, i) => (
@@ -452,28 +654,46 @@ function TestimonialsRender({ block }: { block: TestimonialsBlock }) {
     <div className="space-y-3">
       {block.title && <div className="text-center text-sm font-semibold">{block.title}</div>}
       {block.items.length === 0 ? (
-        <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">No testimonials</div>
-      ) : block.items.map((t) => (
-        <div key={t.id} className="rounded-xl border bg-card p-3">
-          <div className="flex items-center gap-2">
-            <div className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-muted text-xs font-semibold">
-              {t.avatarUrl ? <img src={t.avatarUrl} alt="" className="h-full w-full object-cover" /> : (t.name || "?").charAt(0)}
-            </div>
-            <div className="min-w-0">
-              <div className="truncate text-xs font-medium">{t.name}</div>
-              {t.role && <div className="truncate text-[10px] text-muted-foreground">{t.role}</div>}
-            </div>
-            {typeof t.rating === "number" && (
-              <div className="ml-auto flex">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className={cn("h-3 w-3", i < (t.rating ?? 0) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/40")} />
-                ))}
-              </div>
-            )}
-          </div>
-          <p className="mt-2 text-xs text-foreground/80">{t.review}</p>
+        <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+          No testimonials
         </div>
-      ))}
+      ) : (
+        block.items.map((t) => (
+          <div key={t.id} className="rounded-xl border bg-card p-3">
+            <div className="flex items-center gap-2">
+              <div className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-muted text-xs font-semibold">
+                {t.avatarUrl ? (
+                  <img src={t.avatarUrl} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  (t.name || "?").charAt(0)
+                )}
+              </div>
+              <div className="min-w-0">
+                <div className="truncate text-xs font-medium">{t.name}</div>
+                {t.role && (
+                  <div className="truncate text-[10px] text-muted-foreground">{t.role}</div>
+                )}
+              </div>
+              {typeof t.rating === "number" && (
+                <div className="ml-auto flex">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={cn(
+                        "h-3 w-3",
+                        i < (t.rating ?? 0)
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-muted-foreground/40",
+                      )}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            <p className="mt-2 text-xs text-foreground/80">{t.review}</p>
+          </div>
+        ))
+      )}
     </div>
   );
 }
@@ -484,13 +704,19 @@ function FaqRender({ block }: { block: FaqBlock }) {
     <div className="space-y-2">
       {block.title && <div className="text-sm font-semibold">{block.title}</div>}
       {block.items.length === 0 ? (
-        <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">No questions</div>
+        <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+          No questions
+        </div>
       ) : (
         <Accordion type="single" collapsible className="w-full">
           {block.items.map((it) => (
             <AccordionItem key={it.id} value={it.id}>
-              <AccordionTrigger className="text-left text-sm">{it.question || "Question"}</AccordionTrigger>
-              <AccordionContent className="text-xs text-muted-foreground">{it.answer}</AccordionContent>
+              <AccordionTrigger className="text-left text-sm">
+                {it.question || "Question"}
+              </AccordionTrigger>
+              <AccordionContent className="text-xs text-muted-foreground">
+                {it.answer}
+              </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
@@ -509,7 +735,11 @@ function CountdownRender({ block }: { block: CountdownBlock }) {
   const target = new Date(block.target).getTime();
   const diff = target - now;
   if (isNaN(target)) {
-    return <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">Set a target date</div>;
+    return (
+      <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+        Set a target date
+      </div>
+    );
   }
   if (diff <= 0) {
     return (
@@ -524,9 +754,16 @@ function CountdownRender({ block }: { block: CountdownBlock }) {
   const s = Math.floor((diff / 1000) % 60);
   return (
     <div className="rounded-xl border bg-card p-4 text-center">
-      {block.title && <div className="mb-2 text-xs font-medium text-muted-foreground">{block.title}</div>}
+      {block.title && (
+        <div className="mb-2 text-xs font-medium text-muted-foreground">{block.title}</div>
+      )}
       <div className="grid grid-cols-4 gap-2">
-        {[[d, "Days"], [h, "Hrs"], [m, "Min"], [s, "Sec"]].map(([n, l]) => (
+        {[
+          [d, "Days"],
+          [h, "Hrs"],
+          [m, "Min"],
+          [s, "Sec"],
+        ].map(([n, l]) => (
           <div key={l as string} className="rounded-lg bg-muted p-2">
             <div className="text-lg font-bold tabular-nums">{String(n).padStart(2, "0")}</div>
             <div className="text-[10px] text-muted-foreground">{l}</div>
@@ -540,14 +777,23 @@ function CountdownRender({ block }: { block: CountdownBlock }) {
 // ── Map ──────────────────────────────────────────────────────────────────
 function MapRender({ block }: { block: MapBlock }) {
   if (!block.mapUrl) {
-    return <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">Add a Google Maps URL</div>;
+    return (
+      <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">
+        Add a Google Maps URL
+      </div>
+    );
   }
   const isEmbed = /google\.com\/maps\/embed/.test(block.mapUrl);
   return (
     <div className="overflow-hidden rounded-xl border">
       {isEmbed ? (
-        <iframe src={block.mapUrl} className="h-48 w-full" loading="lazy" title="Map"
-          referrerPolicy="no-referrer-when-downgrade" />
+        <iframe
+          src={block.mapUrl}
+          className="h-48 w-full"
+          loading="lazy"
+          title="Map"
+          referrerPolicy="no-referrer-when-downgrade"
+        />
       ) : (
         <div className="flex h-40 items-center justify-center bg-muted">
           <MapPin className="h-8 w-8 text-muted-foreground" />
@@ -555,10 +801,16 @@ function MapRender({ block }: { block: MapBlock }) {
       )}
       <div className="flex items-center justify-between gap-3 p-3">
         <div className="min-w-0">
-          {block.locationName && <div className="truncate text-sm font-medium">{block.locationName}</div>}
-          {block.address && <div className="truncate text-[11px] text-muted-foreground">{block.address}</div>}
+          {block.locationName && (
+            <div className="truncate text-sm font-medium">{block.locationName}</div>
+          )}
+          {block.address && (
+            <div className="truncate text-[11px] text-muted-foreground">{block.address}</div>
+          )}
         </div>
-        <div className="shrink-0 rounded-full bg-foreground px-3 py-1 text-[11px] font-medium text-background">Open</div>
+        <div className="shrink-0 rounded-full bg-foreground px-3 py-1 text-[11px] font-medium text-background">
+          Open
+        </div>
       </div>
     </div>
   );
@@ -566,10 +818,16 @@ function MapRender({ block }: { block: MapBlock }) {
 
 // ── File Download ────────────────────────────────────────────────────────
 function FileRender({ block }: { block: FileBlock }) {
-  const Icon = block.fileKind === "zip" ? FileArchive
-    : block.fileKind === "image" ? ImageIcon
-    : block.fileKind === "docx" ? FileText
-    : block.fileKind === "pdf" ? FileText : FileIcon;
+  const Icon =
+    block.fileKind === "zip"
+      ? FileArchive
+      : block.fileKind === "image"
+        ? ImageIcon
+        : block.fileKind === "docx"
+          ? FileText
+          : block.fileKind === "pdf"
+            ? FileText
+            : FileIcon;
   return (
     <div className="flex items-center gap-3 rounded-xl border bg-card p-3">
       <div className="grid h-10 w-10 place-items-center rounded-lg bg-muted">
@@ -577,7 +835,9 @@ function FileRender({ block }: { block: FileBlock }) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="truncate text-sm font-medium">{block.fileName || "File"}</div>
-        {block.sizeLabel && <div className="text-[11px] text-muted-foreground">{block.sizeLabel}</div>}
+        {block.sizeLabel && (
+          <div className="text-[11px] text-muted-foreground">{block.sizeLabel}</div>
+        )}
       </div>
       <div className="flex shrink-0 items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-medium text-background">
         <Download className="h-3.5 w-3.5" /> {block.buttonLabel || "Download"}
@@ -616,40 +876,57 @@ function ContactRender({ block }: { block: ContactBlock }) {
 
 // ── Embed (trusted only) ─────────────────────────────────────────────────
 const EMBED_MATCHERS: Record<EmbedBlock["provider"], (u: string) => string | null> = {
-  spotify: (u) => /open\.spotify\.com\//.test(u)
-    ? u.replace("open.spotify.com/", "open.spotify.com/embed/") : null,
-  appleMusic: (u) => /music\.apple\.com\//.test(u)
-    ? u.replace("music.apple.com", "embed.music.apple.com") : null,
-  googleForms: (u) => /docs\.google\.com\/forms\//.test(u)
-    ? (u.includes("?embedded=true") ? u : `${u}${u.includes("?") ? "&" : "?"}embedded=true`) : null,
-  typeform: (u) => /typeform\.com\//.test(u) ? u : null,
+  spotify: (u) =>
+    /open\.spotify\.com\//.test(u)
+      ? u.replace("open.spotify.com/", "open.spotify.com/embed/")
+      : null,
+  appleMusic: (u) =>
+    /music\.apple\.com\//.test(u) ? u.replace("music.apple.com", "embed.music.apple.com") : null,
+  googleForms: (u) =>
+    /docs\.google\.com\/forms\//.test(u)
+      ? u.includes("?embedded=true")
+        ? u
+        : `${u}${u.includes("?") ? "&" : "?"}embedded=true`
+      : null,
+  typeform: (u) => (/typeform\.com\//.test(u) ? u : null),
   youtube: (u) => {
     const m = u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{6,})/);
     return m ? `https://www.youtube.com/embed/${m[1]}` : null;
   },
-  loom: (u) => /loom\.com\//.test(u)
-    ? u.replace("/share/", "/embed/") : null,
-  figma: (u) => /figma\.com\/(file|proto|design)\//.test(u)
-    ? `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(u)}` : null,
-  canva: (u) => /canva\.com\//.test(u)
-    ? (u.endsWith("?embed") ? u : `${u}?embed`) : null,
-  notion: (u) => /notion\.(so|site)\//.test(u) ? u : null,
+  loom: (u) => (/loom\.com\//.test(u) ? u.replace("/share/", "/embed/") : null),
+  figma: (u) =>
+    /figma\.com\/(file|proto|design)\//.test(u)
+      ? `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(u)}`
+      : null,
+  canva: (u) => (/canva\.com\//.test(u) ? (u.endsWith("?embed") ? u : `${u}?embed`) : null),
+  notion: (u) => (/notion\.(so|site)\//.test(u) ? u : null),
 };
 function EmbedRender({ block }: { block: EmbedBlock }) {
   if (!block.url) {
-    return <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">Add an embed URL</div>;
+    return (
+      <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+        Add an embed URL
+      </div>
+    );
   }
   const src = EMBED_MATCHERS[block.provider]?.(block.url);
   if (!src) {
-    return <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-center text-xs text-destructive">
-      URL is not a valid {block.provider} link
-    </div>;
+    return (
+      <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-center text-xs text-destructive">
+        URL is not a valid {block.provider} link
+      </div>
+    );
   }
   return (
-    <iframe src={src} className="w-full overflow-hidden rounded-xl border"
+    <iframe
+      src={src}
+      className="w-full overflow-hidden rounded-xl border"
       style={{ height: `${block.height ?? 232}px` }}
-      loading="lazy" allow="autoplay; encrypted-media; picture-in-picture"
-      allowFullScreen title={`${block.provider} embed`} />
+      loading="lazy"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowFullScreen
+      title={`${block.provider} embed`}
+    />
   );
 }
 
@@ -688,9 +965,11 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
           border: "var(--zx-avatar-border-w, 4px) solid var(--zx-avatar-border-c, #fff)",
         }}
       >
-        {block.avatarUrl
-          ? <img src={block.avatarUrl} alt="" className="h-full w-full object-cover" />
-          : (block.displayName ?? "?").charAt(0).toUpperCase()}
+        {block.avatarUrl ? (
+          <img src={block.avatarUrl} alt="" className="h-full w-full object-cover" />
+        ) : (
+          (block.displayName ?? "?").charAt(0).toUpperCase()
+        )}
       </div>
       <div className="relative space-y-0.5">
         <div
@@ -712,7 +991,8 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
         {block.username && <div className="text-xs text-muted-foreground">@{block.username}</div>}
         {block.location && (
           <div className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
-            <MapPin className="h-3 w-3" />{block.location}
+            <MapPin className="h-3 w-3" />
+            {block.location}
           </div>
         )}
         {block.bio && (

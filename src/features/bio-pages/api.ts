@@ -70,7 +70,10 @@ export async function createBioPage(input: CreateBioPageInput): Promise<BioPageR
 }
 
 export async function renameBioPage(id: string, name: string) {
-  const { error } = await supabase.from(TBL).update({ name } as never).eq("id", id);
+  const { error } = await supabase
+    .from(TBL)
+    .update({ name } as never)
+    .eq("id", id);
   if (error) throw error;
 }
 
