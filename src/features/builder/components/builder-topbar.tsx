@@ -38,6 +38,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { TemplateGallery, SaveTemplateDialog } from "@/features/templates";
+import { PublishDialog } from "@/features/publishing";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
