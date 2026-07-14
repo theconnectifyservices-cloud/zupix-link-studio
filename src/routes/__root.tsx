@@ -11,10 +11,16 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { APP_CONFIG } from "@/config/app.config";
+import { useThemeStore } from "@/stores/theme.store";
+import { useHydrated } from "@/hooks/use-hydrated";
+import { Toaster } from "@/components/ui/sonner";
+import { CommandPalette } from "@/shared/navigation/command-palette";
+import { ErrorBoundary } from "@/shared/error/error-boundary";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
@@ -42,7 +48,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           This page didn't load
@@ -77,20 +83,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: `${APP_CONFIG.name} — Premium Bio Link Builder` },
+      { name: "description", content: APP_CONFIG.description },
+      { name: "author", content: APP_CONFIG.shortName },
+      { property: "og:title", content: `${APP_CONFIG.name} — Premium Bio Link Builder` },
+      { property: "og:description", content: APP_CONFIG.description },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
@@ -114,13 +116,37 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function ThemeApplier() {
+  const theme = useThemeStore((s) => s.theme);
+  const hydrated = useHydrated();
+
+  useEffect(() => {
+    if (!hydrated) return;
+    const root = document.documentElement;
+    const resolved =
+      theme === "system"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+        : theme;
+    root.classList.toggle("dark", resolved === "dark");
+  }, [theme, hydrated]);
+
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <ThemeApplier />
+      <ErrorBoundary>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </ErrorBoundary>
+      <CommandPalette />
+      <Toaster />
     </QueryClientProvider>
   );
 }
