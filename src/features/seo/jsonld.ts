@@ -16,7 +16,7 @@ export interface JsonLdCtx {
 export function buildJsonLd(seo: SeoSettings, ctx: JsonLdCtx): Record<string, unknown> {
   const base = {
     "@context": "https://schema.org",
-    name: seo.title || ctx.pageName,
+    name: seo.title || ctx.title || ctx.pageName,
     description: seo.description || ctx.description,
     url: seo.canonicalUrl || ctx.url,
     image: seo.ogImage || ctx.image,
