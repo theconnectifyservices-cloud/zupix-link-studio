@@ -29,6 +29,36 @@ export type BlockType =
   | "store"
   | "booking";
 
+/** Entrance animation played once as the block appears. */
+export type EntranceAnim =
+  | "none"
+  | "fade" | "fade-up" | "fade-down" | "fade-left" | "fade-right"
+  | "zoom-in" | "zoom-out" | "scale"
+  | "slide-up" | "slide-down"
+  | "rotate-in" | "flip" | "bounce";
+
+/** Continuous hover effect applied on pointer-over. */
+export type HoverEffect =
+  | "none" | "lift" | "scale" | "glow" | "shadow" | "border"
+  | "pulse" | "tilt" | "brightness" | "blur";
+
+/** Rich effect layered onto button-like blocks. */
+export type ButtonEffect =
+  | "none" | "shine" | "ripple" | "pulse" | "glow" | "neon"
+  | "floating" | "bounce" | "expand" | "press";
+
+/** Per-viewport spacing / typography overrides. */
+export interface ResponsiveOverrides {
+  paddingX?: number;
+  paddingY?: number;
+  marginTop?: number;
+  marginBottom?: number;
+  /** Font size multiplier for scalable text inside the block. */
+  fontScale?: number;
+}
+
+export type Viewport = "mobile" | "tablet" | "desktop";
+
 /** Shared visual/behavior settings available on every advanced block. */
 export interface BlockSettings {
   paddingY?: number;   // px
@@ -37,7 +67,18 @@ export interface BlockSettings {
   marginBottom?: number; // px
   radius?: "none" | "sm" | "md" | "lg" | "xl" | "full";
   background?: string; // css color
-  animation?: "none" | "fade" | "slide-up" | "zoom"; // placeholder — no runtime yet
+  /** Entrance animation. Legacy "zoom" is normalized to "zoom-in" at render time. */
+  animation?: EntranceAnim | "zoom";
+  animationDuration?: number;   // ms (default 600)
+  animationDelay?: number;      // ms (added on top of stagger)
+  animationRepeat?: "once" | "infinite";
+  hover?: HoverEffect;
+  /** Only meaningful for button / buttonGroup blocks. */
+  buttonEffect?: ButtonEffect;
+  /** Per-viewport visibility. `undefined` = shown. */
+  visibility?: { desktop?: boolean; tablet?: boolean; mobile?: boolean };
+  /** Per-viewport spacing / typography overrides. */
+  responsive?: Partial<Record<Viewport, ResponsiveOverrides>>;
 }
 
 export interface BaseBlock {
