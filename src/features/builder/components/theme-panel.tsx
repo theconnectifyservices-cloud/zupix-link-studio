@@ -37,6 +37,7 @@ export function ThemePanel() {
   const patchButtons = useBuilderStore((s) => s.patchThemeButtons);
   const patchBg = useBuilderStore((s) => s.patchThemeBackground);
   const patchProfile = useBuilderStore((s) => s.patchThemeProfile);
+  const patchMotion = useBuilderStore((s) => s.patchThemeMotion);
   const addBrand = useBuilderStore((s) => s.addBrandColor);
   const removeBrand = useBuilderStore((s) => s.removeBrandColor);
   const applyPreset = useBuilderStore((s) => s.applyThemePreset);
@@ -47,6 +48,7 @@ export function ThemePanel() {
   const resetButtons = useBuilderStore((s) => s.resetThemeButtons);
   const resetBg = useBuilderStore((s) => s.resetThemeBackground);
   const resetProfile = useBuilderStore((s) => s.resetThemeProfile);
+  const resetMotion = useBuilderStore((s) => s.resetThemeMotion);
   const resetAll = useBuilderStore((s) => s.resetThemeAll);
 
   const [tab, setTab] = useState("presets");
