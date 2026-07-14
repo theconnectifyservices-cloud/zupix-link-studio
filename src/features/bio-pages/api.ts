@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type BioPageStatus = "draft" | "published" | "archived";
-export type BioPageVisibility = "public" | "private" | "unlisted";
+export type BioPageStatus = "draft" | "published" | "scheduled" | "archived" | "unpublished";
+export type BioPageVisibility = "public" | "private" | "unlisted" | "password";
 
 export interface BioPageRow {
   id: string;
