@@ -526,6 +526,55 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       saveStatus: "dirty",
     });
   },
+  patchThemeButtons: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const base = current.buttons ?? DEFAULT_THEME.buttons!;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, buttons: { ...base, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  patchThemeBackground: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const base = current.background ?? DEFAULT_THEME.background!;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, background: { ...base, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  patchThemeProfile: (patch) => {
+    const { content, history } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const base = current.profile ?? DEFAULT_THEME.profile!;
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, theme: { ...current, profile: { ...base, ...patch }, preset: "custom" } },
+      saveStatus: "dirty",
+    });
+  },
+  addBrandColor: (hex) => {
+    const { content } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const list = current.brandColors ?? [];
+    if (list.includes(hex)) return;
+    set({
+      content: { ...content, theme: { ...current, brandColors: [...list, hex] } },
+      saveStatus: "dirty",
+    });
+  },
+  removeBrandColor: (hex) => {
+    const { content } = get();
+    const current = content.theme ?? DEFAULT_THEME;
+    const list = (current.brandColors ?? []).filter((c) => c !== hex);
+    set({
+      content: { ...content, theme: { ...current, brandColors: list } },
+      saveStatus: "dirty",
+    });
+  },
   applyThemePreset: (id) => {
     const { content, history } = get();
     set({
