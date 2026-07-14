@@ -27,6 +27,8 @@ interface BuilderState {
 
   // mutations (record history)
   addBlock: (block: Block) => void;
+  insertBlock: (block: Block, index: number) => void;
+  reorderBlocks: (fromIndex: number, toIndex: number) => void;
   updateBlock: (id: string, patch: Partial<Block>) => void;
   removeBlock: (id: string) => void;
   duplicateBlock: (id: string) => void;
