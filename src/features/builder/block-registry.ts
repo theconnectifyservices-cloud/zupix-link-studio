@@ -19,6 +19,11 @@ import {
   Map as MapIcon,
   HelpCircle,
   MessageSquareQuote,
+  FileDown,
+  Contact as ContactIcon,
+  Rows,
+  Rss,
+  Sparkles,
 } from "lucide-react";
 import type { Block, BlockType } from "./types";
 import { newId } from "./types";
@@ -29,7 +34,7 @@ export interface BlockDef {
   description: string;
   icon: LucideIcon;
   group: "essentials" | "media" | "advanced" | "commerce";
-  available: boolean; // false = disabled tile, foundation-only
+  available: boolean;
   create: () => Block;
 }
 
@@ -106,6 +111,24 @@ export const BLOCK_DEFS: BlockDef[] = [
     }),
   },
   {
+    type: "buttonGroup",
+    label: "Button group",
+    description: "Multiple buttons",
+    icon: Rows,
+    group: "essentials",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "buttonGroup",
+      layout: "vertical",
+      columns: 2,
+      buttons: [
+        { id: newId(), label: "Button 1", url: "https://", style: "filled" },
+        { id: newId(), label: "Button 2", url: "https://", style: "outline" },
+      ],
+    }),
+  },
+  {
     type: "image",
     label: "Image",
     description: "Single image",
@@ -115,13 +138,70 @@ export const BLOCK_DEFS: BlockDef[] = [
     create: () => ({ id: newId(), type: "image", url: "", alt: "", rounded: "md", fit: "cover" }),
   },
   {
+    type: "gallery",
+    label: "Gallery",
+    description: "Multiple images",
+    icon: Images,
+    group: "media",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "gallery",
+      layout: "grid",
+      columns: 2,
+      gap: "md",
+      rounded: "md",
+      images: [],
+    }),
+  },
+  {
+    type: "video",
+    label: "Video",
+    description: "YouTube, Vimeo, MP4",
+    icon: Video,
+    group: "media",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "video",
+      provider: "youtube",
+      url: "",
+      autoplay: false,
+      loop: false,
+      muted: true,
+      rounded: "lg",
+    }),
+  },
+  {
+    type: "socialFeed",
+    label: "Social feed",
+    description: "IG, YouTube, TikTok",
+    icon: Rss,
+    group: "media",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "socialFeed",
+      provider: "instagram",
+      handle: "",
+      limit: 6,
+    }),
+  },
+  {
     type: "divider",
     label: "Divider",
     description: "Visual separator",
     icon: Minus,
     group: "essentials",
     available: true,
-    create: () => ({ id: newId(), type: "divider", style: "solid", spacing: "md", thickness: "thin" }),
+    create: () => ({
+      id: newId(),
+      type: "divider",
+      variant: "line",
+      style: "solid",
+      spacing: "md",
+      thickness: "thin",
+    }),
   },
   {
     type: "spacer",
@@ -141,19 +221,122 @@ export const BLOCK_DEFS: BlockDef[] = [
     available: true,
     create: () => ({ id: newId(), type: "social", links: [] }),
   },
-  // Foundation-only (future phases)
-  { type: "video", label: "Video", description: "Coming soon", icon: Video, group: "media", available: false, create: () => ({ id: newId(), type: "video" }) },
-  { type: "gallery", label: "Gallery", description: "Coming soon", icon: Images, group: "media", available: false, create: () => ({ id: newId(), type: "gallery" }) },
-  { type: "embed", label: "Embed", description: "Coming soon", icon: Code, group: "advanced", available: false, create: () => ({ id: newId(), type: "embed" }) },
+  {
+    type: "testimonials",
+    label: "Testimonials",
+    description: "Customer reviews",
+    icon: MessageSquareQuote,
+    group: "advanced",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "testimonials",
+      title: "What people say",
+      items: [
+        { id: newId(), name: "Jane Doe", role: "Customer", rating: 5, review: "Absolutely fantastic!" },
+      ],
+    }),
+  },
+  {
+    type: "faq",
+    label: "FAQ",
+    description: "Accordion questions",
+    icon: HelpCircle,
+    group: "advanced",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "faq",
+      title: "Frequently asked",
+      items: [
+        { id: newId(), question: "How does it work?", answer: "Add your answer here." },
+      ],
+    }),
+  },
+  {
+    type: "countdown",
+    label: "Countdown",
+    description: "Target date timer",
+    icon: Timer,
+    group: "advanced",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "countdown",
+      title: "Launching soon",
+      target: new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString(),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      finishedLabel: "We're live!",
+    }),
+  },
+  {
+    type: "map",
+    label: "Map",
+    description: "Google Maps location",
+    icon: MapIcon,
+    group: "advanced",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "map",
+      mapUrl: "",
+      locationName: "",
+      address: "",
+    }),
+  },
+  {
+    type: "file",
+    label: "File download",
+    description: "PDF, DOCX, ZIP…",
+    icon: FileDown,
+    group: "advanced",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "file",
+      fileUrl: "",
+      fileName: "document.pdf",
+      fileKind: "pdf",
+      buttonLabel: "Download",
+    }),
+  },
+  {
+    type: "contact",
+    label: "Contact card",
+    description: "Phone, email, address",
+    icon: ContactIcon,
+    group: "advanced",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "contact",
+      title: "Get in touch",
+    }),
+  },
+  {
+    type: "embed",
+    label: "Embed",
+    description: "Spotify, Loom, Figma…",
+    icon: Sparkles,
+    group: "advanced",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "embed",
+      provider: "spotify",
+      url: "",
+      height: 232,
+    }),
+  },
+  // Reserved / later phases
   { type: "html", label: "HTML", description: "Coming soon", icon: FileCode, group: "advanced", available: false, create: () => ({ id: newId(), type: "html" }) },
   { type: "form", label: "Form", description: "Coming soon", icon: ClipboardList, group: "advanced", available: false, create: () => ({ id: newId(), type: "form" }) },
   { type: "store", label: "Store", description: "Coming soon", icon: ShoppingBag, group: "commerce", available: false, create: () => ({ id: newId(), type: "store" }) },
   { type: "booking", label: "Booking", description: "Coming soon", icon: CalendarClock, group: "commerce", available: false, create: () => ({ id: newId(), type: "booking" }) },
-  { type: "countdown", label: "Countdown", description: "Coming soon", icon: Timer, group: "advanced", available: false, create: () => ({ id: newId(), type: "countdown" }) },
-  { type: "map", label: "Map", description: "Coming soon", icon: MapIcon, group: "advanced", available: false, create: () => ({ id: newId(), type: "map" }) },
-  { type: "faq", label: "FAQ", description: "Coming soon", icon: HelpCircle, group: "advanced", available: false, create: () => ({ id: newId(), type: "faq" }) },
-  { type: "testimonials", label: "Testimonials", description: "Coming soon", icon: MessageSquareQuote, group: "advanced", available: false, create: () => ({ id: newId(), type: "testimonials" }) },
 ];
+
+// keep unused imports referenced to satisfy tree-shaking noise
+void Code;
 
 export function getBlockDef(type: BlockType): BlockDef | undefined {
   return BLOCK_DEFS.find((d) => d.type === type);
