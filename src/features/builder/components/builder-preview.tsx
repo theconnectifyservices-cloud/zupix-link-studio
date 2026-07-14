@@ -13,12 +13,23 @@ import {
   ArrowDown,
   ChevronsUpDown,
   ChevronsDownUp,
+  Lock,
+  Unlock,
+  Scissors,
+  ClipboardPaste,
 } from "lucide-react";
 import { useBuilderStore } from "../store";
 import { BlockRenderer } from "../block-renderer";
 import type { Block } from "../types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -31,7 +42,7 @@ const FRAME: Record<Viewport, string> = {
 /** Live phone-frame preview. Sortable canvas + drop target for palette items. */
 export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport }) {
   const blocks = useBuilderStore((s) => s.content.blocks);
-  const select = useBuilderStore((s) => s.select);
+  const clearSelection = useBuilderStore((s) => s.clearSelection);
   const items = blocks.map((b) => b.id);
 
   const { setNodeRef, isOver } = useDroppable({ id: "canvas-empty" });
@@ -59,7 +70,7 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
                 ? "max-h-[720px] min-h-[560px] rounded-[26px]"
                 : "max-h-[820px] min-h-[560px] rounded-xl",
             )}
-            onClick={() => select(null)}
+            onClick={() => clearSelection()}
           >
             <div className={cn("space-y-2 pb-10 pt-10", isPhone ? "px-5" : "px-8")}>
               <SortableContext items={items} strategy={verticalListSortingStrategy}>
@@ -91,11 +102,19 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
 
 function SortableCanvasBlock({ block }: { block: Block }) {
   const selectedId = useBuilderStore((s) => s.selectedId);
+  const selectedIds = useBuilderStore((s) => s.selectedIds);
   const select = useBuilderStore((s) => s.select);
+  const toggleSelect = useBuilderStore((s) => s.toggleSelect);
+  const selectRange = useBuilderStore((s) => s.selectRange);
   const toggleHidden = useBuilderStore((s) => s.toggleHidden);
+  const toggleLocked = useBuilderStore((s) => s.toggleLocked);
   const dup = useBuilderStore((s) => s.duplicateBlock);
   const remove = useBuilderStore((s) => s.removeBlock);
   const move = useBuilderStore((s) => s.moveBlock);
+  const copySelection = useBuilderStore((s) => s.copySelection);
+  const cutSelection = useBuilderStore((s) => s.cutSelection);
+  const paste = useBuilderStore((s) => s.paste);
+  const clipboardCount = useBuilderStore((s) => s.clipboard.length);
 
   const [collapsed, setCollapsed] = useState(false);
 
@@ -108,13 +127,14 @@ function SortableCanvasBlock({ block }: { block: Block }) {
     isDragging,
     isOver,
     active,
-  } = useSortable({ id: block.id });
+  } = useSortable({ id: block.id, disabled: block.locked });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-  const active_ = selectedId === block.id;
+  const primary = selectedId === block.id;
+  const multi = selectedIds.includes(block.id);
   const showIndicator = isOver && active?.id !== block.id;
 
   function stop(fn: () => void) {
@@ -124,87 +144,161 @@ function SortableCanvasBlock({ block }: { block: Block }) {
     };
   }
 
+  function ensureSelectedForMenu() {
+    if (!selectedIds.includes(block.id)) select(block.id);
+  }
+
   return (
-    <div ref={setNodeRef} style={style} className="relative">
-      {showIndicator && (
-        <div className="pointer-events-none absolute -top-1 left-0 right-0 h-0.5 rounded-full bg-primary" />
-      )}
-      {active_ && (
-        <div className="absolute -top-8 right-0 z-20 flex items-center gap-0.5 rounded-md border bg-background p-0.5 shadow-md">
-          <ToolBtn label="Move up" onClick={stop(() => move(block.id, -1))}>
-            <ArrowUp className="h-3.5 w-3.5" />
-          </ToolBtn>
-          <ToolBtn label="Move down" onClick={stop(() => move(block.id, 1))}>
-            <ArrowDown className="h-3.5 w-3.5" />
-          </ToolBtn>
-          <ToolBtn
-            label={collapsed ? "Expand" : "Collapse"}
-            onClick={stop(() => setCollapsed((v) => !v))}
-          >
-            {collapsed ? (
-              <ChevronsUpDown className="h-3.5 w-3.5" />
-            ) : (
-              <ChevronsDownUp className="h-3.5 w-3.5" />
-            )}
-          </ToolBtn>
-          <ToolBtn
-            label={block.hidden ? "Show" : "Hide"}
-            onClick={stop(() => toggleHidden(block.id))}
-          >
-            {block.hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-          </ToolBtn>
-          <ToolBtn label="Duplicate" onClick={stop(() => dup(block.id))}>
-            <Copy className="h-3.5 w-3.5" />
-          </ToolBtn>
-          <ToolBtn label="Delete" onClick={stop(() => remove(block.id))}>
-            <Trash2 className="h-3.5 w-3.5 text-destructive" />
-          </ToolBtn>
-        </div>
-      )}
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-          select(block.id);
-        }}
-        className={cn(
-          "group relative flex items-stretch gap-1 rounded-lg border-2 border-transparent transition-colors",
-          "hover:border-primary/40",
-          active_ && "border-primary",
-          block.hidden && "opacity-40",
-          isDragging && "opacity-40",
-        )}
-      >
-        <button
-          type="button"
-          aria-label="Drag to reorder"
-          className="flex w-5 shrink-0 cursor-grab items-center justify-center rounded-l text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
-          {...attributes}
-          {...listeners}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <GripVertical className="h-3.5 w-3.5" />
-        </button>
-        <div className="min-w-0 flex-1 p-1">
-          {collapsed ? (
-            <div className="rounded-md bg-muted/50 px-2 py-1.5 text-[11px] text-muted-foreground">
-              {block.name || block.type} · collapsed
-            </div>
-          ) : (
-            <BlockRenderer block={block} />
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div ref={setNodeRef} style={style} className="relative">
+          {showIndicator && (
+            <div className="pointer-events-none absolute -top-1 left-0 right-0 h-1 rounded-full bg-primary shadow-[0_0_0_2px_hsl(var(--primary)/0.2)]" />
           )}
+          {primary && (
+            <div className="absolute -top-8 right-0 z-20 flex items-center gap-0.5 rounded-md border bg-background p-0.5 shadow-md">
+              <ToolBtn label="Move up" onClick={stop(() => move(block.id, -1))} disabled={block.locked}>
+                <ArrowUp className="h-3.5 w-3.5" />
+              </ToolBtn>
+              <ToolBtn label="Move down" onClick={stop(() => move(block.id, 1))} disabled={block.locked}>
+                <ArrowDown className="h-3.5 w-3.5" />
+              </ToolBtn>
+              <ToolBtn
+                label={collapsed ? "Expand" : "Collapse"}
+                onClick={stop(() => setCollapsed((v) => !v))}
+              >
+                {collapsed ? (
+                  <ChevronsUpDown className="h-3.5 w-3.5" />
+                ) : (
+                  <ChevronsDownUp className="h-3.5 w-3.5" />
+                )}
+              </ToolBtn>
+              <ToolBtn
+                label={block.locked ? "Unlock" : "Lock"}
+                onClick={stop(() => toggleLocked(block.id))}
+              >
+                {block.locked ? <Unlock className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
+              </ToolBtn>
+              <ToolBtn
+                label={block.hidden ? "Show" : "Hide"}
+                onClick={stop(() => toggleHidden(block.id))}
+              >
+                {block.hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              </ToolBtn>
+              <ToolBtn label="Duplicate" onClick={stop(() => dup(block.id))}>
+                <Copy className="h-3.5 w-3.5" />
+              </ToolBtn>
+              <ToolBtn label="Delete" onClick={stop(() => remove(block.id))} disabled={block.locked}>
+                <Trash2 className="h-3.5 w-3.5 text-destructive" />
+              </ToolBtn>
+            </div>
+          )}
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (e.shiftKey) selectRange(block.id);
+              else if (e.metaKey || e.ctrlKey) toggleSelect(block.id);
+              else select(block.id);
+            }}
+            onContextMenu={ensureSelectedForMenu}
+            className={cn(
+              "group relative flex items-stretch gap-1 rounded-lg border-2 border-transparent transition-colors",
+              "hover:border-primary/40",
+              multi && !primary && "border-primary/60",
+              primary && "border-primary",
+              block.hidden && "opacity-40",
+              isDragging && "opacity-40",
+            )}
+          >
+            <button
+              type="button"
+              aria-label={block.locked ? "Locked block" : "Drag to reorder"}
+              className={cn(
+                "flex w-5 shrink-0 items-center justify-center rounded-l text-muted-foreground transition-opacity",
+                block.locked
+                  ? "cursor-not-allowed opacity-60"
+                  : "cursor-grab opacity-0 group-hover:opacity-100 active:cursor-grabbing",
+              )}
+              {...(block.locked ? {} : attributes)}
+              {...(block.locked ? {} : listeners)}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {block.locked ? <Lock className="h-3 w-3" /> : <GripVertical className="h-3.5 w-3.5" />}
+            </button>
+            <div className="min-w-0 flex-1 p-1">
+              {collapsed ? (
+                <div className="rounded-md bg-muted/50 px-2 py-1.5 text-[11px] text-muted-foreground">
+                  {block.name || block.type} · collapsed
+                </div>
+              ) : (
+                <BlockRenderer block={block} />
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-52">
+        <ContextMenuItem onSelect={() => copySelection()}>
+          <Copy className="mr-2 h-4 w-4" /> Copy
+          <span className="ml-auto text-xs text-muted-foreground">⌘C</span>
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => cutSelection()} disabled={block.locked}>
+          <Scissors className="mr-2 h-4 w-4" /> Cut
+          <span className="ml-auto text-xs text-muted-foreground">⌘X</span>
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => paste()} disabled={clipboardCount === 0}>
+          <ClipboardPaste className="mr-2 h-4 w-4" /> Paste
+          <span className="ml-auto text-xs text-muted-foreground">⌘V</span>
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => dup(block.id)}>
+          <Copy className="mr-2 h-4 w-4" /> Duplicate
+          <span className="ml-auto text-xs text-muted-foreground">⌘D</span>
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem onSelect={() => move(block.id, -1)} disabled={block.locked}>
+          <ArrowUp className="mr-2 h-4 w-4" /> Move up
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => move(block.id, 1)} disabled={block.locked}>
+          <ArrowDown className="mr-2 h-4 w-4" /> Move down
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem onSelect={() => toggleHidden(block.id)}>
+          {block.hidden ? (
+            <><Eye className="mr-2 h-4 w-4" /> Show</>
+          ) : (
+            <><EyeOff className="mr-2 h-4 w-4" /> Hide</>
+          )}
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => toggleLocked(block.id)}>
+          {block.locked ? (
+            <><Unlock className="mr-2 h-4 w-4" /> Unlock</>
+          ) : (
+            <><Lock className="mr-2 h-4 w-4" /> Lock</>
+          )}
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem
+          onSelect={() => remove(block.id)}
+          disabled={block.locked}
+          className="text-destructive focus:text-destructive"
+        >
+          <Trash2 className="mr-2 h-4 w-4" /> Delete
+          <span className="ml-auto text-xs text-muted-foreground">Del</span>
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }
 
 function ToolBtn({
   label,
   onClick,
+  disabled,
   children,
 }: {
   label: string;
   onClick: (e: React.MouseEvent) => void;
+  disabled?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -214,6 +308,7 @@ function ToolBtn({
       aria-label={label}
       title={label}
       onClick={onClick}
+      disabled={disabled}
       className="h-6 w-6"
     >
       {children}

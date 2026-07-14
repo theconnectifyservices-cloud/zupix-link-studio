@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Undo2,
@@ -13,6 +13,10 @@ import {
   Smartphone,
   Tablet,
   Monitor,
+  History,
+  Plus,
+  Trash2,
+  RotateCcw,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -20,6 +24,17 @@ import { useBuilderStore } from "../store";
 import { saveBuilderContent } from "../api";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { EmptyState } from "@/shared/ui/empty-state";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -30,7 +45,7 @@ interface Props {
   onViewportChange?: (v: Viewport) => void;
 }
 
-/** Builder top bar: title, status, undo/redo, preview, save. */
+/** Builder top bar: title, status, undo/redo, viewport, versions, preview, save. */
 export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewportChange }: Props) {
   const pageId = useBuilderStore((s) => s.pageId);
   const pageName = useBuilderStore((s) => s.pageName);
@@ -44,18 +59,11 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
   const markSaved = useBuilderStore((s) => s.markSaved);
   const markError = useBuilderStore((s) => s.markError);
 
-  // keyboard shortcuts
+  // Cmd/Ctrl+S save (undo/redo handled by the global builder shortcuts hook)
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       const meta = e.metaKey || e.ctrlKey;
-      if (!meta) return;
-      if (e.key.toLowerCase() === "z" && !e.shiftKey) {
-        e.preventDefault();
-        undo();
-      } else if ((e.key.toLowerCase() === "z" && e.shiftKey) || e.key.toLowerCase() === "y") {
-        e.preventDefault();
-        redo();
-      } else if (e.key.toLowerCase() === "s") {
+      if (meta && e.key.toLowerCase() === "s") {
         e.preventDefault();
         void handleSave();
       }
@@ -63,7 +71,7 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [undo, redo]);
+  }, []);
 
   async function handleSave() {
     if (!pageId) return;
@@ -117,12 +125,13 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
             ))}
           </div>
         )}
-        <Button variant="ghost" size="icon" aria-label="Undo" onClick={undo} disabled={past === 0}>
+        <Button variant="ghost" size="icon" aria-label="Undo" title="Undo (⌘Z)" onClick={undo} disabled={past === 0}>
           <Undo2 className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon" aria-label="Redo" onClick={redo} disabled={future === 0}>
+        <Button variant="ghost" size="icon" aria-label="Redo" title="Redo (⌘⇧Z)" onClick={redo} disabled={future === 0}>
           <Redo2 className="h-4 w-4" />
         </Button>
+        <VersionHistoryDialog />
         <Button
           variant={previewMode ? "default" : "ghost"}
           size="sm"
@@ -132,7 +141,7 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
           <Eye className="h-4 w-4" />
           <span className="hidden sm:inline">Preview</span>
         </Button>
-        <Button variant="outline" size="sm" onClick={handleSave} className="gap-1.5">
+        <Button variant="outline" size="sm" onClick={handleSave} className="gap-1.5" title="Save (⌘S)">
           <Save className="h-4 w-4" />
           <span className="hidden sm:inline">Save</span>
         </Button>
@@ -142,6 +151,102 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
         </Button>
       </div>
     </header>
+  );
+}
+
+function VersionHistoryDialog() {
+  const versions = useBuilderStore((s) => s.versions);
+  const snapshot = useBuilderStore((s) => s.snapshotVersion);
+  const restore = useBuilderStore((s) => s.restoreVersion);
+  const del = useBuilderStore((s) => s.deleteVersion);
+  const [open, setOpen] = useState(false);
+  const [label, setLabel] = useState("");
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label="Version history" title="Version history">
+          <History className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Version history</DialogTitle>
+          <DialogDescription>
+            Snapshot the current state so you can restore it later. Up to 20 versions per page.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex items-center gap-2">
+          <Input
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            placeholder="Version label (optional)"
+            className="h-8"
+          />
+          <Button
+            size="sm"
+            className="gap-1.5"
+            onClick={() => {
+              snapshot(label);
+              setLabel("");
+              toast.success("Version saved");
+            }}
+          >
+            <Plus className="h-3.5 w-3.5" /> Save version
+          </Button>
+        </div>
+        <div className="max-h-72 overflow-y-auto rounded-md border">
+          {versions.length === 0 ? (
+            <EmptyState
+              title="No versions yet"
+              description="Save a version to see it here."
+            />
+          ) : (
+            <ul className="divide-y">
+              {versions.map((v) => (
+                <li key={v.id} className="flex items-center gap-2 p-2 text-sm">
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-medium">{v.label}</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      {new Date(v.at).toLocaleString()}
+                    </div>
+                  </div>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label="Restore version"
+                    title="Restore"
+                    onClick={() => {
+                      restore(v.id);
+                      toast.success(`Restored "${v.label}"`);
+                      setOpen(false);
+                    }}
+                    className="h-7 w-7"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label="Delete version"
+                    title="Delete"
+                    onClick={() => del(v.id)}
+                    className="h-7 w-7"
+                  >
+                    <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
+            Close
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
