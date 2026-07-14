@@ -67,6 +67,16 @@ const statusMeta: Record<
     className: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
     icon: CheckCircle2,
   },
+  scheduled: {
+    label: "Scheduled",
+    className: "bg-sky-500/15 text-sky-700 dark:text-sky-400",
+    icon: Loader2,
+  },
+  unpublished: {
+    label: "Unpublished",
+    className: "bg-rose-500/15 text-rose-700 dark:text-rose-400",
+    icon: EyeOff,
+  },
   archived: {
     label: "Archived",
     className: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
@@ -78,6 +88,7 @@ const visibilityIcon = {
   public: Globe,
   private: Lock,
   unlisted: EyeOff,
+  password: Lock,
 } as const;
 
 export function ProjectCard({
