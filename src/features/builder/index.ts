@@ -7,3 +7,4 @@ export { BuilderTopbar } from "./components/builder-topbar";
 export { BuilderLeftPanel } from "./components/builder-left-panel";
 export { BuilderRightPanel } from "./components/builder-right-panel";
 export { BuilderPreview } from "./components/builder-preview";
+export { BuilderDndProvider } from "./components/dnd-context";
