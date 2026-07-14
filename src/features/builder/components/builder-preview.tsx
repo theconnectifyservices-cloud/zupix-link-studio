@@ -21,6 +21,7 @@ import {
 import { useBuilderStore } from "../store";
 import { BlockRenderer } from "../block-renderer";
 import type { Block } from "../types";
+import { DEFAULT_THEME, resolveMode, themeToCssVars } from "../theme";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
