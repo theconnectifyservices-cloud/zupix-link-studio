@@ -42,7 +42,7 @@ function BuilderPage() {
 
   useEffect(() => {
     if (!data) return;
-    load(data.id, data.name, data.content);
+    load(data.id, data.name, data.content, data.slug);
     // detect a local draft newer than the server's saved copy
     const recovered = getRecoveredDraft(data.id);
     if (recovered) {
@@ -82,7 +82,7 @@ function BuilderPage() {
               variant="outline"
               className="h-7"
               onClick={() => {
-                load(data.id, data.name, draft.content);
+                load(data.id, data.name, draft.content, data.slug);
                 clearRecoveredDraft(data.id);
                 setDraft(null);
               }}
