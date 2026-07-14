@@ -32,7 +32,7 @@ export function PropertyPanel() {
 
   const def = getBlockDef(block.type);
 
-  function set<K extends keyof Block>(key: K, value: unknown) {
+  function set(key: string, value: unknown) {
     update(block!.id, { [key]: value } as unknown as Partial<Block>);
   }
 
