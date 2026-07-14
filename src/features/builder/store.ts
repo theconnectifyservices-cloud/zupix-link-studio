@@ -172,6 +172,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       pageId: null,
       pageName: "",
+      pageSlug: "",
       content: EMPTY_CONTENT,
       selectedId: null,
       selectedIds: [],
