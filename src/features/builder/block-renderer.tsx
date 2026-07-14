@@ -79,15 +79,36 @@ function renderInner(block: Block) {
       return (
         <div className="flex flex-col items-center gap-3 py-2 text-center">
           {block.coverUrl && (
-            <div className="-mx-5 -mt-10 mb-2 h-24 w-[calc(100%+2.5rem)] overflow-hidden bg-muted">
+            <div
+              className="-mx-5 -mt-10 mb-2 w-[calc(100%+2.5rem)] overflow-hidden bg-muted"
+              style={{ height: "var(--zx-cover-h, 96px)" }}
+            >
               <img src={block.coverUrl} alt="" className="h-full w-full object-cover" />
             </div>
           )}
-          <div className="grid h-20 w-20 place-items-center overflow-hidden rounded-full bg-muted text-2xl font-semibold text-muted-foreground ring-4 ring-background">
-            {block.avatarUrl ? <img src={block.avatarUrl} alt="" className="h-full w-full object-cover" /> : (block.displayName ?? "?").charAt(0).toUpperCase()}
+          <div
+            className="grid place-items-center overflow-hidden bg-muted text-2xl font-semibold text-muted-foreground"
+            style={{
+              width: "var(--zx-avatar-size, 80px)",
+              height: "var(--zx-avatar-size, 80px)",
+              borderRadius: "var(--zx-avatar-radius, 9999px)",
+              border: "var(--zx-avatar-border-w, 4px) solid var(--zx-avatar-border-c, #fff)",
+            }}
+          >
+            {block.avatarUrl
+              ? <img src={block.avatarUrl} alt="" className="h-full w-full object-cover" />
+              : (block.displayName ?? "?").charAt(0).toUpperCase()}
           </div>
-          <div className="space-y-0.5">
-            <div className="flex items-center justify-center gap-1 text-base font-semibold">
+          <div className="relative space-y-0.5">
+            <div
+              className="flex items-center justify-center gap-1"
+              style={{
+                fontSize: "var(--zx-name-size, 18px)",
+                fontWeight: "var(--zx-name-weight, 700)",
+                fontFamily: "var(--zx-heading-family)",
+                textTransform: "var(--zx-text-transform, none)" as CSSProperties["textTransform"],
+              }}
+            >
               <span>{block.displayName}</span>
               {block.verified && <BadgeCheck className="h-4 w-4 text-primary" />}
             </div>
@@ -97,7 +118,17 @@ function renderInner(block: Block) {
                 <MapPin className="h-3 w-3" />{block.location}
               </div>
             )}
-            {block.bio && <div className="mt-1 text-xs text-muted-foreground">{block.bio}</div>}
+            {block.bio && (
+              <div
+                className="mt-1 text-muted-foreground"
+                style={{
+                  fontSize: "var(--zx-bio-size, 12px)",
+                  fontWeight: "var(--zx-bio-weight, 400)",
+                }}
+              >
+                {block.bio}
+              </div>
+            )}
             {block.shortDescription && <div className="mt-1 text-[11px] text-muted-foreground/80">{block.shortDescription}</div>}
           </div>
         </div>
@@ -105,7 +136,12 @@ function renderInner(block: Block) {
 
     case "heading":
       return (
-        <h2 style={block.color ? { color: block.color } : undefined}
+        <h2 style={{
+          ...(block.color ? { color: block.color } : {}),
+          fontFamily: "var(--zx-heading-family)",
+          fontWeight: "var(--zx-heading-weight, 700)",
+          textTransform: "var(--zx-text-transform, none)" as CSSProperties["textTransform"],
+        }}
           className={cn(FONT_SIZE[block.fontSize ?? "xl"], FONT_WEIGHT[block.fontWeight ?? "bold"],
             block.align === "center" && "text-center", block.align === "right" && "text-right")}>
           {block.text || "Heading"}
@@ -123,13 +159,29 @@ function renderInner(block: Block) {
       );
 
     case "button": {
-      const base = "inline-block rounded-full py-3 text-center text-sm font-medium transition-transform hover:-translate-y-0.5";
-      const variant = block.style === "outline" ? "border border-foreground/30 text-foreground"
-        : block.style === "soft" ? "bg-muted text-foreground" : "bg-foreground text-background";
+      const themedBtnStyle: CSSProperties = {
+        background: "var(--zx-btn-bg)",
+        color: "var(--zx-btn-fg)",
+        border: "var(--zx-btn-border)",
+        borderRadius: "var(--zx-btn-radius)",
+        minHeight: "var(--zx-btn-h)",
+        paddingLeft: "var(--zx-btn-px)",
+        paddingRight: "var(--zx-btn-px)",
+        boxShadow: "var(--zx-btn-shadow)",
+        fontFamily: "var(--zx-btn-font)",
+        fontSize: "var(--zx-btn-size)",
+        backdropFilter: "blur(0)", // enable overlay in glass variants via css var
+      };
       return (
         <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>
-          <div className={cn(base, variant, WIDTH_CLASS[block.width ?? "full"],
-            block.disabled && "cursor-not-allowed opacity-50 hover:translate-y-0")}>
+          <div
+            className={cn(
+              "inline-flex items-center justify-center gap-2 font-medium transition-transform hover:-translate-y-0.5",
+              WIDTH_CLASS[block.width ?? "full"],
+              block.disabled && "cursor-not-allowed opacity-50 hover:translate-y-0",
+            )}
+            style={themedBtnStyle}
+          >
             {block.label || "Button"}
           </div>
         </div>
