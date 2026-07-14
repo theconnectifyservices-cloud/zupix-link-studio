@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/auth/hooks/use-profile";
-import { PageLoader } from "@/shared/ui/loaders";
+import { PageLoader } from "@/shared/ui/page-loader";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
