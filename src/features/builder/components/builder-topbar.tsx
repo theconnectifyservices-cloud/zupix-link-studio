@@ -31,7 +31,7 @@ interface Props {
 }
 
 /** Builder top bar: title, status, undo/redo, preview, save. */
-export function BuilderTopbar({ onTogglePreview, previewMode }: Props) {
+export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewportChange }: Props) {
   const pageId = useBuilderStore((s) => s.pageId);
   const pageName = useBuilderStore((s) => s.pageName);
   const status = useBuilderStore((s) => s.saveStatus);
