@@ -43,25 +43,27 @@ function BuilderPage() {
 
   return (
     <div className="flex h-dvh w-full flex-col bg-background">
-      <BuilderTopbar
-        onTogglePreview={() => setPreviewMode((v) => !v)}
-        previewMode={previewMode}
-      />
-      <div className="flex min-h-0 flex-1">
-        {!previewMode && (
-          <aside className="hidden w-72 shrink-0 border-r bg-background md:flex">
-            <BuilderLeftPanel />
-          </aside>
-        )}
-        <div className="min-w-0 flex-1">
-          <BuilderPreview />
+      <BuilderDndProvider>
+        <BuilderTopbar
+          onTogglePreview={() => setPreviewMode((v) => !v)}
+          previewMode={previewMode}
+        />
+        <div className="flex min-h-0 flex-1">
+          {!previewMode && (
+            <aside className="hidden w-72 shrink-0 border-r bg-background md:flex">
+              <BuilderLeftPanel />
+            </aside>
+          )}
+          <div className="min-w-0 flex-1">
+            <BuilderPreview />
+          </div>
+          {!previewMode && (
+            <aside className="hidden w-80 shrink-0 border-l bg-background lg:flex">
+              <BuilderRightPanel />
+            </aside>
+          )}
         </div>
-        {!previewMode && (
-          <aside className="hidden w-80 shrink-0 border-l bg-background lg:flex">
-            <BuilderRightPanel />
-          </aside>
-        )}
-      </div>
+      </BuilderDndProvider>
     </div>
   );
 }
