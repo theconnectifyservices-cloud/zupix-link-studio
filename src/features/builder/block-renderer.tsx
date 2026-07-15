@@ -349,7 +349,7 @@ function InteractiveFxWrapper({
 }
 
 
-function renderInner(block: Block) {
+function renderInner(block: Block, reduceMotion: boolean) {
   switch (block.type) {
     case "profile":
       return <ProfileRender block={block} />;
@@ -391,11 +391,12 @@ function renderInner(block: Block) {
       );
 
     case "button": {
-      return <ButtonRender block={block} />;
+      return <ButtonRender block={block} reduceMotion={reduceMotion} />;
     }
 
     case "buttonGroup":
-      return <ButtonGroupRender block={block} />;
+      return <ButtonGroupRender block={block} reduceMotion={reduceMotion} />;
+
 
     case "image": {
       if (!block.url) {
