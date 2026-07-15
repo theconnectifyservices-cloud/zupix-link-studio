@@ -467,7 +467,10 @@ export function PropertyPanel() {
               onChange={(e) => set("overlayOpacity", Number(e.target.value))}
             />
           </Field>
+
+          <HeroEffectsStudio block={block} update={update} />
         </>
+
       )}
 
 
