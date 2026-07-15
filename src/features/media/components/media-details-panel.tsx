@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Copy, Download, Trash2, ExternalLink } from "lucide-react";
+import { Copy, Download, Trash2, ExternalLink, Star } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -16,11 +16,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { signedUrl, softDeleteAsset, updateAsset } from "../api";
+import { toggleAssetFavorite } from "../organization-api";
 import { compressionRatio } from "../delivery";
 import { useAssetUsages } from "../hooks";
 import { humanSize } from "../types";
 import type { MediaAsset } from "../types";
 import { MediaThumbnail } from "./media-thumbnail";
+import { VersionHistoryPanel } from "./version-history-panel";
 
 interface Props {
   asset: MediaAsset | null;
