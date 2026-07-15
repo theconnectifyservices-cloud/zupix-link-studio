@@ -1482,10 +1482,13 @@ function TestimonialsEditor({
               placeholder="Role"
               onChange={(e) => upd(i, { role: e.target.value })}
             />
-            <Input
-              value={t.avatarUrl ?? ""}
-              placeholder="Avatar URL"
-              onChange={(e) => upd(i, { avatarUrl: e.target.value })}
+            <ImageField
+              label="Avatar"
+              value={t.avatarUrl}
+              onChange={(url) => upd(i, { avatarUrl: url })}
+              crop={{ shape: "round", aspect: 1 }}
+              circle
+              pickerTitle="Choose avatar"
             />
             <SelectSimple
               value={String(t.rating ?? 5)}
