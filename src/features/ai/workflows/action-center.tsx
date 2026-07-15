@@ -434,7 +434,7 @@ function PreviewBlock({
     <Textarea
       className="min-h-[140px] text-sm font-mono"
       value={value ?? output}
-      onChange={(e) => onChange?.(e.target.value)}
+      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onChange?.(e.target.value)}
     />
   );
 }
