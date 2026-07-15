@@ -158,11 +158,13 @@ export function BlockRenderer({
         : null
       : null;
 
+  const btnFxMode = btnFx === "shine" ? (s.buttonEffectMode ?? "hover") : null;
   const wrapCls = cn(
     s.radius && RADIUS_CLASS[s.radius],
     anim !== "none" && `zx-anim zx-anim-${anim}`,
     hover && `zx-hover zx-hover-${hover}`,
     btnFx && `zx-btn-fx zx-btn-fx-${btnFx}`,
+    btnFxMode && `zx-btn-fx-mode-${btnFxMode}`,
   );
 
   const style: CSSProperties = {
@@ -181,6 +183,12 @@ export function BlockRenderer({
       `${(s.animationDelay ?? 0) + index * staggerStep}ms`;
     (style as Record<string, string>)["--zx-anim-repeat"] =
       s.animationRepeat === "infinite" ? "infinite" : "1";
+  }
+  if (btnFx) {
+    if (s.buttonEffectSpeed)
+      (style as Record<string, string>)["--zx-btn-fx-dur"] = `${s.buttonEffectSpeed}ms`;
+    if (s.buttonEffectColor)
+      (style as Record<string, string>)["--zx-btn-fx-color"] = s.buttonEffectColor;
   }
 
   const hasWrap =
