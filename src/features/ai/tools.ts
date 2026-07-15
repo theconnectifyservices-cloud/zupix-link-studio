@@ -1,0 +1,60 @@
+import type { AiTool } from "./types";
+
+export const AI_TOOLS: AiTool[] = [
+  {
+    id: "bio-writer",
+    name: "Bio Writer",
+    description: "Draft compelling bios that match your brand voice.",
+    category: "bio",
+    icon: "PenLine",
+    soon: true,
+  },
+  {
+    id: "cta-writer",
+    name: "CTA Writer",
+    description: "Generate high-converting call-to-action copy.",
+    category: "cta",
+    icon: "MousePointerClick",
+    soon: true,
+  },
+  {
+    id: "seo-assistant",
+    name: "SEO Assistant",
+    description: "Optimize titles, descriptions and structured data.",
+    category: "seo",
+    icon: "Search",
+    soon: true,
+  },
+  {
+    id: "design-assistant",
+    name: "Design Assistant",
+    description: "Get suggestions for palettes, spacing and typography.",
+    category: "design",
+    icon: "Palette",
+    soon: true,
+  },
+  {
+    id: "analytics-assistant",
+    name: "Analytics Assistant",
+    description: "Explain trends and surface anomalies in your data.",
+    category: "analytics",
+    icon: "BarChart3",
+    soon: true,
+  },
+  {
+    id: "template-assistant",
+    name: "Template Assistant",
+    description: "Find or generate the perfect starting template.",
+    category: "template",
+    icon: "LayoutTemplate",
+    soon: true,
+  },
+  {
+    id: "brand-assistant",
+    name: "Brand Assistant",
+    description: "Keep brand kit, tone and visuals consistent.",
+    category: "brand",
+    icon: "Sparkles",
+    soon: true,
+  },
+];

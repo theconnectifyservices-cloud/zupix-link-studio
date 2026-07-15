@@ -15,6 +15,8 @@ import {
   LifeBuoy,
   ChevronLeft,
   Shield,
+  Sparkles,
+
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
@@ -48,6 +50,7 @@ const appItems: Item[] = [
   { icon: Radar, label: "Tracking Center", href: "/app/tracking" },
   { icon: Radio, label: "Communications", href: "/app/communications" },
   { icon: Zap, label: "Automation", href: "/app/automation" },
+  { icon: Sparkles, label: "ZUPIX AI", href: "/app/ai" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
