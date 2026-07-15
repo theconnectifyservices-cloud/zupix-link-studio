@@ -32,6 +32,7 @@ import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppTeamRouteImport } from './routes/_authenticated.app.team'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated.app.settings'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
+import { Route as AuthenticatedAppMonetizationRouteImport } from './routes/_authenticated.app.monetization'
 import { Route as AuthenticatedAppMediaRouteImport } from './routes/_authenticated.app.media'
 import { Route as AuthenticatedAppIntegrationsRouteImport } from './routes/_authenticated.app.integrations'
 import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated.app.help'
@@ -176,6 +177,12 @@ const AuthenticatedAppProjectsRoute =
   AuthenticatedAppProjectsRouteImport.update({
     id: '/projects',
     path: '/projects',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppMonetizationRoute =
+  AuthenticatedAppMonetizationRouteImport.update({
+    id: '/monetization',
+    path: '/monetization',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppMediaRoute = AuthenticatedAppMediaRouteImport.update({
@@ -360,6 +367,7 @@ export interface FileRoutesByFullPath {
   '/app/help': typeof AuthenticatedAppHelpRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
+  '/app/monetization': typeof AuthenticatedAppMonetizationRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/team': typeof AuthenticatedAppTeamRoute
@@ -409,6 +417,7 @@ export interface FileRoutesByTo {
   '/app/help': typeof AuthenticatedAppHelpRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
+  '/app/monetization': typeof AuthenticatedAppMonetizationRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/team': typeof AuthenticatedAppTeamRoute
@@ -462,6 +471,7 @@ export interface FileRoutesById {
   '/_authenticated/app/help': typeof AuthenticatedAppHelpRoute
   '/_authenticated/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/_authenticated/app/media': typeof AuthenticatedAppMediaRoute
+  '/_authenticated/app/monetization': typeof AuthenticatedAppMonetizationRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/_authenticated/app/team': typeof AuthenticatedAppTeamRoute
@@ -515,6 +525,7 @@ export interface FileRouteTypes {
     | '/app/help'
     | '/app/integrations'
     | '/app/media'
+    | '/app/monetization'
     | '/app/projects'
     | '/app/settings'
     | '/app/team'
@@ -564,6 +575,7 @@ export interface FileRouteTypes {
     | '/app/help'
     | '/app/integrations'
     | '/app/media'
+    | '/app/monetization'
     | '/app/projects'
     | '/app/settings'
     | '/app/team'
@@ -616,6 +628,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/help'
     | '/_authenticated/app/integrations'
     | '/_authenticated/app/media'
+    | '/_authenticated/app/monetization'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/settings'
     | '/_authenticated/app/team'
@@ -820,6 +833,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/app/projects'
       preLoaderRoute: typeof AuthenticatedAppProjectsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/monetization': {
+      id: '/_authenticated/app/monetization'
+      path: '/monetization'
+      fullPath: '/app/monetization'
+      preLoaderRoute: typeof AuthenticatedAppMonetizationRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/media': {
@@ -1091,6 +1111,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppHelpRoute: typeof AuthenticatedAppHelpRoute
   AuthenticatedAppIntegrationsRoute: typeof AuthenticatedAppIntegrationsRoute
   AuthenticatedAppMediaRoute: typeof AuthenticatedAppMediaRoute
+  AuthenticatedAppMonetizationRoute: typeof AuthenticatedAppMonetizationRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRouteWithChildren
   AuthenticatedAppTeamRoute: typeof AuthenticatedAppTeamRoute
@@ -1113,6 +1134,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppHelpRoute: AuthenticatedAppHelpRoute,
   AuthenticatedAppIntegrationsRoute: AuthenticatedAppIntegrationsRoute,
   AuthenticatedAppMediaRoute: AuthenticatedAppMediaRoute,
+  AuthenticatedAppMonetizationRoute: AuthenticatedAppMonetizationRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRouteWithChildren,
   AuthenticatedAppTeamRoute: AuthenticatedAppTeamRoute,
