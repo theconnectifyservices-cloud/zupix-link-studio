@@ -1,7 +1,9 @@
 /**
- * LS-13A — Server functions for Razorpay checkout.
- * Requires RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET env vars.
- * The publishable key id is echoed back to the browser; the secret never leaves the server.
+ * LS-13A — Server functions for checkout.
+ *
+ * Uses the abstract PaymentProvider layer, so this works with or without
+ * Razorpay credentials. Without credentials it transparently produces a mock
+ * order and the UI runs in demo mode.
  */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -16,16 +18,15 @@ const CreateOrderInput = z.object({
   coupon_code: z.string().trim().optional().nullable(),
 });
 
-export const createRazorpayOrder = createServerFn({ method: "POST" })
+export const getBillingProviderStatus = createServerFn({ method: "GET" }).handler(async () => {
+  const { getProviderStatus } = await import("./provider.server");
+  return getProviderStatus();
+});
+
+export const createCheckoutOrder = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((v) => CreateOrderInput.parse(v))
   .handler(async ({ data, context }) => {
-    const keyId = process.env.RAZORPAY_KEY_ID;
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
-    if (!keyId || !keySecret) {
-      throw new Error("Razorpay is not configured. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET.");
-    }
-
     const { supabase, userId } = context;
     const { data: isAdmin, error: adminErr } = await supabase.rpc("is_workspace_admin", {
       _user_id: userId,
@@ -69,32 +70,17 @@ export const createRazorpayOrder = createServerFn({ method: "POST" })
     if (!quote) throw new Error("This plan is not available for the selected billing cycle");
     if (quote.total_minor <= 0) throw new Error("Order total must be greater than zero");
 
-    // Create Razorpay order via REST
-    const auth = Buffer.from(`${keyId}:${keySecret}`).toString("base64");
-    const rzpRes = await fetch("https://api.razorpay.com/v1/orders", {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${auth}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        amount: quote.total_minor,
-        currency: quote.currency,
-        notes: {
-          workspace_id: data.workspace_id,
-          plan_code: plan.code,
-          cycle: data.cycle,
-          coupon_code: data.coupon_code ?? "",
-        },
-      }),
+    const { getPaymentProvider } = await import("./provider.server");
+    const provider = getPaymentProvider();
+    const order = await provider.createOrder({
+      workspace_id: data.workspace_id,
+      plan_code: plan.code,
+      cycle: data.cycle as BillingCycle,
+      coupon_code: data.coupon_code,
+      amount_minor: quote.total_minor,
+      currency: quote.currency,
     });
-    if (!rzpRes.ok) {
-      const body = await rzpRes.text();
-      throw new Error(`Razorpay order creation failed [${rzpRes.status}]: ${body}`);
-    }
-    const order = (await rzpRes.json()) as { id: string; amount: number; currency: string };
 
-    // Persist a draft invoice + pending payment (server-only writes)
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const nowIso = new Date().toISOString();
     const { data: invoice, error: invErr } = await supabaseAdmin
@@ -117,8 +103,7 @@ export const createRazorpayOrder = createServerFn({ method: "POST" })
           },
         ],
         tax_details: { rate: quote.tax_rate, inclusive: quote.prices_include_tax },
-        gateway: "razorpay",
-        gateway_invoice_id: null,
+        gateway: provider.gateway,
         issued_at: nowIso,
       } as never)
       .select("id")
@@ -128,19 +113,21 @@ export const createRazorpayOrder = createServerFn({ method: "POST" })
     const { error: payErr } = await supabaseAdmin.from("billing_payments").insert({
       workspace_id: data.workspace_id,
       invoice_id: invoice!.id,
-      gateway: "razorpay",
+      gateway: provider.gateway,
       status: "pending",
       amount_minor: quote.total_minor,
       currency: quote.currency,
-      gateway_order_id: order.id,
+      gateway_order_id: order.order_id,
     } as never);
     if (payErr) throw new Error(payErr.message);
 
     return {
-      order_id: order.id,
-      key_id: keyId,
-      amount_minor: order.amount,
+      order_id: order.order_id,
+      key_id: order.key_id,
+      amount_minor: order.amount_minor,
       currency: order.currency,
       invoice_id: invoice!.id as string,
+      mock: order.mock,
+      gateway: provider.gateway,
     };
   });
