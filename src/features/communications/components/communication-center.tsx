@@ -226,14 +226,14 @@ export function CommunicationCenter({ workspaceId }: Props) {
       {/* MESSAGING */}
       <TabsContent value="messaging" className="grid gap-6 md:grid-cols-2">
         <WhatsAppCard
-          value={settings.providers.whatsapp}
+          value={settings.providers.whatsapp as unknown as Record<string, unknown> | undefined}
           health={settings.health.whatsapp}
           busy={busy}
           onSave={(patch) => saveProvider("whatsapp", undefined, patch)}
           onTest={() => runTest("whatsapp")}
         />
         <TelegramCard
-          value={settings.providers.telegram}
+          value={settings.providers.telegram as unknown as Record<string, unknown> | undefined}
           health={settings.health.telegram}
           busy={busy}
           onSave={(patch) => saveProvider("telegram", undefined, patch)}
@@ -287,7 +287,7 @@ export function CommunicationCenter({ workspaceId }: Props) {
       <TabsContent value="chat" className="grid gap-6 md:grid-cols-2">
         <WebhookCard
           title="Slack"
-          value={settings.providers.slack}
+          value={settings.providers.slack as unknown as Record<string, unknown> | undefined}
           health={settings.health.slack}
           busy={busy}
           placeholder="https://hooks.slack.com/services/…"
@@ -296,7 +296,7 @@ export function CommunicationCenter({ workspaceId }: Props) {
         />
         <WebhookCard
           title="Discord"
-          value={settings.providers.discord}
+          value={settings.providers.discord as unknown as Record<string, unknown> | undefined}
           health={settings.health.discord}
           busy={busy}
           placeholder="https://discord.com/api/webhooks/…"
