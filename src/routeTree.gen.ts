@@ -33,6 +33,7 @@ import { Route as AuthenticatedAppIntegrationsRouteImport } from './routes/_auth
 import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated.app.help'
 import { Route as AuthenticatedAppDomainsRouteImport } from './routes/_authenticated.app.domains'
 import { Route as AuthenticatedAppConversionsRouteImport } from './routes/_authenticated.app.conversions'
+import { Route as AuthenticatedAppCommunicationsRouteImport } from './routes/_authenticated.app.communications'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated.app.campaigns'
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated.app.analytics'
 import { Route as AuthenticatedAppSettingsSessionsRouteImport } from './routes/_authenticated.app.settings.sessions'
@@ -167,6 +168,12 @@ const AuthenticatedAppConversionsRoute =
     path: '/conversions',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppCommunicationsRoute =
+  AuthenticatedAppCommunicationsRouteImport.update({
+    id: '/communications',
+    path: '/communications',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppCampaignsRoute =
   AuthenticatedAppCampaignsRouteImport.update({
     id: '/campaigns',
@@ -230,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
+  '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
   '/app/domains': typeof AuthenticatedAppDomainsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -262,6 +270,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
+  '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
   '/app/domains': typeof AuthenticatedAppDomainsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -297,6 +306,7 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
+  '/_authenticated/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/_authenticated/app/conversions': typeof AuthenticatedAppConversionsRoute
   '/_authenticated/app/domains': typeof AuthenticatedAppDomainsRoute
   '/_authenticated/app/help': typeof AuthenticatedAppHelpRoute
@@ -332,6 +342,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/app/analytics'
     | '/app/campaigns'
+    | '/app/communications'
     | '/app/conversions'
     | '/app/domains'
     | '/app/help'
@@ -364,6 +375,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/app/analytics'
     | '/app/campaigns'
+    | '/app/communications'
     | '/app/conversions'
     | '/app/domains'
     | '/app/help'
@@ -398,6 +410,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/_authenticated/app/analytics'
     | '/_authenticated/app/campaigns'
+    | '/_authenticated/app/communications'
     | '/_authenticated/app/conversions'
     | '/_authenticated/app/domains'
     | '/_authenticated/app/help'
@@ -601,6 +614,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppConversionsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/communications': {
+      id: '/_authenticated/app/communications'
+      path: '/communications'
+      fullPath: '/app/communications'
+      preLoaderRoute: typeof AuthenticatedAppCommunicationsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/campaigns': {
       id: '/_authenticated/app/campaigns'
       path: '/campaigns'
@@ -702,6 +722,7 @@ const AuthenticatedAppSettingsRouteWithChildren =
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
+  AuthenticatedAppCommunicationsRoute: typeof AuthenticatedAppCommunicationsRoute
   AuthenticatedAppConversionsRoute: typeof AuthenticatedAppConversionsRoute
   AuthenticatedAppDomainsRoute: typeof AuthenticatedAppDomainsRoute
   AuthenticatedAppHelpRoute: typeof AuthenticatedAppHelpRoute
@@ -717,6 +738,7 @@ interface AuthenticatedAppRouteChildren {
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
+  AuthenticatedAppCommunicationsRoute: AuthenticatedAppCommunicationsRoute,
   AuthenticatedAppConversionsRoute: AuthenticatedAppConversionsRoute,
   AuthenticatedAppDomainsRoute: AuthenticatedAppDomainsRoute,
   AuthenticatedAppHelpRoute: AuthenticatedAppHelpRoute,
