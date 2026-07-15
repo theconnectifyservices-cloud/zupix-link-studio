@@ -48,6 +48,8 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { ImageField } from "./image-field";
+import { VideoSourceField } from "./video-source-field";
 
 /**
  * Live Design Studio — LS-07B.
