@@ -43,6 +43,7 @@ import { Route as AuthenticatedAppBillingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppAutomationRouteImport } from './routes/_authenticated.app.automation'
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated.app.analytics'
 import { Route as AuthenticatedAppAiRouteImport } from './routes/_authenticated.app.ai'
+import { Route as AuthenticatedAppAgencyRouteImport } from './routes/_authenticated.app.agency'
 import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authenticated.app.ai.index'
 import { Route as ApiPublicWebhooksRazorpayRouteImport } from './routes/api/public/webhooks/razorpay'
 import { Route as AuthenticatedAppSettingsSessionsRouteImport } from './routes/_authenticated.app.settings.sessions'
@@ -237,6 +238,11 @@ const AuthenticatedAppAiRoute = AuthenticatedAppAiRouteImport.update({
   path: '/ai',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppAgencyRoute = AuthenticatedAppAgencyRouteImport.update({
+  id: '/agency',
+  path: '/agency',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppAiIndexRoute = AuthenticatedAppAiIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -334,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
@@ -382,6 +389,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth': typeof AuthIndexRoute
+  '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
   '/app/billing': typeof AuthenticatedAppBillingRoute
@@ -432,6 +440,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/_authenticated/app/agency': typeof AuthenticatedAppAgencyRoute
   '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/_authenticated/app/automation': typeof AuthenticatedAppAutomationRoute
@@ -483,6 +492,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/app/agency'
     | '/app/ai'
     | '/app/analytics'
     | '/app/automation'
@@ -531,6 +541,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth'
+    | '/app/agency'
     | '/app/analytics'
     | '/app/automation'
     | '/app/billing'
@@ -580,6 +591,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/_authenticated/app/agency'
     | '/_authenticated/app/ai'
     | '/_authenticated/app/analytics'
     | '/_authenticated/app/automation'
@@ -874,6 +886,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAiRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/agency': {
+      id: '/_authenticated/app/agency'
+      path: '/agency'
+      fullPath: '/app/agency'
+      preLoaderRoute: typeof AuthenticatedAppAgencyRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/ai/': {
       id: '/_authenticated/app/ai/'
       path: '/'
@@ -1039,6 +1058,7 @@ const AuthenticatedAppSettingsRouteWithChildren =
   )
 
 interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppAgencyRoute: typeof AuthenticatedAppAgencyRoute
   AuthenticatedAppAiRoute: typeof AuthenticatedAppAiRouteWithChildren
   AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
   AuthenticatedAppAutomationRoute: typeof AuthenticatedAppAutomationRoute
@@ -1059,6 +1079,7 @@ interface AuthenticatedAppRouteChildren {
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppAgencyRoute: AuthenticatedAppAgencyRoute,
   AuthenticatedAppAiRoute: AuthenticatedAppAiRouteWithChildren,
   AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
   AuthenticatedAppAutomationRoute: AuthenticatedAppAutomationRoute,

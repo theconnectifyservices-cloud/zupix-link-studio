@@ -1746,6 +1746,237 @@ export type Database = {
           },
         ]
       }
+      client_approvals: {
+        Row: {
+          agency_workspace_id: string
+          client_workspace_id: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string | null
+          description: string | null
+          entity_ref: Json
+          history: Json
+          id: string
+          kind: Database["public"]["Enums"]["approval_kind"]
+          requested_by: string | null
+          status: Database["public"]["Enums"]["approval_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          agency_workspace_id: string
+          client_workspace_id: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          description?: string | null
+          entity_ref?: Json
+          history?: Json
+          id?: string
+          kind: Database["public"]["Enums"]["approval_kind"]
+          requested_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          agency_workspace_id?: string
+          client_workspace_id?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          description?: string | null
+          entity_ref?: Json
+          history?: Json
+          id?: string
+          kind?: Database["public"]["Enums"]["approval_kind"]
+          requested_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_approvals_agency_workspace_id_fkey"
+            columns: ["agency_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_approvals_client_workspace_id_fkey"
+            columns: ["client_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_assignments: {
+        Row: {
+          agency_workspace_id: string
+          assigned_by: string | null
+          client_workspace_id: string
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["assignment_role"]
+          user_id: string
+        }
+        Insert: {
+          agency_workspace_id: string
+          assigned_by?: string | null
+          client_workspace_id: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["assignment_role"]
+          user_id: string
+        }
+        Update: {
+          agency_workspace_id?: string
+          assigned_by?: string | null
+          client_workspace_id?: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["assignment_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_assignments_agency_workspace_id_fkey"
+            columns: ["agency_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_assignments_client_workspace_id_fkey"
+            columns: ["client_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_notes: {
+        Row: {
+          agency_workspace_id: string
+          author_id: string
+          body: string
+          client_workspace_id: string
+          created_at: string
+          id: string
+          pinned: boolean
+          updated_at: string
+        }
+        Insert: {
+          agency_workspace_id: string
+          author_id: string
+          body: string
+          client_workspace_id: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          updated_at?: string
+        }
+        Update: {
+          agency_workspace_id?: string
+          author_id?: string
+          body?: string
+          client_workspace_id?: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_notes_agency_workspace_id_fkey"
+            columns: ["agency_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_notes_client_workspace_id_fkey"
+            columns: ["client_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_profiles: {
+        Row: {
+          agency_workspace_id: string
+          brand_kit: Json
+          business_info: Json
+          client_workspace_id: string
+          created_at: string
+          domain_info: Json
+          goals: Json
+          id: string
+          last_active_at: string | null
+          monthly_revenue_cents: number
+          onboarding_completed: boolean
+          onboarding_step: number
+          social_accounts: Json
+          status: Database["public"]["Enums"]["client_status"]
+          updated_at: string
+        }
+        Insert: {
+          agency_workspace_id: string
+          brand_kit?: Json
+          business_info?: Json
+          client_workspace_id: string
+          created_at?: string
+          domain_info?: Json
+          goals?: Json
+          id?: string
+          last_active_at?: string | null
+          monthly_revenue_cents?: number
+          onboarding_completed?: boolean
+          onboarding_step?: number
+          social_accounts?: Json
+          status?: Database["public"]["Enums"]["client_status"]
+          updated_at?: string
+        }
+        Update: {
+          agency_workspace_id?: string
+          brand_kit?: Json
+          business_info?: Json
+          client_workspace_id?: string
+          created_at?: string
+          domain_info?: Json
+          goals?: Json
+          id?: string
+          last_active_at?: string | null
+          monthly_revenue_cents?: number
+          onboarding_completed?: boolean
+          onboarding_step?: number
+          social_accounts?: Json
+          status?: Database["public"]["Enums"]["client_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_profiles_agency_workspace_id_fkey"
+            columns: ["agency_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_profiles_client_workspace_id_fkey"
+            columns: ["client_workspace_id"]
+            isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connected_accounts: {
         Row: {
           avatar_url: string | null
@@ -3023,6 +3254,53 @@ export type Database = {
         }
         Relationships: []
       }
+      shared_resources: {
+        Row: {
+          agency_workspace_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          kind: Database["public"]["Enums"]["shared_resource_kind"]
+          payload: Json
+          tags: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          agency_workspace_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["shared_resource_kind"]
+          payload?: Json
+          tags?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          agency_workspace_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["shared_resource_kind"]
+          payload?: Json
+          tags?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_resources_agency_workspace_id_fkey"
+            columns: ["agency_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sso_configurations: {
         Row: {
           config: Json
@@ -3533,6 +3811,7 @@ export type Database = {
           name: string
           organization_id: string | null
           owner_id: string
+          parent_agency_id: string | null
           settings: Json
           slug: string
           social_image_url: string | null
@@ -3553,6 +3832,7 @@ export type Database = {
           name: string
           organization_id?: string | null
           owner_id: string
+          parent_agency_id?: string | null
           settings?: Json
           slug: string
           social_image_url?: string | null
@@ -3573,6 +3853,7 @@ export type Database = {
           name?: string
           organization_id?: string | null
           owner_id?: string
+          parent_agency_id?: string | null
           settings?: Json
           slug?: string
           social_image_url?: string | null
@@ -3588,6 +3869,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspaces_parent_agency_id_fkey"
+            columns: ["parent_agency_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -3607,6 +3895,10 @@ export type Database = {
       }
       has_workspace_permission: {
         Args: { _permission: string; _user_id: string; _workspace_id: string }
+        Returns: boolean
+      }
+      is_agency_admin: {
+        Args: { _agency_id: string; _user_id: string }
         Returns: boolean
       }
       is_org_member: {
@@ -3675,6 +3967,19 @@ export type Database = {
         | "qr_scan"
         | "session_end"
       app_role: "admin" | "moderator" | "user"
+      approval_kind: "draft" | "content" | "design" | "publishing"
+      approval_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "revision_requested"
+      assignment_role:
+        | "project_manager"
+        | "designer"
+        | "developer"
+        | "writer"
+        | "seo"
+        | "viewer"
       billing_cycle: "monthly" | "quarterly" | "yearly" | "lifetime"
       bio_page_status:
         | "draft"
@@ -3684,6 +3989,7 @@ export type Database = {
         | "unpublished"
       bio_page_visibility: "public" | "private" | "unlisted" | "password"
       campaign_status: "draft" | "active" | "paused" | "completed" | "archived"
+      client_status: "trial" | "active" | "suspended" | "archived"
       conversion_goal_type:
         | "whatsapp_click"
         | "phone_call"
@@ -3729,6 +4035,7 @@ export type Database = {
         | "failed"
         | "refunded"
         | "partially_refunded"
+      shared_resource_kind: "template" | "asset" | "component" | "prompt"
       subscription_status:
         | "trialing"
         | "active"
@@ -3906,6 +4213,21 @@ export const Constants = {
         "session_end",
       ],
       app_role: ["admin", "moderator", "user"],
+      approval_kind: ["draft", "content", "design", "publishing"],
+      approval_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "revision_requested",
+      ],
+      assignment_role: [
+        "project_manager",
+        "designer",
+        "developer",
+        "writer",
+        "seo",
+        "viewer",
+      ],
       billing_cycle: ["monthly", "quarterly", "yearly", "lifetime"],
       bio_page_status: [
         "draft",
@@ -3916,6 +4238,7 @@ export const Constants = {
       ],
       bio_page_visibility: ["public", "private", "unlisted", "password"],
       campaign_status: ["draft", "active", "paused", "completed", "archived"],
+      client_status: ["trial", "active", "suspended", "archived"],
       conversion_goal_type: [
         "whatsapp_click",
         "phone_call",
@@ -3966,6 +4289,7 @@ export const Constants = {
         "refunded",
         "partially_refunded",
       ],
+      shared_resource_kind: ["template", "asset", "component", "prompt"],
       subscription_status: [
         "trialing",
         "active",
