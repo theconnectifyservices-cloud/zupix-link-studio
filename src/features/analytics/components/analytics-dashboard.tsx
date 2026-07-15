@@ -49,11 +49,34 @@ import {
   linkPerformance,
   pickBucket,
 } from "../aggregate";
+import {
+  blockPerformance,
+  buttonPerformance,
+  computeEngagement,
+  deviceBehaviour,
+  pagePerformance,
+  referrerInsights,
+  returningVisitors,
+  trendCompare,
+  visitorJourneys,
+} from "../intelligence";
+import { generateInsights } from "../insights";
 import { downloadCsv, downloadExcel } from "../export";
 import { KpiCard } from "./kpi-card";
 import { TrendChart } from "./trend-chart";
 import { DonutChart } from "./donut-chart";
 import { RankedList } from "./ranked-list";
+import { InsightCards } from "./insight-cards";
+import {
+  BlockPerformanceCard,
+  DeviceComparisonCard,
+  EngagementPanel,
+  PagePerformanceCard,
+  ReferrerInsightsCard,
+  ReturningVisitorsCard,
+  TrendCompareCard,
+  VisitorJourneyCard,
+} from "./intelligence-panels";
 
 const RANGE_OPTIONS: { value: RangeKey; label: string }[] = [
   { value: "today", label: "Today" },
