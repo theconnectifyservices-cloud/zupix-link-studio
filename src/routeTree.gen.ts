@@ -59,6 +59,7 @@ import { Route as AuthenticatedAppSettingsProfileRouteImport } from './routes/_a
 import { Route as AuthenticatedAppSettingsPreferencesRouteImport } from './routes/_authenticated.app.settings.preferences'
 import { Route as AuthenticatedAppSettingsPasswordRouteImport } from './routes/_authenticated.app.settings.password'
 import { Route as AuthenticatedAppSettingsNotificationsRouteImport } from './routes/_authenticated.app.settings.notifications'
+import { Route as AuthenticatedAppSettingsMobileRouteImport } from './routes/_authenticated.app.settings.mobile'
 import { Route as AuthenticatedAppSettingsIdentityRouteImport } from './routes/_authenticated.app.settings.identity'
 import { Route as AuthenticatedAppAiWorkflowsRouteImport } from './routes/_authenticated.app.ai.workflows'
 import { Route as AuthenticatedAppAiStudioRouteImport } from './routes/_authenticated.app.ai.studio'
@@ -339,6 +340,12 @@ const AuthenticatedAppSettingsNotificationsRoute =
     path: '/notifications',
     getParentRoute: () => AuthenticatedAppSettingsRoute,
   } as any)
+const AuthenticatedAppSettingsMobileRoute =
+  AuthenticatedAppSettingsMobileRouteImport.update({
+    id: '/mobile',
+    path: '/mobile',
+    getParentRoute: () => AuthenticatedAppSettingsRoute,
+  } as any)
 const AuthenticatedAppSettingsIdentityRoute =
   AuthenticatedAppSettingsIdentityRouteImport.update({
     id: '/identity',
@@ -423,6 +430,7 @@ export interface FileRoutesByFullPath {
   '/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
   '/app/ai/workflows': typeof AuthenticatedAppAiWorkflowsRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
+  '/app/settings/mobile': typeof AuthenticatedAppSettingsMobileRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
   '/app/settings/preferences': typeof AuthenticatedAppSettingsPreferencesRoute
@@ -478,6 +486,7 @@ export interface FileRoutesByTo {
   '/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
   '/app/ai/workflows': typeof AuthenticatedAppAiWorkflowsRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
+  '/app/settings/mobile': typeof AuthenticatedAppSettingsMobileRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
   '/app/settings/preferences': typeof AuthenticatedAppSettingsPreferencesRoute
@@ -537,6 +546,7 @@ export interface FileRoutesById {
   '/_authenticated/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
   '/_authenticated/app/ai/workflows': typeof AuthenticatedAppAiWorkflowsRoute
   '/_authenticated/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
+  '/_authenticated/app/settings/mobile': typeof AuthenticatedAppSettingsMobileRoute
   '/_authenticated/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/_authenticated/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
   '/_authenticated/app/settings/preferences': typeof AuthenticatedAppSettingsPreferencesRoute
@@ -596,6 +606,7 @@ export interface FileRouteTypes {
     | '/app/ai/studio'
     | '/app/ai/workflows'
     | '/app/settings/identity'
+    | '/app/settings/mobile'
     | '/app/settings/notifications'
     | '/app/settings/password'
     | '/app/settings/preferences'
@@ -651,6 +662,7 @@ export interface FileRouteTypes {
     | '/app/ai/studio'
     | '/app/ai/workflows'
     | '/app/settings/identity'
+    | '/app/settings/mobile'
     | '/app/settings/notifications'
     | '/app/settings/password'
     | '/app/settings/preferences'
@@ -709,6 +721,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/ai/studio'
     | '/_authenticated/app/ai/workflows'
     | '/_authenticated/app/settings/identity'
+    | '/_authenticated/app/settings/mobile'
     | '/_authenticated/app/settings/notifications'
     | '/_authenticated/app/settings/password'
     | '/_authenticated/app/settings/preferences'
@@ -1089,6 +1102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSettingsNotificationsRouteImport
       parentRoute: typeof AuthenticatedAppSettingsRoute
     }
+    '/_authenticated/app/settings/mobile': {
+      id: '/_authenticated/app/settings/mobile'
+      path: '/mobile'
+      fullPath: '/app/settings/mobile'
+      preLoaderRoute: typeof AuthenticatedAppSettingsMobileRouteImport
+      parentRoute: typeof AuthenticatedAppSettingsRoute
+    }
     '/_authenticated/app/settings/identity': {
       id: '/_authenticated/app/settings/identity'
       path: '/identity'
@@ -1167,6 +1187,7 @@ const AuthenticatedAppAiRouteWithChildren =
 
 interface AuthenticatedAppSettingsRouteChildren {
   AuthenticatedAppSettingsIdentityRoute: typeof AuthenticatedAppSettingsIdentityRoute
+  AuthenticatedAppSettingsMobileRoute: typeof AuthenticatedAppSettingsMobileRoute
   AuthenticatedAppSettingsNotificationsRoute: typeof AuthenticatedAppSettingsNotificationsRoute
   AuthenticatedAppSettingsPasswordRoute: typeof AuthenticatedAppSettingsPasswordRoute
   AuthenticatedAppSettingsPreferencesRoute: typeof AuthenticatedAppSettingsPreferencesRoute
@@ -1180,6 +1201,7 @@ const AuthenticatedAppSettingsRouteChildren: AuthenticatedAppSettingsRouteChildr
   {
     AuthenticatedAppSettingsIdentityRoute:
       AuthenticatedAppSettingsIdentityRoute,
+    AuthenticatedAppSettingsMobileRoute: AuthenticatedAppSettingsMobileRoute,
     AuthenticatedAppSettingsNotificationsRoute:
       AuthenticatedAppSettingsNotificationsRoute,
     AuthenticatedAppSettingsPasswordRoute:
