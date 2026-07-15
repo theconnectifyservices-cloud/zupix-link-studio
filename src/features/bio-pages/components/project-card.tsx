@@ -312,17 +312,10 @@ export function ProjectCard({
 
       <ShareDialog
         pageId={project.id}
-        trigger={
-          <button
-            type="button"
-            className="hidden"
-            aria-hidden
-            data-open={shareOpen ? "true" : "false"}
-            onClick={() => setShareOpen(false)}
-          />
-        }
+        trigger={null}
+        open={shareOpen}
+        onOpenChange={setShareOpen}
       />
-      {shareOpen && <ShareModalMount pageId={project.id} onClose={() => setShareOpen(false)} />}
     </>
   );
 }
