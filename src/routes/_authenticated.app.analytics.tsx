@@ -19,7 +19,7 @@ function AnalyticsRoute() {
         <PageLoader label="Loading analytics" />
       ) : !workspace ? (
         <EmptyState
-          icon={BarChart3}
+          icon={<BarChart3 className="h-8 w-8" />}
           title="No workspace found"
           description="Create or join a workspace to view analytics."
         />
