@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Sparkles, MessageSquare, Plus, Wand2 } from "lucide-react";
+import { Sparkles, MessageSquare, Plus, Wand2, Palette } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/shared/navigation/page-header";
 import { PageLoader } from "@/shared/ui/page-loader";
