@@ -257,11 +257,22 @@ export async function switchActiveWorkspace(userId: string, workspaceId: string)
 export async function listMembers(workspaceId: string): Promise<WorkspaceMemberRecord[]> {
   const { data, error } = await supabase
     .from("workspace_members" as never)
-    .select("*, profile:profiles!workspace_members_user_id_fkey(id,email,display_name,avatar_url,username)")
+    .select("*")
     .eq("workspace_id", workspaceId)
     .order("joined_at", { ascending: true });
   if (error) throw error;
-  return (data ?? []) as unknown as WorkspaceMemberRecord[];
+  const rows = (data ?? []) as unknown as WorkspaceMemberRecord[];
+  const ids = Array.from(new Set(rows.map((r) => r.user_id)));
+  if (ids.length === 0) return rows;
+  const { data: profiles } = await supabase
+    .from("profiles" as never)
+    .select("id,email,display_name,avatar_url,username")
+    .in("id", ids);
+  const map = new Map<string, WorkspaceMemberRecord["profile"]>();
+  for (const p of (profiles ?? []) as unknown as NonNullable<WorkspaceMemberRecord["profile"]>[]) {
+    map.set(p.id, p);
+  }
+  return rows.map((r) => ({ ...r, profile: map.get(r.user_id) ?? null }));
 }
 
 export async function updateMemberRole(
