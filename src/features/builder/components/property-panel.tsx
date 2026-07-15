@@ -112,13 +112,15 @@ export function PropertyPanel() {
           </Field>
 
           <SectionTitle>Profile image</SectionTitle>
-          <Field label="Image URL">
-            <Input
-              value={block.avatarUrl ?? ""}
-              onChange={(e) => set("avatarUrl", e.target.value)}
-              placeholder="https://…"
-            />
-          </Field>
+          <ImageField
+            label="Avatar"
+            value={block.avatarUrl}
+            onChange={(url) => set("avatarUrl", url)}
+            circle
+            crop={{ shape: "round", aspect: 1 }}
+            pickerTitle="Choose profile picture"
+          />
+
           <Row>
             <Label className="text-xs">Object fit</Label>
             <SelectSimple
