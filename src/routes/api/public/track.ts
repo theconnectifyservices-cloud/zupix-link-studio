@@ -180,6 +180,20 @@ async function handlePost(request: Request): Promise<Response> {
 
   const ref = classifyReferrer(envelope.referrer);
 
+  // Resolve campaign_id from utm_campaign (workspace-scoped, case-insensitive)
+  let campaignId: string | null = null;
+  if (envelope.utm.campaign) {
+    const { data: c } = await supabaseAdmin
+      .from("campaigns")
+      .select("id")
+      .eq("workspace_id", page.workspace_id)
+      .ilike("utm_campaign", envelope.utm.campaign)
+      .in("status", ["active", "draft", "paused"])
+      .limit(1)
+      .maybeSingle();
+    campaignId = c?.id ?? null;
+  }
+
   // Upsert session (idempotent per session_key)
   const { data: session, error: sessErr } = await supabaseAdmin
     .from("analytics_sessions")
@@ -203,6 +217,9 @@ async function handlePost(request: Request): Promise<Response> {
         utm_source: envelope.utm.source ?? null,
         utm_medium: envelope.utm.medium ?? null,
         utm_campaign: envelope.utm.campaign ?? null,
+        utm_term: envelope.utm.term ?? null,
+        utm_content: envelope.utm.content ?? null,
+        campaign_id: campaignId,
         qr_source: envelope.qrSource,
         entry_url: envelope.entryUrl ?? null,
         last_seen_at: new Date().toISOString(),
