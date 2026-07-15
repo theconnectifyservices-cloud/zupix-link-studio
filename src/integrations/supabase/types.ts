@@ -520,6 +520,7 @@ export type Database = {
           share_settings: Json
           slug: string
           status: Database["public"]["Enums"]["bio_page_status"]
+          tracking_overrides: Json
           updated_at: string
           visibility: Database["public"]["Enums"]["bio_page_visibility"]
           workspace_id: string
@@ -548,6 +549,7 @@ export type Database = {
           share_settings?: Json
           slug: string
           status?: Database["public"]["Enums"]["bio_page_status"]
+          tracking_overrides?: Json
           updated_at?: string
           visibility?: Database["public"]["Enums"]["bio_page_visibility"]
           workspace_id: string
@@ -576,6 +578,7 @@ export type Database = {
           share_settings?: Json
           slug?: string
           status?: Database["public"]["Enums"]["bio_page_status"]
+          tracking_overrides?: Json
           updated_at?: string
           visibility?: Database["public"]["Enums"]["bio_page_visibility"]
           workspace_id?: string
@@ -1934,6 +1937,7 @@ export type Database = {
           slug: string
           social_image_url: string | null
           subdomain: string | null
+          tracking_settings: Json
           trash_retention_days: number
           updated_at: string
         }
@@ -1952,6 +1956,7 @@ export type Database = {
           slug: string
           social_image_url?: string | null
           subdomain?: string | null
+          tracking_settings?: Json
           trash_retention_days?: number
           updated_at?: string
         }
@@ -1970,6 +1975,7 @@ export type Database = {
           slug?: string
           social_image_url?: string | null
           subdomain?: string | null
+          tracking_settings?: Json
           trash_retention_days?: number
           updated_at?: string
         }
@@ -1988,6 +1994,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_tracking: { Args: { _workspace_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
