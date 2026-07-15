@@ -253,33 +253,7 @@ function renderInner(block: Block) {
       );
 
     case "button": {
-      const themedBtnStyle: CSSProperties = {
-        background: "var(--zx-btn-bg)",
-        color: "var(--zx-btn-fg)",
-        border: "var(--zx-btn-border)",
-        borderRadius: "var(--zx-btn-radius)",
-        minHeight: "var(--zx-btn-h)",
-        paddingLeft: "var(--zx-btn-px)",
-        paddingRight: "var(--zx-btn-px)",
-        boxShadow: "var(--zx-btn-shadow)",
-        fontFamily: "var(--zx-btn-font)",
-        fontSize: "var(--zx-btn-size)",
-        backdropFilter: "blur(0)", // enable overlay in glass variants via css var
-      };
-      return (
-        <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>
-          <div
-            className={cn(
-              "inline-flex items-center justify-center gap-2 font-medium transition-transform hover:-translate-y-0.5",
-              WIDTH_CLASS[block.width ?? "full"],
-              block.disabled && "cursor-not-allowed opacity-50 hover:translate-y-0",
-            )}
-            style={themedBtnStyle}
-          >
-            {block.label || "Button"}
-          </div>
-        </div>
-      );
+      return <ButtonRender block={block} />;
     }
 
     case "buttonGroup":
