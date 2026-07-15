@@ -154,6 +154,14 @@ export interface DesignHistoryEntry {
 }
 
 export async function recordDesignHistory(entry: DesignHistoryEntry): Promise<AiActivity> {
+  const metadata = {
+    pageId: entry.pageId,
+    category: entry.category,
+    status: entry.status,
+    score: entry.score,
+    patch: entry.patch,
+    snapshot: entry.snapshot,
+  };
   const { data, error } = await supabase
     .from("ai_activity")
     .insert({
@@ -161,15 +169,8 @@ export async function recordDesignHistory(entry: DesignHistoryEntry): Promise<Ai
       user_id: entry.userId,
       kind: "design_suggestion",
       summary: `${entry.status}: ${entry.suggestionTitle}`,
-      metadata: {
-        pageId: entry.pageId,
-        category: entry.category,
-        status: entry.status,
-        score: entry.score,
-        patch: entry.patch,
-        snapshot: entry.snapshot,
-      },
-    })
+      metadata,
+    } as never)
     .select("*")
     .single();
   if (error) throw error;
