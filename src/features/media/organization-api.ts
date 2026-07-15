@@ -144,9 +144,10 @@ export async function listCollectionAssets(collection: MediaCollection): Promise
     .eq("collection_id", collection.id)
     .order("position", { ascending: true });
   if (error) throw error;
-  return (data ?? [])
-    .map((r: { media_assets: MediaAsset | null }) => r.media_assets)
-    .filter((a): a is MediaAsset => !!a && !a["deleted_at" as keyof MediaAsset]);
+  const rows = (data ?? []) as unknown as { media_assets: MediaAsset | null }[];
+  return rows
+    .map((r) => r.media_assets)
+    .filter((a): a is MediaAsset => !!a);
 }
 
 async function runSmartCollection(c: MediaCollection): Promise<MediaAsset[]> {
@@ -305,7 +306,7 @@ export async function createBrandKit(input: {
 }
 
 export async function updateBrandKit(id: string, patch: Partial<BrandKit>): Promise<void> {
-  const { error } = await supabase.from("brand_kits").update(patch).eq("id", id);
+  const { error } = await supabase.from("brand_kits").update(patch as never).eq("id", id);
   if (error) throw error;
 }
 
@@ -615,7 +616,7 @@ export async function advancedSearch(q: AdvancedSearchQuery): Promise<MediaAsset
     query = query.or(`file_name.ilike.${term},alt_text.ilike.${term}`);
   }
   if (q.tags?.length) query = query.contains("tags", q.tags.map((t) => t.toLowerCase()));
-  if (q.kinds?.length) query = query.in("kind", q.kinds);
+  if (q.kinds?.length) query = query.in("kind", q.kinds as ("audio" | "document" | "image" | "other" | "video")[]);
   if (q.usageStatus === "used") query = query.gt("usage_count", 0);
   if (q.usageStatus === "unused") query = query.eq("usage_count", 0);
   if (q.dateFrom) query = query.gte("created_at", q.dateFrom);
@@ -628,7 +629,7 @@ export async function advancedSearch(q: AdvancedSearchQuery): Promise<MediaAsset
 
   const { data, error } = await query;
   if (error) throw error;
-  let results = (data ?? []) as MediaAsset[];
+  let results = (data ?? []) as unknown as MediaAsset[];
 
   // Filter by collection membership (manual only) client-side
   if (q.collectionId) {
