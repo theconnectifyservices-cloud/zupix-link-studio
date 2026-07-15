@@ -20,9 +20,27 @@ function Overview() {
   const session = useSession();
   const userId = session.status === "authenticated" ? session.session.user.id : undefined;
   const { data: profile } = useProfile(userId);
-  const { workspace } = useCurrentWorkspace();
+  const { workspace, isLoading: wsLoading } = useCurrentWorkspace();
   const { data: pages, isLoading } = useBioPages(workspace?.id);
   const [createOpen, setCreateOpen] = useState(false);
+
+  const openCreate = () => {
+    if (!userId) {
+      toast.error("Please sign in again to create a bio page.");
+      return;
+    }
+    if (wsLoading) {
+      toast.message("Loading your workspace…");
+      return;
+    }
+    if (!workspace) {
+      toast.error("No workspace available. Please refresh the page.");
+      console.error("[create bio page] missing workspace for user", userId);
+      return;
+    }
+    setCreateOpen(true);
+  };
+
 
   const recent = useMemo(() => (pages ?? []).slice(0, 4), [pages]);
   const stats = useMemo(() => {
