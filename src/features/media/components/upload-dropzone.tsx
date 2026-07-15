@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { uploadAsset } from "../api";
+import { validateBeforeUpload } from "../processor";
 import { ALLOWED_MIME, MAX_FILE_SIZE, humanSize } from "../types";
 
 interface UploadItem {
@@ -56,7 +57,7 @@ export function UploadDropzone({ workspaceId, userId, folderId, compact }: Props
   );
 
   const enqueue = useCallback(
-    (files: FileList | File[]) => {
+    async (files: FileList | File[]) => {
       const list = Array.from(files);
       const rejected: string[] = [];
       const accepted: UploadItem[] = [];
@@ -67,6 +68,11 @@ export function UploadDropzone({ workspaceId, userId, folderId, compact }: Props
         }
         if (f.size > MAX_FILE_SIZE) {
           rejected.push(`${f.name} (over ${humanSize(MAX_FILE_SIZE)})`);
+          continue;
+        }
+        const v = await validateBeforeUpload(f);
+        if (!v.ok) {
+          rejected.push(`${f.name} (${v.error})`);
           continue;
         }
         accepted.push({
