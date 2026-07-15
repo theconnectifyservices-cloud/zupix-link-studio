@@ -4,6 +4,7 @@ import {
   Images,
   LayoutTemplate,
   BarChart3,
+  Target,
   Globe,
   Puzzle,
   Settings,
