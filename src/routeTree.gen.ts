@@ -43,6 +43,7 @@ import { Route as AuthenticatedAppSettingsProfileRouteImport } from './routes/_a
 import { Route as AuthenticatedAppSettingsPreferencesRouteImport } from './routes/_authenticated.app.settings.preferences'
 import { Route as AuthenticatedAppSettingsPasswordRouteImport } from './routes/_authenticated.app.settings.password'
 import { Route as AuthenticatedAppSettingsNotificationsRouteImport } from './routes/_authenticated.app.settings.notifications'
+import { Route as AuthenticatedAppSettingsIdentityRouteImport } from './routes/_authenticated.app.settings.identity'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -229,6 +230,12 @@ const AuthenticatedAppSettingsNotificationsRoute =
     path: '/notifications',
     getParentRoute: () => AuthenticatedAppSettingsRoute,
   } as any)
+const AuthenticatedAppSettingsIdentityRoute =
+  AuthenticatedAppSettingsIdentityRouteImport.update({
+    id: '/identity',
+    path: '/identity',
+    getParentRoute: () => AuthenticatedAppSettingsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -258,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
   '/app/settings/preferences': typeof AuthenticatedAppSettingsPreferencesRoute
@@ -292,6 +300,7 @@ export interface FileRoutesByTo {
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
   '/app/settings/preferences': typeof AuthenticatedAppSettingsPreferencesRoute
@@ -329,6 +338,7 @@ export interface FileRoutesById {
   '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/_authenticated/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/_authenticated/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
   '/_authenticated/app/settings/preferences': typeof AuthenticatedAppSettingsPreferencesRoute
@@ -366,6 +376,7 @@ export interface FileRouteTypes {
     | '/builder/$id'
     | '/api/public/track'
     | '/app/'
+    | '/app/settings/identity'
     | '/app/settings/notifications'
     | '/app/settings/password'
     | '/app/settings/preferences'
@@ -400,6 +411,7 @@ export interface FileRouteTypes {
     | '/builder/$id'
     | '/api/public/track'
     | '/app'
+    | '/app/settings/identity'
     | '/app/settings/notifications'
     | '/app/settings/password'
     | '/app/settings/preferences'
@@ -436,6 +448,7 @@ export interface FileRouteTypes {
     | '/_authenticated/builder/$id'
     | '/api/public/track'
     | '/_authenticated/app/'
+    | '/_authenticated/app/settings/identity'
     | '/_authenticated/app/settings/notifications'
     | '/_authenticated/app/settings/password'
     | '/_authenticated/app/settings/preferences'
@@ -697,6 +710,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSettingsNotificationsRouteImport
       parentRoute: typeof AuthenticatedAppSettingsRoute
     }
+    '/_authenticated/app/settings/identity': {
+      id: '/_authenticated/app/settings/identity'
+      path: '/identity'
+      fullPath: '/app/settings/identity'
+      preLoaderRoute: typeof AuthenticatedAppSettingsIdentityRouteImport
+      parentRoute: typeof AuthenticatedAppSettingsRoute
+    }
   }
 }
 
@@ -711,6 +731,7 @@ const SlugRouteChildren: SlugRouteChildren = {
 const SlugRouteWithChildren = SlugRoute._addFileChildren(SlugRouteChildren)
 
 interface AuthenticatedAppSettingsRouteChildren {
+  AuthenticatedAppSettingsIdentityRoute: typeof AuthenticatedAppSettingsIdentityRoute
   AuthenticatedAppSettingsNotificationsRoute: typeof AuthenticatedAppSettingsNotificationsRoute
   AuthenticatedAppSettingsPasswordRoute: typeof AuthenticatedAppSettingsPasswordRoute
   AuthenticatedAppSettingsPreferencesRoute: typeof AuthenticatedAppSettingsPreferencesRoute
@@ -721,6 +742,8 @@ interface AuthenticatedAppSettingsRouteChildren {
 
 const AuthenticatedAppSettingsRouteChildren: AuthenticatedAppSettingsRouteChildren =
   {
+    AuthenticatedAppSettingsIdentityRoute:
+      AuthenticatedAppSettingsIdentityRoute,
     AuthenticatedAppSettingsNotificationsRoute:
       AuthenticatedAppSettingsNotificationsRoute,
     AuthenticatedAppSettingsPasswordRoute:
