@@ -755,9 +755,8 @@ function GroupItemRender({
 }) {
   const [hover, setHover] = useState(false);
   const [pressed, setPressed] = useState(false);
-  const { getIcon } = require("./button-icons") as typeof import("./button-icons");
-  const LeftIcon = getIcon(item.leftIcon);
-  const RightIcon = getIcon(item.rightIcon);
+  const LeftIcon = getButtonIcon(item.leftIcon);
+  const RightIcon = getButtonIcon(item.rightIcon);
   const iconSize = item.iconSize ?? 16;
 
   const baseStyle = buildGroupItemStyle(item, hover);
