@@ -235,109 +235,83 @@
 .zx-hover-blur:hover        { filter: blur(1px); }
 @keyframes zx-pulse         { 0%,100% { transform: scale(1) } 50% { transform: scale(1.04) } }
 
-/* Button effects (position:relative + overflow:hidden required) */
+/* ══════════════════════════════════════════════════════════════════════
+   BUTTON EFFECTS v2.0 — Enterprise Animation Library
+   All effects animate only transform / opacity / box-shadow / filter
+   so they stay on the compositor and hit 60 FPS. Keep this section in
+   sync with ButtonEffect in src/features/builder/types.ts.
+   ══════════════════════════════════════════════════════════════════════ */
 .zx-btn-fx {
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  transform: translateZ(0);
+  will-change: transform, box-shadow, filter, opacity;
   --zx-btn-fx-dur: 1500ms;
+  --zx-btn-fx-delay: 0ms;
+  --zx-btn-fx-repeat: infinite;
   --zx-btn-fx-color: var(--primary, #6366f1);
+  --zx-btn-fx-color2: rgba(255, 255, 255, 0.6);
+  --zx-btn-fx-intensity: 1;
+  --zx-btn-fx-size: 40%;
+  --zx-btn-fx-opacity: 0.55;
+  --zx-btn-fx-distance: 4px;
+  --zx-btn-fx-scale: 1.04;
+  --zx-btn-fx-grad: linear-gradient(90deg, #6366f1, #ec4899, #f59e0b, #6366f1);
 }
+/* Master disable */
+.zx-btn-fx.zx-btn-fx-disabled,
+.zx-btn-fx.zx-btn-fx-disabled::before,
+.zx-btn-fx.zx-btn-fx-disabled::after { animation: none !important; }
 
-/* ── Shine ─────────────────────────────────────────────────────────── */
+/* ── 1. Shine ─────────────────────────────────────────────────────── */
 .zx-btn-fx-shine::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: -60%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.55), transparent);
-  transform: skewX(-20deg);
+  inset: 0;
   pointer-events: none;
+  background: linear-gradient(
+    var(--zx-shine-angle, 110deg),
+    transparent 0%,
+    var(--zx-btn-fx-color2) 50%,
+    transparent 100%
+  );
+  background-size: var(--zx-shine-bg-size, 200% 100%);
+  background-repeat: no-repeat;
+  background-position: var(--zx-shine-start, -100% 0);
   z-index: 1;
+  mix-blend-mode: screen;
 }
-/* Hover mode (default) */
+.zx-btn-fx-shine.zx-btn-fx-dir-lr  { --zx-shine-angle: 110deg; --zx-shine-start: -100% 0;   --zx-shine-end: 200% 0;    }
+.zx-btn-fx-shine.zx-btn-fx-dir-rl  { --zx-shine-angle: -70deg; --zx-shine-start: 200% 0;    --zx-shine-end: -100% 0;   }
+.zx-btn-fx-shine.zx-btn-fx-dir-tb  { --zx-shine-angle: 180deg; --zx-shine-bg-size: 100% 200%; --zx-shine-start: 0 -100%; --zx-shine-end: 0 200%; }
+.zx-btn-fx-shine.zx-btn-fx-dir-bt  { --zx-shine-angle: 0deg;   --zx-shine-bg-size: 100% 200%; --zx-shine-start: 0 200%;  --zx-shine-end: 0 -100%; }
+.zx-btn-fx-shine.zx-btn-fx-dir-diag{ --zx-shine-angle: 135deg; --zx-shine-bg-size: 250% 250%; --zx-shine-start: -100% -100%; --zx-shine-end: 200% 200%; }
+.zx-btn-fx-shine.zx-btn-fx-mode-always::after {
+  animation: zx-shine-sweep var(--zx-btn-fx-dur, 1500ms) linear var(--zx-btn-fx-delay, 0ms) var(--zx-btn-fx-repeat, infinite);
+}
 .zx-btn-fx-shine.zx-btn-fx-mode-hover::after,
 .zx-btn-fx-shine:not(.zx-btn-fx-mode-always):not(.zx-btn-fx-mode-click)::after {
-  transition: left 0.6s ease;
+  transition: background-position var(--zx-btn-fx-dur, 700ms) ease;
 }
 .zx-btn-fx-shine.zx-btn-fx-mode-hover:hover::after,
 .zx-btn-fx-shine:not(.zx-btn-fx-mode-always):not(.zx-btn-fx-mode-click):hover::after {
-  left: 130%;
+  background-position: var(--zx-shine-end, 200% 0);
 }
-/* Always mode — continuous sweep */
-.zx-btn-fx-shine.zx-btn-fx-mode-always::after {
-  animation: zx-shine-sweep var(--zx-btn-fx-dur, 1500ms) linear infinite;
-}
-@keyframes zx-shine-sweep {
-  0% { left: -60%; }
-  100% { left: 130%; }
-}
-/* Click mode — sweep once on active */
 .zx-btn-fx-shine.zx-btn-fx-mode-click:active::after {
   animation: zx-shine-sweep var(--zx-btn-fx-dur, 800ms) ease-out 1;
 }
-
-.zx-btn-fx-pulse { animation: zx-btn-pulse 1.6s ease-in-out infinite; }
-@keyframes zx-btn-pulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.35) }
-  50%     { box-shadow: 0 0 0 10px rgba(255,255,255,0) }
-}
-.zx-btn-fx-glow    { box-shadow: 0 0 24px -6px currentColor; }
-
-/* ── Neon — continuous glow with pulse ────────────────────────────── */
-.zx-btn-fx-neon {
-  box-shadow:
-    inset 0 0 0 1px var(--zx-btn-fx-color),
-    0 0 8px var(--zx-btn-fx-color),
-    0 0 18px var(--zx-btn-fx-color);
-  animation: zx-neon-pulse var(--zx-btn-fx-dur, 2000ms) ease-in-out infinite;
-}
-.zx-btn-fx-neon > * {
-  text-shadow:
-    0 0 6px var(--zx-btn-fx-color),
-    0 0 14px var(--zx-btn-fx-color);
-}
-@keyframes zx-neon-pulse {
-  0%, 100% {
-    box-shadow:
-      inset 0 0 0 1px var(--zx-btn-fx-color),
-      0 0 6px var(--zx-btn-fx-color),
-      0 0 12px var(--zx-btn-fx-color);
-  }
-  50% {
-    box-shadow:
-      inset 0 0 0 1px var(--zx-btn-fx-color),
-      0 0 14px var(--zx-btn-fx-color),
-      0 0 28px var(--zx-btn-fx-color);
-  }
+@keyframes zx-shine-sweep {
+  0%   { background-position: var(--zx-shine-start, -100% 0); }
+  100% { background-position: var(--zx-shine-end, 200% 0); }
 }
 
-/* ── Floating ─────────────────────────────────────────────────────── */
-.zx-btn-fx-floating {
-  animation: zx-floating var(--zx-btn-fx-dur, 3000ms) ease-in-out infinite;
-}
-@keyframes zx-floating { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
-
-.zx-btn-fx-bounce:hover { animation: zx-btn-bounce .5s ease; }
-@keyframes zx-btn-bounce {
-  0%,100% { transform: translateY(0) }
-  40%     { transform: translateY(-6px) }
-  70%     { transform: translateY(2px) }
-}
-.zx-btn-fx-expand         { transition: transform .25s ease; }
-.zx-btn-fx-expand:hover   { transform: scale(1.04); }
-.zx-btn-fx-press:active   { transform: scale(.96); }
-
-/* ── Ripple — material-style expanding circle on click ────────────── */
+/* ── 2. Ripple (material) ─────────────────────────────────────────── */
 .zx-btn-fx-ripple::before {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 10px;
+  top: 50%; left: 50%;
+  width: 10px; height: 10px;
   margin: -5px 0 0 -5px;
   border-radius: 50%;
   background: var(--zx-btn-fx-color);
@@ -346,12 +320,255 @@
   transform: scale(0);
 }
 .zx-btn-fx-ripple:active::before {
-  animation: zx-ripple 0.6s ease-out;
+  animation: zx-ripple var(--zx-btn-fx-dur, 600ms) ease-out;
 }
 @keyframes zx-ripple {
-  0%   { opacity: 0.55; transform: scale(0); }
-  100% { opacity: 0;    transform: scale(40); }
+  0%   { opacity: var(--zx-btn-fx-opacity, 0.55); transform: scale(0); }
+  100% { opacity: 0; transform: scale(var(--zx-btn-fx-distance-scale, 40)); }
 }
+
+/* ── 3. Neon ──────────────────────────────────────────────────────── */
+.zx-btn-fx-neon {
+  box-shadow:
+    inset 0 0 0 1px var(--zx-btn-fx-color),
+    0 0 calc(8px * var(--zx-btn-fx-intensity)) var(--zx-btn-fx-color),
+    0 0 calc(18px * var(--zx-btn-fx-intensity)) var(--zx-btn-fx-color);
+  animation: zx-neon-pulse var(--zx-btn-fx-dur, 2000ms) ease-in-out var(--zx-btn-fx-delay, 0ms) var(--zx-btn-fx-repeat, infinite);
+}
+.zx-btn-fx-neon.zx-btn-fx-mode-static { animation: none; }
+.zx-btn-fx-neon > * {
+  text-shadow: 0 0 6px var(--zx-btn-fx-color), 0 0 14px var(--zx-btn-fx-color);
+}
+@keyframes zx-neon-pulse {
+  0%,100% { box-shadow: inset 0 0 0 1px var(--zx-btn-fx-color), 0 0 calc(6px * var(--zx-btn-fx-intensity))  var(--zx-btn-fx-color), 0 0 calc(12px * var(--zx-btn-fx-intensity)) var(--zx-btn-fx-color); }
+  50%     { box-shadow: inset 0 0 0 1px var(--zx-btn-fx-color), 0 0 calc(14px * var(--zx-btn-fx-intensity)) var(--zx-btn-fx-color), 0 0 calc(28px * var(--zx-btn-fx-intensity)) var(--zx-btn-fx-color); }
+}
+
+/* ── 4. Floating ──────────────────────────────────────────────────── */
+.zx-btn-fx-floating {
+  animation: zx-fx-floating var(--zx-btn-fx-dur, 3000ms) ease-in-out var(--zx-btn-fx-delay, 0ms) var(--zx-btn-fx-repeat, infinite);
+}
+.zx-btn-fx-floating.zx-btn-fx-dir-tb { animation-name: zx-fx-floating-tb; }
+.zx-btn-fx-floating.zx-btn-fx-dir-lr { animation-name: zx-fx-floating-lr; }
+@keyframes zx-fx-floating    { 0%,100% { transform: translateY(0) } 50% { transform: translateY(calc(-1 * var(--zx-btn-fx-distance))) } }
+@keyframes zx-fx-floating-tb { 0%,100% { transform: translateY(0) } 50% { transform: translateY(var(--zx-btn-fx-distance)) } }
+@keyframes zx-fx-floating-lr { 0%,100% { transform: translateX(0) } 50% { transform: translateX(var(--zx-btn-fx-distance)) } }
+
+/* ── 5. Pulse ─────────────────────────────────────────────────────── */
+.zx-btn-fx-pulse {
+  animation: zx-fx-pulse var(--zx-btn-fx-dur, 1600ms) ease-in-out var(--zx-btn-fx-delay, 0ms) var(--zx-btn-fx-repeat, infinite);
+}
+@keyframes zx-fx-pulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(var(--zx-btn-fx-scale, 1.04)); }
+}
+
+/* ── 6. Bounce (continuous) ───────────────────────────────────────── */
+.zx-btn-fx-bounce {
+  animation: zx-fx-bounce var(--zx-btn-fx-dur, 1400ms) cubic-bezier(.5,.05,.5,.95) var(--zx-btn-fx-delay, 0ms) var(--zx-btn-fx-repeat, infinite);
+}
+@keyframes zx-fx-bounce {
+  0%,100% { transform: translateY(0); }
+  25%     { transform: translateY(calc(-1 * var(--zx-btn-fx-distance))); }
+  50%     { transform: translateY(0); }
+  60%     { transform: translateY(calc(-0.4 * var(--zx-btn-fx-distance))); }
+  75%     { transform: translateY(0); }
+}
+
+/* ── 7. Glow (static aura) ────────────────────────────────────────── */
+.zx-btn-fx-glow {
+  box-shadow: 0 0 calc(var(--zx-btn-fx-size-px, 24px) * var(--zx-btn-fx-intensity)) 0 var(--zx-btn-fx-color);
+}
+
+/* ── 8. Gradient Flow ─────────────────────────────────────────────── */
+.zx-btn-fx-gradientFlow {
+  background: var(--zx-btn-fx-grad) !important;
+  background-size: 300% 300% !important;
+  animation: zx-fx-grad-flow var(--zx-btn-fx-dur, 6000ms) ease infinite;
+}
+.zx-btn-fx-gradientFlow.zx-btn-fx-dir-rl { animation-direction: reverse; }
+@keyframes zx-fx-grad-flow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── 9. Magnetic Hover (JS drives --zx-mx / --zx-my) ──────────────── */
+.zx-btn-fx-magnetic {
+  transition: transform 300ms cubic-bezier(.2,.9,.3,1);
+  transform: translate3d(var(--zx-mx, 0px), var(--zx-my, 0px), 0);
+}
+@media (hover: none) { .zx-btn-fx-magnetic { transform: none; } }
+
+/* ── 10. Glass Reflection ─────────────────────────────────────────── */
+.zx-btn-fx-glass {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.zx-btn-fx-glass::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -50%;
+  width: var(--zx-btn-fx-size, 40%);
+  height: 100%;
+  background: linear-gradient(115deg, transparent 30%, var(--zx-btn-fx-color2) 50%, transparent 70%);
+  opacity: var(--zx-btn-fx-opacity, 0.5);
+  transform: skewX(-20deg);
+  animation: zx-fx-glass var(--zx-btn-fx-dur, 4000ms) ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes zx-fx-glass {
+  0%   { left: -60%; }
+  50%  { left: 120%; }
+  100% { left: 120%; }
+}
+
+/* ── 11. Border Glow (animated gradient border) ───────────────────── */
+.zx-btn-fx-borderGlow {
+  background-clip: padding-box;
+}
+.zx-btn-fx-borderGlow::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--zx-btn-fx-size-px, 2px));
+  border-radius: inherit;
+  padding: var(--zx-btn-fx-size-px, 2px);
+  background: var(--zx-btn-fx-grad);
+  background-size: 300% 300%;
+  animation: zx-fx-grad-flow var(--zx-btn-fx-dur, 4000ms) linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ── 12. Soft Breathing ───────────────────────────────────────────── */
+.zx-btn-fx-breathing {
+  animation: zx-fx-breathe var(--zx-btn-fx-dur, 3200ms) ease-in-out infinite;
+}
+@keyframes zx-fx-breathe {
+  0%,100% { transform: scale(1);   opacity: 1; }
+  50%     { transform: scale(var(--zx-btn-fx-scale, 1.03)); opacity: 0.85; }
+}
+
+/* ── 13. Shake Attention ──────────────────────────────────────────── */
+.zx-btn-fx-shake {
+  animation: zx-fx-shake var(--zx-btn-fx-dur, 600ms) cubic-bezier(.36,.07,.19,.97) infinite;
+  animation-delay: var(--zx-btn-fx-delay, 3s);
+}
+@keyframes zx-fx-shake {
+  0%, 8%, 100% { transform: translateX(0); }
+  1%           { transform: translateX(calc(-1 * var(--zx-btn-fx-distance))); }
+  2%           { transform: translateX(var(--zx-btn-fx-distance)); }
+  3%           { transform: translateX(calc(-0.7 * var(--zx-btn-fx-distance))); }
+  4%           { transform: translateX(calc(0.7 * var(--zx-btn-fx-distance))); }
+  5%           { transform: translateX(calc(-0.4 * var(--zx-btn-fx-distance))); }
+  6%           { transform: translateX(calc(0.4 * var(--zx-btn-fx-distance))); }
+  7%           { transform: translateX(calc(-0.2 * var(--zx-btn-fx-distance))); }
+}
+
+/* ── 14. Floating Glow (combo) ────────────────────────────────────── */
+.zx-btn-fx-floatingGlow {
+  animation: zx-fx-floating-glow var(--zx-btn-fx-dur, 3500ms) ease-in-out infinite;
+  box-shadow: 0 8px 24px -6px var(--zx-btn-fx-color);
+}
+@keyframes zx-fx-floating-glow {
+  0%,100% { transform: translateY(0);       box-shadow: 0  6px 18px -8px var(--zx-btn-fx-color); }
+  50%     { transform: translateY(calc(-1 * var(--zx-btn-fx-distance))); box-shadow: 0 16px 36px -6px var(--zx-btn-fx-color); }
+}
+
+/* ── 15. 3D Lift ──────────────────────────────────────────────────── */
+.zx-btn-fx-lift3d {
+  transition: transform 250ms cubic-bezier(.2,.9,.3,1), box-shadow 250ms ease;
+  transform-style: preserve-3d;
+}
+.zx-btn-fx-lift3d:hover {
+  transform: translateY(calc(-1 * var(--zx-btn-fx-distance))) perspective(600px) rotateX(6deg);
+  box-shadow: 0 calc(6px + var(--zx-btn-fx-distance)) calc(20px + 2 * var(--zx-btn-fx-distance)) rgba(0,0,0,.28);
+}
+
+/* ── 16. Liquid Fill ──────────────────────────────────────────────── */
+.zx-btn-fx-liquidFill { z-index: 0; }
+.zx-btn-fx-liquidFill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--zx-btn-fx-color);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform var(--zx-btn-fx-dur, 500ms) cubic-bezier(.4,0,.2,1);
+  z-index: -1;
+  pointer-events: none;
+}
+.zx-btn-fx-liquidFill.zx-btn-fx-dir-tb::before { transform-origin: top;    transform: scaleY(0); }
+.zx-btn-fx-liquidFill.zx-btn-fx-dir-lr::before { transform-origin: left;   transform: scaleX(0); }
+.zx-btn-fx-liquidFill.zx-btn-fx-dir-rl::before { transform-origin: right;  transform: scaleX(0); }
+.zx-btn-fx-liquidFill:hover::before { transform: scale(1); }
+
+/* ── 17. Rainbow Border ───────────────────────────────────────────── */
+.zx-btn-fx-rainbowBorder { background-clip: padding-box; }
+.zx-btn-fx-rainbowBorder::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--zx-btn-fx-size-px, 2px));
+  border-radius: inherit;
+  padding: var(--zx-btn-fx-size-px, 2px);
+  background: conic-gradient(from var(--zx-rot, 0deg),
+    #ff004c, #ff8a00, #ffdd00, #48ff00, #00d5ff, #4c00ff, #ff00c8, #ff004c);
+  animation: zx-fx-rot var(--zx-btn-fx-dur, 4000ms) linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+@property --zx-rot { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes zx-fx-rot { to { --zx-rot: 360deg; } }
+
+/* ── 18. Spotlight Hover (JS drives --zx-sx / --zx-sy) ────────────── */
+.zx-btn-fx-spotlight { position: relative; }
+.zx-btn-fx-spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle var(--zx-btn-fx-size-px, 120px) at var(--zx-sx, 50%) var(--zx-sy, 50%),
+    var(--zx-btn-fx-color2) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 200ms ease;
+  mix-blend-mode: screen;
+}
+.zx-btn-fx-spotlight:hover::after { opacity: var(--zx-btn-fx-intensity, 1); }
+@media (hover: none) { .zx-btn-fx-spotlight::after { display: none; } }
+
+/* ── 19. Premium CTA (composite) ──────────────────────────────────── */
+.zx-btn-fx-premiumCta {
+  animation:
+    zx-fx-breathe 3.6s ease-in-out infinite,
+    zx-fx-floating 4.2s ease-in-out infinite;
+  box-shadow: 0 12px 30px -8px var(--zx-btn-fx-color);
+}
+.zx-btn-fx-premiumCta::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(110deg, transparent 35%, var(--zx-btn-fx-color2) 50%, transparent 65%);
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  background-position: -100% 0;
+  animation: zx-shine-sweep 3s linear infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* ── Legacy (kept for saved pages) ────────────────────────────────── */
+.zx-btn-fx-expand         { transition: transform .25s ease; }
+.zx-btn-fx-expand:hover   { transform: scale(1.04); }
+.zx-btn-fx-press:active   { transform: scale(.96); }
+
 
 /* Background effects — applied to the preview root, which is position:relative */
 .zx-bg-noise::after {
