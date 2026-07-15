@@ -1,4 +1,4 @@
-import { HardDrive, ImageIcon, FileText, Film, Music, TrendingUp } from "lucide-react";
+import { HardDrive, ImageIcon, FileText, Film, Music, TrendingUp, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useStorageStats } from "../hooks";
@@ -18,10 +18,13 @@ export function StorageDashboard({ workspaceId }: { workspaceId: string }) {
     ["document", FileText],
   ];
   const maxDay = Math.max(1, ...stats.uploadsLast7d);
+  const savingsPct = stats.originalBytes
+    ? Math.round((stats.savedBytes / stats.originalBytes) * 100)
+    : 0;
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      <Card className="md:col-span-2">
+    <div className="grid gap-4 lg:grid-cols-4">
+      <Card className="lg:col-span-2">
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <CardTitle className="text-sm font-semibold">Storage</CardTitle>
           <HardDrive className="h-4 w-4 text-muted-foreground" />
@@ -49,6 +52,37 @@ export function StorageDashboard({ workspaceId }: { workspaceId: string }) {
               );
             })}
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <CardTitle className="text-sm font-semibold">Optimization</CardTitle>
+          <Sparkles className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
+            {humanSize(stats.savedBytes)}
+          </p>
+          <p className="mb-3 text-xs text-muted-foreground">
+            Saved by WebP · {savingsPct}% smaller
+          </p>
+          <dl className="space-y-1 text-xs text-muted-foreground">
+            <div className="flex justify-between">
+              <dt>Processed</dt>
+              <dd className="font-semibold text-foreground">{stats.processedCount}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt>In progress</dt>
+              <dd className="font-semibold text-foreground">{stats.pendingCount}</dd>
+            </div>
+            {stats.failedCount > 0 && (
+              <div className="flex justify-between">
+                <dt>Failed</dt>
+                <dd className="font-semibold text-destructive">{stats.failedCount}</dd>
+              </div>
+            )}
+          </dl>
         </CardContent>
       </Card>
 

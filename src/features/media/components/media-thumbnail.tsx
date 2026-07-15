@@ -2,38 +2,49 @@
 import { useEffect, useState } from "react";
 import { FileText, Film, Music, File as FileIcon } from "lucide-react";
 import { signedUrl } from "../api";
+import { pickVariant, signedPosterUrl } from "../delivery";
 import type { MediaAsset } from "../types";
 
 interface Props {
   asset: MediaAsset;
   className?: string;
+  /** Target render width in CSS px — drives which variant to fetch. */
+  width?: number;
 }
 
-export function MediaThumbnail({ asset, className }: Props) {
+export function MediaThumbnail({ asset, className, width = 240 }: Props) {
   const [url, setUrl] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    if (asset.kind !== "image") return;
     let cancelled = false;
-    signedUrl(asset.path)
-      .then((u) => {
-        if (!cancelled) setUrl(u);
-      })
-      .catch(() => {
+    (async () => {
+      try {
+        if (asset.kind === "image") {
+          const variant = pickVariant(asset, width);
+          const target = variant?.path ?? asset.path;
+          const u = await signedUrl(target);
+          if (!cancelled) setUrl(u);
+        } else if (asset.kind === "video") {
+          const u = await signedPosterUrl(asset);
+          if (!cancelled) setUrl(u);
+        }
+      } catch {
         if (!cancelled) setFailed(true);
-      });
+      }
+    })();
     return () => {
       cancelled = true;
     };
-  }, [asset.id, asset.path, asset.kind]);
+  }, [asset, width]);
 
-  if (asset.kind === "image" && url && !failed) {
+  if ((asset.kind === "image" || asset.kind === "video") && url && !failed) {
     return (
       <img
         src={url}
         alt={asset.alt_text ?? asset.file_name ?? ""}
         loading="lazy"
+        decoding="async"
         className={className ?? "h-full w-full object-cover"}
         onError={() => setFailed(true)}
       />

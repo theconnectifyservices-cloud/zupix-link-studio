@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { signedUrl, softDeleteAsset, updateAsset } from "../api";
+import { compressionRatio } from "../delivery";
 import { useAssetUsages } from "../hooks";
 import { humanSize } from "../types";
 import type { MediaAsset } from "../types";
@@ -189,6 +190,75 @@ export function MediaDetailsPanel({ asset, onClose }: Props) {
         </dl>
 
         <Separator className="my-4" />
+
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="text-sm font-semibold">Optimization</h4>
+            <Badge
+              variant={
+                asset.processing_status === "completed"
+                  ? "default"
+                  : asset.processing_status === "failed"
+                    ? "destructive"
+                    : "secondary"
+              }
+              className="capitalize"
+            >
+              {asset.processing_status}
+            </Badge>
+          </div>
+          {(() => {
+            const ratio = compressionRatio(asset);
+            const original = asset.original_size_bytes ?? asset.size_bytes ?? 0;
+            const optimized = asset.optimized_size_bytes ?? 0;
+            const saved = original && optimized && optimized < original ? original - optimized : 0;
+            return (
+              <dl className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <dt className="text-muted-foreground">Original</dt>
+                  <dd>{humanSize(original)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Optimized</dt>
+                  <dd>{optimized ? humanSize(optimized) : "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Saved</dt>
+                  <dd className="text-emerald-600 dark:text-emerald-400">
+                    {saved ? humanSize(saved) : "—"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Ratio</dt>
+                  <dd>{ratio !== null ? `${Math.round((1 - ratio) * 100)}% smaller` : "—"}</dd>
+                </div>
+              </dl>
+            );
+          })()}
+          {asset.variants.length > 0 && (
+            <div className="mt-3">
+              <p className="mb-1.5 text-xs uppercase tracking-wide text-muted-foreground">
+                Variants ({asset.variants.length})
+              </p>
+              <ul className="flex flex-wrap gap-1.5">
+                {asset.variants.map((v) => (
+                  <li key={v.path}>
+                    <Badge variant="outline" className="font-mono text-[10px] uppercase">
+                      {v.role} · {v.width}w · {v.format}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {asset.processing_error && (
+            <p className="mt-2 text-xs text-destructive">Error: {asset.processing_error}</p>
+          )}
+        </div>
+
+        <Separator className="my-4" />
+
+
 
         <div>
           <h4 className="mb-2 text-sm font-semibold">Used in</h4>

@@ -102,7 +102,7 @@ export async function listAssets(q: ListAssetsQuery): Promise<MediaAsset[]> {
   query = query.range(q.offset ?? 0, (q.offset ?? 0) + (q.limit ?? 60) - 1);
   const { data, error } = await query;
   if (error) throw error;
-  return (data ?? []) as MediaAsset[];
+  return (data ?? []) as unknown as MediaAsset[];
 }
 
 export async function getAsset(id: string): Promise<MediaAsset | null> {
@@ -112,7 +112,7 @@ export async function getAsset(id: string): Promise<MediaAsset | null> {
     .eq("id", id)
     .maybeSingle();
   if (error) throw error;
-  return (data ?? null) as MediaAsset | null;
+  return (data ?? null) as unknown as MediaAsset | null;
 }
 
 export async function updateAsset(
@@ -210,7 +210,7 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
     .maybeSingle();
   if (existing) {
     onProgress?.(100);
-    return existing as MediaAsset;
+    return existing as unknown as MediaAsset;
   }
 
   onProgress?.(15);
@@ -239,9 +239,11 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
       file_name: file.name,
       mime_type: file.type,
       size_bytes: file.size,
+      original_size_bytes: file.size,
       width: dims?.width ?? null,
       height: dims?.height ?? null,
       sha256: hash,
+      processing_status: "pending",
     })
     .select()
     .single();
@@ -250,7 +252,51 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
     throw insErr;
   }
   onProgress?.(100);
-  return row as MediaAsset;
+
+  // Fire-and-forget async processing so uploads feel instant.
+  const asset = row as unknown as MediaAsset;
+  const storageDir = `${workspaceId}/${objectId}`;
+  void (async () => {
+    try {
+      await supabase
+        .from("media_assets")
+        .update({ processing_status: "processing" })
+        .eq("id", asset.id);
+      const { processImageAsset, processVideoAsset, saveProcessingReport } = await import("./processor");
+      if (kind === "image") {
+        const report = await processImageAsset({ assetId: asset.id, file, storageDir });
+        await saveProcessingReport(asset.id, report);
+      } else if (kind === "video") {
+        const poster = await processVideoAsset({ file, storageDir });
+        await saveProcessingReport(
+          asset.id,
+          {
+            status: poster ? "completed" : "skipped",
+            variants: poster ? [poster.variant] : [],
+            optimizedBytes: poster?.variant.size ?? 0,
+            reason: poster ? undefined : "no-poster-frame",
+          },
+          { videoThumbnailPath: poster?.posterPath ?? null },
+        );
+      } else {
+        await supabase
+          .from("media_assets")
+          .update({ processing_status: "skipped", processed_at: new Date().toISOString() })
+          .eq("id", asset.id);
+      }
+    } catch (e) {
+      await supabase
+        .from("media_assets")
+        .update({
+          processing_status: "failed",
+          processing_error: e instanceof Error ? e.message : "processing-failed",
+          processed_at: new Date().toISOString(),
+        })
+        .eq("id", asset.id);
+    }
+  })();
+
+  return asset;
 }
 
 /* -------------------- USAGE -------------------- */
@@ -273,21 +319,40 @@ export interface StorageStats {
   count: number;
   byKind: Record<string, { count: number; size: number }>;
   uploadsLast7d: number[];
+  originalBytes: number;
+  optimizedBytes: number;
+  savedBytes: number;
+  processedCount: number;
+  pendingCount: number;
+  failedCount: number;
 }
 
 export async function fetchStorageStats(workspaceId: string): Promise<StorageStats> {
   const { data, error } = await supabase
     .from("media_assets")
-    .select("kind,size_bytes,created_at")
+    .select("kind,size_bytes,created_at,original_size_bytes,optimized_size_bytes,processing_status")
     .eq("workspace_id", workspaceId)
     .is("deleted_at", null);
   if (error) throw error;
-  const rows = (data ?? []) as { kind: string; size_bytes: number | null; created_at: string }[];
+  const rows = (data ?? []) as {
+    kind: string;
+    size_bytes: number | null;
+    created_at: string;
+    original_size_bytes: number | null;
+    optimized_size_bytes: number | null;
+    processing_status: string;
+  }[];
   const stats: StorageStats = {
     used: 0,
     count: rows.length,
     byKind: {},
     uploadsLast7d: Array(7).fill(0),
+    originalBytes: 0,
+    optimizedBytes: 0,
+    savedBytes: 0,
+    processedCount: 0,
+    pendingCount: 0,
+    failedCount: 0,
   };
   const now = new Date();
   const todayStart = new Date(now);
@@ -295,6 +360,15 @@ export async function fetchStorageStats(workspaceId: string): Promise<StorageSta
   for (const r of rows) {
     const size = r.size_bytes ?? 0;
     stats.used += size;
+    const orig = r.original_size_bytes ?? size;
+    const opt = r.optimized_size_bytes ?? 0;
+    stats.originalBytes += orig;
+    stats.optimizedBytes += opt;
+    if (orig && opt && opt < orig) stats.savedBytes += orig - opt;
+    if (r.processing_status === "completed") stats.processedCount += 1;
+    else if (r.processing_status === "pending" || r.processing_status === "processing")
+      stats.pendingCount += 1;
+    else if (r.processing_status === "failed") stats.failedCount += 1;
     const k = stats.byKind[r.kind] ?? { count: 0, size: 0 };
     k.count += 1;
     k.size += size;

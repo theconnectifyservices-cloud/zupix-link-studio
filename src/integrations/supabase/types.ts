@@ -901,6 +901,7 @@ export type Database = {
       media_assets: {
         Row: {
           alt_text: string | null
+          blurhash: string | null
           bucket: string
           created_at: string
           deleted_at: string | null
@@ -913,19 +914,27 @@ export type Database = {
           last_used_at: string | null
           metadata: Json
           mime_type: string | null
+          optimized_size_bytes: number | null
+          original_size_bytes: number | null
           owner_id: string
           path: string
+          processed_at: string | null
+          processing_error: string | null
+          processing_status: Database["public"]["Enums"]["media_processing_status"]
           sha256: string | null
           size_bytes: number | null
           tags: string[]
           thumbnail_path: string | null
           updated_at: string
           usage_count: number
+          variants: Json
+          video_thumbnail_path: string | null
           width: number | null
           workspace_id: string | null
         }
         Insert: {
           alt_text?: string | null
+          blurhash?: string | null
           bucket: string
           created_at?: string
           deleted_at?: string | null
@@ -938,19 +947,27 @@ export type Database = {
           last_used_at?: string | null
           metadata?: Json
           mime_type?: string | null
+          optimized_size_bytes?: number | null
+          original_size_bytes?: number | null
           owner_id: string
           path: string
+          processed_at?: string | null
+          processing_error?: string | null
+          processing_status?: Database["public"]["Enums"]["media_processing_status"]
           sha256?: string | null
           size_bytes?: number | null
           tags?: string[]
           thumbnail_path?: string | null
           updated_at?: string
           usage_count?: number
+          variants?: Json
+          video_thumbnail_path?: string | null
           width?: number | null
           workspace_id?: string | null
         }
         Update: {
           alt_text?: string | null
+          blurhash?: string | null
           bucket?: string
           created_at?: string
           deleted_at?: string | null
@@ -963,14 +980,21 @@ export type Database = {
           last_used_at?: string | null
           metadata?: Json
           mime_type?: string | null
+          optimized_size_bytes?: number | null
+          original_size_bytes?: number | null
           owner_id?: string
           path?: string
+          processed_at?: string | null
+          processing_error?: string | null
+          processing_status?: Database["public"]["Enums"]["media_processing_status"]
           sha256?: string | null
           size_bytes?: number | null
           tags?: string[]
           thumbnail_path?: string | null
           updated_at?: string
           usage_count?: number
+          variants?: Json
+          video_thumbnail_path?: string | null
           width?: number | null
           workspace_id?: string | null
         }
@@ -1713,6 +1737,12 @@ export type Database = {
         | "custom_url_click"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
       media_kind: "image" | "video" | "audio" | "document" | "other"
+      media_processing_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "failed"
+        | "skipped"
       notification_channel: "in_app" | "email" | "push" | "sms"
       notification_type:
         | "system"
@@ -1908,6 +1938,13 @@ export const Constants = {
       ],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
       media_kind: ["image", "video", "audio", "document", "other"],
+      media_processing_status: [
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "skipped",
+      ],
       notification_channel: ["in_app", "email", "push", "sms"],
       notification_type: [
         "system",
