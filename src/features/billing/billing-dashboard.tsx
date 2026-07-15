@@ -1,13 +1,23 @@
 /**
  * LS-13A — Workspace Billing Dashboard.
- * Plan comparison, coupon-aware checkout via Razorpay, invoices, subscription
- * lifecycle and quick tax settings.
+ * Plan comparison, coupon-aware checkout via the abstract PaymentProvider
+ * (mock when no gateway is configured), invoices, subscription lifecycle,
+ * gateway connection status and quick tax settings.
  */
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Check, CreditCard, Loader2, ReceiptText, RefreshCcw, ShieldCheck } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  CreditCard,
+  Link2,
+  Loader2,
+  ReceiptText,
+  RefreshCcw,
+  ShieldCheck,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PageLoader } from "@/shared/ui/page-loader";
@@ -32,8 +43,8 @@ import {
 } from "./api";
 import { computeQuote, formatMoney, planPriceForCycle } from "./pricing";
 import { openRazorpayCheckout } from "./razorpay";
-import { createRazorpayOrder } from "./checkout.functions";
-import { verifyRazorpayPayment } from "./verify.functions";
+import { createCheckoutOrder, getBillingProviderStatus } from "./checkout.functions";
+import { verifyCheckoutPayment } from "./verify.functions";
 import type { BillingCycle, BillingPlan, Coupon } from "./types";
 
 const CYCLES: { value: BillingCycle; label: string }[] = [
@@ -54,6 +65,13 @@ export function BillingDashboard({ workspaceId, workspaceName }: Props) {
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [pendingPlan, setPendingPlan] = useState<string | null>(null);
+
+  const providerStatusFn = useServerFn(getBillingProviderStatus);
+  const statusQ = useQuery({
+    queryKey: ["billing", "provider-status"],
+    queryFn: () => providerStatusFn(),
+    staleTime: 60_000,
+  });
 
   const plansQ = useQuery({ queryKey: ["billing", "plans"], queryFn: listPublicPlans });
   const subQ = useQuery({
@@ -78,8 +96,9 @@ export function BillingDashboard({ workspaceId, workspaceName }: Props) {
     [plansQ.data, subQ.data?.plan_id],
   );
 
-  const createOrder = useServerFn(createRazorpayOrder);
-  const verifyPayment = useServerFn(verifyRazorpayPayment);
+  const createOrder = useServerFn(createCheckoutOrder);
+  const verifyPayment = useServerFn(verifyCheckoutPayment);
+  const isMock = !statusQ.data?.connected;
 
   const applyCouponMut = useMutation({
     mutationFn: async (code: string) => {
@@ -109,22 +128,44 @@ export function BillingDashboard({ workspaceId, workspaceName }: Props) {
           coupon_code: appliedCoupon?.code ?? null,
         },
       });
-      const resp = await openRazorpayCheckout(order, {
-        workspaceName,
-        description: `${plan.name} · ${cycle}`,
-      });
+
+      let paymentId: string;
+      let signature: string | undefined;
+
+      if (order.mock) {
+        // Demo checkout — no gateway credentials configured.
+        const confirmed = window.confirm(
+          `Demo checkout — no real charge.\n\n${plan.name} · ${cycle}\n${formatMoney(order.amount_minor, order.currency)}\n\nSimulate a successful payment?`,
+        );
+        if (!confirmed) throw new Error("Checkout dismissed");
+        paymentId = `mock_pay_${crypto.randomUUID()}`;
+      } else {
+        const resp = await openRazorpayCheckout(
+          {
+            order_id: order.order_id,
+            key_id: order.key_id,
+            amount_minor: order.amount_minor,
+            currency: order.currency,
+            invoice_id: order.invoice_id,
+          },
+          { workspaceName, description: `${plan.name} · ${cycle}` },
+        );
+        paymentId = resp.razorpay_payment_id;
+        signature = resp.razorpay_signature;
+      }
+
       await verifyPayment({
         data: {
           workspace_id: workspaceId,
-          invoice_id: order.invoice_id!,
-          razorpay_order_id: resp.razorpay_order_id,
-          razorpay_payment_id: resp.razorpay_payment_id,
-          razorpay_signature: resp.razorpay_signature,
+          invoice_id: order.invoice_id,
+          order_id: order.order_id,
+          payment_id: paymentId,
+          signature: signature ?? null,
           plan_code: plan.code,
           cycle,
         },
       });
-      toast.success("Subscription activated");
+      toast.success(order.mock ? "Demo subscription activated" : "Subscription activated");
       await Promise.all([
         qc.invalidateQueries({ queryKey: ["billing", "subscription", workspaceId] }),
         qc.invalidateQueries({ queryKey: ["billing", "invoices", workspaceId] }),
@@ -145,6 +186,17 @@ export function BillingDashboard({ workspaceId, workspaceName }: Props) {
 
   return (
     <div className="space-y-6">
+      {isMock ? (
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Payment gateway not connected</AlertTitle>
+          <AlertDescription>
+            Billing is running in demo mode. No real charges are made. Connect Razorpay from
+            the “Gateway” tab before going to production.
+          </AlertDescription>
+        </Alert>
+      ) : null}
+
       {/* Current subscription */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-4">
@@ -227,6 +279,7 @@ export function BillingDashboard({ workspaceId, workspaceName }: Props) {
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="tax">Tax & Address</TabsTrigger>
+          <TabsTrigger value="gateway">Gateway</TabsTrigger>
         </TabsList>
 
         <TabsContent value="plans" className="space-y-4">
@@ -282,6 +335,7 @@ export function BillingDashboard({ workspaceId, workspaceName }: Props) {
                 pricesIncludeTax={taxQ.data?.prices_include_tax ?? false}
                 isCurrent={currentPlan?.id === plan.id}
                 busy={pendingPlan === plan.id}
+                mock={isMock}
                 onCheckout={() => handleCheckout(plan)}
               />
             ))}
@@ -303,6 +357,10 @@ export function BillingDashboard({ workspaceId, workspaceName }: Props) {
             onSaved={() => qc.invalidateQueries({ queryKey: ["billing", "tax", workspaceId] })}
           />
         </TabsContent>
+
+        <TabsContent value="gateway">
+          <GatewayPanel status={statusQ.data} loading={statusQ.isLoading} onRefresh={() => statusQ.refetch()} />
+        </TabsContent>
       </Tabs>
     </div>
   );
@@ -316,9 +374,10 @@ function PlanCard(props: {
   pricesIncludeTax: boolean;
   isCurrent: boolean;
   busy: boolean;
+  mock: boolean;
   onCheckout: () => void;
 }) {
-  const { plan, cycle, coupon, taxRate, pricesIncludeTax, isCurrent, busy, onCheckout } = props;
+  const { plan, cycle, coupon, taxRate, pricesIncludeTax, isCurrent, busy, mock, onCheckout } = props;
   const price = planPriceForCycle(plan, cycle);
   const quote = price !== null
     ? computeQuote({ plan, cycle, coupon, tax: { tax_rate: taxRate, prices_include_tax: pricesIncludeTax } })
@@ -379,12 +438,97 @@ function PlanCard(props: {
             "Active plan"
           ) : price === 0 ? (
             "Included"
+          ) : mock ? (
+            <><CreditCard className="mr-2 h-4 w-4" /> Try demo checkout</>
           ) : (
             <><CreditCard className="mr-2 h-4 w-4" /> Subscribe</>
           )}
         </Button>
       </CardContent>
     </Card>
+  );
+}
+
+function GatewayPanel({
+  status,
+  loading,
+  onRefresh,
+}: {
+  status: Awaited<ReturnType<typeof getBillingProviderStatus>> | undefined;
+  loading: boolean;
+  onRefresh: () => void;
+}) {
+  const connected = !!status?.connected;
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-start justify-between gap-4">
+        <div>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Link2 className="h-4 w-4" /> Payment Gateway
+          </CardTitle>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Connect a payment provider to accept real payments. Until then, checkout runs
+            in demo mode.
+          </p>
+        </div>
+        <Badge variant={connected ? "default" : "secondary"}>
+          {loading ? "Checking…" : connected ? "Connected" : "Not Connected"}
+        </Badge>
+      </CardHeader>
+      <CardContent className="space-y-4 text-sm">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <StatusRow label="Provider" value={status?.gateway ?? "—"} />
+          <StatusRow label="Mode" value={status?.mode ?? "—"} />
+          <StatusRow label="Key ID" value={status?.key_id ?? "—"} mono />
+          <StatusRow
+            label="Webhook"
+            value={status?.webhook_configured ? "Configured" : "Not configured"}
+          />
+        </div>
+        {status?.message ? (
+          <div className="rounded-md border border-dashed p-3 text-xs text-muted-foreground">
+            {status.message}
+          </div>
+        ) : null}
+        <Separator />
+        <div className="space-y-3">
+          <div className="text-sm font-medium">Razorpay</div>
+          <p className="text-xs text-muted-foreground">
+            To connect Razorpay, add these secrets to the project. The billing engine will
+            switch from demo mode to live processing automatically on the next request.
+          </p>
+          <ul className="rounded-md bg-muted/50 p-3 font-mono text-xs">
+            <li>RAZORPAY_KEY_ID</li>
+            <li>RAZORPAY_KEY_SECRET</li>
+            <li>RAZORPAY_WEBHOOK_SECRET <span className="text-muted-foreground">(for lifecycle events)</span></li>
+          </ul>
+          <div className="flex gap-2">
+            <Button
+              variant="default"
+              onClick={() =>
+                toast.info(
+                  "Ask an admin to run the “Connect Razorpay” secret flow, or paste the keys in project settings.",
+                )
+              }
+            >
+              Connect Razorpay
+            </Button>
+            <Button variant="outline" onClick={onRefresh}>
+              <RefreshCcw className="mr-2 h-4 w-4" /> Refresh status
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function StatusRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <div>
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className={`font-medium capitalize ${mono ? "font-mono text-xs" : ""}`}>{value}</div>
+    </div>
   );
 }
 
