@@ -1411,16 +1411,33 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
       className={cn("relative overflow-hidden", hasBg && "rounded-2xl")}
       style={{ ...bgStyle }}
     >
-      {bgType === "video" && block.bgVideoUrl && (
-        <video
-          src={block.bgVideoUrl}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        />
-      )}
+      {bgType === "video" && block.bgVideoUrl && (() => {
+        const embed = buildEmbed(block.bgVideoUrl, { background: true });
+        if (!embed) return null;
+        if (embed.kind === "video") {
+          return (
+            <video
+              src={embed.src}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            />
+          );
+        }
+        return (
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <iframe
+              src={embed.src}
+              title="Background video"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              className="absolute left-1/2 top-1/2 h-[110%] w-[110%] -translate-x-1/2 -translate-y-1/2 border-0"
+              style={{ minWidth: "177.78vh", minHeight: "56.25vw" }}
+            />
+          </div>
+        );
+      })()}
       {overlay}
       <div
         className={cn(
