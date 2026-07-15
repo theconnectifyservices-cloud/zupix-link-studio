@@ -52,6 +52,7 @@ import { FONT_PAIRS, PALETTE_PRESETS, type FontPairPreset, type PalettePreset } 
 import {
   generateRecommendations,
   type AiRecommendation,
+  type DeepPartial,
   type DesignHistoryEntry,
 } from "./api";
 import {
