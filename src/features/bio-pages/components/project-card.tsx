@@ -14,6 +14,7 @@ import {
   FileEdit,
   CheckCircle2,
   Loader2,
+  Share2,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
