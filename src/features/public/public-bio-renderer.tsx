@@ -90,6 +90,7 @@ export function PublicBioRenderer({
       )}
       style={themeStyle}
     >
+      <ThemeBackgroundLayer theme={theme} />
       <div
         className={cn("relative mx-auto flex flex-col", pageCls)}
         style={{
