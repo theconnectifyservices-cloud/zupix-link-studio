@@ -252,9 +252,11 @@ export type Database = {
           published_at: string | null
           published_content: Json | null
           published_version_id: string | null
+          qr_settings: Json
           scheduled_publish_at: string | null
           scheduled_unpublish_at: string | null
           seo: Json
+          share_settings: Json
           slug: string
           status: Database["public"]["Enums"]["bio_page_status"]
           updated_at: string
@@ -278,9 +280,11 @@ export type Database = {
           published_at?: string | null
           published_content?: Json | null
           published_version_id?: string | null
+          qr_settings?: Json
           scheduled_publish_at?: string | null
           scheduled_unpublish_at?: string | null
           seo?: Json
+          share_settings?: Json
           slug: string
           status?: Database["public"]["Enums"]["bio_page_status"]
           updated_at?: string
@@ -304,9 +308,11 @@ export type Database = {
           published_at?: string | null
           published_content?: Json | null
           published_version_id?: string | null
+          qr_settings?: Json
           scheduled_publish_at?: string | null
           scheduled_unpublish_at?: string | null
           seo?: Json
+          share_settings?: Json
           slug?: string
           status?: Database["public"]["Enums"]["bio_page_status"]
           updated_at?: string
@@ -780,6 +786,57 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
+      }
+      qr_designs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_favorite: boolean
+          name: string
+          page_id: string
+          settings: Json
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_favorite?: boolean
+          name: string
+          page_id: string
+          settings?: Json
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_favorite?: boolean
+          name?: string
+          page_id?: string
+          settings?: Json
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qr_designs_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qr_designs_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       role_permissions: {
         Row: {
