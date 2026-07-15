@@ -714,13 +714,13 @@ export function PropertyPanel() {
 
       {block.type === "image" && (
         <>
-          <Field label="Image URL">
-            <Input
-              value={block.url}
-              onChange={(e) => set("url", e.target.value)}
-              placeholder="https://…"
-            />
-          </Field>
+          <ImageField
+            label="Image"
+            value={block.url}
+            onChange={(url) => set("url", url ?? "")}
+            crop={{ shape: "rect", aspect: "free" }}
+            pickerTitle="Choose image"
+          />
           <Field label="Alt text">
             <Input value={block.alt ?? ""} onChange={(e) => set("alt", e.target.value)} />
           </Field>
@@ -1224,20 +1224,20 @@ function VideoEditor({ block, set }: { block: VideoBlock; set: (k: string, v: un
           ]}
         />
       </Field>
-      <Field label="Video URL">
-        <Input
-          value={block.url}
-          onChange={(e) => set("url", e.target.value)}
-          placeholder="https://…"
-        />
-      </Field>
-      <Field label="Thumbnail URL">
-        <Input
-          value={block.thumbnailUrl ?? ""}
-          onChange={(e) => set("thumbnailUrl", e.target.value)}
-          placeholder="https://…"
-        />
-      </Field>
+      <VideoSourceField
+        label="Video source"
+        value={block.url}
+        onChange={(url) => set("url", url ?? "")}
+        background={false}
+      />
+      <ImageField
+        label="Thumbnail / poster"
+        value={block.thumbnailUrl}
+        onChange={(url) => set("thumbnailUrl", url)}
+        crop={{ shape: "rect", aspect: 16 / 9 }}
+        previewAspect="16 / 9"
+        pickerTitle="Choose thumbnail"
+      />
       <Row>
         <Label className="text-xs">Autoplay</Label>
         <Switch checked={!!block.autoplay} onCheckedChange={(v) => set("autoplay", v)} />
@@ -1349,14 +1349,16 @@ function GalleryEditor({
         <Label className="text-xs">Images</Label>
         {images.map((img, i) => (
           <div key={img.id} className="space-y-1.5 rounded-md border p-2">
-            <Input
-              value={img.url}
-              placeholder="https://…"
-              onChange={(e) => {
+            <ImageField
+              label={`Image ${i + 1}`}
+              value={img.url || undefined}
+              onChange={(url) => {
                 const n = [...images];
-                n[i] = { ...img, url: e.target.value };
+                n[i] = { ...img, url: url ?? "" };
                 onImages(n);
               }}
+              crop={{ shape: "rect", aspect: "free" }}
+              pickerTitle="Choose image"
             />
             <Input
               value={img.alt ?? ""}
@@ -1480,10 +1482,13 @@ function TestimonialsEditor({
               placeholder="Role"
               onChange={(e) => upd(i, { role: e.target.value })}
             />
-            <Input
-              value={t.avatarUrl ?? ""}
-              placeholder="Avatar URL"
-              onChange={(e) => upd(i, { avatarUrl: e.target.value })}
+            <ImageField
+              label="Avatar"
+              value={t.avatarUrl}
+              onChange={(url) => upd(i, { avatarUrl: url })}
+              crop={{ shape: "round", aspect: 1 }}
+              circle
+              pickerTitle="Choose avatar"
             />
             <SelectSimple
               value={String(t.rating ?? 5)}
