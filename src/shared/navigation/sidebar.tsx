@@ -88,10 +88,16 @@ const bottomItems: Item[] = [
 const adminItems: Item[] = [{ icon: Shield, label: "Admin", href: "/app" }];
 
 export function Sidebar({ variant = "app", className }: SidebarProps) {
-  const items = variant === "admin" ? adminItems : appItems;
+  const rawItems = variant === "admin" ? adminItems : appItems;
   const collapsed = !useUIStore((s) => s.sidebarOpen);
   const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { isLoading: rolesLoading, hasAny } = useUserRoles();
+
+  // While roles load, hide guarded items to prevent flash of unauthorized modules.
+  const items = rawItems.filter(
+    (i) => !i.requires || (!rolesLoading && hasAny(i.requires)),
+  );
 
   const isActive = (item: Item) =>
     item.exact
