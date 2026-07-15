@@ -5837,6 +5837,37 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ensure_personal_workspace: {
+        Args: never
+        Returns: {
+          brand_name: string | null
+          created_at: string
+          deleted_at: string | null
+          department_id: string | null
+          description: string | null
+          favicon_url: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          organization_id: string | null
+          owner_id: string
+          parent_agency_id: string | null
+          settings: Json
+          slug: string
+          social_image_url: string | null
+          subdomain: string | null
+          tracking_settings: Json
+          trash_retention_days: number
+          updated_at: string
+          workspace_type: Database["public"]["Enums"]["workspace_type"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "workspaces"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_public_tracking: { Args: { _workspace_id: string }; Returns: Json }
       has_role: {
         Args: {
