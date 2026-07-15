@@ -75,6 +75,7 @@ export type Database = {
         Row: {
           bio_page_id: string
           block_id: string | null
+          block_type: string | null
           browser: string | null
           city: string | null
           click_source: string | null
@@ -92,6 +93,7 @@ export type Database = {
           referrer_host: string | null
           referrer_source: string | null
           region: string | null
+          scroll_pct: number | null
           session_id: string | null
           timezone: string | null
           visitor_hash: string
@@ -100,6 +102,7 @@ export type Database = {
         Insert: {
           bio_page_id: string
           block_id?: string | null
+          block_type?: string | null
           browser?: string | null
           city?: string | null
           click_source?: string | null
@@ -117,6 +120,7 @@ export type Database = {
           referrer_host?: string | null
           referrer_source?: string | null
           region?: string | null
+          scroll_pct?: number | null
           session_id?: string | null
           timezone?: string | null
           visitor_hash: string
@@ -125,6 +129,7 @@ export type Database = {
         Update: {
           bio_page_id?: string
           block_id?: string | null
+          block_type?: string | null
           browser?: string | null
           city?: string | null
           click_source?: string | null
@@ -142,6 +147,7 @@ export type Database = {
           referrer_host?: string | null
           referrer_source?: string | null
           region?: string | null
+          scroll_pct?: number | null
           session_id?: string | null
           timezone?: string | null
           visitor_hash?: string
@@ -179,11 +185,15 @@ export type Database = {
           country: string | null
           device_type: Database["public"]["Enums"]["analytics_device_type"]
           duration_ms: number
+          engagement_score: number
+          entry_url: string | null
+          exit_url: string | null
           id: string
           is_bounce: boolean
           is_returning: boolean
           last_seen_at: string
           link_clicks: number
+          max_scroll_pct: number
           os: string | null
           page_views: number
           qr_source: string | null
@@ -207,11 +217,15 @@ export type Database = {
           country?: string | null
           device_type?: Database["public"]["Enums"]["analytics_device_type"]
           duration_ms?: number
+          engagement_score?: number
+          entry_url?: string | null
+          exit_url?: string | null
           id?: string
           is_bounce?: boolean
           is_returning?: boolean
           last_seen_at?: string
           link_clicks?: number
+          max_scroll_pct?: number
           os?: string | null
           page_views?: number
           qr_source?: string | null
@@ -235,11 +249,15 @@ export type Database = {
           country?: string | null
           device_type?: Database["public"]["Enums"]["analytics_device_type"]
           duration_ms?: number
+          engagement_score?: number
+          entry_url?: string | null
+          exit_url?: string | null
           id?: string
           is_bounce?: boolean
           is_returning?: boolean
           last_seen_at?: string
           link_clicks?: number
+          max_scroll_pct?: number
           os?: string | null
           page_views?: number
           qr_source?: string | null

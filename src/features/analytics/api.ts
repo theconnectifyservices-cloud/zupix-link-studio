@@ -68,8 +68,10 @@ export interface EventRow {
   link_url: string | null;
   link_host: string | null;
   block_id: string | null;
+  block_type: string | null;
   qr_source: string | null;
   duration_ms: number | null;
+  scroll_pct: number | null;
   created_at: string;
 }
 
@@ -84,6 +86,13 @@ export interface SessionRow {
   region: string | null;
   page_views: number;
   link_clicks: number;
+  duration_ms: number;
+  is_bounce: boolean;
+  max_scroll_pct: number;
+  engagement_score: number;
+  entry_url: string | null;
+  exit_url: string | null;
+  referrer_source: string | null;
   last_seen_at: string;
   started_at: string;
 }
@@ -92,7 +101,7 @@ export async function fetchEvents(workspaceId: string, range: DateRange): Promis
   const { data, error } = await supabase
     .from("analytics_events")
     .select(
-      "id,event_type,bio_page_id,session_id,visitor_hash,device_type,browser,os,country,region,city,referrer_source,referrer_host,link_url,link_host,block_id,qr_source,duration_ms,created_at",
+      "id,event_type,bio_page_id,session_id,visitor_hash,device_type,browser,os,country,region,city,referrer_source,referrer_host,link_url,link_host,block_id,block_type,qr_source,duration_ms,scroll_pct,created_at",
     )
     .eq("workspace_id", workspaceId)
     .eq("is_bot", false)
@@ -101,22 +110,23 @@ export async function fetchEvents(workspaceId: string, range: DateRange): Promis
     .order("created_at", { ascending: false })
     .limit(20000);
   if (error) throw error;
-  return (data ?? []) as EventRow[];
+  return (data ?? []) as unknown as EventRow[];
 }
+
+const SESSION_COLS =
+  "id,bio_page_id,visitor_hash,is_returning,device_type,country,region,city,page_views,link_clicks,duration_ms,is_bounce,max_scroll_pct,engagement_score,entry_url,exit_url,referrer_source,last_seen_at,started_at";
 
 export async function fetchSessions(workspaceId: string, range: DateRange): Promise<SessionRow[]> {
   const { data, error } = await supabase
     .from("analytics_sessions")
-    .select(
-      "id,bio_page_id,visitor_hash,is_returning,device_type,country,region,city,page_views,link_clicks,last_seen_at,started_at",
-    )
+    .select(SESSION_COLS)
     .eq("workspace_id", workspaceId)
     .gte("started_at", range.from.toISOString())
     .lte("started_at", range.to.toISOString())
     .order("started_at", { ascending: false })
     .limit(20000);
   if (error) throw error;
-  return (data ?? []) as SessionRow[];
+  return (data ?? []) as unknown as SessionRow[];
 }
 
 /** Active visitors in the last 5 minutes (based on session last_seen_at). */
@@ -124,29 +134,27 @@ export async function fetchActiveVisitors(workspaceId: string): Promise<SessionR
   const since = new Date(Date.now() - 5 * 60 * 1000).toISOString();
   const { data, error } = await supabase
     .from("analytics_sessions")
-    .select(
-      "id,bio_page_id,visitor_hash,is_returning,device_type,country,region,city,page_views,link_clicks,last_seen_at,started_at",
-    )
+    .select(SESSION_COLS)
     .eq("workspace_id", workspaceId)
     .gte("last_seen_at", since)
     .order("last_seen_at", { ascending: false })
     .limit(200);
   if (error) throw error;
-  return (data ?? []) as SessionRow[];
+  return (data ?? []) as unknown as SessionRow[];
 }
 
 export async function fetchRecentEvents(workspaceId: string, limit = 20): Promise<EventRow[]> {
   const { data, error } = await supabase
     .from("analytics_events")
     .select(
-      "id,event_type,bio_page_id,session_id,visitor_hash,device_type,browser,os,country,region,city,referrer_source,referrer_host,link_url,link_host,block_id,qr_source,duration_ms,created_at",
+      "id,event_type,bio_page_id,session_id,visitor_hash,device_type,browser,os,country,region,city,referrer_source,referrer_host,link_url,link_host,block_id,block_type,qr_source,duration_ms,scroll_pct,created_at",
     )
     .eq("workspace_id", workspaceId)
     .eq("is_bot", false)
     .order("created_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []) as EventRow[];
+  return (data ?? []) as unknown as EventRow[];
 }
 
 export interface PageMeta {

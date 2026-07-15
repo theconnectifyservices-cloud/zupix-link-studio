@@ -39,6 +39,7 @@ const EnvelopeSchema = z.object({
   }),
   timezone: z.string().max(80).nullable(),
   qrSource: z.string().max(80).nullable(),
+  entryUrl: z.string().max(2048).nullable().optional(),
 });
 
 const EventSchema = z.discriminatedUnion("type", [
@@ -49,6 +50,7 @@ const EventSchema = z.discriminatedUnion("type", [
     blockType: z.string().max(40).optional(),
     linkUrl: z.string().max(2048),
     clickSource: z.string().max(40).optional(),
+    scrollPct: z.number().int().min(0).max(100).optional(),
   }),
   z.object({ type: z.literal("qr_scan"), qrSource: z.string().max(80).optional() }),
   z.object({
@@ -56,6 +58,8 @@ const EventSchema = z.discriminatedUnion("type", [
     durationMs: z.number().int().min(0).max(24 * 60 * 60 * 1000),
     pageViews: z.number().int().min(0).max(10_000),
     linkClicks: z.number().int().min(0).max(10_000),
+    maxScrollPct: z.number().int().min(0).max(100).optional(),
+    exitUrl: z.string().max(2048).nullable().optional(),
   }),
 ]);
 
@@ -200,8 +204,9 @@ async function handlePost(request: Request): Promise<Response> {
         utm_medium: envelope.utm.medium ?? null,
         utm_campaign: envelope.utm.campaign ?? null,
         qr_source: envelope.qrSource,
+        entry_url: envelope.entryUrl ?? null,
         last_seen_at: new Date().toISOString(),
-      },
+      } as never,
       { onConflict: "bio_page_id,session_key" },
     )
     .select("id")
@@ -240,10 +245,12 @@ async function handlePost(request: Request): Promise<Response> {
       ...commonEvent,
       event_type: "link_click",
       block_id: event.blockId ?? null,
+      block_type: event.blockType ?? null,
       link_url: event.linkUrl,
       link_host: linkHost,
       click_source: event.clickSource ?? "content",
-    });
+      scroll_pct: event.scrollPct ?? null,
+    } as never);
   } else if (event.type === "qr_scan") {
     await supabaseAdmin.from("analytics_events").insert({
       ...commonEvent,
@@ -251,6 +258,11 @@ async function handlePost(request: Request): Promise<Response> {
       qr_source: event.qrSource ?? envelope.qrSource,
     });
   } else if (event.type === "session_end") {
+    // Engagement score = weighted (scroll 40% + clicks 40% + dwell 20%)
+    const dwellPct = Math.min(100, Math.round((event.durationMs / 60_000) * 50)); // 2min = 100
+    const clickPct = Math.min(100, event.linkClicks * 25);
+    const scrollPct = event.maxScrollPct ?? 0;
+    const engagement = Math.round(scrollPct * 0.4 + clickPct * 0.4 + dwellPct * 0.2);
     await supabaseAdmin
       .from("analytics_sessions")
       .update({
@@ -258,8 +270,11 @@ async function handlePost(request: Request): Promise<Response> {
         page_views: event.pageViews,
         link_clicks: event.linkClicks,
         is_bounce: event.pageViews <= 1 && event.linkClicks === 0,
+        max_scroll_pct: event.maxScrollPct ?? 0,
+        exit_url: event.exitUrl ?? null,
+        engagement_score: engagement,
         last_seen_at: new Date().toISOString(),
-      })
+      } as never)
       .eq("id", session.id);
     await supabaseAdmin
       .from("analytics_events")

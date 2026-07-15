@@ -49,11 +49,34 @@ import {
   linkPerformance,
   pickBucket,
 } from "../aggregate";
+import {
+  blockPerformance,
+  buttonPerformance,
+  computeEngagement,
+  deviceBehaviour,
+  pagePerformance,
+  referrerInsights,
+  returningVisitors,
+  trendCompare,
+  visitorJourneys,
+} from "../intelligence";
+import { generateInsights } from "../insights";
 import { downloadCsv, downloadExcel } from "../export";
 import { KpiCard } from "./kpi-card";
 import { TrendChart } from "./trend-chart";
 import { DonutChart } from "./donut-chart";
 import { RankedList } from "./ranked-list";
+import { InsightCards } from "./insight-cards";
+import {
+  BlockPerformanceCard,
+  DeviceComparisonCard,
+  EngagementPanel,
+  PagePerformanceCard,
+  ReferrerInsightsCard,
+  ReturningVisitorsCard,
+  TrendCompareCard,
+  VisitorJourneyCard,
+} from "./intelligence-panels";
 
 const RANGE_OPTIONS: { value: RangeKey; label: string }[] = [
   { value: "today", label: "Today" },
@@ -145,6 +168,18 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
       groupCount(events.filter((e) => e.event_type === "qr_scan"), (e) => pageName(e.bio_page_id)),
     [events, pageName],
   );
+
+  // Visitor intelligence memoized aggregations
+  const engagement = useMemo(() => computeEngagement(sessions), [sessions]);
+  const buttonStats = useMemo(() => buttonPerformance(events), [events]);
+  const blockStats = useMemo(() => blockPerformance(events), [events]);
+  const pageStats = useMemo(() => pagePerformance(events, sessions, pages), [events, sessions, pages]);
+  const deviceStats = useMemo(() => deviceBehaviour(sessions), [sessions]);
+  const referrerStats = useMemo(() => referrerInsights(events, sessions), [events, sessions]);
+  const loyalVisitors = useMemo(() => returningVisitors(sessions), [sessions]);
+  const journeys = useMemo(() => visitorJourneys(events, sessions, pages), [events, sessions, pages]);
+  const trends = useMemo(() => trendCompare(events, sessions, range), [events, sessions, range]);
+  const insights = useMemo(() => generateInsights(events, sessions), [events, sessions]);
 
   const loading = eventsQ.isLoading || sessionsQ.isLoading;
 
@@ -443,6 +478,83 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
           </CardContent>
         </Card>
         <RankedList title="Top QR-driven pages" data={qrByPage} emptyLabel="No QR scans yet" />
+      </div>
+
+      {/* ================== Visitor Intelligence ================== */}
+      <div className="space-y-4 pt-4">
+        <div className="flex items-center gap-2">
+          <div className="h-px flex-1 bg-border" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Visitor Intelligence
+          </h2>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        {/* Auto insights */}
+        {!loading && <InsightCards cards={insights} />}
+
+        {/* Trend comparison */}
+        {!loading && <TrendCompareCard rows={trends} label="Current vs previous period" />}
+
+        {/* Engagement metrics */}
+        {!loading && <EngagementPanel m={engagement} />}
+
+        {/* Page + Block performance */}
+        <div className="grid gap-4 lg:grid-cols-2">
+          <PagePerformanceCard stats={pageStats} />
+          <BlockPerformanceCard stats={blockStats} />
+        </div>
+
+        {/* Device behavior */}
+        <DeviceComparisonCard rows={deviceStats} />
+
+        {/* Referrer insights + Loyal visitors */}
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ReferrerInsightsCard rows={referrerStats} />
+          <ReturningVisitorsCard rows={loyalVisitors} />
+        </div>
+
+        {/* Button ranking */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold">Button performance ranking</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {buttonStats.length === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                No button clicks in this range.
+              </p>
+            ) : (
+              <ol className="space-y-2 text-sm">
+                {buttonStats.slice(0, 12).map((b) => (
+                  <li
+                    key={b.url}
+                    className="flex items-center justify-between gap-3 rounded-lg border border-border/60 p-2.5"
+                  >
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums">
+                        {b.rank}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate font-medium">{b.host || b.label}</p>
+                        <p className="truncate text-[11px] text-muted-foreground">{b.url}</p>
+                      </div>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="text-sm font-semibold tabular-nums">{b.clicks.toLocaleString()}</p>
+                      <p className="text-[11px] text-muted-foreground tabular-nums">
+                        {b.ctr.toFixed(1)}% CTR
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Visitor journeys */}
+        <VisitorJourneyCard steps={journeys} />
       </div>
     </div>
   );
