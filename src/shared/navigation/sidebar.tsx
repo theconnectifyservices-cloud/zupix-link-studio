@@ -5,6 +5,7 @@ import {
   LayoutTemplate,
   BarChart3,
   Target,
+  Megaphone,
   Globe,
   Puzzle,
   Settings,
