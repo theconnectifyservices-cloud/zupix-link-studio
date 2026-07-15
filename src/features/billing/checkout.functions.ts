@@ -27,7 +27,12 @@ export const createRazorpayOrder = createServerFn({ method: "POST" })
     }
 
     const { supabase, userId } = context;
-    await requireWorkspaceAdmin(supabase, userId, data.workspace_id);
+    const { data: isAdmin, error: adminErr } = await supabase.rpc("is_workspace_admin", {
+      _user_id: userId,
+      _workspace_id: data.workspace_id,
+    });
+    if (adminErr) throw new Error(adminErr.message);
+    if (!isAdmin) throw new Error("Forbidden: workspace admin required");
 
     const { data: plan, error: planErr } = await supabase
       .from("billing_plans")
