@@ -549,6 +549,69 @@ export type Database = {
           },
         ]
       }
+      conversion_goals: {
+        Row: {
+          bio_page_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          enabled: boolean
+          goal_type: Database["public"]["Enums"]["conversion_goal_type"]
+          id: string
+          match_rules: Json
+          name: string
+          priority: number
+          target_value: number | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          bio_page_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean
+          goal_type: Database["public"]["Enums"]["conversion_goal_type"]
+          id?: string
+          match_rules?: Json
+          name: string
+          priority?: number
+          target_value?: number | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          bio_page_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean
+          goal_type?: Database["public"]["Enums"]["conversion_goal_type"]
+          id?: string
+          match_rules?: Json
+          name?: string
+          priority?: number
+          target_value?: number | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversion_goals_bio_page_id_fkey"
+            columns: ["bio_page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversion_goals_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       domains: {
         Row: {
           created_at: string
@@ -1387,6 +1450,16 @@ export type Database = {
         | "scheduled"
         | "unpublished"
       bio_page_visibility: "public" | "private" | "unlisted" | "password"
+      conversion_goal_type:
+        | "whatsapp_click"
+        | "phone_call"
+        | "email_click"
+        | "website_click"
+        | "file_download"
+        | "form_submit"
+        | "booking_click"
+        | "qr_scan"
+        | "custom_url_click"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
       media_kind: "image" | "video" | "audio" | "document" | "other"
       notification_channel: "in_app" | "email" | "push" | "sms"
@@ -1570,6 +1643,17 @@ export const Constants = {
         "unpublished",
       ],
       bio_page_visibility: ["public", "private", "unlisted", "password"],
+      conversion_goal_type: [
+        "whatsapp_click",
+        "phone_call",
+        "email_click",
+        "website_click",
+        "file_download",
+        "form_submit",
+        "booking_click",
+        "qr_scan",
+        "custom_url_click",
+      ],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
       media_kind: ["image", "video", "audio", "document", "other"],
       notification_channel: ["in_app", "email", "push", "sms"],
