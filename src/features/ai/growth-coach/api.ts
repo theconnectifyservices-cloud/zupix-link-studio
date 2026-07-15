@@ -259,9 +259,11 @@ export async function updateActionStatus(
     .single();
   if (fetchErr) throw fetchErr;
   const meta = (current?.metadata ?? {}) as Record<string, unknown>;
+  const nextMeta = { ...meta, status, updatedAt: new Date().toISOString() };
   const { error } = await supabase
     .from("ai_activity")
-    .update({ metadata: { ...meta, status, updatedAt: new Date().toISOString() } })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .update({ metadata: nextMeta as any })
     .eq("id", rowId);
   if (error) throw error;
 }
