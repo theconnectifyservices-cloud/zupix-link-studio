@@ -245,10 +245,12 @@ async function handlePost(request: Request): Promise<Response> {
       ...commonEvent,
       event_type: "link_click",
       block_id: event.blockId ?? null,
+      block_type: event.blockType ?? null,
       link_url: event.linkUrl,
       link_host: linkHost,
       click_source: event.clickSource ?? "content",
-    });
+      scroll_pct: event.scrollPct ?? null,
+    } as never);
   } else if (event.type === "qr_scan") {
     await supabaseAdmin.from("analytics_events").insert({
       ...commonEvent,
@@ -256,6 +258,11 @@ async function handlePost(request: Request): Promise<Response> {
       qr_source: event.qrSource ?? envelope.qrSource,
     });
   } else if (event.type === "session_end") {
+    // Engagement score = weighted (scroll 40% + clicks 40% + dwell 20%)
+    const dwellPct = Math.min(100, Math.round((event.durationMs / 60_000) * 50)); // 2min = 100
+    const clickPct = Math.min(100, event.linkClicks * 25);
+    const scrollPct = event.maxScrollPct ?? 0;
+    const engagement = Math.round(scrollPct * 0.4 + clickPct * 0.4 + dwellPct * 0.2);
     await supabaseAdmin
       .from("analytics_sessions")
       .update({
@@ -263,8 +270,11 @@ async function handlePost(request: Request): Promise<Response> {
         page_views: event.pageViews,
         link_clicks: event.linkClicks,
         is_bounce: event.pageViews <= 1 && event.linkClicks === 0,
+        max_scroll_pct: event.maxScrollPct ?? 0,
+        exit_url: event.exitUrl ?? null,
+        engagement_score: engagement,
         last_seen_at: new Date().toISOString(),
-      })
+      } as never)
       .eq("id", session.id);
     await supabaseAdmin
       .from("analytics_events")
