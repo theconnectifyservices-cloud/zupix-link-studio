@@ -37,10 +37,10 @@ import {
   listWorkspaceAddons,
 } from "../api";
 import { purchaseAddon } from "../entitlements.functions";
-import { getWorkspaceSubscription } from "@/features/billing/api";
-import { listPublicPlans, formatMoney } from "@/features/billing";
+import { getWorkspaceSubscription, listPublicPlans } from "@/features/billing/api";
+import { formatMoney } from "@/features/billing/pricing";
 import { FEATURE_CATALOG, METRIC_CATALOG } from "../types";
-import type { BillingPlan } from "@/features/billing";
+import type { BillingPlan } from "@/features/billing/types";
 
 interface Props {
   workspaceId: string;
