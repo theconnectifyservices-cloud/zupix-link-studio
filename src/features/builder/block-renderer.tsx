@@ -1175,83 +1175,272 @@ function EmbedRender({ block }: { block: EmbedBlock }) {
 // keep icons referenced
 void ChevronDown;
 
-// ── Profile block with theme.profile effects (LS-07C) ────────────────────
+// ── Profile block with theme.profile effects + per-block overrides ───────
+const SHADOW_MAP: Record<NonNullable<Extract<Block, { type: "profile" }>["avatarShadow"]>, string> = {
+  none: "none",
+  sm: "0 1px 2px rgba(0,0,0,0.08)",
+  md: "0 4px 12px rgba(0,0,0,0.12)",
+  lg: "0 10px 24px rgba(0,0,0,0.18)",
+  xl: "0 20px 40px rgba(0,0,0,0.25)",
+};
+
 function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }) {
   const theme = useBuilderStore((s) => s.content.theme);
   const prof = theme?.profile ?? DEFAULT_PROFILE;
+
+  const layout = block.layout ?? "center";
+  const alignItems =
+    layout === "left"
+      ? "items-start text-left"
+      : layout === "right"
+        ? "items-end text-right"
+        : "items-center text-center";
+  const isSplit = layout === "split";
+
+  // Hero background
+  const bgStyle: CSSProperties = {};
+  const bgType = block.bgType ?? "none";
+  if (bgType === "solid" && block.bgColor) bgStyle.background = block.bgColor;
+  else if (bgType === "gradient") {
+    const from = block.bgGradientFrom ?? "#6366f1";
+    const to = block.bgGradientTo ?? "#ec4899";
+    const angle = block.bgGradientAngle ?? 135;
+    bgStyle.background = `linear-gradient(${angle}deg, ${from}, ${to})`;
+  } else if (bgType === "image" && block.bgImageUrl) {
+    bgStyle.background = `center/cover no-repeat url(${block.bgImageUrl})`;
+  } else if (bgType === "glass") {
+    bgStyle.background = block.bgColor ?? "rgba(255,255,255,0.15)";
+    bgStyle.backdropFilter = `blur(${block.bgBlur ?? 16}px) saturate(140%)`;
+  }
+  const hasBg = bgType !== "none" || !!block.coverUrl;
+
+  // Overlay
+  const overlay =
+    block.overlayColor && (block.overlayOpacity ?? 0) > 0 ? (
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: block.overlayColor,
+          opacity: block.overlayOpacity,
+        }}
+      />
+    ) : null;
+
+  // Avatar
+  const avatarSize = block.avatarSize ?? 80;
+  const avatarRadius = block.avatarRadius ?? 9999;
+  const avatarBorderW = block.avatarBorderWidth ?? 4;
+  const avatarBorderC = block.avatarBorderColor ?? "#ffffff";
+  const avatarShadow = SHADOW_MAP[block.avatarShadow ?? "none"];
+  const ring = block.avatarRing ?? "none";
+  const ringColor = block.avatarRingColor ?? "#6366f1";
+  const zoom = block.avatarZoom ?? 1;
+
   const avatarFxCls = cn(
     prof.avatarGlow && "zx-avatar-glow",
     prof.avatarRing && "zx-avatar-ring",
     prof.avatarRotatingRing && "zx-avatar-rotating-ring",
     prof.avatarFloating && "zx-avatar-floating",
+    ring === "glow" && "zx-avatar-glow",
   );
-  return (
-    <div className="flex flex-col items-center gap-3 py-2 text-center">
-      {block.coverUrl && (
-        <div
-          className="-mx-5 -mt-10 mb-2 w-[calc(100%+2.5rem)] overflow-hidden bg-muted"
-          style={{ height: "var(--zx-cover-h, 96px)" }}
-        >
-          <img src={block.coverUrl} alt="" className="h-full w-full object-cover" />
-        </div>
+
+  const avatarInner = (
+    <div
+      className={cn(
+        "grid place-items-center overflow-hidden bg-muted text-2xl font-semibold text-muted-foreground",
+        avatarFxCls,
       )}
+      style={{
+        width: avatarSize,
+        height: avatarSize,
+        borderRadius: avatarRadius,
+        border: `${avatarBorderW}px solid ${avatarBorderC}`,
+        boxShadow: avatarShadow !== "none" ? avatarShadow : undefined,
+      }}
+    >
+      {block.avatarUrl ? (
+        <img
+          src={block.avatarUrl}
+          alt=""
+          className={cn(
+            "h-full w-full",
+            (block.avatarObjectFit ?? "cover") === "contain" ? "object-contain" : "object-cover",
+          )}
+          style={{ transform: zoom !== 1 ? `scale(${zoom})` : undefined }}
+        />
+      ) : (
+        (block.displayName ?? "?").charAt(0).toUpperCase()
+      )}
+    </div>
+  );
+
+  const avatar =
+    ring === "gradient" ? (
       <div
-        className={cn(
-          "grid place-items-center overflow-hidden bg-muted text-2xl font-semibold text-muted-foreground",
-          avatarFxCls,
-        )}
+        className="relative"
         style={{
-          width: "var(--zx-avatar-size, 80px)",
-          height: "var(--zx-avatar-size, 80px)",
-          borderRadius: "var(--zx-avatar-radius, 9999px)",
-          border: "var(--zx-avatar-border-w, 4px) solid var(--zx-avatar-border-c, #fff)",
+          padding: avatarBorderW,
+          borderRadius: avatarRadius,
+          background: `conic-gradient(from 180deg, ${ringColor}, ${block.bgGradientTo ?? "#ec4899"}, ${ringColor})`,
         }}
       >
-        {block.avatarUrl ? (
-          <img src={block.avatarUrl} alt="" className="h-full w-full object-cover" />
-        ) : (
-          (block.displayName ?? "?").charAt(0).toUpperCase()
-        )}
+        {avatarInner}
       </div>
-      <div className="relative space-y-0.5">
-        <div
-          className="flex items-center justify-center gap-1"
-          style={{
-            fontSize: "var(--zx-name-size, 18px)",
-            fontWeight: "var(--zx-name-weight, 700)",
-            fontFamily: "var(--zx-heading-family)",
-            textTransform: "var(--zx-text-transform, none)" as CSSProperties["textTransform"],
-          }}
-        >
-          <span>{block.displayName}</span>
-          {block.verified && (
-            <BadgeCheck
-              className={cn("h-4 w-4 text-primary", prof.badgeAnimation && "zx-badge-anim")}
-            />
-          )}
+    ) : ring === "solid" ? (
+      <div
+        className="relative"
+        style={{
+          padding: avatarBorderW,
+          borderRadius: avatarRadius,
+          background: ringColor,
+        }}
+      >
+        {avatarInner}
+      </div>
+    ) : (
+      <div className="relative">{avatarInner}</div>
+    );
+
+  // Verified badge
+  const badgeSize = block.badgeSize ?? 16;
+  const badgePos = block.badgePosition ?? "inline";
+  const badgeEl = block.verified ? (
+    <span
+      className={cn(
+        "inline-flex items-center justify-center rounded-full",
+        prof.badgeAnimation && "zx-badge-anim",
+        badgePos !== "inline" && "absolute z-[1]",
+        badgePos === "top-right" && "right-0 top-0",
+        badgePos === "bottom-right" && "bottom-0 right-0",
+      )}
+      style={{
+        width: badgeSize + 4,
+        height: badgeSize + 4,
+        color: block.badgeColor ?? "hsl(var(--primary))",
+        background: block.badgeBgColor,
+        border: block.badgeBorderColor ? `2px solid ${block.badgeBorderColor}` : undefined,
+      }}
+    >
+      <BadgeCheck style={{ width: badgeSize, height: badgeSize }} />
+    </span>
+  ) : null;
+
+  const nameStyle: CSSProperties = {
+    fontSize: block.nameFontSizePx ? `${block.nameFontSizePx}px` : "var(--zx-name-size, 18px)",
+    fontWeight: block.nameFontWeight
+      ? block.nameFontWeight === "bold"
+        ? 700
+        : block.nameFontWeight === "semibold"
+          ? 600
+          : block.nameFontWeight === "medium"
+            ? 500
+            : 400
+      : "var(--zx-name-weight, 700)",
+    fontFamily: block.nameFontFamily ?? "var(--zx-heading-family)",
+    letterSpacing: block.nameLetterSpacing != null ? `${block.nameLetterSpacing}px` : undefined,
+    lineHeight: block.nameLineHeight ?? undefined,
+    color: block.nameColor,
+    textShadow: block.nameTextShadow,
+    textTransform: "var(--zx-text-transform, none)" as CSSProperties["textTransform"],
+  };
+
+  const bioStyle: CSSProperties = {
+    fontSize: block.bioFontSizePx ? `${block.bioFontSizePx}px` : "var(--zx-bio-size, 12px)",
+    fontWeight: block.bioFontWeight
+      ? block.bioFontWeight === "bold"
+        ? 700
+        : block.bioFontWeight === "semibold"
+          ? 600
+          : block.bioFontWeight === "medium"
+            ? 500
+            : 400
+      : "var(--zx-bio-weight, 400)",
+    fontFamily: block.bioFontFamily,
+    letterSpacing: block.bioLetterSpacing != null ? `${block.bioLetterSpacing}px` : undefined,
+    lineHeight: block.bioLineHeight ?? undefined,
+    color: block.bioColor,
+    display: block.bioMaxLines ? "-webkit-box" : undefined,
+    WebkitBoxOrient: block.bioMaxLines ? ("vertical" as const) : undefined,
+    WebkitLineClamp: block.bioMaxLines,
+    overflow: block.bioMaxLines ? "hidden" : undefined,
+  };
+
+  const textCluster = (
+    <div className={cn("relative", isSplit ? "min-w-0 flex-1" : "space-y-0.5")}>
+      <div
+        className={cn(
+          "flex items-center gap-1",
+          layout === "center" && "justify-center",
+          layout === "right" && "justify-end",
+          layout === "left" && "justify-start",
+          isSplit && "justify-start",
+        )}
+        style={nameStyle}
+      >
+        <span>{block.displayName}</span>
+        {badgePos === "inline" && badgeEl}
+      </div>
+      {block.username && <div className="text-xs text-muted-foreground">@{block.username}</div>}
+      {block.location && (
+        <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+          <MapPin className="h-3 w-3" />
+          {block.location}
         </div>
-        {block.username && <div className="text-xs text-muted-foreground">@{block.username}</div>}
-        {block.location && (
-          <div className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
-            <MapPin className="h-3 w-3" />
-            {block.location}
-          </div>
+      )}
+      {block.bio && (
+        <div className="mt-1 text-muted-foreground" style={bioStyle}>
+          {block.bio}
+        </div>
+      )}
+      {block.shortDescription && (
+        <div className="mt-1 text-[11px] text-muted-foreground/80">{block.shortDescription}</div>
+      )}
+    </div>
+  );
+
+  const avatarWithBadge = (
+    <div className="relative inline-block">
+      {avatar}
+      {badgePos !== "inline" && badgeEl}
+    </div>
+  );
+
+  return (
+    <div
+      className={cn("relative overflow-hidden", hasBg && "rounded-2xl")}
+      style={{ ...bgStyle }}
+    >
+      {bgType === "video" && block.bgVideoUrl && (
+        <video
+          src={block.bgVideoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+        />
+      )}
+      {overlay}
+      <div
+        className={cn(
+          "relative py-4",
+          hasBg && "px-4",
+          isSplit ? "flex flex-row items-center gap-4" : cn("flex flex-col gap-3", alignItems),
         )}
-        {block.bio && (
+      >
+        {block.coverUrl && !isSplit && bgType === "none" && (
           <div
-            className="mt-1 text-muted-foreground"
-            style={{
-              fontSize: "var(--zx-bio-size, 12px)",
-              fontWeight: "var(--zx-bio-weight, 400)",
-            }}
+            className="-mx-5 -mt-10 mb-2 w-[calc(100%+2.5rem)] overflow-hidden bg-muted"
+            style={{ height: "var(--zx-cover-h, 96px)" }}
           >
-            {block.bio}
+            <img src={block.coverUrl} alt="" className="h-full w-full object-cover" />
           </div>
         )}
-        {block.shortDescription && (
-          <div className="mt-1 text-[11px] text-muted-foreground/80">{block.shortDescription}</div>
-        )}
+        {avatarWithBadge}
+        {textCluster}
       </div>
     </div>
   );
 }
+

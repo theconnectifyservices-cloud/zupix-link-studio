@@ -62,6 +62,7 @@ export function PropertyPanel() {
 
       {block.type === "profile" && (
         <>
+          <SectionTitle>Content</SectionTitle>
           <Field label="Display name">
             <Input value={block.displayName} onChange={(e) => set("displayName", e.target.value)} />
           </Field>
@@ -93,26 +94,376 @@ export function PropertyPanel() {
               placeholder="City, Country"
             />
           </Field>
-          <Field label="Avatar URL">
+
+          <SectionTitle>Layout</SectionTitle>
+          <Field label="Alignment / layout">
+            <SelectSimple
+              value={block.layout ?? "center"}
+              onChange={(v) => set("layout", v)}
+              options={[
+                ["left", "Left"],
+                ["center", "Center"],
+                ["right", "Right"],
+                ["stacked", "Stacked"],
+                ["split", "Split (image + text)"],
+              ]}
+            />
+          </Field>
+
+          <SectionTitle>Profile image</SectionTitle>
+          <Field label="Image URL">
             <Input
               value={block.avatarUrl ?? ""}
               onChange={(e) => set("avatarUrl", e.target.value)}
               placeholder="https://…"
             />
           </Field>
-          <Field label="Cover image URL">
+          <Row>
+            <Label className="text-xs">Object fit</Label>
+            <SelectSimple
+              value={block.avatarObjectFit ?? "cover"}
+              onChange={(v) => set("avatarObjectFit", v)}
+              options={[
+                ["cover", "Cover"],
+                ["contain", "Contain"],
+              ]}
+            />
+          </Row>
+          <Field label="Zoom">
+            <Input
+              type="number"
+              step="0.05"
+              min={1}
+              max={3}
+              value={block.avatarZoom ?? 1}
+              onChange={(e) => set("avatarZoom", Number(e.target.value) || 1)}
+            />
+          </Field>
+          <Field label="Size (px)">
+            <Input
+              type="number"
+              min={32}
+              max={240}
+              value={block.avatarSize ?? 80}
+              onChange={(e) => set("avatarSize", Number(e.target.value) || 80)}
+            />
+          </Field>
+          <Field label="Border radius (px, 9999 = circle)">
+            <Input
+              type="number"
+              min={0}
+              max={9999}
+              value={block.avatarRadius ?? 9999}
+              onChange={(e) => set("avatarRadius", Number(e.target.value))}
+            />
+          </Field>
+          <Field label="Border width (px)">
+            <Input
+              type="number"
+              min={0}
+              max={20}
+              value={block.avatarBorderWidth ?? 4}
+              onChange={(e) => set("avatarBorderWidth", Number(e.target.value))}
+            />
+          </Field>
+          <NamedColorField
+            label="Border color"
+            value={block.avatarBorderColor}
+            onChange={(v) => set("avatarBorderColor", v)}
+          />
+          <Field label="Shadow">
+            <SelectSimple
+              value={block.avatarShadow ?? "none"}
+              onChange={(v) => set("avatarShadow", v)}
+              options={[
+                ["none", "None"],
+                ["sm", "Small"],
+                ["md", "Medium"],
+                ["lg", "Large"],
+                ["xl", "Extra large"],
+              ]}
+            />
+          </Field>
+          <Field label="Ring style">
+            <SelectSimple
+              value={block.avatarRing ?? "none"}
+              onChange={(v) => set("avatarRing", v)}
+              options={[
+                ["none", "None"],
+                ["solid", "Solid"],
+                ["gradient", "Gradient"],
+                ["glow", "Glow"],
+              ]}
+            />
+          </Field>
+          <NamedColorField
+            label="Ring color"
+            value={block.avatarRingColor}
+            onChange={(v) => set("avatarRingColor", v)}
+          />
+
+          <SectionTitle>Name typography</SectionTitle>
+          <NamedColorField
+            label="Color"
+            value={block.nameColor}
+            onChange={(v) => set("nameColor", v)}
+          />
+          <Field label="Font family">
+            <Input
+              value={block.nameFontFamily ?? ""}
+              onChange={(e) => set("nameFontFamily", e.target.value || undefined)}
+              placeholder="Inherit theme"
+            />
+          </Field>
+          <Field label="Font size (px)">
+            <Input
+              type="number"
+              min={10}
+              max={96}
+              value={block.nameFontSizePx ?? ""}
+              onChange={(e) =>
+                set("nameFontSizePx", e.target.value ? Number(e.target.value) : undefined)
+              }
+              placeholder="Inherit"
+            />
+          </Field>
+          <FontWeightField
+            value={block.nameFontWeight ?? "bold"}
+            onChange={(v) => set("nameFontWeight", v)}
+          />
+          <Field label="Letter spacing (px)">
+            <Input
+              type="number"
+              step="0.1"
+              value={block.nameLetterSpacing ?? ""}
+              onChange={(e) =>
+                set("nameLetterSpacing", e.target.value ? Number(e.target.value) : undefined)
+              }
+              placeholder="0"
+            />
+          </Field>
+          <Field label="Line height">
+            <Input
+              type="number"
+              step="0.1"
+              min={0.8}
+              max={3}
+              value={block.nameLineHeight ?? ""}
+              onChange={(e) =>
+                set("nameLineHeight", e.target.value ? Number(e.target.value) : undefined)
+              }
+              placeholder="Auto"
+            />
+          </Field>
+          <Field label="Text shadow (CSS)">
+            <Input
+              value={block.nameTextShadow ?? ""}
+              onChange={(e) => set("nameTextShadow", e.target.value || undefined)}
+              placeholder="0 2px 4px rgba(0,0,0,0.3)"
+            />
+          </Field>
+
+          <SectionTitle>Bio typography</SectionTitle>
+          <NamedColorField
+            label="Color"
+            value={block.bioColor}
+            onChange={(v) => set("bioColor", v)}
+          />
+          <Field label="Font family">
+            <Input
+              value={block.bioFontFamily ?? ""}
+              onChange={(e) => set("bioFontFamily", e.target.value || undefined)}
+              placeholder="Inherit theme"
+            />
+          </Field>
+          <Field label="Font size (px)">
+            <Input
+              type="number"
+              min={8}
+              max={48}
+              value={block.bioFontSizePx ?? ""}
+              onChange={(e) =>
+                set("bioFontSizePx", e.target.value ? Number(e.target.value) : undefined)
+              }
+              placeholder="Inherit"
+            />
+          </Field>
+          <FontWeightField
+            value={block.bioFontWeight ?? "normal"}
+            onChange={(v) => set("bioFontWeight", v)}
+          />
+          <Field label="Letter spacing (px)">
+            <Input
+              type="number"
+              step="0.1"
+              value={block.bioLetterSpacing ?? ""}
+              onChange={(e) =>
+                set("bioLetterSpacing", e.target.value ? Number(e.target.value) : undefined)
+              }
+            />
+          </Field>
+          <Field label="Line height">
+            <Input
+              type="number"
+              step="0.1"
+              min={0.8}
+              max={3}
+              value={block.bioLineHeight ?? ""}
+              onChange={(e) =>
+                set("bioLineHeight", e.target.value ? Number(e.target.value) : undefined)
+              }
+            />
+          </Field>
+          <Field label="Max lines (0 = unlimited)">
+            <Input
+              type="number"
+              min={0}
+              max={20}
+              value={block.bioMaxLines ?? 0}
+              onChange={(e) => set("bioMaxLines", Number(e.target.value) || undefined)}
+            />
+          </Field>
+
+          <SectionTitle>Verified badge</SectionTitle>
+          <Row>
+            <Label className="text-xs">Show badge</Label>
+            <Switch checked={!!block.verified} onCheckedChange={(v) => set("verified", v)} />
+          </Row>
+          <NamedColorField
+            label="Icon color"
+            value={block.badgeColor}
+            onChange={(v) => set("badgeColor", v)}
+          />
+          <NamedColorField
+            label="Background"
+            value={block.badgeBgColor}
+            onChange={(v) => set("badgeBgColor", v)}
+          />
+          <NamedColorField
+            label="Border"
+            value={block.badgeBorderColor}
+            onChange={(v) => set("badgeBorderColor", v)}
+          />
+          <Field label="Size (px)">
+            <Input
+              type="number"
+              min={10}
+              max={40}
+              value={block.badgeSize ?? 16}
+              onChange={(e) => set("badgeSize", Number(e.target.value))}
+            />
+          </Field>
+          <Field label="Position">
+            <SelectSimple
+              value={block.badgePosition ?? "inline"}
+              onChange={(v) => set("badgePosition", v)}
+              options={[
+                ["inline", "Inline with name"],
+                ["top-right", "Top right of avatar"],
+                ["bottom-right", "Bottom right of avatar"],
+              ]}
+            />
+          </Field>
+
+          <SectionTitle>Hero background</SectionTitle>
+          <Field label="Cover image URL (legacy top banner)">
             <Input
               value={block.coverUrl ?? ""}
               onChange={(e) => set("coverUrl", e.target.value)}
               placeholder="https://…"
             />
           </Field>
-          <Row>
-            <Label className="text-xs">Verified badge</Label>
-            <Switch checked={!!block.verified} onCheckedChange={(v) => set("verified", v)} />
-          </Row>
+          <Field label="Background type">
+            <SelectSimple
+              value={block.bgType ?? "none"}
+              onChange={(v) => set("bgType", v)}
+              options={[
+                ["none", "None"],
+                ["solid", "Solid color"],
+                ["gradient", "Gradient"],
+                ["image", "Image"],
+                ["video", "Video"],
+                ["glass", "Glass"],
+              ]}
+            />
+          </Field>
+          {(block.bgType === "solid" || block.bgType === "glass") && (
+            <NamedColorField
+              label="Color"
+              value={block.bgColor}
+              onChange={(v) => set("bgColor", v)}
+            />
+          )}
+          {block.bgType === "gradient" && (
+            <>
+              <NamedColorField
+                label="Gradient from"
+                value={block.bgGradientFrom}
+                onChange={(v) => set("bgGradientFrom", v)}
+              />
+              <NamedColorField
+                label="Gradient to"
+                value={block.bgGradientTo}
+                onChange={(v) => set("bgGradientTo", v)}
+              />
+              <Field label="Angle (deg)">
+                <Input
+                  type="number"
+                  min={0}
+                  max={360}
+                  value={block.bgGradientAngle ?? 135}
+                  onChange={(e) => set("bgGradientAngle", Number(e.target.value))}
+                />
+              </Field>
+            </>
+          )}
+          {block.bgType === "image" && (
+            <Field label="Image URL">
+              <Input
+                value={block.bgImageUrl ?? ""}
+                onChange={(e) => set("bgImageUrl", e.target.value)}
+                placeholder="https://…"
+              />
+            </Field>
+          )}
+          {block.bgType === "video" && (
+            <Field label="Video URL (mp4/webm)">
+              <Input
+                value={block.bgVideoUrl ?? ""}
+                onChange={(e) => set("bgVideoUrl", e.target.value)}
+                placeholder="https://…"
+              />
+            </Field>
+          )}
+          {(block.bgType === "glass" || block.bgType === "image") && (
+            <Field label="Blur (px)">
+              <Input
+                type="number"
+                min={0}
+                max={60}
+                value={block.bgBlur ?? 16}
+                onChange={(e) => set("bgBlur", Number(e.target.value))}
+              />
+            </Field>
+          )}
+          <NamedColorField
+            label="Overlay color"
+            value={block.overlayColor}
+            onChange={(v) => set("overlayColor", v)}
+          />
+          <Field label="Overlay opacity (0–1)">
+            <Input
+              type="number"
+              step="0.05"
+              min={0}
+              max={1}
+              value={block.overlayOpacity ?? 0}
+              onChange={(e) => set("overlayOpacity", Number(e.target.value))}
+            />
+          </Field>
         </>
       )}
+
 
       {block.type === "heading" && (
         <>
