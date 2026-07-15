@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
+import { toast } from "sonner";
 import { Plus, LayoutGrid, List, Search as SearchIcon, Sparkles } from "lucide-react";
 import {
   useCurrentWorkspace,
@@ -112,7 +113,7 @@ function ProjectsPage() {
         description="Create, edit, and organize your bio pages."
         breadcrumbs={[{ label: "Dashboard", href: "/app" }, { label: "My Bio Pages" }]}
         actions={
-          <Button onClick={() => setCreateOpen(true)} className="gap-1">
+          <Button onClick={openCreate} className="gap-1">
             <Plus className="h-4 w-4" /> New project
           </Button>
         }
@@ -187,7 +188,7 @@ function ProjectsPage() {
             title="No bio pages yet"
             description="Create your first bio page and reserve your unique link."
             action={
-              <Button onClick={() => setCreateOpen(true)} className="gap-1">
+              <Button onClick={openCreate} className="gap-1">
                 <Plus className="h-4 w-4" /> Create your first project
               </Button>
             }
