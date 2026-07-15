@@ -37,6 +37,7 @@ import { Route as AuthenticatedAppDomainsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppConversionsRouteImport } from './routes/_authenticated.app.conversions'
 import { Route as AuthenticatedAppCommunicationsRouteImport } from './routes/_authenticated.app.communications'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated.app.campaigns'
+import { Route as AuthenticatedAppBillingRouteImport } from './routes/_authenticated.app.billing'
 import { Route as AuthenticatedAppAutomationRouteImport } from './routes/_authenticated.app.automation'
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated.app.analytics'
 import { Route as AuthenticatedAppAiRouteImport } from './routes/_authenticated.app.ai'
@@ -202,6 +203,11 @@ const AuthenticatedAppCampaignsRoute =
     path: '/campaigns',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppBillingRoute = AuthenticatedAppBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppAutomationRoute =
   AuthenticatedAppAutomationRouteImport.update({
     id: '/automation',
@@ -318,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
+  '/app/billing': typeof AuthenticatedAppBillingRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
@@ -362,6 +369,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
+  '/app/billing': typeof AuthenticatedAppBillingRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
@@ -410,6 +418,7 @@ export interface FileRoutesById {
   '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/_authenticated/app/automation': typeof AuthenticatedAppAutomationRoute
+  '/_authenticated/app/billing': typeof AuthenticatedAppBillingRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/_authenticated/app/conversions': typeof AuthenticatedAppConversionsRoute
@@ -458,6 +467,7 @@ export interface FileRouteTypes {
     | '/app/ai'
     | '/app/analytics'
     | '/app/automation'
+    | '/app/billing'
     | '/app/campaigns'
     | '/app/communications'
     | '/app/conversions'
@@ -502,6 +512,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/app/analytics'
     | '/app/automation'
+    | '/app/billing'
     | '/app/campaigns'
     | '/app/communications'
     | '/app/conversions'
@@ -549,6 +560,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/ai'
     | '/_authenticated/app/analytics'
     | '/_authenticated/app/automation'
+    | '/_authenticated/app/billing'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/communications'
     | '/_authenticated/app/conversions'
@@ -795,6 +807,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppCampaignsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/billing': {
+      id: '/_authenticated/app/billing'
+      path: '/billing'
+      fullPath: '/app/billing'
+      preLoaderRoute: typeof AuthenticatedAppBillingRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/automation': {
       id: '/_authenticated/app/automation'
       path: '/automation'
@@ -984,6 +1003,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAiRoute: typeof AuthenticatedAppAiRouteWithChildren
   AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
   AuthenticatedAppAutomationRoute: typeof AuthenticatedAppAutomationRoute
+  AuthenticatedAppBillingRoute: typeof AuthenticatedAppBillingRoute
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppCommunicationsRoute: typeof AuthenticatedAppCommunicationsRoute
   AuthenticatedAppConversionsRoute: typeof AuthenticatedAppConversionsRoute
@@ -1002,6 +1022,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAiRoute: AuthenticatedAppAiRouteWithChildren,
   AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
   AuthenticatedAppAutomationRoute: AuthenticatedAppAutomationRoute,
+  AuthenticatedAppBillingRoute: AuthenticatedAppBillingRoute,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppCommunicationsRoute: AuthenticatedAppCommunicationsRoute,
   AuthenticatedAppConversionsRoute: AuthenticatedAppConversionsRoute,
