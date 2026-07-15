@@ -5985,7 +5985,15 @@ export type Database = {
         | "link_click"
         | "qr_scan"
         | "session_end"
-      app_role: "admin" | "moderator" | "user"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "super_admin"
+        | "team_member"
+        | "agency_owner"
+        | "reseller"
+        | "customer"
       approval_kind: "draft" | "content" | "design" | "publishing"
       approval_status:
         | "pending"
@@ -6293,7 +6301,16 @@ export const Constants = {
         "qr_scan",
         "session_end",
       ],
-      app_role: ["admin", "moderator", "user"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "super_admin",
+        "team_member",
+        "agency_owner",
+        "reseller",
+        "customer",
+      ],
       approval_kind: ["draft", "content", "design", "publishing"],
       approval_status: [
         "pending",

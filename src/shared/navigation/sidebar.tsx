@@ -34,6 +34,9 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { APP_CONFIG } from "@/config/app.config";
 
+import { useUserRoles } from "@/features/auth/hooks/use-user-roles";
+import type { Permission } from "@/features/auth/rbac";
+
 interface SidebarProps {
   variant?: "app" | "admin";
   className?: string;
@@ -45,6 +48,8 @@ type Item = {
   href: string;
   soon?: boolean;
   exact?: boolean;
+  /** Any of these permissions grants visibility. If omitted, always visible. */
+  requires?: Permission[];
 };
 
 const appItems: Item[] = [
@@ -61,18 +66,18 @@ const appItems: Item[] = [
   { icon: Zap, label: "Automation", href: "/app/automation" },
   { icon: Sparkles, label: "ZUPIX AI", href: "/app/ai" },
   { icon: Users, label: "Workspace", href: "/app/team" },
-  { icon: Building2, label: "Agency", href: "/app/agency" },
-  { icon: Shield, label: "Enterprise", href: "/app/enterprise" },
-  { icon: Gem, label: "Monetization", href: "/app/monetization" },
-  { icon: Paintbrush, label: "White Label", href: "/app/white-label" },
-  { icon: Briefcase, label: "Reseller", href: "/app/reseller" },
-  { icon: Server, label: "Infrastructure", href: "/app/infrastructure" },
-  { icon: Activity, label: "Performance", href: "/app/performance" },
-  { icon: Shield, label: "Security", href: "/app/security" },
-  { icon: ClipboardCheck, label: "Production QA", href: "/app/qa" },
-  { icon: CloudCog, label: "Operations", href: "/app/operations" },
+  { icon: Building2, label: "Agency", href: "/app/agency", requires: ["can_manage_agency"] },
+  { icon: Shield, label: "Enterprise", href: "/app/enterprise", requires: ["can_manage_enterprise"] },
+  { icon: Gem, label: "Monetization", href: "/app/monetization", requires: ["can_manage_monetization"] },
+  { icon: Paintbrush, label: "White Label", href: "/app/white-label", requires: ["can_manage_whitelabel"] },
+  { icon: Briefcase, label: "Reseller", href: "/app/reseller", requires: ["can_manage_reseller"] },
+  { icon: Server, label: "Infrastructure", href: "/app/infrastructure", requires: ["can_manage_infrastructure"] },
+  { icon: Activity, label: "Performance", href: "/app/performance", requires: ["can_manage_performance"] },
+  { icon: Shield, label: "Security", href: "/app/security", requires: ["can_manage_security"] },
+  { icon: ClipboardCheck, label: "Production QA", href: "/app/qa", requires: ["can_manage_qa"] },
+  { icon: CloudCog, label: "Operations", href: "/app/operations", requires: ["can_manage_operations"] },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
-  { icon: Award, label: "Launch Center", href: "/app/launch" },
+  { icon: Award, label: "Launch Center", href: "/app/launch", requires: ["can_manage_launch"] },
 ];
 
 const bottomItems: Item[] = [
@@ -83,10 +88,16 @@ const bottomItems: Item[] = [
 const adminItems: Item[] = [{ icon: Shield, label: "Admin", href: "/app" }];
 
 export function Sidebar({ variant = "app", className }: SidebarProps) {
-  const items = variant === "admin" ? adminItems : appItems;
+  const rawItems = variant === "admin" ? adminItems : appItems;
   const collapsed = !useUIStore((s) => s.sidebarOpen);
   const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { isLoading: rolesLoading, hasAny } = useUserRoles();
+
+  // While roles load, hide guarded items to prevent flash of unauthorized modules.
+  const items = rawItems.filter(
+    (i) => !i.requires || (!rolesLoading && hasAny(i.requires)),
+  );
 
   const isActive = (item: Item) =>
     item.exact
