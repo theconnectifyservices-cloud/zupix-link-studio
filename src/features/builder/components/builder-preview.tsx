@@ -89,6 +89,7 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
             style={themeStyle}
             onClick={() => clearSelection()}
           >
+            <ThemeBackgroundLayer theme={theme} />
             <div
               className={cn("relative", pageCls)}
               style={{
