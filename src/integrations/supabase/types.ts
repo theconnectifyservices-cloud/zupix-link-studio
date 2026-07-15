@@ -590,6 +590,106 @@ export type Database = {
           },
         ]
       }
+      brand_kits: {
+        Row: {
+          brand_asset_ids: string[]
+          colors: Json
+          created_at: string
+          created_by: string
+          dark_logo_asset_id: string | null
+          description: string | null
+          favicon_asset_id: string | null
+          id: string
+          is_default: boolean
+          light_logo_asset_id: string | null
+          logo_asset_id: string | null
+          name: string
+          social_share_asset_id: string | null
+          typography: Json
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          brand_asset_ids?: string[]
+          colors?: Json
+          created_at?: string
+          created_by: string
+          dark_logo_asset_id?: string | null
+          description?: string | null
+          favicon_asset_id?: string | null
+          id?: string
+          is_default?: boolean
+          light_logo_asset_id?: string | null
+          logo_asset_id?: string | null
+          name: string
+          social_share_asset_id?: string | null
+          typography?: Json
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          brand_asset_ids?: string[]
+          colors?: Json
+          created_at?: string
+          created_by?: string
+          dark_logo_asset_id?: string | null
+          description?: string | null
+          favicon_asset_id?: string | null
+          id?: string
+          is_default?: boolean
+          light_logo_asset_id?: string | null
+          logo_asset_id?: string | null
+          name?: string
+          social_share_asset_id?: string | null
+          typography?: Json
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_kits_dark_logo_asset_id_fkey"
+            columns: ["dark_logo_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_kits_favicon_asset_id_fkey"
+            columns: ["favicon_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_kits_light_logo_asset_id_fkey"
+            columns: ["light_logo_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_kits_logo_asset_id_fkey"
+            columns: ["logo_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_kits_social_share_asset_id_fkey"
+            columns: ["social_share_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_kits_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaigns: {
         Row: {
           bio_page_id: string | null
@@ -898,20 +998,92 @@ export type Database = {
           },
         ]
       }
+      media_asset_versions: {
+        Row: {
+          asset_id: string
+          bucket: string
+          created_at: string
+          created_by: string | null
+          file_name: string | null
+          height: number | null
+          id: string
+          mime_type: string | null
+          notes: string | null
+          path: string
+          sha256: string | null
+          size_bytes: number | null
+          version_number: number
+          width: number | null
+          workspace_id: string
+        }
+        Insert: {
+          asset_id: string
+          bucket: string
+          created_at?: string
+          created_by?: string | null
+          file_name?: string | null
+          height?: number | null
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          path: string
+          sha256?: string | null
+          size_bytes?: number | null
+          version_number: number
+          width?: number | null
+          workspace_id: string
+        }
+        Update: {
+          asset_id?: string
+          bucket?: string
+          created_at?: string
+          created_by?: string | null
+          file_name?: string | null
+          height?: number | null
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          path?: string
+          sha256?: string | null
+          size_bytes?: number | null
+          version_number?: number
+          width?: number | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_asset_versions_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_asset_versions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media_assets: {
         Row: {
           alt_text: string | null
           blurhash: string | null
           bucket: string
           created_at: string
+          current_version: number
           deleted_at: string | null
           duration_seconds: number | null
           file_name: string | null
           folder_id: string | null
           height: number | null
           id: string
+          is_favorite: boolean
           kind: Database["public"]["Enums"]["media_kind"]
           last_used_at: string | null
+          last_viewed_at: string | null
           metadata: Json
           mime_type: string | null
           optimized_size_bytes: number | null
@@ -929,6 +1101,7 @@ export type Database = {
           usage_count: number
           variants: Json
           video_thumbnail_path: string | null
+          view_count: number
           width: number | null
           workspace_id: string | null
         }
@@ -937,14 +1110,17 @@ export type Database = {
           blurhash?: string | null
           bucket: string
           created_at?: string
+          current_version?: number
           deleted_at?: string | null
           duration_seconds?: number | null
           file_name?: string | null
           folder_id?: string | null
           height?: number | null
           id?: string
+          is_favorite?: boolean
           kind?: Database["public"]["Enums"]["media_kind"]
           last_used_at?: string | null
+          last_viewed_at?: string | null
           metadata?: Json
           mime_type?: string | null
           optimized_size_bytes?: number | null
@@ -962,6 +1138,7 @@ export type Database = {
           usage_count?: number
           variants?: Json
           video_thumbnail_path?: string | null
+          view_count?: number
           width?: number | null
           workspace_id?: string | null
         }
@@ -970,14 +1147,17 @@ export type Database = {
           blurhash?: string | null
           bucket?: string
           created_at?: string
+          current_version?: number
           deleted_at?: string | null
           duration_seconds?: number | null
           file_name?: string | null
           folder_id?: string | null
           height?: number | null
           id?: string
+          is_favorite?: boolean
           kind?: Database["public"]["Enums"]["media_kind"]
           last_used_at?: string | null
+          last_viewed_at?: string | null
           metadata?: Json
           mime_type?: string | null
           optimized_size_bytes?: number | null
@@ -995,6 +1175,7 @@ export type Database = {
           usage_count?: number
           variants?: Json
           video_thumbnail_path?: string | null
+          view_count?: number
           width?: number | null
           workspace_id?: string | null
         }
@@ -1008,6 +1189,102 @@ export type Database = {
           },
           {
             foreignKeyName: "media_assets_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_collection_items: {
+        Row: {
+          added_by: string | null
+          asset_id: string
+          collection_id: string
+          created_at: string
+          position: number
+        }
+        Insert: {
+          added_by?: string | null
+          asset_id: string
+          collection_id: string
+          created_at?: string
+          position?: number
+        }
+        Update: {
+          added_by?: string | null
+          asset_id?: string
+          collection_id?: string
+          created_at?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_collection_items_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_collection_items_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "media_collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_collections: {
+        Row: {
+          cover_asset_id: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_favorite: boolean
+          kind: Database["public"]["Enums"]["media_collection_kind"]
+          name: string
+          rules: Json
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          cover_asset_id?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_favorite?: boolean
+          kind?: Database["public"]["Enums"]["media_collection_kind"]
+          name: string
+          rules?: Json
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          cover_asset_id?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_favorite?: boolean
+          kind?: Database["public"]["Enums"]["media_collection_kind"]
+          name?: string
+          rules?: Json
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_collections_cover_asset_id_fkey"
+            columns: ["cover_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_collections_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -1056,6 +1333,50 @@ export type Database = {
           },
           {
             foreignKeyName: "media_folders_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_tags: {
+        Row: {
+          color: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_auto: boolean
+          name: string
+          updated_at: string
+          usage_count: number
+          workspace_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_auto?: boolean
+          name: string
+          updated_at?: string
+          usage_count?: number
+          workspace_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_auto?: boolean
+          name?: string
+          updated_at?: string
+          usage_count?: number
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_tags_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -1736,6 +2057,7 @@ export type Database = {
         | "qr_scan"
         | "custom_url_click"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
+      media_collection_kind: "manual" | "smart" | "dynamic"
       media_kind: "image" | "video" | "audio" | "document" | "other"
       media_processing_status:
         | "pending"
@@ -1937,6 +2259,7 @@ export const Constants = {
         "custom_url_click",
       ],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
+      media_collection_kind: ["manual", "smart", "dynamic"],
       media_kind: ["image", "video", "audio", "document", "other"],
       media_processing_status: [
         "pending",
