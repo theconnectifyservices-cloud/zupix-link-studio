@@ -1445,6 +1445,56 @@ export type Database = {
           },
         ]
       }
+      message_templates: {
+        Row: {
+          body: string
+          channel: string
+          created_at: string
+          id: string
+          is_system: boolean
+          key: string
+          name: string
+          subject: string | null
+          updated_at: string
+          variables: Json
+          workspace_id: string
+        }
+        Insert: {
+          body: string
+          channel: string
+          created_at?: string
+          id?: string
+          is_system?: boolean
+          key: string
+          name: string
+          subject?: string | null
+          updated_at?: string
+          variables?: Json
+          workspace_id: string
+        }
+        Update: {
+          body?: string
+          channel?: string
+          created_at?: string
+          id?: string
+          is_system?: boolean
+          key?: string
+          name?: string
+          subject?: string | null
+          updated_at?: string
+          variables?: Json
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_templates_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_preferences: {
         Row: {
           category: Database["public"]["Enums"]["notification_type"]
@@ -1888,6 +1938,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      workspace_communications: {
+        Row: {
+          created_at: string
+          health: Json
+          notifications: Json
+          providers: Json
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          health?: Json
+          notifications?: Json
+          providers?: Json
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          health?: Json
+          notifications?: Json
+          providers?: Json
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_communications_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       workspace_members: {
         Row: {
