@@ -184,7 +184,7 @@ export function ProjectCard({
     </DropdownMenu>
   );
 
-  const shareLink = `zupix.link/${project.slug}`;
+  const shareLink = `zupix.link/${project.slug ?? ""}`;
 
   return (
     <>
@@ -198,7 +198,7 @@ export function ProjectCard({
           <>
             <div className="relative flex h-28 items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-background">
               <div className="text-3xl font-bold uppercase text-primary/70">
-                {project.name.charAt(0)}
+                {(project.name ?? "?").charAt(0) || "?"}
               </div>
               <Badge
                 className={cn("absolute right-3 top-3 gap-1 border-0", Status.className)}
@@ -234,7 +234,7 @@ export function ProjectCard({
         {isList && (
           <>
             <div className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-gradient-to-br from-primary/15 to-primary/5 text-lg font-bold uppercase text-primary">
-              {project.name.charAt(0)}
+              {(project.name ?? "?").charAt(0) || "?"}
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
