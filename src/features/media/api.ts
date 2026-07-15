@@ -77,7 +77,8 @@ export async function listAssets(q: ListAssetsQuery): Promise<MediaAsset[]> {
     .from("media_assets")
     .select("*")
     .eq("workspace_id", q.workspaceId)
-    .is("deleted_at", null);
+    .is("deleted_at", null)
+    .is("archived_at", null);
 
   if (q.folderId !== undefined) {
     if (q.folderId === null) query = query.is("folder_id", null);

@@ -55,6 +55,7 @@ import { BrandKitManager } from "./brand-kit-manager";
 import { DuplicateFinder } from "./duplicate-finder";
 import { FavoritesRecentsPanel } from "./favorites-recents-panel";
 import { AdvancedSearch } from "./advanced-search";
+import { AssetIntelligencePanel } from "./asset-intelligence-panel";
 
 type FilterKey = "all" | "image" | "video" | "audio" | "document" | "svg" | "recent" | "largest" | "unused";
 type ViewMode = "grid" | "list";
@@ -188,6 +189,7 @@ export function MediaLibrary({ workspaceId, userId }: Props) {
           <TabsTrigger value="favorites">Favorites &amp; Recents</TabsTrigger>
           <TabsTrigger value="search">Advanced Search</TabsTrigger>
           <TabsTrigger value="duplicates">Duplicates</TabsTrigger>
+          <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
         </TabsList>
 
         <TabsContent value="library" className="mt-4">
@@ -456,6 +458,9 @@ export function MediaLibrary({ workspaceId, userId }: Props) {
         </TabsContent>
         <TabsContent value="duplicates" className="mt-4">
           <DuplicateFinder workspaceId={workspaceId} />
+        </TabsContent>
+        <TabsContent value="intelligence" className="mt-4">
+          <AssetIntelligencePanel workspaceId={workspaceId} />
         </TabsContent>
       </Tabs>
 
