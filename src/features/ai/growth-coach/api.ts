@@ -219,7 +219,8 @@ async function saveActivity(
       user_id: uid,
       kind,
       summary,
-      metadata,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      metadata: metadata as any,
     })
     .select("*")
     .single();
