@@ -92,7 +92,7 @@ export function MediaPicker({
 
   const handleFile = useCallback(
     async (file: File) => {
-      if (!workspaceId || !user) {
+      if (!workspaceId || !userId) {
         toast.error("Workspace not ready");
         return;
       }
@@ -105,7 +105,7 @@ export function MediaPicker({
         const asset = await uploadAsset({
           file,
           workspaceId,
-          userId: user.id,
+          userId,
           folderId: null,
         });
         const url = await signedUrl(asset.path, LONG_TTL);
@@ -117,7 +117,7 @@ export function MediaPicker({
         setBusy(false);
       }
     },
-    [workspaceId, user],
+    [workspaceId, userId],
   );
 
   const confirm = useCallback(
@@ -143,12 +143,12 @@ export function MediaPicker({
             onDone={confirm}
             onSkip={() => confirm(pending.url)}
             uploadCropped={async (blob) => {
-              if (!workspaceId || !user) return pending.url;
+              if (!workspaceId || !userId) return pending.url;
               const file = new File([blob], `crop-${Date.now()}.webp`, { type: "image/webp" });
               const asset = await uploadAsset({
                 file,
                 workspaceId,
-                userId: user.id,
+                userId,
                 folderId: null,
               });
               return signedUrl(asset.path, LONG_TTL);
