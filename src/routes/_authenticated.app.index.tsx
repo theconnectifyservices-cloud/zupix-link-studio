@@ -60,7 +60,7 @@ function Overview() {
         title={`Welcome back, ${displayName}`}
         description={workspace ? `Workspace: ${workspace.name}` : "Set up your first bio page."}
         actions={
-          <Button onClick={() => setCreateOpen(true)} className="gap-1">
+          <Button onClick={openCreate} className="gap-1">
             <Plus className="h-4 w-4" /> New bio page
           </Button>
         }
@@ -83,7 +83,7 @@ function Overview() {
             icon={Plus}
             title="New bio page"
             description="Start a fresh project"
-            onClick={() => setCreateOpen(true)}
+            onClick={openCreate}
           />
           <QuickTile
             icon={Link2}
@@ -132,7 +132,7 @@ function Overview() {
             title="No projects yet"
             description="Create your first bio page to reserve your link."
             action={
-              <Button onClick={() => setCreateOpen(true)} className="gap-1">
+              <Button onClick={openCreate} className="gap-1">
                 <Plus className="h-4 w-4" /> Create first project
               </Button>
             }
