@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { getBlockDef } from "../block-registry";
 import { ImageField } from "./image-field";
+import { VideoSourceField } from "./video-source-field";
 
 export function PropertyPanel() {
   const block = useBuilderStore(selectedBlock);
@@ -433,13 +434,12 @@ export function PropertyPanel() {
           )}
 
           {block.bgType === "video" && (
-            <Field label="Video URL (mp4/webm)">
-              <Input
-                value={block.bgVideoUrl ?? ""}
-                onChange={(e) => set("bgVideoUrl", e.target.value)}
-                placeholder="https://…"
-              />
-            </Field>
+            <VideoSourceField
+              label="Background video"
+              value={block.bgVideoUrl}
+              onChange={(url) => set("bgVideoUrl", url)}
+              background
+            />
           )}
           {(block.bgType === "glass" || block.bgType === "image") && (
             <Field label="Blur (px)">
