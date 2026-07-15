@@ -20,6 +20,7 @@ import type {
   ButtonBlock,
   Viewport,
 } from "./types";
+import { resolveHeroEffects } from "./effects/hero-effects";
 import { cn } from "@/lib/utils";
 import { buildEmbed } from "./video-source";
 import {
@@ -1188,6 +1189,7 @@ const SHADOW_MAP: Record<NonNullable<Extract<Block, { type: "profile" }>["avatar
 function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }) {
   const theme = useBuilderStore((s) => s.content.theme);
   const prof = theme?.profile ?? DEFAULT_PROFILE;
+  const fx = resolveHeroEffects(block.effects);
 
   const layout = block.layout ?? "center";
   const alignItems =
@@ -1198,8 +1200,8 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
         : "items-center text-center";
   const isSplit = layout === "split";
 
-  // Hero background
-  const bgStyle: CSSProperties = {};
+  // Hero background (existing solid/gradient/image/glass paths)
+  const bgStyle: CSSProperties = { ...(fx.cssVars as CSSProperties) };
   const bgType = block.bgType ?? "none";
   if (bgType === "solid" && block.bgColor) bgStyle.background = block.bgColor;
   else if (bgType === "gradient") {
@@ -1213,9 +1215,13 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
     bgStyle.background = block.bgColor ?? "rgba(255,255,255,0.15)";
     bgStyle.backdropFilter = `blur(${block.bgBlur ?? 16}px) saturate(140%)`;
   }
-  const hasBg = bgType !== "none" || !!block.coverUrl;
+  const hasBg = bgType !== "none" || !!block.coverUrl || !!fx.bgOverlayClass || !!fx.cardClass;
 
-  // Overlay
+  // Optional media filter (brightness/contrast/blur) for image/video backgrounds
+  const bgMediaFilter =
+    `blur(var(--zx-hero-bg-blur, 0px)) brightness(var(--zx-hero-bg-brightness, 100%)) contrast(var(--zx-hero-bg-contrast, 100%))`;
+
+  // Overlay (legacy)
   const overlay =
     block.overlayColor && (block.overlayOpacity ?? 0) > 0 ? (
       <div
@@ -1234,23 +1240,25 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
   const avatarBorderW = block.avatarBorderWidth ?? 4;
   const avatarBorderC = block.avatarBorderColor ?? "#ffffff";
   const avatarShadow = SHADOW_MAP[block.avatarShadow ?? "none"];
-  const ring = block.avatarRing ?? "none";
-  const ringColor = block.avatarRingColor ?? "#6366f1";
+  const legacyRing = block.avatarRing ?? "none";
+  const legacyRingColor = block.avatarRingColor ?? "#6366f1";
   const zoom = block.avatarZoom ?? 1;
 
-  const avatarFxCls = cn(
+  // Legacy classes retained for backward compat with theme.profile.*
+  const legacyAvatarFx = cn(
     prof.avatarGlow && "zx-avatar-glow",
     prof.avatarRing && "zx-avatar-ring",
     prof.avatarRotatingRing && "zx-avatar-rotating-ring",
     prof.avatarFloating && "zx-avatar-floating",
-    ring === "glow" && "zx-avatar-glow",
+    legacyRing === "glow" && "zx-avatar-glow",
   );
 
   const avatarInner = (
     <div
       className={cn(
         "grid place-items-center overflow-hidden bg-muted text-2xl font-semibold text-muted-foreground",
-        avatarFxCls,
+        legacyAvatarFx,
+        fx.avatarClass,
       )}
       style={{
         width: avatarSize,
@@ -1276,32 +1284,52 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
     </div>
   );
 
-  const avatar =
-    ring === "gradient" ? (
+  // Wrap avatar with new ring overlay if configured, else fall back to legacy ring
+  const useNewRing =
+    !fx.disabled &&
+    !!fx.ringClass &&
+    (block.effects?.ring?.style ?? "none") !== "none";
+
+  let avatar: React.ReactNode;
+  if (useNewRing) {
+    avatar = (
       <div
-        className="relative"
-        style={{
-          padding: avatarBorderW,
-          borderRadius: avatarRadius,
-          background: `conic-gradient(from 180deg, ${ringColor}, ${block.bgGradientTo ?? "#ec4899"}, ${ringColor})`,
-        }}
+        className={cn("zx-hero-ring-wrap", fx.ringClass, fx.ringOverlayClass)}
+        style={{ borderRadius: avatarRadius }}
       >
         {avatarInner}
+        <span className="zx-hero-ring-overlay" style={{ borderRadius: avatarRadius }} />
       </div>
-    ) : ring === "solid" ? (
-      <div
-        className="relative"
-        style={{
-          padding: avatarBorderW,
-          borderRadius: avatarRadius,
-          background: ringColor,
-        }}
-      >
-        {avatarInner}
-      </div>
-    ) : (
-      <div className="relative">{avatarInner}</div>
     );
+  } else if (legacyRing === "gradient") {
+    avatar = (
+      <div
+        className="relative"
+        style={{
+          padding: avatarBorderW,
+          borderRadius: avatarRadius,
+          background: `conic-gradient(from 180deg, ${legacyRingColor}, ${block.bgGradientTo ?? "#ec4899"}, ${legacyRingColor})`,
+        }}
+      >
+        {avatarInner}
+      </div>
+    );
+  } else if (legacyRing === "solid") {
+    avatar = (
+      <div
+        className="relative"
+        style={{
+          padding: avatarBorderW,
+          borderRadius: avatarRadius,
+          background: legacyRingColor,
+        }}
+      >
+        {avatarInner}
+      </div>
+    );
+  } else {
+    avatar = <div className="relative">{avatarInner}</div>;
+  }
 
   // Verified badge
   const badgeSize = block.badgeSize ?? 16;
@@ -1309,8 +1337,9 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
   const badgeEl = block.verified ? (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded-full",
+        "zx-hero-badge inline-flex items-center justify-center rounded-full",
         prof.badgeAnimation && "zx-badge-anim",
+        fx.badgeClass,
         badgePos !== "inline" && "absolute z-[1]",
         badgePos === "top-right" && "right-0 top-0",
         badgePos === "bottom-right" && "bottom-0 right-0",
@@ -1407,11 +1436,30 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
     </div>
   );
 
+  // Spotlight mouse tracking (only when spotlight card effect is active)
+  const spotlightHandlers =
+    block.effects?.card?.effect === "spotlight" && !fx.disabled
+      ? {
+          onMouseMove: (e: React.MouseEvent<HTMLDivElement>) => {
+            const t = e.currentTarget as HTMLDivElement;
+            const r = t.getBoundingClientRect();
+            t.style.setProperty("--zx-mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+            t.style.setProperty("--zx-my", `${((e.clientY - r.top) / r.height) * 100}%`);
+          },
+        }
+      : {};
+
   return (
     <div
-      className={cn("relative overflow-hidden", hasBg && "rounded-2xl")}
-      style={{ ...bgStyle }}
+      className={cn(
+        "relative overflow-hidden",
+        hasBg && "rounded-2xl",
+        fx.cardClass,
+      )}
+      style={{ ...bgStyle, ...fx.cardStyle }}
+      {...spotlightHandlers}
     >
+      {/* Video BG (unchanged) */}
       {bgType === "video" && block.bgVideoUrl && (() => {
         const embed = buildEmbed(block.bgVideoUrl, { background: true });
         if (!embed) return null;
@@ -1424,11 +1472,15 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
               loop
               playsInline
               className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+              style={{ filter: bgMediaFilter }}
             />
           );
         }
         return (
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div
+            className="pointer-events-none absolute inset-0 overflow-hidden"
+            style={{ filter: bgMediaFilter }}
+          >
             <iframe
               src={embed.src}
               title="Background video"
@@ -1439,7 +1491,14 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
           </div>
         );
       })()}
+
+      {/* New BG effect layer */}
+      {!fx.disabled && fx.bgOverlayClass && (
+        <div className={cn("zx-hero-bg-layer", fx.bgOverlayClass)} aria-hidden />
+      )}
+
       {overlay}
+
       <div
         className={cn(
           "relative py-4",
@@ -1461,4 +1520,5 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
     </div>
   );
 }
+
 

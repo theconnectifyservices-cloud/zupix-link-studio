@@ -228,7 +228,11 @@ export interface ProfileBlock extends BaseBlock {
   bgBlur?: number;
   overlayColor?: string;
   overlayOpacity?: number;
+
+  /** Hero Effects Engine v2.0 — see features/builder/effects/hero-effects.ts */
+  effects?: import("./effects/hero-effects").HeroEffectsConfig;
 }
+
 
 
 export type TextAlign = "left" | "center" | "right";

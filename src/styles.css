@@ -638,3 +638,390 @@
   }
 }
 
+/* ============================================================
+ * HERO EFFECTS ENGINE v2.0
+ * Universal, GPU-accelerated effects — transform + opacity only.
+ * All timings/colors are driven by CSS variables set inline via
+ * resolveHeroEffects() so the same class library scales to any
+ * block (avatars, cards, images, buttons, gallery, etc.).
+ * ============================================================ */
+
+/* ── Avatar effects ──────────────────────────────────────── */
+.zx-hero-avatar--glow {
+  box-shadow: 0 0 calc(var(--zx-hero-avatar-blur, 24px))
+    var(--zx-hero-avatar-spread, 2px)
+    color-mix(in srgb, var(--zx-hero-avatar-color, #6366f1) calc(var(--zx-hero-avatar-strength, .6) * 100%), transparent);
+}
+.zx-hero-avatar--neon {
+  box-shadow:
+    0 0 6px  var(--zx-hero-avatar-color, #6366f1),
+    0 0 14px var(--zx-hero-avatar-color, #6366f1),
+    0 0 calc(var(--zx-hero-avatar-blur, 24px) + 6px)
+      color-mix(in srgb, var(--zx-hero-avatar-color, #6366f1) calc(var(--zx-hero-avatar-strength, .6) * 100%), transparent);
+  animation: zx-hero-neon-pulse var(--zx-hero-avatar-speed, 2400ms) ease-in-out infinite;
+  animation-delay: var(--zx-hero-avatar-delay, 0ms);
+}
+.zx-hero-avatar--shadow-depth {
+  box-shadow:
+    0 4px 8px rgba(0,0,0,.08),
+    0 12px 24px rgba(0,0,0,.14),
+    0 24px 48px rgba(0,0,0,.18);
+}
+.zx-hero-avatar--blur-glow {
+  position: relative;
+}
+.zx-hero-avatar--blur-glow::after {
+  content: ""; position: absolute; inset: -12px; border-radius: inherit;
+  background: var(--zx-hero-avatar-color, #6366f1);
+  filter: blur(calc(var(--zx-hero-avatar-blur, 24px) + 6px));
+  opacity: calc(var(--zx-hero-avatar-strength, .6) * .8);
+  z-index: -1; pointer-events: none;
+}
+.zx-hero-avatar--floating {
+  animation: zx-hero-floating var(--zx-hero-avatar-speed, 3200ms) ease-in-out infinite;
+  animation-delay: var(--zx-hero-avatar-delay, 0ms);
+  will-change: transform;
+}
+.zx-hero-avatar--soft-floating {
+  animation: zx-hero-soft-float var(--zx-hero-avatar-speed, 4200ms) ease-in-out infinite;
+  will-change: transform;
+}
+.zx-hero-avatar--pulse {
+  animation: zx-hero-pulse var(--zx-hero-avatar-speed, 1800ms) ease-in-out infinite;
+  animation-delay: var(--zx-hero-avatar-delay, 0ms);
+  will-change: transform;
+}
+.zx-hero-avatar--breathing {
+  animation: zx-hero-breathing var(--zx-hero-avatar-speed, 3600ms) ease-in-out infinite;
+  will-change: transform, filter;
+}
+.zx-hero-avatar--bounce {
+  animation: zx-hero-bounce var(--zx-hero-avatar-speed, 1400ms) cubic-bezier(.36,.07,.19,.97) infinite;
+  will-change: transform;
+}
+
+@keyframes zx-hero-floating {
+  0%,100% { transform: translate3d(0,0,0); }
+  50%     { transform: translate3d(0, calc(-1 * var(--zx-hero-avatar-distance, 8px)), 0); }
+}
+@keyframes zx-hero-soft-float {
+  0%,100% { transform: translate3d(0,0,0) rotate(0deg); }
+  33%     { transform: translate3d(0, calc(-.5 * var(--zx-hero-avatar-distance, 8px)), 0) rotate(1deg); }
+  66%     { transform: translate3d(0, calc(-1 * var(--zx-hero-avatar-distance, 8px)), 0) rotate(-1deg); }
+}
+@keyframes zx-hero-pulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(var(--zx-hero-avatar-scale, 1.05)); }
+}
+@keyframes zx-hero-breathing {
+  0%,100% { transform: scale(1); filter: brightness(1); }
+  50%     { transform: scale(calc(1 + (var(--zx-hero-avatar-scale, 1.03) - 1) * .6)); filter: brightness(1.06); }
+}
+@keyframes zx-hero-bounce {
+  0%,100% { transform: translate3d(0,0,0); }
+  20%     { transform: translate3d(0, calc(-1 * var(--zx-hero-avatar-distance, 8px)), 0); }
+  40%     { transform: translate3d(0, calc(-.4 * var(--zx-hero-avatar-distance, 8px)), 0); }
+  60%     { transform: translate3d(0, calc(-.15 * var(--zx-hero-avatar-distance, 8px)), 0); }
+  80%     { transform: translate3d(0, 0, 0); }
+}
+@keyframes zx-hero-neon-pulse {
+  0%,100% { filter: brightness(1); }
+  50%     { filter: brightness(1.15); }
+}
+
+/* ── Ring styles (positioned as overlay on avatar wrapper) ── */
+.zx-hero-ring-wrap { position: relative; display: inline-block; }
+.zx-hero-ring-wrap > .zx-hero-ring-overlay {
+  position: absolute; inset: calc(-1 * var(--zx-hero-ring-w, 3px));
+  border-radius: inherit; pointer-events: none;
+  opacity: var(--zx-hero-ring-opacity, 1);
+}
+.zx-hero-ring--solid > .zx-hero-ring-overlay {
+  border: var(--zx-hero-ring-w, 3px) solid var(--zx-hero-ring-c, #6366f1);
+}
+.zx-hero-ring--dashed > .zx-hero-ring-overlay {
+  border: var(--zx-hero-ring-w, 3px) dashed var(--zx-hero-ring-c, #6366f1);
+}
+.zx-hero-ring--double > .zx-hero-ring-overlay {
+  border: var(--zx-hero-ring-w, 3px) double var(--zx-hero-ring-c, #6366f1);
+  outline: var(--zx-hero-ring-w, 3px) solid color-mix(in srgb, var(--zx-hero-ring-c, #6366f1) 40%, transparent);
+  outline-offset: 3px;
+}
+.zx-hero-ring--neon > .zx-hero-ring-overlay {
+  border: var(--zx-hero-ring-w, 3px) solid var(--zx-hero-ring-c, #6366f1);
+  box-shadow:
+    0 0 8px  var(--zx-hero-ring-c, #6366f1),
+    0 0 18px var(--zx-hero-ring-c, #6366f1),
+    inset 0 0 8px var(--zx-hero-ring-c, #6366f1);
+}
+.zx-hero-ring--glass > .zx-hero-ring-overlay {
+  border: var(--zx-hero-ring-w, 3px) solid rgba(255,255,255,.35);
+  backdrop-filter: blur(6px);
+  background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,0));
+}
+.zx-hero-ring--gradient > .zx-hero-ring-overlay {
+  padding: var(--zx-hero-ring-w, 3px); border: 0;
+  background:
+    conic-gradient(from 0deg,
+      var(--zx-hero-ring-c, #6366f1),
+      var(--zx-hero-ring-c2, #ec4899),
+      var(--zx-hero-ring-c, #6366f1));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+
+/* Ring animations */
+.zx-hero-ring--spin > .zx-hero-ring-overlay {
+  animation: zx-hero-spin var(--zx-hero-ring-speed, 4s) linear infinite;
+  will-change: transform;
+}
+.zx-hero-ring--spin-rev > .zx-hero-ring-overlay {
+  animation: zx-hero-spin var(--zx-hero-ring-speed, 4s) linear infinite reverse;
+  will-change: transform;
+}
+.zx-hero-ring--pulse > .zx-hero-ring-overlay {
+  animation: zx-hero-ring-pulse var(--zx-hero-ring-speed, 1800ms) ease-in-out infinite;
+}
+.zx-hero-ring--expand > .zx-hero-ring-overlay {
+  animation: zx-hero-ring-expand var(--zx-hero-ring-speed, 2200ms) ease-out infinite;
+}
+.zx-hero-ring--ripple {
+  position: relative;
+}
+.zx-hero-ring--ripple::after,
+.zx-hero-ring--ripple::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  border: var(--zx-hero-ring-w, 3px) solid var(--zx-hero-ring-c, #6366f1);
+  animation: zx-hero-ring-ripple var(--zx-hero-ring-speed, 2200ms) ease-out infinite;
+  pointer-events: none;
+}
+.zx-hero-ring--ripple::after { animation-delay: calc(var(--zx-hero-ring-speed, 2200ms) * .5); }
+.zx-hero-ring--pause-hover:hover > .zx-hero-ring-overlay,
+.zx-hero-ring--pause-hover:hover::before,
+.zx-hero-ring--pause-hover:hover::after { animation-play-state: paused; }
+
+@keyframes zx-hero-spin { to { transform: rotate(360deg); } }
+@keyframes zx-hero-ring-pulse {
+  0%,100% { transform: scale(1); opacity: var(--zx-hero-ring-opacity, 1); }
+  50%     { transform: scale(1.06); opacity: calc(var(--zx-hero-ring-opacity, 1) * .6); }
+}
+@keyframes zx-hero-ring-expand {
+  0%   { transform: scale(1); opacity: var(--zx-hero-ring-opacity, 1); }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+@keyframes zx-hero-ring-ripple {
+  0%   { transform: scale(1);    opacity: var(--zx-hero-ring-opacity, 1); }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+.zx-hero-ring--animated > .zx-hero-ring-overlay {
+  animation: zx-hero-spin var(--zx-hero-ring-speed, 4s) linear infinite;
+}
+
+/* ── Verified badge effects ─────────────────────────────── */
+.zx-hero-badge { transform: rotate(var(--zx-hero-badge-rot, 0deg)); }
+.zx-hero-badge--pulse   { animation: zx-hero-badge-pulse var(--zx-hero-badge-speed, 1600ms) ease-in-out infinite; }
+.zx-hero-badge--bounce  { animation: zx-hero-bounce var(--zx-hero-badge-speed, 1400ms) cubic-bezier(.36,.07,.19,.97) infinite; }
+.zx-hero-badge--blink   { animation: zx-hero-badge-blink var(--zx-hero-badge-speed, 1400ms) steps(2,end) infinite; }
+.zx-hero-badge--rotate  { animation: zx-hero-spin var(--zx-hero-badge-speed, 4000ms) linear infinite; }
+.zx-hero-badge--floating { animation: zx-hero-floating var(--zx-hero-badge-speed, 2600ms) ease-in-out infinite; }
+.zx-hero-badge--glow    {
+  box-shadow: 0 0 12px var(--zx-hero-badge-color, #6366f1),
+              0 0 20px color-mix(in srgb, var(--zx-hero-badge-color, #6366f1) 60%, transparent);
+  animation: zx-hero-neon-pulse var(--zx-hero-badge-speed, 1600ms) ease-in-out infinite;
+}
+.zx-hero-badge--shine {
+  position: relative; overflow: hidden;
+}
+.zx-hero-badge--shine::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.85) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: zx-hero-badge-shine var(--zx-hero-badge-speed, 2200ms) ease-in-out infinite;
+}
+
+@keyframes zx-hero-badge-pulse {
+  0%,100% { transform: scale(1) rotate(var(--zx-hero-badge-rot, 0deg)); }
+  50%     { transform: scale(1.18) rotate(var(--zx-hero-badge-rot, 0deg)); }
+}
+@keyframes zx-hero-badge-blink { 50% { opacity: .35; } }
+@keyframes zx-hero-badge-shine {
+  0%   { transform: translateX(-120%); }
+  60%,100% { transform: translateX(120%); }
+}
+
+/* ── Hero Card effects (applied to outer wrapper) ────────── */
+.zx-hero-card--glass {
+  background: color-mix(in srgb, white calc(var(--zx-hero-card-glow-s, .4) * 30%), transparent);
+  backdrop-filter: blur(var(--zx-hero-card-glass-blur, 16px)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--zx-hero-card-glass-blur, 16px)) saturate(140%);
+  border: var(--zx-hero-card-border-w, 1px) solid var(--zx-hero-card-border-c, rgba(255,255,255,.2));
+  box-shadow: 0 10px 30px rgba(0,0,0, calc(var(--zx-hero-card-shadow, .3) * .6));
+}
+.zx-hero-card--floating {
+  animation: zx-hero-floating calc(var(--zx-hero-card-grad-speed, 6000ms)) ease-in-out infinite;
+  --zx-hero-avatar-distance: 6px;
+  box-shadow: 0 20px 40px rgba(0,0,0, calc(var(--zx-hero-card-shadow, .3) * .5));
+  will-change: transform;
+}
+.zx-hero-card--shadow-lift {
+  transition: transform .3s ease, box-shadow .3s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0, calc(var(--zx-hero-card-shadow, .3) * .4));
+}
+.zx-hero-card--shadow-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px rgba(0,0,0, calc(var(--zx-hero-card-shadow, .3) * .7));
+}
+.zx-hero-card--border-glow {
+  border: var(--zx-hero-card-border-w, 1px) solid var(--zx-hero-card-glow-c, #6366f1);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--zx-hero-card-glow-c, #6366f1) 40%, transparent),
+    0 0 24px color-mix(in srgb, var(--zx-hero-card-glow-c, #6366f1) calc(var(--zx-hero-card-glow-s, .4) * 100%), transparent);
+  animation: zx-hero-neon-pulse calc(var(--zx-hero-card-grad-speed, 6000ms) * .4) ease-in-out infinite;
+}
+.zx-hero-card--animated-border {
+  position: relative;
+}
+.zx-hero-card--animated-border::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  padding: var(--zx-hero-card-border-w, 2px);
+  background: conic-gradient(from 0deg,
+    var(--zx-hero-card-glow-c, #6366f1),
+    var(--zx-hero-bg-c2, #ec4899),
+    var(--zx-hero-bg-c3, #22d3ee),
+    var(--zx-hero-card-glow-c, #6366f1));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: zx-hero-spin var(--zx-hero-card-grad-speed, 6000ms) linear infinite;
+  pointer-events: none;
+}
+.zx-hero-card--gradient-border {
+  position: relative;
+}
+.zx-hero-card--gradient-border::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  padding: var(--zx-hero-card-border-w, 2px);
+  background: linear-gradient(135deg,
+    var(--zx-hero-card-glow-c, #6366f1),
+    var(--zx-hero-bg-c2, #ec4899));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+}
+.zx-hero-card--aurora {
+  position: relative; overflow: hidden;
+}
+.zx-hero-card--aurora::before {
+  content: ""; position: absolute; inset: -20%; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(at 30% 30%, var(--zx-hero-bg-c1, #6366f1) 0, transparent 45%),
+    radial-gradient(at 70% 20%, var(--zx-hero-bg-c2, #ec4899) 0, transparent 45%),
+    radial-gradient(at 50% 80%, var(--zx-hero-bg-c3, #22d3ee) 0, transparent 45%);
+  filter: blur(40px); opacity: .55;
+  animation: zx-hero-aurora-drift var(--zx-hero-card-grad-speed, 12000ms) ease-in-out infinite alternate;
+}
+.zx-hero-card--aurora > * { position: relative; z-index: 1; }
+.zx-hero-card--spotlight {
+  position: relative; overflow: hidden;
+  transition: background .15s ease;
+}
+.zx-hero-card--spotlight::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(240px circle at var(--zx-mx, 50%) var(--zx-my, 50%),
+    color-mix(in srgb, var(--zx-hero-card-glow-c, #6366f1) calc(var(--zx-hero-card-glow-s, .4) * 60%), transparent),
+    transparent 60%);
+  opacity: 0; transition: opacity .3s ease;
+}
+.zx-hero-card--spotlight:hover::before { opacity: 1; }
+
+@keyframes zx-hero-aurora-drift {
+  0%   { transform: translate3d(-4%, -2%, 0) rotate(0deg); }
+  100% { transform: translate3d(4%,  3%, 0) rotate(4deg); }
+}
+
+/* ── Hero background effect layers ───────────────────────── */
+.zx-hero-bg-layer {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  border-radius: inherit;
+}
+.zx-hero-bg--animated-gradient {
+  background: linear-gradient(-45deg,
+    var(--zx-hero-bg-c1, #6366f1),
+    var(--zx-hero-bg-c2, #ec4899),
+    var(--zx-hero-bg-c3, #22d3ee),
+    var(--zx-hero-bg-c1, #6366f1));
+  background-size: 400% 400%;
+  animation: zx-hero-bg-shift var(--zx-hero-bg-speed, 8000ms) ease infinite;
+}
+.zx-hero-bg--aurora::before,
+.zx-hero-bg--aurora::after {
+  content: ""; position: absolute; inset: -20%;
+  background:
+    radial-gradient(at 20% 20%, var(--zx-hero-bg-c1, #6366f1) 0, transparent 40%),
+    radial-gradient(at 80% 30%, var(--zx-hero-bg-c2, #ec4899) 0, transparent 45%),
+    radial-gradient(at 60% 80%, var(--zx-hero-bg-c3, #22d3ee) 0, transparent 40%);
+  filter: blur(50px); opacity: .7;
+  animation: zx-hero-aurora-drift var(--zx-hero-bg-speed, 12000ms) ease-in-out infinite alternate;
+}
+.zx-hero-bg--aurora::after { animation-direction: alternate-reverse; opacity: .45; }
+.zx-hero-bg--mesh {
+  background:
+    radial-gradient(at 20% 25%, var(--zx-hero-bg-c1, #6366f1) 0, transparent 50%),
+    radial-gradient(at 80% 10%, var(--zx-hero-bg-c2, #ec4899) 0, transparent 50%),
+    radial-gradient(at 50% 80%, var(--zx-hero-bg-c3, #22d3ee) 0, transparent 50%);
+  filter: blur(30px);
+}
+.zx-hero-bg--glass {
+  background: color-mix(in srgb, white 10%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+.zx-hero-bg--blur {
+  backdrop-filter: blur(var(--zx-hero-bg-blur, 12px));
+  -webkit-backdrop-filter: blur(var(--zx-hero-bg-blur, 12px));
+  background: color-mix(in srgb, var(--zx-hero-bg-overlay, rgba(0,0,0,.3)) calc(var(--zx-hero-bg-overlay-op, .35) * 100%), transparent);
+}
+.zx-hero-bg--ambient::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(at 30% 30%, color-mix(in srgb, var(--zx-hero-bg-c1, #6366f1) 60%, transparent) 0, transparent 55%),
+    radial-gradient(at 70% 70%, color-mix(in srgb, var(--zx-hero-bg-c2, #ec4899) 60%, transparent) 0, transparent 55%);
+  filter: blur(60px); opacity: .55;
+  animation: zx-hero-bg-shift var(--zx-hero-bg-speed, 12000ms) ease-in-out infinite;
+}
+.zx-hero-bg--particles::before {
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle 1.5px at 10% 20%, rgba(255,255,255,.7), transparent 50%),
+    radial-gradient(circle 1px   at 30% 60%, rgba(255,255,255,.55), transparent 50%),
+    radial-gradient(circle 1.5px at 60% 30%, rgba(255,255,255,.6),  transparent 50%),
+    radial-gradient(circle 1px   at 80% 80%, rgba(255,255,255,.55), transparent 50%),
+    radial-gradient(circle 1.5px at 90% 40%, rgba(255,255,255,.6),  transparent 50%),
+    radial-gradient(circle 1px   at 40% 90%, rgba(255,255,255,.5),  transparent 50%);
+  animation: zx-hero-particles var(--zx-hero-bg-speed, 12000ms) linear infinite;
+}
+@keyframes zx-hero-bg-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes zx-hero-particles {
+  from { transform: translate3d(0,0,0); }
+  to   { transform: translate3d(0, -40px, 0); }
+}
+
+/* ── Reduced motion — disable everything animated ────────── */
+@media (prefers-reduced-motion: reduce) {
+  [class*="zx-hero-avatar--"],
+  [class*="zx-hero-ring--"] > .zx-hero-ring-overlay,
+  .zx-hero-ring--ripple::before, .zx-hero-ring--ripple::after,
+  [class*="zx-hero-badge--"],
+  [class*="zx-hero-card--"],
+  [class*="zx-hero-card--"]::before, [class*="zx-hero-card--"]::after,
+  [class*="zx-hero-bg--"],
+  [class*="zx-hero-bg--"]::before, [class*="zx-hero-bg--"]::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
