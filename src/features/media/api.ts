@@ -319,21 +319,40 @@ export interface StorageStats {
   count: number;
   byKind: Record<string, { count: number; size: number }>;
   uploadsLast7d: number[];
+  originalBytes: number;
+  optimizedBytes: number;
+  savedBytes: number;
+  processedCount: number;
+  pendingCount: number;
+  failedCount: number;
 }
 
 export async function fetchStorageStats(workspaceId: string): Promise<StorageStats> {
   const { data, error } = await supabase
     .from("media_assets")
-    .select("kind,size_bytes,created_at")
+    .select("kind,size_bytes,created_at,original_size_bytes,optimized_size_bytes,processing_status")
     .eq("workspace_id", workspaceId)
     .is("deleted_at", null);
   if (error) throw error;
-  const rows = (data ?? []) as { kind: string; size_bytes: number | null; created_at: string }[];
+  const rows = (data ?? []) as {
+    kind: string;
+    size_bytes: number | null;
+    created_at: string;
+    original_size_bytes: number | null;
+    optimized_size_bytes: number | null;
+    processing_status: string;
+  }[];
   const stats: StorageStats = {
     used: 0,
     count: rows.length,
     byKind: {},
     uploadsLast7d: Array(7).fill(0),
+    originalBytes: 0,
+    optimizedBytes: 0,
+    savedBytes: 0,
+    processedCount: 0,
+    pendingCount: 0,
+    failedCount: 0,
   };
   const now = new Date();
   const todayStart = new Date(now);
@@ -341,6 +360,15 @@ export async function fetchStorageStats(workspaceId: string): Promise<StorageSta
   for (const r of rows) {
     const size = r.size_bytes ?? 0;
     stats.used += size;
+    const orig = r.original_size_bytes ?? size;
+    const opt = r.optimized_size_bytes ?? 0;
+    stats.originalBytes += orig;
+    stats.optimizedBytes += opt;
+    if (orig && opt && opt < orig) stats.savedBytes += orig - opt;
+    if (r.processing_status === "completed") stats.processedCount += 1;
+    else if (r.processing_status === "pending" || r.processing_status === "processing")
+      stats.pendingCount += 1;
+    else if (r.processing_status === "failed") stats.failedCount += 1;
     const k = stats.byKind[r.kind] ?? { count: 0, size: 0 };
     k.count += 1;
     k.size += size;
