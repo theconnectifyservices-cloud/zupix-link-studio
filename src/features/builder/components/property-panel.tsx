@@ -423,14 +423,15 @@ export function PropertyPanel() {
             </>
           )}
           {block.bgType === "image" && (
-            <Field label="Image URL">
-              <Input
-                value={block.bgImageUrl ?? ""}
-                onChange={(e) => set("bgImageUrl", e.target.value)}
-                placeholder="https://…"
-              />
-            </Field>
+            <ImageField
+              label="Background image"
+              value={block.bgImageUrl}
+              onChange={(url) => set("bgImageUrl", url)}
+              crop={{ shape: "rect", aspect: "free" }}
+              previewAspect="16 / 9"
+            />
           )}
+
           {block.bgType === "video" && (
             <Field label="Video URL (mp4/webm)">
               <Input
