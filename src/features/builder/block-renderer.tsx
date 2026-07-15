@@ -151,31 +151,16 @@ export function BlockRenderer({
 
   const anim = reduceMotion ? "none" : normalizeAnim(s.animation);
   const hover = s.hover && s.hover !== "none" ? s.hover : null;
-  const btnFxRaw =
-    block.type === "button" || block.type === "buttonGroup"
-      ? s.buttonEffect && s.buttonEffect !== "none"
-        ? s.buttonEffect
-        : null
-      : null;
-  const btnFxDisabled = btnFxRaw && s.buttonEffectEnabled === false;
-  const btnFx = btnFxRaw;
 
-  const btnFxMode =
-    btnFx === "shine"
-      ? (s.buttonEffectMode ?? "hover")
-      : btnFx === "neon"
-        ? (s.buttonEffectMode ?? null)
-        : null;
-  const btnFxDir = s.buttonEffectDirection ?? null;
+  // Button effects are applied INSIDE the button element (see ButtonRender),
+  // never on the outer block wrapper — otherwise the effect layer paints the
+  // full-width rectangle behind the pill.
+  const isButtonish = block.type === "button" || block.type === "buttonGroup";
 
   const wrapCls = cn(
-    s.radius && RADIUS_CLASS[s.radius],
+    s.radius && !isButtonish && RADIUS_CLASS[s.radius],
     anim !== "none" && `zx-anim zx-anim-${anim}`,
     hover && `zx-hover zx-hover-${hover}`,
-    btnFx && `zx-btn-fx zx-btn-fx-${btnFx}`,
-    btnFxMode && `zx-btn-fx-mode-${btnFxMode}`,
-    btnFx && btnFxDir && `zx-btn-fx-dir-${btnFxDir}`,
-    btnFxDisabled && `zx-btn-fx-disabled`,
   );
 
   const style: CSSProperties = {
@@ -195,33 +180,6 @@ export function BlockRenderer({
     (style as Record<string, string>)["--zx-anim-repeat"] =
       s.animationRepeat === "infinite" ? "infinite" : "1";
   }
-  if (btnFx) {
-    const cssVars = style as Record<string, string>;
-    if (s.buttonEffectSpeed) cssVars["--zx-btn-fx-dur"] = `${s.buttonEffectSpeed}ms`;
-    if (s.buttonEffectDelay) cssVars["--zx-btn-fx-delay"] = `${s.buttonEffectDelay}ms`;
-    if (s.buttonEffectRepeat !== undefined)
-      cssVars["--zx-btn-fx-repeat"] = String(s.buttonEffectRepeat);
-    if (s.buttonEffectColor) cssVars["--zx-btn-fx-color"] = s.buttonEffectColor;
-    if (s.buttonEffectColor2) cssVars["--zx-btn-fx-color2"] = s.buttonEffectColor2;
-    if (typeof s.buttonEffectIntensity === "number")
-      cssVars["--zx-btn-fx-intensity"] = String(Math.max(0, s.buttonEffectIntensity) / 50);
-    if (typeof s.buttonEffectSize === "number") {
-      cssVars["--zx-btn-fx-size"] = `${s.buttonEffectSize}%`;
-      cssVars["--zx-btn-fx-size-px"] = `${s.buttonEffectSize}px`;
-    }
-    if (typeof s.buttonEffectOpacity === "number")
-      cssVars["--zx-btn-fx-opacity"] = String(s.buttonEffectOpacity);
-    if (typeof s.buttonEffectDistance === "number") {
-      cssVars["--zx-btn-fx-distance"] = `${s.buttonEffectDistance}px`;
-      cssVars["--zx-btn-fx-distance-scale"] = String(Math.max(10, s.buttonEffectDistance * 2));
-    }
-    if (typeof s.buttonEffectScale === "number")
-      cssVars["--zx-btn-fx-scale"] = String(s.buttonEffectScale);
-    if (s.buttonEffectGradient && s.buttonEffectGradient.length >= 2) {
-      const stops = s.buttonEffectGradient.join(", ");
-      cssVars["--zx-btn-fx-grad"] = `linear-gradient(90deg, ${stops}, ${s.buttonEffectGradient[0]})`;
-    }
-  }
 
   const hasWrap =
     !!s.background ||
@@ -229,16 +187,12 @@ export function BlockRenderer({
     !!paddingY ||
     !!marginTop ||
     !!marginBottom ||
-    !!s.radius ||
+    (!isButtonish && !!s.radius) ||
     anim !== "none" ||
     !!hover ||
-    !!btnFx ||
     (fontScale && fontScale !== 1);
 
-  const needsInteractive =
-    !!btnFx && !btnFxDisabled && !reduceMotion && (btnFx === "magnetic" || btnFx === "spotlight");
-
-  const inner = renderInner(block);
+  const inner = renderInner(block, reduceMotion);
   if (!hasWrap) return inner;
   const commonProps = {
     className: wrapCls,
@@ -249,19 +203,84 @@ export function BlockRenderer({
     "data-hide-tablet": vis.tablet === false || undefined,
     "data-hide-desktop": vis.desktop === false || undefined,
   } as const;
-  if (needsInteractive) {
-    return (
-      <InteractiveFxWrapper
-        {...commonProps}
-        effect={btnFx as "magnetic" | "spotlight"}
-        intensity={s.buttonEffectIntensity ?? 50}
-        distance={s.buttonEffectDistance ?? 20}
-      >
-        {inner}
-      </InteractiveFxWrapper>
-    );
-  }
   return <div {...commonProps}>{inner}</div>;
+}
+
+/** Compute btn-fx className + CSS vars for a button-ish block.
+ * Applied to the actual button/pill element so effects clip to the button
+ * shape and never bleed to a wrapper rectangle. */
+export function computeButtonFx(
+  s: BlockSettings,
+  reduceMotion: boolean,
+): {
+  className: string;
+  style: CSSProperties;
+  needsInteractive: boolean;
+  effect: "magnetic" | "spotlight" | null;
+  intensity: number;
+  distance: number;
+} {
+  const raw = s.buttonEffect && s.buttonEffect !== "none" ? s.buttonEffect : null;
+  if (!raw) {
+    return {
+      className: "",
+      style: {},
+      needsInteractive: false,
+      effect: null,
+      intensity: 50,
+      distance: 20,
+    };
+  }
+  const disabled = s.buttonEffectEnabled === false;
+  const mode =
+    raw === "shine"
+      ? (s.buttonEffectMode ?? "hover")
+      : raw === "neon"
+        ? (s.buttonEffectMode ?? null)
+        : null;
+  const dir = s.buttonEffectDirection ?? null;
+  const className = cn(
+    `zx-btn-fx zx-btn-fx-${raw}`,
+    mode && `zx-btn-fx-mode-${mode}`,
+    dir && `zx-btn-fx-dir-${dir}`,
+    disabled && `zx-btn-fx-disabled`,
+  );
+  const style: CSSProperties = {};
+  const vars = style as Record<string, string>;
+  if (s.buttonEffectSpeed) vars["--zx-btn-fx-dur"] = `${s.buttonEffectSpeed}ms`;
+  if (s.buttonEffectDelay) vars["--zx-btn-fx-delay"] = `${s.buttonEffectDelay}ms`;
+  if (s.buttonEffectRepeat !== undefined)
+    vars["--zx-btn-fx-repeat"] = String(s.buttonEffectRepeat);
+  if (s.buttonEffectColor) vars["--zx-btn-fx-color"] = s.buttonEffectColor;
+  if (s.buttonEffectColor2) vars["--zx-btn-fx-color2"] = s.buttonEffectColor2;
+  if (typeof s.buttonEffectIntensity === "number")
+    vars["--zx-btn-fx-intensity"] = String(Math.max(0, s.buttonEffectIntensity) / 50);
+  if (typeof s.buttonEffectSize === "number") {
+    vars["--zx-btn-fx-size"] = `${s.buttonEffectSize}%`;
+    vars["--zx-btn-fx-size-px"] = `${s.buttonEffectSize}px`;
+  }
+  if (typeof s.buttonEffectOpacity === "number")
+    vars["--zx-btn-fx-opacity"] = String(s.buttonEffectOpacity);
+  if (typeof s.buttonEffectDistance === "number") {
+    vars["--zx-btn-fx-distance"] = `${s.buttonEffectDistance}px`;
+    vars["--zx-btn-fx-distance-scale"] = String(Math.max(10, s.buttonEffectDistance * 2));
+  }
+  if (typeof s.buttonEffectScale === "number")
+    vars["--zx-btn-fx-scale"] = String(s.buttonEffectScale);
+  if (s.buttonEffectGradient && s.buttonEffectGradient.length >= 2) {
+    const stops = s.buttonEffectGradient.join(", ");
+    vars["--zx-btn-fx-grad"] = `linear-gradient(90deg, ${stops}, ${s.buttonEffectGradient[0]})`;
+  }
+  const needsInteractive =
+    !disabled && !reduceMotion && (raw === "magnetic" || raw === "spotlight");
+  return {
+    className,
+    style,
+    needsInteractive,
+    effect: needsInteractive ? (raw as "magnetic" | "spotlight") : null,
+    intensity: s.buttonEffectIntensity ?? 50,
+    distance: s.buttonEffectDistance ?? 20,
+  };
 }
 
 /** Lightweight JS layer for effects that depend on pointer position. */
@@ -330,7 +349,7 @@ function InteractiveFxWrapper({
 }
 
 
-function renderInner(block: Block) {
+function renderInner(block: Block, reduceMotion: boolean) {
   switch (block.type) {
     case "profile":
       return <ProfileRender block={block} />;
@@ -372,11 +391,12 @@ function renderInner(block: Block) {
       );
 
     case "button": {
-      return <ButtonRender block={block} />;
+      return <ButtonRender block={block} reduceMotion={reduceMotion} />;
     }
 
     case "buttonGroup":
-      return <ButtonGroupRender block={block} />;
+      return <ButtonGroupRender block={block} reduceMotion={reduceMotion} />;
+
 
     case "image": {
       if (!block.url) {
@@ -539,7 +559,13 @@ export function autoContrastText(bg: string | undefined): string | undefined {
   const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
   return lum > 0.5 ? "#000000" : "#ffffff";
 }
-function ButtonRender({ block }: { block: ButtonBlock }) {
+function ButtonRender({
+  block,
+  reduceMotion = false,
+}: {
+  block: ButtonBlock;
+  reduceMotion?: boolean;
+}) {
   const [hover, setHover] = useState(false);
   const autoOn = block.autoContrast !== false;
   const normalBg = block.bgColor;
@@ -551,6 +577,8 @@ function ButtonRender({ block }: { block: ButtonBlock }) {
   const bg = hover && hoverBg ? hoverBg : normalBg;
   const fg = hover && (hoverText || block.hoverTextColor) ? hoverText : normalText;
   const borderCol = hover && block.hoverBorderColor ? block.hoverBorderColor : block.borderColor;
+
+  const fx = computeButtonFx(block.settings ?? {}, reduceMotion);
 
   const style: CSSProperties = {
     background: bg ?? "var(--zx-btn-bg)",
@@ -577,28 +605,54 @@ function ButtonRender({ block }: { block: ButtonBlock }) {
             : block.fontWeight === "normal"
               ? 400
               : undefined,
-    backdropFilter: "blur(0)",
+    // Clip pseudo-element effects (shine/liquid/spotlight/gradient/etc.)
+    // to the button's rounded shape so they never bleed into a rectangle.
+    overflow: "hidden",
+    position: "relative",
+    isolation: "isolate",
+    ...fx.style,
   };
-  return (
-    <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>
-      <div
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        className={cn(
-          "inline-flex items-center justify-center gap-2 font-medium transition-all hover:-translate-y-0.5",
-          WIDTH_CLASS[block.width ?? "full"],
-          block.disabled && "cursor-not-allowed opacity-50 hover:translate-y-0",
-        )}
-        style={style}
-      >
-        {block.label || "Button"}
-      </div>
+  const pillClass = cn(
+    "inline-flex items-center justify-center gap-2 font-medium transition-all hover:-translate-y-0.5",
+    WIDTH_CLASS[block.width ?? "full"],
+    block.disabled && "cursor-not-allowed opacity-50 hover:translate-y-0",
+    fx.className,
+  );
+  const pill = fx.needsInteractive ? (
+    <InteractiveFxWrapper
+      className={pillClass}
+      style={style}
+      effect={fx.effect as "magnetic" | "spotlight"}
+      intensity={fx.intensity}
+      distance={fx.distance}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {block.label || "Button"}
+    </InteractiveFxWrapper>
+  ) : (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className={pillClass}
+      style={style}
+    >
+      {block.label || "Button"}
     </div>
+  );
+  return (
+    <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>{pill}</div>
   );
 }
 
 // ── Button group ─────────────────────────────────────────────────────────
-function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
+function ButtonGroupRender({
+  block,
+  reduceMotion = false,
+}: {
+  block: ButtonGroupBlock;
+  reduceMotion?: boolean;
+}) {
   if (block.buttons.length === 0) {
     return (
       <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
@@ -612,6 +666,7 @@ function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
       : block.layout === "grid"
         ? `grid gap-2 grid-cols-${block.columns ?? 2}`
         : "flex flex-col gap-2";
+  const fx = computeButtonFx(block.settings ?? {}, reduceMotion);
   return (
     <div className={cls}>
       {block.buttons.map((b) => {
@@ -621,15 +676,28 @@ function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
             : b.style === "soft"
               ? "bg-muted text-foreground"
               : "bg-foreground text-background";
+        const btnClass = cn(
+          "relative overflow-hidden isolate rounded-full px-4 py-2.5 text-center text-sm font-medium",
+          v,
+          block.layout === "vertical" && "w-full",
+          fx.className,
+        );
+        if (fx.needsInteractive) {
+          return (
+            <InteractiveFxWrapper
+              key={b.id}
+              className={btnClass}
+              style={fx.style}
+              effect={fx.effect as "magnetic" | "spotlight"}
+              intensity={fx.intensity}
+              distance={fx.distance}
+            >
+              {b.label}
+            </InteractiveFxWrapper>
+          );
+        }
         return (
-          <div
-            key={b.id}
-            className={cn(
-              "rounded-full px-4 py-2.5 text-center text-sm font-medium",
-              v,
-              block.layout === "vertical" && "w-full",
-            )}
-          >
+          <div key={b.id} className={btnClass} style={fx.style}>
             {b.label}
           </div>
         );
@@ -637,6 +705,7 @@ function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
     </div>
   );
 }
+
 
 // ── Video ────────────────────────────────────────────────────────────────
 function extractYouTubeId(url: string): string | null {
