@@ -18,7 +18,7 @@ import {
   Sparkles,
   Users,
   Building2,
-
+  Gem,
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
@@ -56,6 +56,7 @@ const appItems: Item[] = [
   { icon: Users, label: "Workspace", href: "/app/team" },
   { icon: Building2, label: "Agency", href: "/app/agency" },
   { icon: Shield, label: "Enterprise", href: "/app/enterprise" },
+  { icon: Gem, label: "Monetization", href: "/app/monetization" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
