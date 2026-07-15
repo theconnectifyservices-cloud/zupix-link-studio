@@ -16,19 +16,6 @@ const CreateOrderInput = z.object({
   coupon_code: z.string().trim().optional().nullable(),
 });
 
-async function requireWorkspaceAdmin(
-  supabase: Awaited<ReturnType<typeof requireSupabaseAuth.server>>["context"]["supabase"],
-  userId: string,
-  workspaceId: string,
-): Promise<void> {
-  const { data, error } = await supabase.rpc("is_workspace_admin", {
-    _user_id: userId,
-    _workspace_id: workspaceId,
-  });
-  if (error) throw new Error(error.message);
-  if (!data) throw new Error("Forbidden: workspace admin required");
-}
-
 export const createRazorpayOrder = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((v) => CreateOrderInput.parse(v))
