@@ -171,6 +171,10 @@ function buildEnvelope(pageId: string, slug: string): ClientEnvelope {
   const device = detectDevice();
   const search = typeof window !== "undefined" ? window.location.search : "";
   const qr = new URLSearchParams(search).get("qr");
+  const entryUrl =
+    typeof window !== "undefined"
+      ? `${window.location.pathname}${window.location.search}`
+      : null;
   return {
     pageId,
     slug,
@@ -183,7 +187,20 @@ function buildEnvelope(pageId: string, slug: string): ClientEnvelope {
     utm: parseUtm(search),
     timezone: getTimezone(),
     qrSource: qr,
+    entryUrl,
   };
+}
+
+function computeScrollPct(): number {
+  if (typeof window === "undefined") return 0;
+  const doc = document.documentElement;
+  const body = document.body;
+  const scrollTop = window.scrollY || doc.scrollTop || 0;
+  const viewport = window.innerHeight || doc.clientHeight || 0;
+  const full = Math.max(doc.scrollHeight, body?.scrollHeight ?? 0);
+  const denom = Math.max(1, full - viewport);
+  const pct = Math.round(((scrollTop + viewport) / (denom + viewport)) * 100);
+  return Math.max(0, Math.min(100, pct));
 }
 
 /* --------------------------------- send --------------------------------- */
