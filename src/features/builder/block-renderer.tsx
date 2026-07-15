@@ -648,6 +648,193 @@ function ButtonRender({
 }
 
 // ── Button group ─────────────────────────────────────────────────────────
+function fontWeightNum(fw?: FontWeight): number | undefined {
+  return fw === "bold" ? 700 : fw === "semibold" ? 600 : fw === "medium" ? 500 : fw === "normal" ? 400 : undefined;
+}
+
+function buildGroupItemStyle(
+  item: import("./types").ButtonGroupItem,
+  hover: boolean,
+): CSSProperties {
+  const autoOn = item.autoContrast !== false;
+  const normalBg = item.bgColor;
+  const normalText = item.textColor ?? (autoOn ? autoContrastText(normalBg) : undefined);
+  const hoverText =
+    item.hoverTextColor ?? (autoOn ? autoContrastText(item.hoverBgColor ?? normalBg) : undefined);
+  const bg = hover && item.hoverBgColor ? item.hoverBgColor : normalBg;
+  const fg = hover && (item.hoverTextColor || hoverText) ? hoverText : normalText;
+  const borderCol = hover && item.hoverBorderColor ? item.hoverBorderColor : item.borderColor;
+
+  // Style variant defaults (used when no explicit color set)
+  const style: CSSProperties = {};
+  const variant = item.style ?? "filled";
+  if (variant === "outline") {
+    style.background = bg ?? "transparent";
+    style.color = fg ?? "hsl(var(--foreground))";
+    style.border = `${item.borderWidth ?? 1}px solid ${borderCol ?? "hsl(var(--foreground) / 0.3)"}`;
+  } else if (variant === "soft") {
+    style.background = bg ?? "hsl(var(--muted))";
+    style.color = fg ?? "hsl(var(--foreground))";
+    if (borderCol) style.border = `${item.borderWidth ?? 1}px solid ${borderCol}`;
+  } else if (variant === "ghost") {
+    style.background = bg ?? "transparent";
+    style.color = fg ?? "hsl(var(--foreground))";
+    if (borderCol) style.border = `${item.borderWidth ?? 1}px solid ${borderCol}`;
+  } else if (variant === "glass") {
+    style.background = bg ?? "rgba(255,255,255,0.08)";
+    style.color = fg ?? "hsl(var(--foreground))";
+    style.backdropFilter = "blur(12px)";
+    (style as Record<string, string>).WebkitBackdropFilter = "blur(12px)";
+    style.border = `${item.borderWidth ?? 1}px solid ${borderCol ?? "rgba(255,255,255,0.18)"}`;
+  } else if (variant === "gradient") {
+    const from = item.gradientFrom ?? "#8b5cf6";
+    const to = item.gradientTo ?? "#ec4899";
+    const angle = item.gradientAngle ?? 90;
+    style.background = `linear-gradient(${angle}deg, ${from}, ${to})`;
+    style.color = fg ?? autoContrastText(from) ?? "#ffffff";
+    if (borderCol) style.border = `${item.borderWidth ?? 1}px solid ${borderCol}`;
+  } else if (variant === "elevated") {
+    style.background = bg ?? "hsl(var(--background))";
+    style.color = fg ?? "hsl(var(--foreground))";
+    if (borderCol) style.border = `${item.borderWidth ?? 1}px solid ${borderCol}`;
+    style.boxShadow = "0 8px 24px -6px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.08)";
+  } else if (variant === "neumorphism") {
+    style.background = bg ?? "#e6e7ee";
+    style.color = fg ?? "#333";
+    style.boxShadow =
+      "8px 8px 16px rgba(163,177,198,0.6), -8px -8px 16px rgba(255,255,255,0.9)";
+  } else {
+    // filled
+    style.background = bg ?? "hsl(var(--foreground))";
+    style.color = fg ?? "hsl(var(--background))";
+    if (borderCol) style.border = `${item.borderWidth ?? 1}px solid ${borderCol}`;
+  }
+
+  // Custom shadow overrides
+  if (item.shadowBlur != null || item.shadowColor || item.shadowSpread != null) {
+    const c = item.shadowColor ?? "#000000";
+    const opacity = item.shadowOpacity ?? 0.25;
+    const [r, g, b] = hexToRgb(c) ?? [0, 0, 0];
+    style.boxShadow = `0 ${item.shadowY ?? 6}px ${item.shadowBlur ?? 16}px ${item.shadowSpread ?? 0}px rgba(${r},${g},${b},${opacity})`;
+  }
+
+  // Layout / typography
+  if (item.radius != null) style.borderRadius = `${item.radius}px`;
+  if (item.minHeight != null) style.minHeight = `${item.minHeight}px`;
+  if (item.paddingX != null) {
+    style.paddingLeft = `${item.paddingX}px`;
+    style.paddingRight = `${item.paddingX}px`;
+  }
+  if (item.paddingY != null) {
+    style.paddingTop = `${item.paddingY}px`;
+    style.paddingBottom = `${item.paddingY}px`;
+  }
+  if (item.marginTop != null) style.marginTop = `${item.marginTop}px`;
+  if (item.marginBottom != null) style.marginBottom = `${item.marginBottom}px`;
+  if (item.fontFamily) style.fontFamily = item.fontFamily;
+  if (item.fontSizePx) style.fontSize = `${item.fontSizePx}px`;
+  if (item.fontWeight) style.fontWeight = fontWeightNum(item.fontWeight);
+  if (item.letterSpacing != null) style.letterSpacing = `${item.letterSpacing}px`;
+  if (item.lineHeight != null) style.lineHeight = item.lineHeight;
+  if (item.textTransform) style.textTransform = item.textTransform as CSSProperties["textTransform"];
+  if (item.textAlign) style.textAlign = item.textAlign;
+  if (item.iconGap != null) style.gap = `${item.iconGap}px`;
+
+  return style;
+}
+
+function GroupItemRender({
+  item,
+  layout,
+  reduceMotion,
+}: {
+  item: import("./types").ButtonGroupItem;
+  layout: import("./types").ButtonGroupLayout;
+  reduceMotion: boolean;
+}) {
+  const [hover, setHover] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const { getIcon } = require("./button-icons") as typeof import("./button-icons");
+  const LeftIcon = getIcon(item.leftIcon);
+  const RightIcon = getIcon(item.rightIcon);
+  const iconSize = item.iconSize ?? 16;
+
+  const baseStyle = buildGroupItemStyle(item, hover);
+  if (pressed) {
+    if (item.pressedBgColor) baseStyle.background = item.pressedBgColor;
+    if (item.pressedTextColor) baseStyle.color = item.pressedTextColor;
+  }
+  baseStyle.overflow = "hidden";
+  baseStyle.position = "relative";
+  baseStyle.isolation = "isolate";
+
+  // Effect layer via existing engine
+  const fxSettings: BlockSettings = {
+    buttonEffect: item.effect,
+    buttonEffectColor: item.effectColor,
+    buttonEffectColor2: item.effectColor2,
+    buttonEffectSpeed: item.effectSpeed,
+    buttonEffectIntensity: item.effectIntensity,
+    buttonEffectMode: item.effectMode,
+    buttonEffectEnabled: !!item.effect && item.effect !== "none",
+  };
+  const fx = computeButtonFx(fxSettings, reduceMotion);
+  const style: CSSProperties = { ...baseStyle, ...fx.style };
+
+  const widthCls =
+    item.widthMode === "auto"
+      ? ""
+      : layout === "vertical" || item.widthMode === "full"
+        ? "w-full"
+        : "";
+
+  const btnClass = cn(
+    "inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-center text-sm font-medium transition-all",
+    !item.disabled && "hover:-translate-y-0.5",
+    item.disabled && "cursor-not-allowed opacity-50",
+    widthCls,
+    fx.className,
+  );
+
+  const inner = (
+    <>
+      {LeftIcon && <LeftIcon size={iconSize} color={item.iconColor} />}
+      <span>{item.label || "Button"}</span>
+      {RightIcon && <RightIcon size={iconSize} color={item.iconColor} />}
+    </>
+  );
+
+  const handlers = {
+    onMouseEnter: () => setHover(true),
+    onMouseLeave: () => {
+      setHover(false);
+      setPressed(false);
+    },
+    onMouseDown: () => setPressed(true),
+    onMouseUp: () => setPressed(false),
+  };
+
+  if (fx.needsInteractive) {
+    return (
+      <InteractiveFxWrapper
+        className={btnClass}
+        style={style}
+        effect={fx.effect as "magnetic" | "spotlight"}
+        intensity={fx.intensity}
+        distance={fx.distance}
+        {...handlers}
+      >
+        {inner}
+      </InteractiveFxWrapper>
+    );
+  }
+  return (
+    <div className={btnClass} style={style} {...handlers}>
+      {inner}
+    </div>
+  );
+}
+
 function ButtonGroupRender({
   block,
   reduceMotion = false,
@@ -662,51 +849,36 @@ function ButtonGroupRender({
       </div>
     );
   }
+  const gap = block.gap ?? 8;
+  const alignCls =
+    block.align === "left"
+      ? "justify-start"
+      : block.align === "right"
+        ? "justify-end"
+        : block.align === "stretch"
+          ? "justify-stretch"
+          : "justify-center";
+
   const cls =
     block.layout === "horizontal"
-      ? "flex flex-wrap gap-2"
+      ? cn("flex flex-wrap items-center", alignCls, block.stackOnMobile && "max-sm:flex-col max-sm:items-stretch")
       : block.layout === "grid"
-        ? `grid gap-2 grid-cols-${block.columns ?? 2}`
-        : "flex flex-col gap-2";
-  const fx = computeButtonFx(block.settings ?? {}, reduceMotion);
+        ? cn(
+            "grid",
+            block.columns === 3 ? "grid-cols-3" : "grid-cols-2",
+            block.stackOnMobile && "max-sm:grid-cols-1",
+          )
+        : "flex flex-col";
+
   return (
-    <div className={cls}>
-      {block.buttons.map((b) => {
-        const v =
-          b.style === "outline"
-            ? "border border-foreground/30 text-foreground"
-            : b.style === "soft"
-              ? "bg-muted text-foreground"
-              : "bg-foreground text-background";
-        const btnClass = cn(
-          "relative overflow-hidden isolate rounded-full px-4 py-2.5 text-center text-sm font-medium",
-          v,
-          block.layout === "vertical" && "w-full",
-          fx.className,
-        );
-        if (fx.needsInteractive) {
-          return (
-            <InteractiveFxWrapper
-              key={b.id}
-              className={btnClass}
-              style={fx.style}
-              effect={fx.effect as "magnetic" | "spotlight"}
-              intensity={fx.intensity}
-              distance={fx.distance}
-            >
-              {b.label}
-            </InteractiveFxWrapper>
-          );
-        }
-        return (
-          <div key={b.id} className={btnClass} style={fx.style}>
-            {b.label}
-          </div>
-        );
-      })}
+    <div className={cls} style={{ gap: `${gap}px` }}>
+      {block.buttons.map((b) => (
+        <GroupItemRender key={b.id} item={b} layout={block.layout} reduceMotion={reduceMotion} />
+      ))}
     </div>
   );
 }
+
 
 
 // ── Video ────────────────────────────────────────────────────────────────
