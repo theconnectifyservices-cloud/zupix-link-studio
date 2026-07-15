@@ -215,7 +215,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { blocks: [...content.blocks, block] },
+      content: { ...content, blocks: [...content.blocks, block] },
       selectedId: block.id,
       selectedIds: [block.id],
       saveStatus: "dirty",
@@ -229,7 +229,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     blocks.splice(i, 0, block);
     set({
       history: pushHistory(history, content),
-      content: { blocks },
+      content: { ...content, blocks },
       selectedId: block.id,
       selectedIds: [block.id],
       saveStatus: "dirty",
@@ -248,7 +248,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     blocks.splice(target, 0, item);
     set({
       history: pushHistory(history, content),
-      content: { blocks },
+      content: { ...content, blocks },
       saveStatus: "dirty",
     });
   },
@@ -260,6 +260,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       history: pushHistory(history, content),
       content: {
+        ...content,
         blocks: content.blocks.map((b) => (b.id === id ? ({ ...b, ...patch } as Block) : b)),
       },
       saveStatus: "dirty",
@@ -273,7 +274,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const nextIds = selectedIds.filter((x) => x !== id);
     set({
       history: pushHistory(history, content),
-      content: { blocks: content.blocks.filter((b) => b.id !== id) },
+      content: { ...content, blocks: content.blocks.filter((b) => b.id !== id) },
       selectedId: nextIds[nextIds.length - 1] ?? null,
       selectedIds: nextIds,
       saveStatus: "dirty",
@@ -288,7 +289,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     if (removable.size === 0) return;
     set({
       history: pushHistory(history, content),
-      content: { blocks: content.blocks.filter((b) => !removable.has(b.id)) },
+      content: { ...content, blocks: content.blocks.filter((b) => !removable.has(b.id)) },
       selectedId: null,
       selectedIds: [],
       saveStatus: "dirty",
@@ -305,7 +306,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     blocks.splice(idx + 1, 0, copy);
     set({
       history: pushHistory(history, content),
-      content: { blocks },
+      content: { ...content, blocks },
       selectedId: copy.id,
       selectedIds: [copy.id],
       saveStatus: "dirty",
@@ -327,7 +328,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const newIds = copies.map((c) => c.id);
     set({
       history: pushHistory(history, content),
-      content: { blocks },
+      content: { ...content, blocks },
       selectedIds: newIds,
       selectedId: newIds[newIds.length - 1] ?? null,
       saveStatus: "dirty",
@@ -345,7 +346,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     blocks.splice(target, 0, item);
     set({
       history: pushHistory(history, content),
-      content: { blocks },
+      content: { ...content, blocks },
       saveStatus: "dirty",
     });
   },
@@ -355,6 +356,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       history: pushHistory(history, content),
       content: {
+        ...content,
         blocks: content.blocks.map((b) =>
           b.id === id ? ({ ...b, hidden: !b.hidden } as Block) : b,
         ),
@@ -369,6 +371,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       history: pushHistory(history, content),
       content: {
+        ...content,
         blocks: content.blocks.map((b) => (ids.includes(b.id) ? ({ ...b, hidden } as Block) : b)),
       },
       saveStatus: "dirty",
@@ -380,6 +383,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       history: pushHistory(history, content),
       content: {
+        ...content,
         blocks: content.blocks.map((b) =>
           b.id === id ? ({ ...b, locked: !b.locked } as Block) : b,
         ),
@@ -393,6 +397,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       history: pushHistory(history, content),
       content: {
+        ...content,
         blocks: content.blocks.map((b) =>
           b.id === id ? ({ ...b, name: name.trim() || undefined } as Block) : b,
         ),
@@ -417,7 +422,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     set({
       clipboard: cuts.map((b) => structuredClone(b)),
       history: pushHistory(history, content),
-      content: { blocks: content.blocks.filter((b) => !cutIds.has(b.id)) },
+      content: { ...content, blocks: content.blocks.filter((b) => !cutIds.has(b.id)) },
       selectedId: null,
       selectedIds: [],
       saveStatus: "dirty",
@@ -437,7 +442,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const newIds = copies.map((c) => c.id);
     set({
       history: pushHistory(history, content),
-      content: { blocks },
+      content: { ...content, blocks },
       selectedIds: newIds,
       selectedId: newIds[newIds.length - 1] ?? null,
       saveStatus: "dirty",
