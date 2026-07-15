@@ -249,7 +249,7 @@ function LibraryDialog({
                 type="button"
                 onClick={() => onPick(a.path)}
                 className="group relative aspect-video overflow-hidden rounded-md border bg-black transition hover:ring-2 hover:ring-primary"
-                title={a.file_name}
+                title={a.file_name ?? undefined}
               >
                 {thumbs[a.id] ? (
                   <video
