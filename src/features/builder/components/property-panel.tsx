@@ -32,6 +32,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { getBlockDef } from "../block-registry";
+import { ImageField } from "./image-field";
 
 export function PropertyPanel() {
   const block = useBuilderStore(selectedBlock);
@@ -111,13 +112,15 @@ export function PropertyPanel() {
           </Field>
 
           <SectionTitle>Profile image</SectionTitle>
-          <Field label="Image URL">
-            <Input
-              value={block.avatarUrl ?? ""}
-              onChange={(e) => set("avatarUrl", e.target.value)}
-              placeholder="https://…"
-            />
-          </Field>
+          <ImageField
+            label="Avatar"
+            value={block.avatarUrl}
+            onChange={(url) => set("avatarUrl", url)}
+            circle
+            crop={{ shape: "round", aspect: 1 }}
+            pickerTitle="Choose profile picture"
+          />
+
           <Row>
             <Label className="text-xs">Object fit</Label>
             <SelectSimple
@@ -366,13 +369,15 @@ export function PropertyPanel() {
           </Field>
 
           <SectionTitle>Hero background</SectionTitle>
-          <Field label="Cover image URL (legacy top banner)">
-            <Input
-              value={block.coverUrl ?? ""}
-              onChange={(e) => set("coverUrl", e.target.value)}
-              placeholder="https://…"
-            />
-          </Field>
+          <ImageField
+            label="Cover image"
+            value={block.coverUrl}
+            onChange={(url) => set("coverUrl", url)}
+            crop={{ shape: "rect", aspect: 16 / 9 }}
+            previewAspect="16 / 9"
+            pickerTitle="Choose cover image"
+          />
+
           <Field label="Background type">
             <SelectSimple
               value={block.bgType ?? "none"}
@@ -418,14 +423,15 @@ export function PropertyPanel() {
             </>
           )}
           {block.bgType === "image" && (
-            <Field label="Image URL">
-              <Input
-                value={block.bgImageUrl ?? ""}
-                onChange={(e) => set("bgImageUrl", e.target.value)}
-                placeholder="https://…"
-              />
-            </Field>
+            <ImageField
+              label="Background image"
+              value={block.bgImageUrl}
+              onChange={(url) => set("bgImageUrl", url)}
+              crop={{ shape: "rect", aspect: "free" }}
+              previewAspect="16 / 9"
+            />
           )}
+
           {block.bgType === "video" && (
             <Field label="Video URL (mp4/webm)">
               <Input
