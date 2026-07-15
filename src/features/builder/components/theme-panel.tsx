@@ -626,9 +626,21 @@ export function ThemePanel() {
           )}
 
           {bg.kind === "video" && (
-            <div className="rounded-md border border-dashed p-3 text-center text-[11px] text-muted-foreground">
-              Video backgrounds ship in a later phase. Architecture is ready.
-            </div>
+            <>
+              <VideoSourceField
+                label="Background video"
+                value={bg.videoUrl}
+                onChange={(url) => patchBg({ videoUrl: url })}
+                background
+              />
+              <ImageField
+                label="Poster (fallback image)"
+                value={bg.posterUrl}
+                onChange={(url) => patchBg({ posterUrl: url })}
+                previewAspect="16 / 9"
+                pickerTitle="Choose poster image"
+              />
+            </>
           )}
 
           <div className="mt-2 border-t pt-3">
