@@ -8,7 +8,6 @@ import {
   listCollectionAssets,
   listFavoriteAssets,
   listRecentlyUploaded,
-  listRecentlyUsed as _u,
   listRecentlyUsedAssets,
   listRecentlyEdited,
   findDuplicates,
