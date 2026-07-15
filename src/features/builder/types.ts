@@ -59,18 +59,35 @@ export type HoverEffect =
   | "brightness"
   | "blur";
 
-/** Rich effect layered onto button-like blocks. */
+/** Rich effect layered onto button-like blocks. v2.0 library. */
 export type ButtonEffect =
   | "none"
   | "shine"
   | "ripple"
-  | "pulse"
-  | "glow"
   | "neon"
   | "floating"
+  | "pulse"
   | "bounce"
+  | "glow"
+  | "gradientFlow"
+  | "magnetic"
+  | "glass"
+  | "borderGlow"
+  | "breathing"
+  | "shake"
+  | "floatingGlow"
+  | "lift3d"
+  | "liquidFill"
+  | "rainbowBorder"
+  | "spotlight"
+  | "premiumCta"
+  // legacy — kept for backward compatibility with saved pages
   | "expand"
   | "press";
+
+/** Direction options for effects that sweep or fill. */
+export type ButtonEffectDirection = "lr" | "rl" | "tb" | "bt" | "diag";
+
 
 /** Per-viewport spacing / typography overrides. */
 export interface ResponsiveOverrides {
