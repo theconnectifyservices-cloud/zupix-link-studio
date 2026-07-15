@@ -100,6 +100,12 @@ export interface BlockSettings {
   hover?: HoverEffect;
   /** Only meaningful for button / buttonGroup blocks. */
   buttonEffect?: ButtonEffect;
+  /** Trigger mode for Shine (default: hover). */
+  buttonEffectMode?: "always" | "hover" | "click";
+  /** Animation speed in ms for continuous button effects (shine sweep, floating). */
+  buttonEffectSpeed?: number;
+  /** Accent color used by Neon (glow) and Ripple effects. */
+  buttonEffectColor?: string;
   /** Per-viewport visibility. `undefined` = shown. */
   visibility?: { desktop?: boolean; tablet?: boolean; mobile?: boolean };
   /** Per-viewport spacing / typography overrides. */

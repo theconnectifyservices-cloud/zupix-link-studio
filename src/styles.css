@@ -236,25 +236,90 @@
 @keyframes zx-pulse         { 0%,100% { transform: scale(1) } 50% { transform: scale(1.04) } }
 
 /* Button effects (position:relative + overflow:hidden required) */
-.zx-btn-fx { position: relative; overflow: hidden; isolation: isolate; }
-.zx-btn-fx-shine::after {
-  content: ""; position: absolute; top: 0; left: -60%;
-  width: 40%; height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,.55), transparent);
-  transform: skewX(-20deg); transition: left .6s;
-  pointer-events: none;
+.zx-btn-fx {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  --zx-btn-fx-dur: 1500ms;
+  --zx-btn-fx-color: var(--primary, #6366f1);
 }
-.zx-btn-fx-shine:hover::after { left: 130%; }
+
+/* ── Shine ─────────────────────────────────────────────────────────── */
+.zx-btn-fx-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  z-index: 1;
+}
+/* Hover mode (default) */
+.zx-btn-fx-shine.zx-btn-fx-mode-hover::after,
+.zx-btn-fx-shine:not(.zx-btn-fx-mode-always):not(.zx-btn-fx-mode-click)::after {
+  transition: left 0.6s ease;
+}
+.zx-btn-fx-shine.zx-btn-fx-mode-hover:hover::after,
+.zx-btn-fx-shine:not(.zx-btn-fx-mode-always):not(.zx-btn-fx-mode-click):hover::after {
+  left: 130%;
+}
+/* Always mode — continuous sweep */
+.zx-btn-fx-shine.zx-btn-fx-mode-always::after {
+  animation: zx-shine-sweep var(--zx-btn-fx-dur, 1500ms) linear infinite;
+}
+@keyframes zx-shine-sweep {
+  0% { left: -60%; }
+  100% { left: 130%; }
+}
+/* Click mode — sweep once on active */
+.zx-btn-fx-shine.zx-btn-fx-mode-click:active::after {
+  animation: zx-shine-sweep var(--zx-btn-fx-dur, 800ms) ease-out 1;
+}
+
 .zx-btn-fx-pulse { animation: zx-btn-pulse 1.6s ease-in-out infinite; }
 @keyframes zx-btn-pulse {
   0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.35) }
   50%     { box-shadow: 0 0 0 10px rgba(255,255,255,0) }
 }
 .zx-btn-fx-glow    { box-shadow: 0 0 24px -6px currentColor; }
-.zx-btn-fx-neon    { text-shadow: 0 0 6px currentColor, 0 0 14px currentColor;
-                     box-shadow: inset 0 0 0 1px currentColor, 0 0 14px -2px currentColor; }
-.zx-btn-fx-floating { animation: zx-floating 3s ease-in-out infinite; }
+
+/* ── Neon — continuous glow with pulse ────────────────────────────── */
+.zx-btn-fx-neon {
+  box-shadow:
+    inset 0 0 0 1px var(--zx-btn-fx-color),
+    0 0 8px var(--zx-btn-fx-color),
+    0 0 18px var(--zx-btn-fx-color);
+  animation: zx-neon-pulse var(--zx-btn-fx-dur, 2000ms) ease-in-out infinite;
+}
+.zx-btn-fx-neon > * {
+  text-shadow:
+    0 0 6px var(--zx-btn-fx-color),
+    0 0 14px var(--zx-btn-fx-color);
+}
+@keyframes zx-neon-pulse {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0 1px var(--zx-btn-fx-color),
+      0 0 6px var(--zx-btn-fx-color),
+      0 0 12px var(--zx-btn-fx-color);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 1px var(--zx-btn-fx-color),
+      0 0 14px var(--zx-btn-fx-color),
+      0 0 28px var(--zx-btn-fx-color);
+  }
+}
+
+/* ── Floating ─────────────────────────────────────────────────────── */
+.zx-btn-fx-floating {
+  animation: zx-floating var(--zx-btn-fx-dur, 3000ms) ease-in-out infinite;
+}
 @keyframes zx-floating { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
+
 .zx-btn-fx-bounce:hover { animation: zx-btn-bounce .5s ease; }
 @keyframes zx-btn-bounce {
   0%,100% { transform: translateY(0) }
@@ -264,13 +329,29 @@
 .zx-btn-fx-expand         { transition: transform .25s ease; }
 .zx-btn-fx-expand:hover   { transform: scale(1.04); }
 .zx-btn-fx-press:active   { transform: scale(.96); }
+
+/* ── Ripple — material-style expanding circle on click ────────────── */
 .zx-btn-fx-ripple::before {
-  content: ""; position: absolute; inset: 0;
-  background: radial-gradient(circle, rgba(255,255,255,.35) 0%, transparent 60%);
-  opacity: 0; pointer-events: none;
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--zx-btn-fx-color);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0);
 }
-.zx-btn-fx-ripple:active::before { animation: zx-ripple .5s ease-out; }
-@keyframes zx-ripple { from { opacity: .8; transform: scale(0) } to { opacity: 0; transform: scale(2) } }
+.zx-btn-fx-ripple:active::before {
+  animation: zx-ripple 0.6s ease-out;
+}
+@keyframes zx-ripple {
+  0%   { opacity: 0.55; transform: scale(0); }
+  100% { opacity: 0;    transform: scale(40); }
+}
 
 /* Background effects — applied to the preview root, which is position:relative */
 .zx-bg-noise::after {
@@ -328,7 +409,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .zx-anim,
-  .zx-btn-fx-pulse, .zx-btn-fx-floating,
+  .zx-btn-fx-pulse, .zx-btn-fx-floating, .zx-btn-fx-neon,
+  .zx-btn-fx-shine.zx-btn-fx-mode-always::after,
   .zx-hover-pulse:hover,
   .zx-avatar-rotating-ring::before, .zx-avatar-floating,
   .zx-badge-anim, .zx-bg-animated-gradient,
