@@ -39,8 +39,8 @@ export function MultiPanelWorkspace({ id, left, center, right, defaultSizes = [2
 
   return (
     <ResizablePanelGroup
-      direction="horizontal"
-      onLayout={onLayout}
+      orientation="horizontal"
+      onLayoutChange={onLayout}
       className="h-full w-full"
     >
       {showLeft && (
