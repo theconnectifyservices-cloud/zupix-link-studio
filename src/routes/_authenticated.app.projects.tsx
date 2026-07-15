@@ -81,26 +81,29 @@ function ProjectsPage() {
 
   const filtered = useMemo(() => {
     let list: BioPageRow[] = data ?? [];
-    if (status !== "all") list = list.filter((p) => p.status === status);
+    if (status !== "all") list = list.filter((p) => p?.status === status);
     if (debounced.trim()) {
       const q = debounced.trim().toLowerCase();
-      list = list.filter(
-        (p) => p.name.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q),
-      );
+      list = list.filter((p) => {
+        const name = (p?.name ?? "").toLowerCase();
+        const slug = (p?.slug ?? "").toLowerCase();
+        return name.includes(q) || slug.includes(q);
+      });
     }
     const sorted = [...list];
+    const cmp = (a?: string | null, b?: string | null) => (a ?? "").localeCompare(b ?? "");
     switch (sort) {
       case "updated":
-        sorted.sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+        sorted.sort((a, b) => cmp(b?.updated_at, a?.updated_at));
         break;
       case "created":
-        sorted.sort((a, b) => b.created_at.localeCompare(a.created_at));
+        sorted.sort((a, b) => cmp(b?.created_at, a?.created_at));
         break;
       case "oldest":
-        sorted.sort((a, b) => a.created_at.localeCompare(b.created_at));
+        sorted.sort((a, b) => cmp(a?.created_at, b?.created_at));
         break;
       case "alpha":
-        sorted.sort((a, b) => a.name.localeCompare(b.name));
+        sorted.sort((a, b) => cmp(a?.name, b?.name));
         break;
     }
     return sorted;
