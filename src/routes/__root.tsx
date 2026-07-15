@@ -177,6 +177,9 @@ function RootComponent() {
         <Outlet />
       </ErrorBoundary>
       <CommandPalette />
+      <OfflineIndicator />
+      <UpdateBanner />
+      <InstallBanner />
       <Toaster />
     </QueryClientProvider>
   );
