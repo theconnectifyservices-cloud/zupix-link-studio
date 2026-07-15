@@ -709,6 +709,41 @@ function ColorField({
     </Field>
   );
 }
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="pt-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+      {children}
+    </div>
+  );
+}
+function NamedColorField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value?: string;
+  onChange: (v: string | undefined) => void;
+}) {
+  return (
+    <Field label={label}>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          value={value || "#000000"}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-9 w-12 cursor-pointer rounded border bg-transparent"
+          aria-label={`${label} color picker`}
+        />
+        <Input
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value || undefined)}
+          placeholder="Inherit"
+        />
+      </div>
+    </Field>
+  );
+}
 
 // ── Social links editor ─────────────────────────────────────────────────
 const PLATFORMS: SocialPlatform[] = [
