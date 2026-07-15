@@ -10,6 +10,7 @@ import {
   Puzzle,
   Radar,
   Radio,
+  Zap,
   Settings,
   LifeBuoy,
   ChevronLeft,
@@ -46,6 +47,7 @@ const appItems: Item[] = [
   { icon: Globe, label: "Domains", href: "/app/domains" },
   { icon: Radar, label: "Tracking Center", href: "/app/tracking" },
   { icon: Radio, label: "Communications", href: "/app/communications" },
+  { icon: Zap, label: "Automation", href: "/app/automation" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
