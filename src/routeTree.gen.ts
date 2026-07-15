@@ -42,6 +42,7 @@ import { Route as AuthenticatedAppPartnerCommerceRouteImport } from './routes/_a
 import { Route as AuthenticatedAppOperationsRouteImport } from './routes/_authenticated.app.operations'
 import { Route as AuthenticatedAppMonetizationRouteImport } from './routes/_authenticated.app.monetization'
 import { Route as AuthenticatedAppMediaRouteImport } from './routes/_authenticated.app.media'
+import { Route as AuthenticatedAppLaunchRouteImport } from './routes/_authenticated.app.launch'
 import { Route as AuthenticatedAppIntegrationsRouteImport } from './routes/_authenticated.app.integrations'
 import { Route as AuthenticatedAppInfrastructureRouteImport } from './routes/_authenticated.app.infrastructure'
 import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated.app.help'
@@ -247,6 +248,11 @@ const AuthenticatedAppMediaRoute = AuthenticatedAppMediaRouteImport.update({
   path: '/media',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppLaunchRoute = AuthenticatedAppLaunchRouteImport.update({
+  id: '/launch',
+  path: '/launch',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppIntegrationsRoute =
   AuthenticatedAppIntegrationsRouteImport.update({
     id: '/integrations',
@@ -442,6 +448,7 @@ export interface FileRoutesByFullPath {
   '/app/help': typeof AuthenticatedAppHelpRoute
   '/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
+  '/app/launch': typeof AuthenticatedAppLaunchRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
   '/app/operations': typeof AuthenticatedAppOperationsRoute
@@ -503,6 +510,7 @@ export interface FileRoutesByTo {
   '/app/help': typeof AuthenticatedAppHelpRoute
   '/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
+  '/app/launch': typeof AuthenticatedAppLaunchRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
   '/app/operations': typeof AuthenticatedAppOperationsRoute
@@ -568,6 +576,7 @@ export interface FileRoutesById {
   '/_authenticated/app/help': typeof AuthenticatedAppHelpRoute
   '/_authenticated/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/_authenticated/app/integrations': typeof AuthenticatedAppIntegrationsRoute
+  '/_authenticated/app/launch': typeof AuthenticatedAppLaunchRoute
   '/_authenticated/app/media': typeof AuthenticatedAppMediaRoute
   '/_authenticated/app/monetization': typeof AuthenticatedAppMonetizationRoute
   '/_authenticated/app/operations': typeof AuthenticatedAppOperationsRoute
@@ -633,6 +642,7 @@ export interface FileRouteTypes {
     | '/app/help'
     | '/app/infrastructure'
     | '/app/integrations'
+    | '/app/launch'
     | '/app/media'
     | '/app/monetization'
     | '/app/operations'
@@ -694,6 +704,7 @@ export interface FileRouteTypes {
     | '/app/help'
     | '/app/infrastructure'
     | '/app/integrations'
+    | '/app/launch'
     | '/app/media'
     | '/app/monetization'
     | '/app/operations'
@@ -758,6 +769,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/help'
     | '/_authenticated/app/infrastructure'
     | '/_authenticated/app/integrations'
+    | '/_authenticated/app/launch'
     | '/_authenticated/app/media'
     | '/_authenticated/app/monetization'
     | '/_authenticated/app/operations'
@@ -1044,6 +1056,13 @@ declare module '@tanstack/react-router' {
       path: '/media'
       fullPath: '/app/media'
       preLoaderRoute: typeof AuthenticatedAppMediaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/launch': {
+      id: '/_authenticated/app/launch'
+      path: '/launch'
+      fullPath: '/app/launch'
+      preLoaderRoute: typeof AuthenticatedAppLaunchRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/integrations': {
@@ -1333,6 +1352,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppHelpRoute: typeof AuthenticatedAppHelpRoute
   AuthenticatedAppInfrastructureRoute: typeof AuthenticatedAppInfrastructureRoute
   AuthenticatedAppIntegrationsRoute: typeof AuthenticatedAppIntegrationsRoute
+  AuthenticatedAppLaunchRoute: typeof AuthenticatedAppLaunchRoute
   AuthenticatedAppMediaRoute: typeof AuthenticatedAppMediaRoute
   AuthenticatedAppMonetizationRoute: typeof AuthenticatedAppMonetizationRoute
   AuthenticatedAppOperationsRoute: typeof AuthenticatedAppOperationsRoute
@@ -1365,6 +1385,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppHelpRoute: AuthenticatedAppHelpRoute,
   AuthenticatedAppInfrastructureRoute: AuthenticatedAppInfrastructureRoute,
   AuthenticatedAppIntegrationsRoute: AuthenticatedAppIntegrationsRoute,
+  AuthenticatedAppLaunchRoute: AuthenticatedAppLaunchRoute,
   AuthenticatedAppMediaRoute: AuthenticatedAppMediaRoute,
   AuthenticatedAppMonetizationRoute: AuthenticatedAppMonetizationRoute,
   AuthenticatedAppOperationsRoute: AuthenticatedAppOperationsRoute,

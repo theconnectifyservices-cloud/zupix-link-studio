@@ -25,6 +25,7 @@ import {
   Activity,
   ClipboardCheck,
   CloudCog,
+  Award,
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
@@ -71,6 +72,7 @@ const appItems: Item[] = [
   { icon: ClipboardCheck, label: "Production QA", href: "/app/qa" },
   { icon: CloudCog, label: "Operations", href: "/app/operations" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
+  { icon: Award, label: "Launch Center", href: "/app/launch" },
 ];
 
 const bottomItems: Item[] = [
