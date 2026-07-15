@@ -409,7 +409,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .zx-anim,
-  .zx-btn-fx-pulse, .zx-btn-fx-floating,
+  .zx-btn-fx-pulse, .zx-btn-fx-floating, .zx-btn-fx-neon,
+  .zx-btn-fx-shine.zx-btn-fx-mode-always::after,
   .zx-hover-pulse:hover,
   .zx-avatar-rotating-ring::before, .zx-avatar-floating,
   .zx-badge-anim, .zx-bg-animated-gradient,
