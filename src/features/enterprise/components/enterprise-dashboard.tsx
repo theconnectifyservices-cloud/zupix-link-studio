@@ -377,7 +377,7 @@ function DepartmentsPanel({ orgId }: { orgId: string }) {
     return byParent;
   }, [depts]);
 
-  const Row = ({ id, level }: { id: string | null; level: number }): JSX.Element => (
+  const Row = ({ id, level }: { id: string | null; level: number }) => (
     <>
       {(tree.get(id) ?? []).map((d) => (
         <div key={d.id}>
