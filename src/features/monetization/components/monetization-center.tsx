@@ -340,7 +340,7 @@ function AddonsPanel({
 }) {
   const activeSet = new Set(active.filter((a) => a.status === "active").map((a) => a.addon_id));
   if (!addons.length)
-    return <EmptyState icon={ShoppingBag} title="No add-ons available" description="Administrators can publish add-ons from the catalog." />;
+    return <EmptyState icon={<ShoppingBag className="h-8 w-8" />} title="No add-ons available" description="Administrators can publish add-ons from the catalog." />;
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {addons.map((a) => {
@@ -379,7 +379,7 @@ function AddonsPanel({
 
 function CreditsPanel({ history }: { history: Array<{ id: string; created_at: string; credit_type: string; delta: number; balance_after: number; reason: string }> }) {
   if (!history.length)
-    return <EmptyState icon={Zap} title="No credit activity" description="Credit usage and grants will appear here." />;
+    return <EmptyState icon={<Zap className="h-8 w-8" />} title="No credit activity" description="Credit usage and grants will appear here." />;
   return (
     <Card>
       <CardHeader>
@@ -467,7 +467,7 @@ function FeatureFlagsPanel({
 
 function EventsPanel({ events }: { events: Array<{ id: string; created_at: string; event_type: string; from_plan: string | null; to_plan: string | null; amount_minor: number | null; currency: string | null }> }) {
   if (!events.length)
-    return <EmptyState icon={Receipt} title="No billing events yet" description="Upgrades, renewals and payment events will appear here." />;
+    return <EmptyState icon={<Receipt className="h-8 w-8" />} title="No billing events yet" description="Upgrades, renewals and payment events will appear here." />;
   return (
     <Card>
       <CardHeader>
