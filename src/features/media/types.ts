@@ -53,6 +53,121 @@ export interface MediaAsset {
   processing_status: MediaProcessingStatus;
   processing_error: string | null;
   processed_at: string | null;
+  // LS-10C organization
+  is_favorite: boolean;
+  view_count: number;
+  last_viewed_at: string | null;
+  current_version: number;
+}
+
+/* -------------------- LS-10C ORGANIZATION -------------------- */
+
+export type CollectionKind = "manual" | "smart" | "dynamic";
+
+export interface SmartRule {
+  kinds?: MediaKind[];
+  tags?: string[];
+  mimeTypes?: string[];
+  minSize?: number;
+  maxSize?: number;
+  uploadedAfter?: string; // ISO
+  uploadedBefore?: string;
+  onlyUnused?: boolean;
+  onlyFavorites?: boolean;
+  folderId?: string | null;
+  search?: string;
+}
+
+export interface MediaCollection {
+  id: string;
+  workspace_id: string;
+  name: string;
+  description: string | null;
+  kind: CollectionKind;
+  rules: SmartRule;
+  cover_asset_id: string | null;
+  is_favorite: boolean;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MediaTag {
+  id: string;
+  workspace_id: string;
+  name: string;
+  color: string;
+  is_auto: boolean;
+  usage_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BrandKit {
+  id: string;
+  workspace_id: string;
+  name: string;
+  description: string | null;
+  is_default: boolean;
+  logo_asset_id: string | null;
+  dark_logo_asset_id: string | null;
+  light_logo_asset_id: string | null;
+  favicon_asset_id: string | null;
+  social_share_asset_id: string | null;
+  colors: BrandColor[];
+  typography: BrandTypography;
+  brand_asset_ids: string[];
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BrandColor {
+  name: string;
+  value: string; // hex
+  role?: "primary" | "secondary" | "accent" | "background" | "surface" | "text" | "muted";
+}
+
+export interface BrandTypography {
+  headingFont?: string;
+  bodyFont?: string;
+  monoFont?: string;
+  scale?: number;
+}
+
+export interface AssetVersion {
+  id: string;
+  asset_id: string;
+  workspace_id: string;
+  version_number: number;
+  bucket: string;
+  path: string;
+  file_name: string | null;
+  mime_type: string | null;
+  size_bytes: number | null;
+  width: number | null;
+  height: number | null;
+  sha256: string | null;
+  notes: string | null;
+  created_by: string | null;
+  created_at: string;
+}
+
+export const TAG_COLORS = [
+  { name: "slate", cls: "bg-slate-500" },
+  { name: "red", cls: "bg-red-500" },
+  { name: "orange", cls: "bg-orange-500" },
+  { name: "amber", cls: "bg-amber-500" },
+  { name: "green", cls: "bg-green-500" },
+  { name: "teal", cls: "bg-teal-500" },
+  { name: "blue", cls: "bg-blue-500" },
+  { name: "indigo", cls: "bg-indigo-500" },
+  { name: "violet", cls: "bg-violet-500" },
+  { name: "pink", cls: "bg-pink-500" },
+] as const;
+
+export function tagColorClass(color: string): string {
+  return TAG_COLORS.find((c) => c.name === color)?.cls ?? "bg-slate-500";
 }
 
 export interface MediaFolder {

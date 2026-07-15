@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Copy, Download, Trash2, ExternalLink } from "lucide-react";
+import { Copy, Download, Trash2, ExternalLink, Star } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -16,18 +16,21 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { signedUrl, softDeleteAsset, updateAsset } from "../api";
+import { toggleAssetFavorite } from "../organization-api";
 import { compressionRatio } from "../delivery";
 import { useAssetUsages } from "../hooks";
 import { humanSize } from "../types";
 import type { MediaAsset } from "../types";
 import { MediaThumbnail } from "./media-thumbnail";
+import { VersionHistoryPanel } from "./version-history-panel";
 
 interface Props {
   asset: MediaAsset | null;
+  userId?: string;
   onClose: () => void;
 }
 
-export function MediaDetailsPanel({ asset, onClose }: Props) {
+export function MediaDetailsPanel({ asset, userId, onClose }: Props) {
   const qc = useQueryClient();
   const [fileName, setFileName] = useState("");
   const [altText, setAltText] = useState("");
@@ -96,7 +99,22 @@ export function MediaDetailsPanel({ asset, onClose }: Props) {
     <Sheet open={!!asset} onOpenChange={(o) => !o && onClose()}>
       <SheetContent className="w-full overflow-y-auto sm:max-w-md">
         <SheetHeader>
-          <SheetTitle className="truncate">{asset.file_name}</SheetTitle>
+          <div className="flex items-center gap-2">
+            <SheetTitle className="min-w-0 flex-1 truncate">{asset.file_name}</SheetTitle>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={async () => {
+                await toggleAssetFavorite(asset.id, !asset.is_favorite);
+                qc.invalidateQueries({ queryKey: ["media"] });
+              }}
+              aria-label={asset.is_favorite ? "Unfavorite" : "Favorite"}
+            >
+              <Star
+                className={`h-4 w-4 ${asset.is_favorite ? "fill-amber-400 text-amber-400" : ""}`}
+              />
+            </Button>
+          </div>
           <SheetDescription>{asset.mime_type}</SheetDescription>
         </SheetHeader>
 
@@ -275,6 +293,13 @@ export function MediaDetailsPanel({ asset, onClose }: Props) {
             </ul>
           )}
         </div>
+
+        {userId && (
+          <>
+            <Separator className="my-4" />
+            <VersionHistoryPanel asset={asset} userId={userId} />
+          </>
+        )}
       </SheetContent>
     </Sheet>
   );
