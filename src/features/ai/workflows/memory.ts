@@ -32,16 +32,14 @@ export async function saveWorkspaceMemory(
   userId: string,
   patch: Partial<Omit<WorkspaceMemory, "workspace_id" | "updated_at">>,
 ): Promise<WorkspaceMemory> {
+  const row: Record<string, unknown> = {
+    workspace_id: workspaceId,
+    updated_by: userId,
+    ...patch,
+  };
   const { data, error } = await supabase
     .from("ai_workspace_memory")
-    .upsert(
-      {
-        workspace_id: workspaceId,
-        updated_by: userId,
-        ...patch,
-      },
-      { onConflict: "workspace_id" },
-    )
+    .upsert(row as never, { onConflict: "workspace_id" })
     .select("*")
     .single();
   if (error) throw error;
