@@ -2,8 +2,12 @@ import { WorkspaceSwitcher } from "./workspace-switcher";
 import { GlobalSearch } from "./global-search";
 import { NotificationPanel } from "./notification-panel";
 import { ProfileMenu } from "./profile-menu";
-import { QuickActions } from "./quick-actions";
 import { MobileSidebarTrigger } from "./mobile-sidebar-trigger";
+import {
+  QuickActionsMenu,
+  ClipboardHistory,
+  ProductivityModeMenu,
+} from "@/features/desktop";
 
 interface TopbarProps {
   variant?: "app" | "admin";
@@ -18,10 +22,15 @@ export function Topbar({ variant = "app" }: TopbarProps) {
         <GlobalSearch />
       </div>
       <div className="ml-auto flex items-center gap-1 sm:gap-2">
-        <QuickActions />
+        <QuickActionsMenu />
+        <div className="hidden lg:flex items-center gap-1">
+          <ClipboardHistory />
+          <ProductivityModeMenu />
+        </div>
         <NotificationPanel />
         <ProfileMenu variant={variant} />
       </div>
     </header>
   );
 }
+

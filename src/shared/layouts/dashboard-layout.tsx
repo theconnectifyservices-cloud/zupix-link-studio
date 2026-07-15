@@ -2,19 +2,32 @@ import type { ReactNode } from "react";
 import { Sidebar } from "@/shared/navigation/sidebar";
 import { Topbar } from "@/shared/navigation/topbar";
 import { BottomNav } from "@/features/mobile";
+import { DesktopShortcutsHost } from "@/features/desktop";
+import { useWorkspaceLayout } from "@/features/desktop";
 
 /** Authenticated app shell for the workspace dashboard. */
 export function DashboardLayout({ children }: { children: ReactNode }) {
+  const mode = useWorkspaceLayout((s) => s.mode);
+  const focus = mode === "focus";
+  const compact = mode === "compact" || mode === "dense";
   return (
     <div className="flex min-h-dvh w-full bg-background pt-[env(safe-area-inset-top)]">
-      <Sidebar />
+      <DesktopShortcutsHost />
+      {!focus && <Sidebar />}
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar />
-        <main className="flex-1 overflow-auto px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6">
+        {!focus && <Topbar />}
+        <main
+          className={
+            compact
+              ? "flex-1 overflow-auto px-3 py-3 pb-20 sm:px-4 lg:px-5 lg:pb-3"
+              : "flex-1 overflow-auto px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6"
+          }
+        >
           {children}
         </main>
       </div>
-      <BottomNav />
+      {!focus && <BottomNav />}
     </div>
   );
 }
+
