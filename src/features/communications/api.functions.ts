@@ -19,13 +19,12 @@ import {
 
 // ---------- helpers ----------
 
-async function assertWorkspaceMember(
-  context: { supabase: ReturnType<typeof requireSupabaseAuth.middleware> extends unknown ? never : never; userId: string } & {
-    supabase: import("@supabase/supabase-js").SupabaseClient;
-    userId: string;
-  },
-  workspaceId: string,
-) {
+type AuthedContext = {
+  supabase: import("@supabase/supabase-js").SupabaseClient;
+  userId: string;
+};
+
+async function assertWorkspaceMember(context: AuthedContext, workspaceId: string) {
   const { data, error } = await context.supabase.rpc("is_workspace_member", {
     _user_id: context.userId,
     _workspace_id: workspaceId,
