@@ -50,6 +50,7 @@ const appItems: Item[] = [
   { icon: Radar, label: "Tracking Center", href: "/app/tracking" },
   { icon: Radio, label: "Communications", href: "/app/communications" },
   { icon: Zap, label: "Automation", href: "/app/automation" },
+  { icon: Sparkles, label: "ZUPIX AI", href: "/app/ai" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
