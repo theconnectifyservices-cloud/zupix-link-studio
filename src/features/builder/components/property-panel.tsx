@@ -714,13 +714,13 @@ export function PropertyPanel() {
 
       {block.type === "image" && (
         <>
-          <Field label="Image URL">
-            <Input
-              value={block.url}
-              onChange={(e) => set("url", e.target.value)}
-              placeholder="https://…"
-            />
-          </Field>
+          <ImageField
+            label="Image"
+            value={block.url}
+            onChange={(url) => set("url", url ?? "")}
+            crop={{ shape: "rect", aspect: "free" }}
+            pickerTitle="Choose image"
+          />
           <Field label="Alt text">
             <Input value={block.alt ?? ""} onChange={(e) => set("alt", e.target.value)} />
           </Field>
