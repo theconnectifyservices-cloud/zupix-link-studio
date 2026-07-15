@@ -3750,6 +3750,188 @@ export type Database = {
           },
         ]
       }
+      reseller_client_notes: {
+        Row: {
+          author_id: string | null
+          body: string
+          client_id: string
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["reseller_note_kind"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          client_id: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["reseller_note_kind"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          client_id?: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["reseller_note_kind"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reseller_client_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "reseller_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reseller_client_notes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reseller_clients: {
+        Row: {
+          activated_at: string | null
+          archived_at: string | null
+          assigned_staff_id: string | null
+          company_name: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          created_by: string | null
+          custom_domain: string | null
+          id: string
+          metadata: Json
+          plan_key: string | null
+          priority: Database["public"]["Enums"]["reseller_priority"]
+          status: Database["public"]["Enums"]["reseller_client_status"]
+          subscription_expires_at: string | null
+          support_status: Database["public"]["Enums"]["reseller_support_status"]
+          suspended_at: string | null
+          tags: string[]
+          tenant_id: string
+          trial_ends_at: string | null
+          updated_at: string
+          usage: Json
+          workspace_id: string | null
+        }
+        Insert: {
+          activated_at?: string | null
+          archived_at?: string | null
+          assigned_staff_id?: string | null
+          company_name: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          custom_domain?: string | null
+          id?: string
+          metadata?: Json
+          plan_key?: string | null
+          priority?: Database["public"]["Enums"]["reseller_priority"]
+          status?: Database["public"]["Enums"]["reseller_client_status"]
+          subscription_expires_at?: string | null
+          support_status?: Database["public"]["Enums"]["reseller_support_status"]
+          suspended_at?: string | null
+          tags?: string[]
+          tenant_id: string
+          trial_ends_at?: string | null
+          updated_at?: string
+          usage?: Json
+          workspace_id?: string | null
+        }
+        Update: {
+          activated_at?: string | null
+          archived_at?: string | null
+          assigned_staff_id?: string | null
+          company_name?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          custom_domain?: string | null
+          id?: string
+          metadata?: Json
+          plan_key?: string | null
+          priority?: Database["public"]["Enums"]["reseller_priority"]
+          status?: Database["public"]["Enums"]["reseller_client_status"]
+          subscription_expires_at?: string | null
+          support_status?: Database["public"]["Enums"]["reseller_support_status"]
+          suspended_at?: string | null
+          tags?: string[]
+          tenant_id?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+          usage?: Json
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reseller_clients_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reseller_clients_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reseller_team_members: {
+        Row: {
+          created_at: string
+          custom_role_key: string | null
+          id: string
+          role: Database["public"]["Enums"]["reseller_team_role"]
+          tenant_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          custom_role_key?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["reseller_team_role"]
+          tenant_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          custom_role_key?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["reseller_team_role"]
+          tenant_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reseller_team_members_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           id: string
@@ -4967,6 +5149,25 @@ export type Database = {
         | "failed"
         | "refunded"
         | "partially_refunded"
+      reseller_client_status:
+        | "lead"
+        | "trial"
+        | "active"
+        | "suspended"
+        | "expired"
+        | "archived"
+        | "cancelled"
+      reseller_note_kind: "internal" | "support"
+      reseller_priority: "low" | "normal" | "high" | "urgent"
+      reseller_support_status: "none" | "open" | "pending" | "resolved"
+      reseller_team_role:
+        | "owner"
+        | "admin"
+        | "sales"
+        | "support"
+        | "designer"
+        | "developer"
+        | "viewer"
       shared_resource_kind: "template" | "asset" | "component" | "prompt"
       subscription_status:
         | "trialing"
@@ -5224,6 +5425,27 @@ export const Constants = {
         "failed",
         "refunded",
         "partially_refunded",
+      ],
+      reseller_client_status: [
+        "lead",
+        "trial",
+        "active",
+        "suspended",
+        "expired",
+        "archived",
+        "cancelled",
+      ],
+      reseller_note_kind: ["internal", "support"],
+      reseller_priority: ["low", "normal", "high", "urgent"],
+      reseller_support_status: ["none", "open", "pending", "resolved"],
+      reseller_team_role: [
+        "owner",
+        "admin",
+        "sales",
+        "support",
+        "designer",
+        "developer",
+        "viewer",
       ],
       shared_resource_kind: ["template", "asset", "component", "prompt"],
       subscription_status: [
