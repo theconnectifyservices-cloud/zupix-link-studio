@@ -73,7 +73,7 @@ type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]>
 
 export function DesignStudio({ workspaceId, userId }: Props) {
   const { data: pages = [], isLoading: pagesLoading } = useBioPages(workspaceId);
-  const eligible = pages.filter((p) => p.status !== "archived" && !("deleted_at" in p));
+  const eligible = pages.filter((p) => p.status !== "archived");
   const [pageId, setPageId] = useState<string | undefined>(() => eligible[0]?.id);
   const currentId = pageId ?? eligible[0]?.id;
 
