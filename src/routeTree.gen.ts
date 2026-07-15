@@ -23,6 +23,7 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.ap
 import { Route as SlugPageRouteImport } from './routes/$slug.$page'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
+import { Route as ApiAiGenerateRouteImport } from './routes/api/ai.generate'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai.chat'
 import { Route as AuthenticatedBuilderIdRouteImport } from './routes/_authenticated.builder.$id'
 import { Route as AuthenticatedAppTrackingRouteImport } from './routes/_authenticated.app.tracking'
@@ -116,6 +117,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
 const ApiPublicTrackRoute = ApiPublicTrackRouteImport.update({
   id: '/api/public/track',
   path: '/api/public/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAiGenerateRoute = ApiAiGenerateRouteImport.update({
+  id: '/api/ai/generate',
+  path: '/api/ai/generate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAiChatRoute = ApiAiChatRouteImport.update({
@@ -290,6 +296,7 @@ export interface FileRoutesByFullPath {
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
+  '/api/ai/generate': typeof ApiAiGenerateRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
@@ -328,6 +335,7 @@ export interface FileRoutesByTo {
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
+  '/api/ai/generate': typeof ApiAiGenerateRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
@@ -370,6 +378,7 @@ export interface FileRoutesById {
   '/_authenticated/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
+  '/api/ai/generate': typeof ApiAiGenerateRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
@@ -412,6 +421,7 @@ export interface FileRouteTypes {
     | '/app/tracking'
     | '/builder/$id'
     | '/api/ai/chat'
+    | '/api/ai/generate'
     | '/api/public/track'
     | '/app/'
     | '/app/ai/$conversationId'
@@ -450,6 +460,7 @@ export interface FileRouteTypes {
     | '/app/tracking'
     | '/builder/$id'
     | '/api/ai/chat'
+    | '/api/ai/generate'
     | '/api/public/track'
     | '/app'
     | '/app/ai/$conversationId'
@@ -491,6 +502,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/tracking'
     | '/_authenticated/builder/$id'
     | '/api/ai/chat'
+    | '/api/ai/generate'
     | '/api/public/track'
     | '/_authenticated/app/'
     | '/_authenticated/app/ai/$conversationId'
@@ -515,6 +527,7 @@ export interface RootRouteChildren {
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthIndexRoute: typeof AuthIndexRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
+  ApiAiGenerateRoute: typeof ApiAiGenerateRoute
   ApiPublicTrackRoute: typeof ApiPublicTrackRoute
 }
 
@@ -616,6 +629,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/track'
       fullPath: '/api/public/track'
       preLoaderRoute: typeof ApiPublicTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ai/generate': {
+      id: '/api/ai/generate'
+      path: '/api/ai/generate'
+      fullPath: '/api/ai/generate'
+      preLoaderRoute: typeof ApiAiGenerateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ai/chat': {
@@ -917,6 +937,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthIndexRoute: AuthIndexRoute,
   ApiAiChatRoute: ApiAiChatRoute,
+  ApiAiGenerateRoute: ApiAiGenerateRoute,
   ApiPublicTrackRoute: ApiPublicTrackRoute,
 }
 export const routeTree = rootRouteImport
