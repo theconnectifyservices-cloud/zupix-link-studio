@@ -303,6 +303,19 @@ export function initTracker(pageId: string, slug: string, rootEl: HTMLElement): 
     }
   }
 
+  // Track max scroll depth
+  let maxScroll = computeScrollPct();
+  let scrollTimer: number | null = null;
+  const onScroll = () => {
+    if (scrollTimer !== null) return;
+    scrollTimer = window.setTimeout(() => {
+      scrollTimer = null;
+      const pct = computeScrollPct();
+      if (pct > maxScroll) maxScroll = pct;
+    }, 200);
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+
   // Delegated click listener
   const onClick = (ev: MouseEvent) => {
     const target = ev.target as HTMLElement | null;
@@ -325,14 +338,17 @@ export function initTracker(pageId: string, slug: string, rootEl: HTMLElement): 
         blockType,
         linkUrl: href,
         clickSource: "content",
+        scrollPct: computeScrollPct(),
       },
     });
   };
   rootEl.addEventListener("click", onClick, { capture: true });
 
   // Session-end via visibility change (best-effort)
+  let ended = false;
   const onHide = () => {
-    if (document.visibilityState !== "hidden") return;
+    if (document.visibilityState !== "hidden" || ended) return;
+    ended = true;
     const duration = Date.now() - session.startedAt;
     void send({
       envelope,
@@ -341,6 +357,11 @@ export function initTracker(pageId: string, slug: string, rootEl: HTMLElement): 
         durationMs: duration,
         pageViews: session.pageViews,
         linkClicks: session.linkClicks,
+        maxScrollPct: maxScroll,
+        exitUrl:
+          typeof window !== "undefined"
+            ? `${window.location.pathname}${window.location.search}`
+            : null,
       },
     });
   };
@@ -352,15 +373,25 @@ export function initTracker(pageId: string, slug: string, rootEl: HTMLElement): 
       session.linkClicks += 1;
       session.lastSeenAt = Date.now();
       persistSession(session);
-      void send({ envelope, event: { type: "link_click", ...opts, clickSource: opts.clickSource ?? "manual" } });
+      void send({
+        envelope,
+        event: {
+          type: "link_click",
+          ...opts,
+          clickSource: opts.clickSource ?? "manual",
+          scrollPct: computeScrollPct(),
+        },
+      });
     },
     trackQrScan: (source) => {
       void send({ envelope, event: { type: "qr_scan", qrSource: source ?? envelope.qrSource ?? undefined } });
     },
     end: () => {
       rootEl.removeEventListener("click", onClick, { capture: true } as EventListenerOptions);
+      window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onHide);
       window.removeEventListener("pagehide", onHide);
     },
   };
 }
+
