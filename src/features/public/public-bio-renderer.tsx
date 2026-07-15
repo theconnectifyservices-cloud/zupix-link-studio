@@ -73,11 +73,6 @@ export function PublicBioRenderer({
       )}
       style={themeStyle}
     >
-        `zx-vp-${viewport}`,
-        bgCls,
-      )}
-      style={themeStyle}
-    >
       <div
         className={cn("relative mx-auto flex flex-col", pageCls)}
         style={{
