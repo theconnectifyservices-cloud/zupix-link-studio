@@ -17,6 +17,7 @@ import {
   Shield,
   Sparkles,
   Users,
+  Building2,
 
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
