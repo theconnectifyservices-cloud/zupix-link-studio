@@ -1977,6 +1977,56 @@ export type Database = {
           },
         ]
       }
+      compliance_records: {
+        Row: {
+          created_at: string
+          data_retention_days: number
+          evidence: Json
+          framework: string
+          id: string
+          last_reviewed_at: string | null
+          legal_hold: boolean
+          next_review_at: string | null
+          organization_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_retention_days?: number
+          evidence?: Json
+          framework: string
+          id?: string
+          last_reviewed_at?: string | null
+          legal_hold?: boolean
+          next_review_at?: string | null
+          organization_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_retention_days?: number
+          evidence?: Json
+          framework?: string
+          id?: string
+          last_reviewed_at?: string | null
+          legal_hold?: boolean
+          next_review_at?: string | null
+          organization_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compliance_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connected_accounts: {
         Row: {
           avatar_url: string | null
@@ -2150,6 +2200,92 @@ export type Database = {
           },
         ]
       }
+      department_members: {
+        Row: {
+          created_at: string
+          department_id: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department_id: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "department_members_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      departments: {
+        Row: {
+          created_at: string
+          description: string | null
+          head_user_id: string | null
+          id: string
+          name: string
+          organization_id: string
+          parent_id: string | null
+          settings: Json
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          head_user_id?: string | null
+          id?: string
+          name: string
+          organization_id: string
+          parent_id?: string | null
+          settings?: Json
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          head_user_id?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+          parent_id?: string | null
+          settings?: Json
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "departments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "departments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       domains: {
         Row: {
           created_at: string
@@ -2257,6 +2393,68 @@ export type Database = {
           },
         ]
       }
+      governance_policies: {
+        Row: {
+          allowed_domains: string[]
+          api_access_enabled: boolean
+          api_ip_allowlist: string[]
+          created_at: string
+          id: string
+          mfa_required: boolean
+          organization_id: string
+          password_min_length: number
+          password_require_numbers: boolean
+          password_require_symbols: boolean
+          publishing_requires_approval: boolean
+          session_timeout_minutes: number
+          updated_at: string
+          updated_by: string | null
+          workspace_creation_role: string
+        }
+        Insert: {
+          allowed_domains?: string[]
+          api_access_enabled?: boolean
+          api_ip_allowlist?: string[]
+          created_at?: string
+          id?: string
+          mfa_required?: boolean
+          organization_id: string
+          password_min_length?: number
+          password_require_numbers?: boolean
+          password_require_symbols?: boolean
+          publishing_requires_approval?: boolean
+          session_timeout_minutes?: number
+          updated_at?: string
+          updated_by?: string | null
+          workspace_creation_role?: string
+        }
+        Update: {
+          allowed_domains?: string[]
+          api_access_enabled?: boolean
+          api_ip_allowlist?: string[]
+          created_at?: string
+          id?: string
+          mfa_required?: boolean
+          organization_id?: string
+          password_min_length?: number
+          password_require_numbers?: boolean
+          password_require_symbols?: boolean
+          publishing_requires_approval?: boolean
+          session_timeout_minutes?: number
+          updated_at?: string
+          updated_by?: string | null
+          workspace_creation_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "governance_policies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invitations: {
         Row: {
           accepted_at: string | null
@@ -2310,6 +2508,107 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      license_seats: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          assignee_type: string
+          id: string
+          license_id: string
+          user_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          assignee_type: string
+          id?: string
+          license_id: string
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          assignee_type?: string
+          id?: string
+          license_id?: string
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "license_seats_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "licenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_seats_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      licenses: {
+        Row: {
+          auto_renew: boolean
+          created_at: string
+          expires_at: string | null
+          id: string
+          metadata: Json
+          name: string
+          organization_id: string
+          seat_type: string
+          starts_at: string
+          status: string
+          tier: string
+          total_seats: number
+          updated_at: string
+        }
+        Insert: {
+          auto_renew?: boolean
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json
+          name: string
+          organization_id: string
+          seat_type?: string
+          starts_at?: string
+          status?: string
+          tier?: string
+          total_seats?: number
+          updated_at?: string
+        }
+        Update: {
+          auto_renew?: boolean
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json
+          name?: string
+          organization_id?: string
+          seat_type?: string
+          starts_at?: string
+          status?: string
+          tier?: string
+          total_seats?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licenses_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -2961,8 +3260,11 @@ export type Database = {
       }
       organizations: {
         Row: {
+          archived_at: string | null
+          branding: Json
           created_at: string
           deleted_at: string | null
+          description: string | null
           id: string
           logo_url: string | null
           name: string
@@ -2973,8 +3275,11 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          archived_at?: string | null
+          branding?: Json
           created_at?: string
           deleted_at?: string | null
+          description?: string | null
           id?: string
           logo_url?: string | null
           name: string
@@ -2985,8 +3290,11 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          archived_at?: string | null
+          branding?: Json
           created_at?: string
           deleted_at?: string | null
+          description?: string | null
           id?: string
           logo_url?: string | null
           name?: string
@@ -3804,6 +4112,7 @@ export type Database = {
           brand_name: string | null
           created_at: string
           deleted_at: string | null
+          department_id: string | null
           description: string | null
           favicon_url: string | null
           id: string
@@ -3825,6 +4134,7 @@ export type Database = {
           brand_name?: string | null
           created_at?: string
           deleted_at?: string | null
+          department_id?: string | null
           description?: string | null
           favicon_url?: string | null
           id?: string
@@ -3846,6 +4156,7 @@ export type Database = {
           brand_name?: string | null
           created_at?: string
           deleted_at?: string | null
+          department_id?: string | null
           description?: string | null
           favicon_url?: string | null
           id?: string
@@ -3899,6 +4210,10 @@ export type Database = {
       }
       is_agency_admin: {
         Args: { _agency_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_org_admin: {
+        Args: { _org_id: string; _user_id: string }
         Returns: boolean
       }
       is_org_member: {
