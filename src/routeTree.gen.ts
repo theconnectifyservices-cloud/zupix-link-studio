@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth.index'
+import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
@@ -28,6 +29,7 @@ import { Route as ApiAiChatRouteImport } from './routes/api/ai.chat'
 import { Route as AuthenticatedBuilderIdRouteImport } from './routes/_authenticated.builder.$id'
 import { Route as AuthenticatedAppTrackingRouteImport } from './routes/_authenticated.app.tracking'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated.app.templates'
+import { Route as AuthenticatedAppTeamRouteImport } from './routes/_authenticated.app.team'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated.app.settings'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
 import { Route as AuthenticatedAppMediaRouteImport } from './routes/_authenticated.app.media'
@@ -83,6 +85,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/auth/',
   path: '/auth/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
@@ -152,6 +159,11 @@ const AuthenticatedAppTemplatesRoute =
     path: '/templates',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppTeamRoute = AuthenticatedAppTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppSettingsRoute =
   AuthenticatedAppSettingsRouteImport.update({
     id: '/settings',
@@ -320,6 +332,7 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
   '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
@@ -334,6 +347,7 @@ export interface FileRoutesByFullPath {
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
+  '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
@@ -366,6 +380,7 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/auth': typeof AuthIndexRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
@@ -379,6 +394,7 @@ export interface FileRoutesByTo {
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
+  '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
@@ -414,6 +430,7 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
   '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
@@ -428,6 +445,7 @@ export interface FileRoutesById {
   '/_authenticated/app/media': typeof AuthenticatedAppMediaRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
+  '/_authenticated/app/team': typeof AuthenticatedAppTeamRoute
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
@@ -463,6 +481,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
+    | '/invite/$token'
     | '/auth/'
     | '/app/ai'
     | '/app/analytics'
@@ -477,6 +496,7 @@ export interface FileRouteTypes {
     | '/app/media'
     | '/app/projects'
     | '/app/settings'
+    | '/app/team'
     | '/app/templates'
     | '/app/tracking'
     | '/builder/$id'
@@ -509,6 +529,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
+    | '/invite/$token'
     | '/auth'
     | '/app/analytics'
     | '/app/automation'
@@ -522,6 +543,7 @@ export interface FileRouteTypes {
     | '/app/media'
     | '/app/projects'
     | '/app/settings'
+    | '/app/team'
     | '/app/templates'
     | '/app/tracking'
     | '/builder/$id'
@@ -556,6 +578,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
+    | '/invite/$token'
     | '/auth/'
     | '/_authenticated/app/ai'
     | '/_authenticated/app/analytics'
@@ -570,6 +593,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/media'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/settings'
+    | '/_authenticated/app/team'
     | '/_authenticated/app/templates'
     | '/_authenticated/app/tracking'
     | '/_authenticated/builder/$id'
@@ -602,6 +626,7 @@ export interface RootRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  InviteTokenRoute: typeof InviteTokenRoute
   AuthIndexRoute: typeof AuthIndexRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAiGenerateRoute: typeof ApiAiGenerateRoute
@@ -651,6 +676,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/reset-password': {
@@ -742,6 +774,13 @@ declare module '@tanstack/react-router' {
       path: '/templates'
       fullPath: '/app/templates'
       preLoaderRoute: typeof AuthenticatedAppTemplatesRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/team': {
+      id: '/_authenticated/app/team'
+      path: '/team'
+      fullPath: '/app/team'
+      preLoaderRoute: typeof AuthenticatedAppTeamRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/settings': {
@@ -1013,6 +1052,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppMediaRoute: typeof AuthenticatedAppMediaRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRouteWithChildren
+  AuthenticatedAppTeamRoute: typeof AuthenticatedAppTeamRoute
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppTrackingRoute: typeof AuthenticatedAppTrackingRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
@@ -1032,6 +1072,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppMediaRoute: AuthenticatedAppMediaRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRouteWithChildren,
+  AuthenticatedAppTeamRoute: AuthenticatedAppTeamRoute,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppTrackingRoute: AuthenticatedAppTrackingRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
@@ -1065,6 +1106,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
+  InviteTokenRoute: InviteTokenRoute,
   AuthIndexRoute: AuthIndexRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAiGenerateRoute: ApiAiGenerateRoute,

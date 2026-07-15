@@ -2767,6 +2767,50 @@ export type Database = {
         }
         Relationships: []
       }
+      ownership_transfers: {
+        Row: {
+          accepted_at: string | null
+          canceled_at: string | null
+          created_at: string
+          expires_at: string
+          from_user_id: string
+          id: string
+          status: string
+          to_user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          canceled_at?: string | null
+          created_at?: string
+          expires_at?: string
+          from_user_id: string
+          id?: string
+          status?: string
+          to_user_id: string
+          workspace_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          canceled_at?: string | null
+          created_at?: string
+          expires_at?: string
+          from_user_id?: string
+          id?: string
+          status?: string
+          to_user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ownership_transfers_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       permissions: {
         Row: {
           category: string
@@ -2812,6 +2856,7 @@ export type Database = {
           timezone: string | null
           updated_at: string
           username: string | null
+          workspace_last_active: Json
         }
         Insert: {
           account_type?: Database["public"]["Enums"]["account_type"] | null
@@ -2836,6 +2881,7 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           username?: string | null
+          workspace_last_active?: Json
         }
         Update: {
           account_type?: Database["public"]["Enums"]["account_type"] | null
@@ -2860,6 +2906,7 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           username?: string | null
+          workspace_last_active?: Json
         }
         Relationships: []
       }
@@ -3342,31 +3389,131 @@ export type Database = {
           },
         ]
       }
+      workspace_custom_roles: {
+        Row: {
+          base_role: Database["public"]["Enums"]["workspace_role"]
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_system: boolean
+          key: string
+          name: string
+          permissions: string[]
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          base_role?: Database["public"]["Enums"]["workspace_role"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean
+          key: string
+          name: string
+          permissions?: string[]
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          base_role?: Database["public"]["Enums"]["workspace_role"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean
+          key?: string
+          name?: string
+          permissions?: string[]
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_custom_roles_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workspace_members: {
         Row: {
           created_at: string
+          custom_role_key: string | null
           id: string
+          invited_by: string | null
+          joined_at: string
           role: Database["public"]["Enums"]["workspace_role"]
+          status: string
+          suspended_at: string | null
           user_id: string
           workspace_id: string
         }
         Insert: {
           created_at?: string
+          custom_role_key?: string | null
           id?: string
+          invited_by?: string | null
+          joined_at?: string
           role?: Database["public"]["Enums"]["workspace_role"]
+          status?: string
+          suspended_at?: string | null
           user_id: string
           workspace_id: string
         }
         Update: {
           created_at?: string
+          custom_role_key?: string | null
           id?: string
+          invited_by?: string | null
+          joined_at?: string
           role?: Database["public"]["Enums"]["workspace_role"]
+          status?: string
+          suspended_at?: string | null
           user_id?: string
           workspace_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "workspace_members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_role_permissions: {
+        Row: {
+          created_at: string
+          granted: boolean
+          id: string
+          permission_key: string
+          role_key: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted?: boolean
+          id?: string
+          permission_key: string
+          role_key: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          granted?: boolean
+          id?: string
+          permission_key?: string
+          role_key?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_role_permissions_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -3393,6 +3540,7 @@ export type Database = {
           tracking_settings: Json
           trash_retention_days: number
           updated_at: string
+          workspace_type: Database["public"]["Enums"]["workspace_type"]
         }
         Insert: {
           brand_name?: string | null
@@ -3412,6 +3560,7 @@ export type Database = {
           tracking_settings?: Json
           trash_retention_days?: number
           updated_at?: string
+          workspace_type?: Database["public"]["Enums"]["workspace_type"]
         }
         Update: {
           brand_name?: string | null
@@ -3431,6 +3580,7 @@ export type Database = {
           tracking_settings?: Json
           trash_retention_days?: number
           updated_at?: string
+          workspace_type?: Database["public"]["Enums"]["workspace_type"]
         }
         Relationships: [
           {
@@ -3455,6 +3605,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_workspace_permission: {
+        Args: { _permission: string; _user_id: string; _workspace_id: string }
+        Returns: boolean
+      }
       is_org_member: {
         Args: { _org_id: string; _user_id: string }
         Returns: boolean
@@ -3472,6 +3626,10 @@ export type Database = {
       org_role_of: {
         Args: { _org_id: string; _user_id: string }
         Returns: Database["public"]["Enums"]["org_role"]
+      }
+      workspace_permissions_of: {
+        Args: { _user_id: string; _workspace_id: string }
+        Returns: string[]
       }
       workspace_role_of: {
         Args: { _user_id: string; _workspace_id: string }
@@ -3505,6 +3663,11 @@ export type Database = {
         | "invitation.send"
         | "invitation.accept"
         | "settings.update"
+        | "workspace.role_change"
+        | "workspace.transfer"
+        | "workspace.member_suspend"
+        | "workspace.member_reinstate"
+        | "workspace.type_change"
       analytics_device_type: "mobile" | "tablet" | "desktop" | "bot" | "unknown"
       analytics_event_type:
         | "page_view"
@@ -3575,6 +3738,7 @@ export type Database = {
         | "expired"
         | "incomplete"
       workspace_role: "owner" | "admin" | "member"
+      workspace_type: "personal" | "business" | "agency" | "enterprise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -3728,6 +3892,11 @@ export const Constants = {
         "invitation.send",
         "invitation.accept",
         "settings.update",
+        "workspace.role_change",
+        "workspace.transfer",
+        "workspace.member_suspend",
+        "workspace.member_reinstate",
+        "workspace.type_change",
       ],
       analytics_device_type: ["mobile", "tablet", "desktop", "bot", "unknown"],
       analytics_event_type: [
@@ -3807,6 +3976,7 @@ export const Constants = {
         "incomplete",
       ],
       workspace_role: ["owner", "admin", "member"],
+      workspace_type: ["personal", "business", "agency", "enterprise"],
     },
   },
 } as const

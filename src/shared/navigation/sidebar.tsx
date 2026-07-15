@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   Shield,
   Sparkles,
+  Users,
 
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
@@ -51,6 +52,7 @@ const appItems: Item[] = [
   { icon: Radio, label: "Communications", href: "/app/communications" },
   { icon: Zap, label: "Automation", href: "/app/automation" },
   { icon: Sparkles, label: "ZUPIX AI", href: "/app/ai" },
+  { icon: Users, label: "Workspace", href: "/app/team" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
