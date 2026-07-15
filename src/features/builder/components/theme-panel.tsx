@@ -565,13 +565,17 @@ export function ThemePanel() {
                   </SelectContent>
                 </Select>
               </Field>
-              <AdvancedUrl
-                label="Image URL (advanced)"
-                value={bg.imageUrl ?? ""}
-                onChange={(v) => patchBg({ imageUrl: v || undefined })}
-              />
-            </>
-          )}
+              <details className="rounded-md border p-2">
+                <summary className="cursor-pointer text-[11px] text-muted-foreground">
+                  Image URL (advanced)
+                </summary>
+                <Input
+                  className="mt-2 h-8 text-xs"
+                  value={bg.imageUrl ?? ""}
+                  onChange={(e) => patchBg({ imageUrl: e.target.value || undefined })}
+                  placeholder="https://…"
+                />
+              </details>
 
           {bg.kind === "pattern" && (
             <div>
