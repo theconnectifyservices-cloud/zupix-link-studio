@@ -43,6 +43,7 @@ const appItems: Item[] = [
   { icon: Target, label: "Conversions", href: "/app/conversions" },
   { icon: Megaphone, label: "Campaigns", href: "/app/campaigns" },
   { icon: Globe, label: "Domains", href: "/app/domains" },
+  { icon: Radar, label: "Tracking Center", href: "/app/tracking" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
