@@ -30,8 +30,7 @@ import { useMediaAssets } from "../hooks";
 import { uploadAsset, signedUrl } from "../api";
 import { MediaThumbnail } from "./media-thumbnail";
 import type { MediaAsset } from "../types";
-import { useWorkspaceStore } from "@/stores/workspace.store";
-import { useAuthStore } from "@/stores/auth.store";
+import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
 
 const LONG_TTL = 60 * 60 * 24 * 365; // 1 year
 
@@ -53,8 +52,8 @@ export function MediaPicker({
   title = "Select image",
   crop,
 }: MediaPickerProps) {
-  const workspaceId = useWorkspaceStore((s) => s.current?.id);
-  const user = useAuthStore((s) => s.user);
+  const { workspace, userId } = useCurrentWorkspace();
+  const workspaceId = workspace?.id;
 
   const [tab, setTab] = useState<"library" | "upload" | "url">("library");
   const [search, setSearch] = useState("");
@@ -93,7 +92,7 @@ export function MediaPicker({
 
   const handleFile = useCallback(
     async (file: File) => {
-      if (!workspaceId || !user) {
+      if (!workspaceId || !userId) {
         toast.error("Workspace not ready");
         return;
       }
@@ -106,7 +105,7 @@ export function MediaPicker({
         const asset = await uploadAsset({
           file,
           workspaceId,
-          userId: user.id,
+          userId,
           folderId: null,
         });
         const url = await signedUrl(asset.path, LONG_TTL);
@@ -118,7 +117,7 @@ export function MediaPicker({
         setBusy(false);
       }
     },
-    [workspaceId, user],
+    [workspaceId, userId],
   );
 
   const confirm = useCallback(
@@ -144,12 +143,12 @@ export function MediaPicker({
             onDone={confirm}
             onSkip={() => confirm(pending.url)}
             uploadCropped={async (blob) => {
-              if (!workspaceId || !user) return pending.url;
+              if (!workspaceId || !userId) return pending.url;
               const file = new File([blob], `crop-${Date.now()}.webp`, { type: "image/webp" });
               const asset = await uploadAsset({
                 file,
                 workspaceId,
-                userId: user.id,
+                userId,
                 folderId: null,
               });
               return signedUrl(asset.path, LONG_TTL);
