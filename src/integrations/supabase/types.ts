@@ -5869,6 +5869,15 @@ export type Database = {
         }
       }
       get_public_tracking: { Args: { _workspace_id: string }; Returns: Json }
+      has_pending_workspace_invitation: {
+        Args: {
+          _custom_role_key: string
+          _role: Database["public"]["Enums"]["workspace_role"]
+          _user_id: string
+          _workspace_id: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -5913,6 +5922,10 @@ export type Database = {
       org_role_of: {
         Args: { _org_id: string; _user_id: string }
         Returns: Database["public"]["Enums"]["org_role"]
+      }
+      user_owns_workspace: {
+        Args: { _user_id: string; _workspace_id: string }
+        Returns: boolean
       }
       workspace_get_limit: {
         Args: { _metric_key: string; _workspace_id: string }
