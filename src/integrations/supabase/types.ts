@@ -3927,6 +3927,208 @@ export type Database = {
           },
         ]
       }
+      tenant_domains: {
+        Row: {
+          created_at: string
+          custom_login_url: string | null
+          host: string
+          id: string
+          is_primary: boolean
+          kind: Database["public"]["Enums"]["tenant_domain_kind"]
+          last_checked_at: string | null
+          status: Database["public"]["Enums"]["tenant_domain_status"]
+          tenant_id: string
+          updated_at: string
+          verification_token: string
+        }
+        Insert: {
+          created_at?: string
+          custom_login_url?: string | null
+          host: string
+          id?: string
+          is_primary?: boolean
+          kind?: Database["public"]["Enums"]["tenant_domain_kind"]
+          last_checked_at?: string | null
+          status?: Database["public"]["Enums"]["tenant_domain_status"]
+          tenant_id: string
+          updated_at?: string
+          verification_token?: string
+        }
+        Update: {
+          created_at?: string
+          custom_login_url?: string | null
+          host?: string
+          id?: string
+          is_primary?: boolean
+          kind?: Database["public"]["Enums"]["tenant_domain_kind"]
+          last_checked_at?: string | null
+          status?: Database["public"]["Enums"]["tenant_domain_status"]
+          tenant_id?: string
+          updated_at?: string
+          verification_token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_domains_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_members: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["tenant_member_role"]
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["tenant_member_role"]
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["tenant_member_role"]
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_members_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          ai_credit_limit: number
+          archived_at: string | null
+          billing_settings: Json
+          brand_kit: Json
+          company_name: string
+          created_at: string
+          email_footer_html: string | null
+          email_logo_url: string | null
+          email_reply_to: string | null
+          email_sender_email: string | null
+          email_sender_name: string | null
+          email_signature: string | null
+          favicon_url: string | null
+          feature_flags: Json
+          forgot_enabled: boolean
+          hide_default_branding: boolean
+          hide_developer_links: boolean
+          hide_powered_by: boolean
+          hide_zupix_logo: boolean
+          id: string
+          loading_screen: Json
+          login_background_url: string | null
+          login_footer_html: string | null
+          login_headline: string | null
+          login_subheadline: string | null
+          logo_dark_url: string | null
+          logo_url: string | null
+          owner_id: string
+          primary_color: string | null
+          register_enabled: boolean
+          secondary_color: string | null
+          slug: string
+          status: Database["public"]["Enums"]["tenant_status"]
+          storage_limit_mb: number
+          typography: Json
+          updated_at: string
+          workspace_limit: number
+        }
+        Insert: {
+          ai_credit_limit?: number
+          archived_at?: string | null
+          billing_settings?: Json
+          brand_kit?: Json
+          company_name: string
+          created_at?: string
+          email_footer_html?: string | null
+          email_logo_url?: string | null
+          email_reply_to?: string | null
+          email_sender_email?: string | null
+          email_sender_name?: string | null
+          email_signature?: string | null
+          favicon_url?: string | null
+          feature_flags?: Json
+          forgot_enabled?: boolean
+          hide_default_branding?: boolean
+          hide_developer_links?: boolean
+          hide_powered_by?: boolean
+          hide_zupix_logo?: boolean
+          id?: string
+          loading_screen?: Json
+          login_background_url?: string | null
+          login_footer_html?: string | null
+          login_headline?: string | null
+          login_subheadline?: string | null
+          logo_dark_url?: string | null
+          logo_url?: string | null
+          owner_id: string
+          primary_color?: string | null
+          register_enabled?: boolean
+          secondary_color?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["tenant_status"]
+          storage_limit_mb?: number
+          typography?: Json
+          updated_at?: string
+          workspace_limit?: number
+        }
+        Update: {
+          ai_credit_limit?: number
+          archived_at?: string | null
+          billing_settings?: Json
+          brand_kit?: Json
+          company_name?: string
+          created_at?: string
+          email_footer_html?: string | null
+          email_logo_url?: string | null
+          email_reply_to?: string | null
+          email_sender_email?: string | null
+          email_sender_name?: string | null
+          email_signature?: string | null
+          favicon_url?: string | null
+          feature_flags?: Json
+          forgot_enabled?: boolean
+          hide_default_branding?: boolean
+          hide_developer_links?: boolean
+          hide_powered_by?: boolean
+          hide_zupix_logo?: boolean
+          id?: string
+          loading_screen?: Json
+          login_background_url?: string | null
+          login_footer_html?: string | null
+          login_headline?: string | null
+          login_subheadline?: string | null
+          logo_dark_url?: string | null
+          logo_url?: string | null
+          owner_id?: string
+          primary_color?: string | null
+          register_enabled?: boolean
+          secondary_color?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["tenant_status"]
+          storage_limit_mb?: number
+          typography?: Json
+          updated_at?: string
+          workspace_limit?: number
+        }
+        Relationships: []
+      }
       trial_extensions: {
         Row: {
           created_at: string
@@ -4617,6 +4819,14 @@ export type Database = {
         Returns: boolean
       }
       is_reserved_username: { Args: { _username: string }; Returns: boolean }
+      is_tenant_admin: {
+        Args: { _tenant_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_tenant_member: {
+        Args: { _tenant_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_workspace_admin: {
         Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
@@ -4766,6 +4976,10 @@ export type Database = {
         | "paused"
         | "expired"
         | "incomplete"
+      tenant_domain_kind: "primary" | "portal" | "login" | "other"
+      tenant_domain_status: "pending" | "verified" | "failed"
+      tenant_member_role: "owner" | "admin"
+      tenant_status: "active" | "suspended" | "archived"
       workspace_role: "owner" | "admin" | "member"
       workspace_type: "personal" | "business" | "agency" | "enterprise"
     }
@@ -5021,6 +5235,10 @@ export const Constants = {
         "expired",
         "incomplete",
       ],
+      tenant_domain_kind: ["primary", "portal", "login", "other"],
+      tenant_domain_status: ["pending", "verified", "failed"],
+      tenant_member_role: ["owner", "admin"],
+      tenant_status: ["active", "suspended", "archived"],
       workspace_role: ["owner", "admin", "member"],
       workspace_type: ["personal", "business", "agency", "enterprise"],
     },
