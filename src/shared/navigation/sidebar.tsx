@@ -22,7 +22,7 @@ import {
   Paintbrush,
   Briefcase,
   Server,
-
+  Activity,
 
 
 } from "lucide-react";
@@ -66,6 +66,7 @@ const appItems: Item[] = [
   { icon: Paintbrush, label: "White Label", href: "/app/white-label" },
   { icon: Briefcase, label: "Reseller", href: "/app/reseller" },
   { icon: Server, label: "Infrastructure", href: "/app/infrastructure" },
+  { icon: Activity, label: "Performance", href: "/app/performance" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
