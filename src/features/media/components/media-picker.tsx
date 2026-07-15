@@ -30,8 +30,7 @@ import { useMediaAssets } from "../hooks";
 import { uploadAsset, signedUrl } from "../api";
 import { MediaThumbnail } from "./media-thumbnail";
 import type { MediaAsset } from "../types";
-import { useWorkspaceStore } from "@/stores/workspace.store";
-import { useAuthStore } from "@/stores/auth.store";
+import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
 
 const LONG_TTL = 60 * 60 * 24 * 365; // 1 year
 
