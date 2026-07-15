@@ -168,6 +168,8 @@ export type ButtonWidth = "full" | "auto" | "half";
 export type ButtonAlign = "left" | "center" | "right";
 export type ButtonStyle = "filled" | "outline" | "soft";
 
+export type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
+
 export interface ButtonBlock extends BaseBlock {
   type: "button";
   label: string;
@@ -178,6 +180,24 @@ export interface ButtonBlock extends BaseBlock {
   style: ButtonStyle;
   width?: ButtonWidth;
   align?: ButtonAlign;
+  /** Typography overrides */
+  fontFamily?: string;
+  fontSizePx?: number;
+  fontWeight?: FontWeight;
+  letterSpacing?: number; // px
+  lineHeight?: number; // unitless
+  textTransform?: TextTransform;
+  textAlign?: TextAlign;
+  /** Color overrides — Normal state */
+  textColor?: string;
+  bgColor?: string;
+  borderColor?: string;
+  /** Color overrides — Hover state */
+  hoverTextColor?: string;
+  hoverBgColor?: string;
+  hoverBorderColor?: string;
+  /** Auto-contrast text color from bg. Default true. */
+  autoContrast?: boolean;
 }
 
 export type ImageFit = "cover" | "contain";

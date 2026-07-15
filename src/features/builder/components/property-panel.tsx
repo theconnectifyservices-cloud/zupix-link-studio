@@ -228,6 +228,119 @@ export function PropertyPanel() {
             <Label className="text-xs">Disabled</Label>
             <Switch checked={!!block.disabled} onCheckedChange={(v) => set("disabled", v)} />
           </Row>
+
+          <SectionTitle>Typography</SectionTitle>
+          <Field label="Font family">
+            <Input
+              value={block.fontFamily ?? ""}
+              onChange={(e) => set("fontFamily", e.target.value || undefined)}
+              placeholder="Inherit theme"
+            />
+          </Field>
+          <Field label="Font size (px)">
+            <Input
+              type="number"
+              min={8}
+              max={72}
+              value={block.fontSizePx ?? ""}
+              onChange={(e) =>
+                set("fontSizePx", e.target.value ? Number(e.target.value) : undefined)
+              }
+              placeholder="Inherit"
+            />
+          </Field>
+          <FontWeightField
+            value={block.fontWeight ?? "medium"}
+            onChange={(v) => set("fontWeight", v)}
+          />
+          <Field label="Letter spacing (px)">
+            <Input
+              type="number"
+              step="0.1"
+              value={block.letterSpacing ?? ""}
+              onChange={(e) =>
+                set("letterSpacing", e.target.value ? Number(e.target.value) : undefined)
+              }
+              placeholder="0"
+            />
+          </Field>
+          <Field label="Line height">
+            <Input
+              type="number"
+              step="0.1"
+              min={0.8}
+              max={3}
+              value={block.lineHeight ?? ""}
+              onChange={(e) =>
+                set("lineHeight", e.target.value ? Number(e.target.value) : undefined)
+              }
+              placeholder="Auto"
+            />
+          </Field>
+          <Field label="Text transform">
+            <SelectSimple
+              value={block.textTransform ?? "none"}
+              onChange={(v) => set("textTransform", v)}
+              options={[
+                ["none", "None"],
+                ["uppercase", "UPPERCASE"],
+                ["lowercase", "lowercase"],
+                ["capitalize", "Capitalize"],
+              ]}
+            />
+          </Field>
+          <Field label="Text alignment">
+            <SelectSimple
+              value={block.textAlign ?? "center"}
+              onChange={(v) => set("textAlign", v)}
+              options={[
+                ["left", "Left"],
+                ["center", "Center"],
+                ["right", "Right"],
+              ]}
+            />
+          </Field>
+
+          <SectionTitle>Colors — Normal</SectionTitle>
+          <NamedColorField
+            label="Background"
+            value={block.bgColor}
+            onChange={(v) => set("bgColor", v)}
+          />
+          <NamedColorField
+            label="Text"
+            value={block.textColor}
+            onChange={(v) => set("textColor", v)}
+          />
+          <NamedColorField
+            label="Border"
+            value={block.borderColor}
+            onChange={(v) => set("borderColor", v)}
+          />
+          <Row>
+            <Label className="text-xs">Auto contrast text</Label>
+            <Switch
+              checked={block.autoContrast !== false}
+              onCheckedChange={(v) => set("autoContrast", v)}
+            />
+          </Row>
+
+          <SectionTitle>Colors — Hover</SectionTitle>
+          <NamedColorField
+            label="Background"
+            value={block.hoverBgColor}
+            onChange={(v) => set("hoverBgColor", v)}
+          />
+          <NamedColorField
+            label="Text"
+            value={block.hoverTextColor}
+            onChange={(v) => set("hoverTextColor", v)}
+          />
+          <NamedColorField
+            label="Border"
+            value={block.hoverBorderColor}
+            onChange={(v) => set("hoverBorderColor", v)}
+          />
         </>
       )}
 
@@ -586,6 +699,41 @@ function ColorField({
           onChange={(e) => onChange(e.target.value)}
           className="h-9 w-12 cursor-pointer rounded border bg-transparent"
           aria-label="Color picker"
+        />
+        <Input
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value || undefined)}
+          placeholder="Inherit"
+        />
+      </div>
+    </Field>
+  );
+}
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="pt-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+      {children}
+    </div>
+  );
+}
+function NamedColorField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value?: string;
+  onChange: (v: string | undefined) => void;
+}) {
+  return (
+    <Field label={label}>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          value={value || "#000000"}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-9 w-12 cursor-pointer rounded border bg-transparent"
+          aria-label={`${label} color picker`}
         />
         <Input
           value={value ?? ""}
