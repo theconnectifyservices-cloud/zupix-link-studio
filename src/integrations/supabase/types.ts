@@ -4113,45 +4113,132 @@ export type Database = {
         Row: {
           created_at: string
           custom_login_url: string | null
+          dns_records: Json
+          health: Json
           host: string
+          http_redirect_ok: boolean
           id: string
           is_primary: boolean
+          is_wildcard: boolean
           kind: Database["public"]["Enums"]["tenant_domain_kind"]
           last_checked_at: string | null
+          notes: string | null
+          propagation_status: string
+          ssl_expires_at: string | null
+          ssl_issuer: string | null
+          ssl_last_error: string | null
+          ssl_status: Database["public"]["Enums"]["ssl_status"]
           status: Database["public"]["Enums"]["tenant_domain_status"]
           tenant_id: string
           updated_at: string
           verification_token: string
+          www_redirect_ok: boolean
         }
         Insert: {
           created_at?: string
           custom_login_url?: string | null
+          dns_records?: Json
+          health?: Json
           host: string
+          http_redirect_ok?: boolean
           id?: string
           is_primary?: boolean
+          is_wildcard?: boolean
           kind?: Database["public"]["Enums"]["tenant_domain_kind"]
           last_checked_at?: string | null
+          notes?: string | null
+          propagation_status?: string
+          ssl_expires_at?: string | null
+          ssl_issuer?: string | null
+          ssl_last_error?: string | null
+          ssl_status?: Database["public"]["Enums"]["ssl_status"]
           status?: Database["public"]["Enums"]["tenant_domain_status"]
           tenant_id: string
           updated_at?: string
           verification_token?: string
+          www_redirect_ok?: boolean
         }
         Update: {
           created_at?: string
           custom_login_url?: string | null
+          dns_records?: Json
+          health?: Json
           host?: string
+          http_redirect_ok?: boolean
           id?: string
           is_primary?: boolean
+          is_wildcard?: boolean
           kind?: Database["public"]["Enums"]["tenant_domain_kind"]
           last_checked_at?: string | null
+          notes?: string | null
+          propagation_status?: string
+          ssl_expires_at?: string | null
+          ssl_issuer?: string | null
+          ssl_last_error?: string | null
+          ssl_status?: Database["public"]["Enums"]["ssl_status"]
           status?: Database["public"]["Enums"]["tenant_domain_status"]
           tenant_id?: string
           updated_at?: string
           verification_token?: string
+          www_redirect_ok?: boolean
         }
         Relationships: [
           {
             foreignKeyName: "tenant_domains_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_infra_alerts: {
+        Row: {
+          category: string
+          created_at: string
+          details: Json
+          domain_id: string | null
+          id: string
+          message: string
+          resolved: boolean
+          resolved_at: string | null
+          severity: string
+          tenant_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          details?: Json
+          domain_id?: string | null
+          id?: string
+          message: string
+          resolved?: boolean
+          resolved_at?: string | null
+          severity?: string
+          tenant_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          details?: Json
+          domain_id?: string | null
+          id?: string
+          message?: string
+          resolved?: boolean
+          resolved_at?: string | null
+          severity?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_infra_alerts_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "tenant_domains"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenant_infra_alerts_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -4186,6 +4273,77 @@ export type Database = {
             foreignKeyName: "tenant_members_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_smtp_configs: {
+        Row: {
+          created_at: string
+          footer_html: string | null
+          host: string
+          id: string
+          last_error: string | null
+          last_verified_at: string | null
+          logo_url: string | null
+          password_ciphertext: string | null
+          port: number
+          provider: string
+          reply_to: string | null
+          secure: boolean
+          sender_email: string
+          sender_name: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          footer_html?: string | null
+          host: string
+          id?: string
+          last_error?: string | null
+          last_verified_at?: string | null
+          logo_url?: string | null
+          password_ciphertext?: string | null
+          port?: number
+          provider?: string
+          reply_to?: string | null
+          secure?: boolean
+          sender_email: string
+          sender_name?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          footer_html?: string | null
+          host?: string
+          id?: string
+          last_error?: string | null
+          last_verified_at?: string | null
+          logo_url?: string | null
+          password_ciphertext?: string | null
+          port?: number
+          provider?: string
+          reply_to?: string | null
+          secure?: boolean
+          sender_email?: string
+          sender_name?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_smtp_configs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
             referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
@@ -5169,6 +5327,13 @@ export type Database = {
         | "developer"
         | "viewer"
       shared_resource_kind: "template" | "asset" | "component" | "prompt"
+      ssl_status:
+        | "pending"
+        | "provisioning"
+        | "active"
+        | "failed"
+        | "expiring"
+        | "expired"
       subscription_status:
         | "trialing"
         | "active"
@@ -5448,6 +5613,14 @@ export const Constants = {
         "viewer",
       ],
       shared_resource_kind: ["template", "asset", "component", "prompt"],
+      ssl_status: [
+        "pending",
+        "provisioning",
+        "active",
+        "failed",
+        "expiring",
+        "expired",
+      ],
       subscription_status: [
         "trialing",
         "active",

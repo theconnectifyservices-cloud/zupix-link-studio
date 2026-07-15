@@ -21,6 +21,7 @@ import {
   Gem,
   Paintbrush,
   Briefcase,
+  Server,
 
 
 
@@ -64,6 +65,7 @@ const appItems: Item[] = [
   { icon: Gem, label: "Monetization", href: "/app/monetization" },
   { icon: Paintbrush, label: "White Label", href: "/app/white-label" },
   { icon: Briefcase, label: "Reseller", href: "/app/reseller" },
+  { icon: Server, label: "Infrastructure", href: "/app/infrastructure" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
