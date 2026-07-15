@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
+import { toast } from "sonner";
 import { Plus, LayoutGrid, List, Search as SearchIcon, Sparkles } from "lucide-react";
 import {
   useCurrentWorkspace,
@@ -39,7 +40,7 @@ type SortKey = "updated" | "created" | "oldest" | "alpha";
 type StatusFilter = "all" | BioPageStatus;
 
 function ProjectsPage() {
-  const { workspace, userId } = useCurrentWorkspace();
+  const { workspace, userId, isLoading: wsLoading } = useCurrentWorkspace();
   const { data, isLoading } = useBioPages(workspace?.id);
   const navigate = useNavigate();
   const search = Route.useSearch();
@@ -51,13 +52,32 @@ function ProjectsPage() {
   const [status, setStatus] = useState<StatusFilter>("all");
   const debounced = useDebounce(query, 250);
 
-  // Auto-open modal via ?new=1
-  useEffect(() => {
-    if (search.new) {
-      setCreateOpen(true);
-      navigate({ to: "/app/projects", search: {}, replace: true });
+  const openCreate = () => {
+    if (!userId) {
+      toast.error("Please sign in again to create a bio page.");
+      return;
     }
-  }, [search.new, navigate]);
+    if (wsLoading) {
+      toast.message("Loading your workspace…");
+      return;
+    }
+    if (!workspace) {
+      toast.error("No workspace available. Please refresh the page.");
+      console.error("[create bio page] missing workspace for user", userId);
+      return;
+    }
+    setCreateOpen(true);
+  };
+
+  // Auto-open modal via ?new=1 (waits until workspace is ready)
+  useEffect(() => {
+    if (!search.new) return;
+    if (wsLoading) return;
+    openCreate();
+    navigate({ to: "/app/projects", search: {}, replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.new, wsLoading, workspace?.id, userId]);
+
 
   const filtered = useMemo(() => {
     let list: BioPageRow[] = data ?? [];
@@ -93,7 +113,7 @@ function ProjectsPage() {
         description="Create, edit, and organize your bio pages."
         breadcrumbs={[{ label: "Dashboard", href: "/app" }, { label: "My Bio Pages" }]}
         actions={
-          <Button onClick={() => setCreateOpen(true)} className="gap-1">
+          <Button onClick={openCreate} className="gap-1">
             <Plus className="h-4 w-4" /> New project
           </Button>
         }
@@ -168,7 +188,7 @@ function ProjectsPage() {
             title="No bio pages yet"
             description="Create your first bio page and reserve your unique link."
             action={
-              <Button onClick={() => setCreateOpen(true)} className="gap-1">
+              <Button onClick={openCreate} className="gap-1">
                 <Plus className="h-4 w-4" /> Create your first project
               </Button>
             }

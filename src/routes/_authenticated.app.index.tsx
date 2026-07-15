@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Plus, Link2, Images, BarChart3, ArrowRight, Sparkles, Clock, Rocket } from "lucide-react";
+import { toast } from "sonner";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/auth/hooks/use-profile";
 import { useCurrentWorkspace, useBioPages, CreateProjectModal } from "@/features/bio-pages";
@@ -19,9 +20,27 @@ function Overview() {
   const session = useSession();
   const userId = session.status === "authenticated" ? session.session.user.id : undefined;
   const { data: profile } = useProfile(userId);
-  const { workspace } = useCurrentWorkspace();
+  const { workspace, isLoading: wsLoading } = useCurrentWorkspace();
   const { data: pages, isLoading } = useBioPages(workspace?.id);
   const [createOpen, setCreateOpen] = useState(false);
+
+  const openCreate = () => {
+    if (!userId) {
+      toast.error("Please sign in again to create a bio page.");
+      return;
+    }
+    if (wsLoading) {
+      toast.message("Loading your workspace…");
+      return;
+    }
+    if (!workspace) {
+      toast.error("No workspace available. Please refresh the page.");
+      console.error("[create bio page] missing workspace for user", userId);
+      return;
+    }
+    setCreateOpen(true);
+  };
+
 
   const recent = useMemo(() => (pages ?? []).slice(0, 4), [pages]);
   const stats = useMemo(() => {
@@ -41,7 +60,7 @@ function Overview() {
         title={`Welcome back, ${displayName}`}
         description={workspace ? `Workspace: ${workspace.name}` : "Set up your first bio page."}
         actions={
-          <Button onClick={() => setCreateOpen(true)} className="gap-1">
+          <Button onClick={openCreate} className="gap-1">
             <Plus className="h-4 w-4" /> New bio page
           </Button>
         }
@@ -64,7 +83,7 @@ function Overview() {
             icon={Plus}
             title="New bio page"
             description="Start a fresh project"
-            onClick={() => setCreateOpen(true)}
+            onClick={openCreate}
           />
           <QuickTile
             icon={Link2}
@@ -113,7 +132,7 @@ function Overview() {
             title="No projects yet"
             description="Create your first bio page to reserve your link."
             action={
-              <Button onClick={() => setCreateOpen(true)} className="gap-1">
+              <Button onClick={openCreate} className="gap-1">
                 <Plus className="h-4 w-4" /> Create first project
               </Button>
             }
