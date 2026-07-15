@@ -30,12 +30,17 @@ export function MultiPanelWorkspace({ id, left, center, right, defaultSizes = [2
   const initial = sizes && sizes.length === 3 ? sizes : defaultSizes;
 
   const onLayout = useCallback(
-    (next: number[]) => {
-      if (next.length !== 3) return;
-      saveSizes(id, next);
+    (layout: Record<string, number>) => {
+      const values = Object.values(layout);
+      if (!values.length) return;
+      saveSizes(id, values);
     },
     [id, saveSizes],
   );
+
+  const leftId = `${id}-left`;
+  const centerId = `${id}-center`;
+  const rightId = `${id}-right`;
 
   return (
     <ResizablePanelGroup
@@ -45,19 +50,19 @@ export function MultiPanelWorkspace({ id, left, center, right, defaultSizes = [2
     >
       {showLeft && (
         <>
-          <ResizablePanel defaultSize={initial[0]} minSize={14} maxSize={40}>
+          <ResizablePanel id={leftId} defaultSize={initial[0]} minSize={14} maxSize={40}>
             <div className="h-full overflow-hidden border-r bg-background">{left}</div>
           </ResizablePanel>
           <ResizableHandle withHandle />
         </>
       )}
-      <ResizablePanel defaultSize={initial[1]} minSize={30}>
+      <ResizablePanel id={centerId} defaultSize={initial[1]} minSize={30}>
         <div className="h-full min-w-0 overflow-auto">{center}</div>
       </ResizablePanel>
       {showRight && (
         <>
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={initial[2]} minSize={14} maxSize={40}>
+          <ResizablePanel id={rightId} defaultSize={initial[2]} minSize={14} maxSize={40}>
             <div className="h-full overflow-hidden border-l bg-background">{right}</div>
           </ResizablePanel>
         </>
