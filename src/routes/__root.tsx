@@ -15,7 +15,7 @@ import { APP_CONFIG } from "@/config/app.config";
 import { useThemeStore } from "@/stores/theme.store";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { Toaster } from "@/components/ui/sonner";
-import { CommandPalette } from "@/shared/navigation/command-palette";
+import { CommandPalette, ShortcutsDialog, ProductivityModeEffect } from "@/features/desktop";
 import { ErrorBoundary } from "@/shared/error/error-boundary";
 import { InstallBanner, UpdateBanner, OfflineIndicator } from "@/features/pwa";
 
@@ -174,12 +174,14 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeApplier />
+      <ProductivityModeEffect />
       <AuthSubscriber />
       <ErrorBoundary>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </ErrorBoundary>
       <CommandPalette />
+      <ShortcutsDialog />
       <OfflineIndicator />
       <UpdateBanner />
       <InstallBanner />
