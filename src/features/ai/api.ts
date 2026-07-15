@@ -167,6 +167,6 @@ export async function logActivity(input: {
     user_id: input.userId,
     kind: input.kind,
     summary: input.summary,
-    metadata: input.metadata ?? {},
+    metadata: (input.metadata ?? {}) as never,
   });
 }
