@@ -470,9 +470,9 @@ export function ThemePanel() {
                 <SelectItem value="color">Solid color</SelectItem>
                 <SelectItem value="gradient">Gradient</SelectItem>
                 <SelectItem value="image">Image</SelectItem>
+                <SelectItem value="video">Video</SelectItem>
                 <SelectItem value="pattern">Pattern</SelectItem>
                 <SelectItem value="glass">Glass / blur</SelectItem>
-                <SelectItem value="video">Video (soon)</SelectItem>
               </SelectContent>
             </Select>
           </Field>
