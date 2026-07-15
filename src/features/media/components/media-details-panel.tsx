@@ -30,7 +30,7 @@ interface Props {
   onClose: () => void;
 }
 
-export function MediaDetailsPanel({ asset, onClose }: Props) {
+export function MediaDetailsPanel({ asset, userId, onClose }: Props) {
   const qc = useQueryClient();
   const [fileName, setFileName] = useState("");
   const [altText, setAltText] = useState("");
