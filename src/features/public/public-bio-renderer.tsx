@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { ThemeBackgroundLayer } from "@/features/builder/components/theme-background-layer";
 import { BlockRenderer } from "@/features/builder/block-renderer";
 import {
   DEFAULT_MOTION,
@@ -89,6 +90,7 @@ export function PublicBioRenderer({
       )}
       style={themeStyle}
     >
+      <ThemeBackgroundLayer theme={theme} />
       <div
         className={cn("relative mx-auto flex flex-col", pageCls)}
         style={{

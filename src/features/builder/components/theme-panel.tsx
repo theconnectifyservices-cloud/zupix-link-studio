@@ -48,6 +48,8 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { ImageField } from "./image-field";
+import { VideoSourceField } from "./video-source-field";
 
 /**
  * Live Design Studio — LS-07B.
@@ -468,9 +470,9 @@ export function ThemePanel() {
                 <SelectItem value="color">Solid color</SelectItem>
                 <SelectItem value="gradient">Gradient</SelectItem>
                 <SelectItem value="image">Image</SelectItem>
+                <SelectItem value="video">Video</SelectItem>
                 <SelectItem value="pattern">Pattern</SelectItem>
                 <SelectItem value="glass">Glass / blur</SelectItem>
-                <SelectItem value="video">Video (soon)</SelectItem>
               </SelectContent>
             </Select>
           </Field>
@@ -498,14 +500,13 @@ export function ThemePanel() {
 
           {bg.kind === "image" && (
             <>
-              <Field label="Image URL">
-                <Input
-                  className="h-8"
-                  value={bg.imageUrl ?? ""}
-                  onChange={(e) => patchBg({ imageUrl: e.target.value })}
-                  placeholder="https://…"
-                />
-              </Field>
+              <ImageField
+                label="Background image"
+                value={bg.imageUrl}
+                onChange={(url) => patchBg({ imageUrl: url })}
+                pickerTitle="Choose background image"
+                previewAspect="16 / 9"
+              />
               <Field label="Size">
                 <Select
                   value={bg.size ?? "cover"}
@@ -564,6 +565,17 @@ export function ThemePanel() {
                   </SelectContent>
                 </Select>
               </Field>
+              <details className="rounded-md border p-2">
+                <summary className="cursor-pointer text-[11px] text-muted-foreground">
+                  Image URL (advanced)
+                </summary>
+                <Input
+                  className="mt-2 h-8 text-xs"
+                  value={bg.imageUrl ?? ""}
+                  onChange={(e) => patchBg({ imageUrl: e.target.value || undefined })}
+                  placeholder="https://…"
+                />
+              </details>
             </>
           )}
 
@@ -620,9 +632,21 @@ export function ThemePanel() {
           )}
 
           {bg.kind === "video" && (
-            <div className="rounded-md border border-dashed p-3 text-center text-[11px] text-muted-foreground">
-              Video backgrounds ship in a later phase. Architecture is ready.
-            </div>
+            <>
+              <VideoSourceField
+                label="Background video"
+                value={bg.videoUrl}
+                onChange={(url) => patchBg({ videoUrl: url })}
+                background
+              />
+              <ImageField
+                label="Poster (fallback image)"
+                value={bg.posterUrl}
+                onChange={(url) => patchBg({ posterUrl: url })}
+                previewAspect="16 / 9"
+                pickerTitle="Choose poster image"
+              />
+            </>
           )}
 
           <div className="mt-2 border-t pt-3">

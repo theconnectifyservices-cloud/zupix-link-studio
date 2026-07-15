@@ -30,6 +30,7 @@ import {
   themeToCssVars,
 } from "../theme";
 import { cn } from "@/lib/utils";
+import { ThemeBackgroundLayer } from "./theme-background-layer";
 import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
@@ -89,6 +90,7 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
             style={themeStyle}
             onClick={() => clearSelection()}
           >
+            <ThemeBackgroundLayer theme={theme} />
             <div
               className={cn("relative", pageCls)}
               style={{
