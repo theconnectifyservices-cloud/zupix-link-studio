@@ -27,7 +27,9 @@ export function ShareButton({ payload, label = "Share", ...btn }: Props) {
 
   return (
     <Button onClick={onClick} className="min-h-11" {...btn}>
-      {copied ? <Check className="mr-2 h-4 w-4" /> : navigator.share ? (
+      {copied ? (
+        <Check className="mr-2 h-4 w-4" />
+      ) : "share" in navigator ? (
         <Share2 className="mr-2 h-4 w-4" />
       ) : (
         <Copy className="mr-2 h-4 w-4" />
