@@ -17,6 +17,7 @@ import type {
   TestimonialsBlock,
   VideoBlock,
   ButtonGroupBlock,
+  ButtonBlock,
   Viewport,
 } from "./types";
 import { cn } from "@/lib/utils";
