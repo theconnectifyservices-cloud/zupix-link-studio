@@ -1,20 +1,17 @@
 /**
- * LS-13A — Server function to verify a Razorpay checkout signature.
- * Runs after the browser callback; on success the webhook is the source of
- * truth for subscription lifecycle, but we mark the payment/invoice paid
- * here so the UI reflects success immediately.
+ * LS-13A — Server function to verify a checkout payment via the abstract
+ * PaymentProvider. Works with mock and Razorpay providers.
  */
 import { createServerFn } from "@tanstack/react-start";
-import { createHmac, timingSafeEqual } from "crypto";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const VerifyInput = z.object({
   workspace_id: z.string().uuid(),
   invoice_id: z.string().uuid(),
-  razorpay_order_id: z.string().min(1),
-  razorpay_payment_id: z.string().min(1),
-  razorpay_signature: z.string().min(1),
+  order_id: z.string().min(1),
+  payment_id: z.string().min(1),
+  signature: z.string().optional().nullable(),
   plan_code: z.string().min(1),
   cycle: z.enum(["monthly", "quarterly", "yearly", "lifetime"]),
 });
@@ -30,13 +27,10 @@ function periodEnd(cycle: string, from = new Date()): Date | null {
   }
 }
 
-export const verifyRazorpayPayment = createServerFn({ method: "POST" })
+export const verifyCheckoutPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((v) => VerifyInput.parse(v))
   .handler(async ({ data, context }) => {
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
-    if (!keySecret) throw new Error("Razorpay is not configured");
-
     const { supabase, userId } = context;
     const { data: isAdmin, error: adminErr } = await supabase.rpc("is_workspace_admin", {
       _user_id: userId,
@@ -45,31 +39,33 @@ export const verifyRazorpayPayment = createServerFn({ method: "POST" })
     if (adminErr) throw new Error(adminErr.message);
     if (!isAdmin) throw new Error("Forbidden: workspace admin required");
 
-    const expected = createHmac("sha256", keySecret)
-      .update(`${data.razorpay_order_id}|${data.razorpay_payment_id}`)
-      .digest("hex");
-    const sigBuf = Buffer.from(data.razorpay_signature);
-    const expBuf = Buffer.from(expected);
-    if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
-      throw new Error("Invalid Razorpay signature");
-    }
+    const { getPaymentProvider } = await import("./provider.server");
+    const provider = getPaymentProvider();
+    const result = await provider.verifyPayment({
+      workspace_id: data.workspace_id,
+      invoice_id: data.invoice_id,
+      plan_code: data.plan_code,
+      cycle: data.cycle,
+      order_id: data.order_id,
+      payment_id: data.payment_id,
+      signature: data.signature ?? undefined,
+    });
+    if (!result.ok) throw new Error(result.reason);
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const nowIso = new Date().toISOString();
 
-    // Mark payment succeeded
     const { error: payErr } = await supabaseAdmin
       .from("billing_payments")
       .update({
         status: "succeeded",
-        gateway_payment_id: data.razorpay_payment_id,
+        gateway_payment_id: data.payment_id,
         captured_at: nowIso,
       } as never)
-      .eq("gateway_order_id", data.razorpay_order_id)
+      .eq("gateway_order_id", data.order_id)
       .eq("workspace_id", data.workspace_id);
     if (payErr) throw new Error(payErr.message);
 
-    // Mark invoice paid
     const { data: invoice, error: invFetchErr } = await supabaseAdmin
       .from("billing_invoices")
       .select("total_minor")
@@ -87,7 +83,6 @@ export const verifyRazorpayPayment = createServerFn({ method: "POST" })
       .eq("id", data.invoice_id);
     if (invErr) throw new Error(invErr.message);
 
-    // Upsert local subscription record
     const { data: plan, error: planErr } = await supabaseAdmin
       .from("billing_plans")
       .select("id, price_monthly_minor, price_quarterly_minor, price_yearly_minor, price_lifetime_minor, currency")
@@ -113,7 +108,7 @@ export const verifyRazorpayPayment = createServerFn({ method: "POST" })
           currency: plan!.currency,
           unit_amount_minor: unit ?? 0,
           quantity: 1,
-          gateway: "razorpay",
+          gateway: provider.gateway,
           current_period_start: nowIso,
           current_period_end: end ? end.toISOString() : null,
           cancel_at_period_end: false,
@@ -124,5 +119,5 @@ export const verifyRazorpayPayment = createServerFn({ method: "POST" })
       );
     if (subErr) throw new Error(subErr.message);
 
-    return { ok: true };
+    return { ok: true, mock: provider.gateway === "manual" };
   });
