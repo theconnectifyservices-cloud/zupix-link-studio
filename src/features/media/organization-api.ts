@@ -24,7 +24,7 @@ export async function listCollections(workspaceId: string): Promise<MediaCollect
     .order("is_favorite", { ascending: false })
     .order("name", { ascending: true });
   if (error) throw error;
-  return (data ?? []) as MediaCollection[];
+  return (data ?? []) as unknown as MediaCollection[];
 }
 
 export async function createCollection(input: {
@@ -103,7 +103,7 @@ export async function duplicateCollection(id: string, userId: string): Promise<M
       );
     }
   }
-  return data as MediaCollection;
+  return data as unknown as MediaCollection;
 }
 
 export async function addAssetsToCollection(
@@ -183,7 +183,7 @@ export async function listTags(workspaceId: string): Promise<MediaTag[]> {
     .order("usage_count", { ascending: false })
     .order("name", { ascending: true });
   if (error) throw error;
-  return (data ?? []) as MediaTag[];
+  return (data ?? []) as unknown as MediaTag[];
 }
 
 export async function upsertTag(input: {
@@ -210,7 +210,7 @@ export async function upsertTag(input: {
     .select()
     .single();
   if (error) throw error;
-  return data as MediaTag;
+  return data as unknown as MediaTag;
 }
 
 export async function updateTag(id: string, patch: Partial<Pick<MediaTag, "name" | "color">>): Promise<void> {
@@ -276,7 +276,7 @@ export async function listBrandKits(workspaceId: string): Promise<BrandKit[]> {
     .order("is_default", { ascending: false })
     .order("name");
   if (error) throw error;
-  return (data ?? []) as BrandKit[];
+  return (data ?? []) as unknown as BrandKit[];
 }
 
 export async function createBrandKit(input: {
@@ -301,7 +301,7 @@ export async function createBrandKit(input: {
     .select()
     .single();
   if (error) throw error;
-  return data as BrandKit;
+  return data as unknown as BrandKit;
 }
 
 export async function updateBrandKit(id: string, patch: Partial<BrandKit>): Promise<void> {
@@ -328,7 +328,7 @@ export async function listVersions(assetId: string): Promise<AssetVersion[]> {
     .eq("asset_id", assetId)
     .order("version_number", { ascending: false });
   if (error) throw error;
-  return (data ?? []) as AssetVersion[];
+  return (data ?? []) as unknown as AssetVersion[];
 }
 
 async function sha256Hex(file: File): Promise<string> {
@@ -455,7 +455,7 @@ export async function findDuplicates(workspaceId: string): Promise<DuplicateGrou
     .eq("workspace_id", workspaceId)
     .is("deleted_at", null);
   if (error) throw error;
-  const assets = (data ?? []) as MediaAsset[];
+  const assets = (data ?? []) as unknown as MediaAsset[];
 
   const byHash = new Map<string, MediaAsset[]>();
   const byName = new Map<string, MediaAsset[]>();
@@ -509,7 +509,7 @@ export async function listFavoriteAssets(workspaceId: string, limit = 60): Promi
     .order("updated_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []) as MediaAsset[];
+  return (data ?? []) as unknown as MediaAsset[];
 }
 
 export async function listRecentlyUsedAssets(workspaceId: string, limit = 24): Promise<MediaAsset[]> {
@@ -522,7 +522,7 @@ export async function listRecentlyUsedAssets(workspaceId: string, limit = 24): P
     .order("last_used_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []) as MediaAsset[];
+  return (data ?? []) as unknown as MediaAsset[];
 }
 
 export async function listRecentlyUploaded(workspaceId: string, limit = 24): Promise<MediaAsset[]> {
@@ -534,7 +534,7 @@ export async function listRecentlyUploaded(workspaceId: string, limit = 24): Pro
     .order("created_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []) as MediaAsset[];
+  return (data ?? []) as unknown as MediaAsset[];
 }
 
 export async function listRecentlyEdited(workspaceId: string, limit = 24): Promise<MediaAsset[]> {
@@ -546,7 +546,7 @@ export async function listRecentlyEdited(workspaceId: string, limit = 24): Promi
     .order("updated_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []) as MediaAsset[];
+  return (data ?? []) as unknown as MediaAsset[];
 }
 
 /* -------------------- BULK OPERATIONS -------------------- */
