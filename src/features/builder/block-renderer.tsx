@@ -401,6 +401,84 @@ function DividerRender({ block }: { block: Extract<Block, { type: "divider" }> }
   );
 }
 
+// ── Button (single) ──────────────────────────────────────────────────────
+function hexToRgb(hex: string): [number, number, number] | null {
+  const m = hex.trim().match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!m) return null;
+  let h = m[1];
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const n = parseInt(h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+export function autoContrastText(bg: string | undefined): string | undefined {
+  if (!bg) return undefined;
+  const rgb = hexToRgb(bg);
+  if (!rgb) return undefined;
+  const [r, g, b] = rgb.map((v) => {
+    const s = v / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  });
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return lum > 0.5 ? "#000000" : "#ffffff";
+}
+function ButtonRender({ block }: { block: ButtonBlock }) {
+  const [hover, setHover] = useState(false);
+  const autoOn = block.autoContrast !== false;
+  const normalBg = block.bgColor;
+  const hoverBg = block.hoverBgColor;
+  const normalText =
+    block.textColor ?? (autoOn ? autoContrastText(normalBg) : undefined);
+  const hoverText =
+    block.hoverTextColor ?? (autoOn ? autoContrastText(hoverBg ?? normalBg) : undefined);
+  const bg = hover && hoverBg ? hoverBg : normalBg;
+  const fg = hover && (hoverText || block.hoverTextColor) ? hoverText : normalText;
+  const borderCol = hover && block.hoverBorderColor ? block.hoverBorderColor : block.borderColor;
+
+  const style: CSSProperties = {
+    background: bg ?? "var(--zx-btn-bg)",
+    color: fg ?? "var(--zx-btn-fg)",
+    border: borderCol ? `1px solid ${borderCol}` : "var(--zx-btn-border)",
+    borderRadius: "var(--zx-btn-radius)",
+    minHeight: "var(--zx-btn-h)",
+    paddingLeft: "var(--zx-btn-px)",
+    paddingRight: "var(--zx-btn-px)",
+    boxShadow: "var(--zx-btn-shadow)",
+    fontFamily: block.fontFamily ?? "var(--zx-btn-font)",
+    fontSize: block.fontSizePx ? `${block.fontSizePx}px` : "var(--zx-btn-size)",
+    letterSpacing: block.letterSpacing != null ? `${block.letterSpacing}px` : undefined,
+    lineHeight: block.lineHeight ?? undefined,
+    textTransform: (block.textTransform ?? "none") as CSSProperties["textTransform"],
+    textAlign: block.textAlign,
+    fontWeight:
+      block.fontWeight === "bold"
+        ? 700
+        : block.fontWeight === "semibold"
+          ? 600
+          : block.fontWeight === "medium"
+            ? 500
+            : block.fontWeight === "normal"
+              ? 400
+              : undefined,
+    backdropFilter: "blur(0)",
+  };
+  return (
+    <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>
+      <div
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        className={cn(
+          "inline-flex items-center justify-center gap-2 font-medium transition-all hover:-translate-y-0.5",
+          WIDTH_CLASS[block.width ?? "full"],
+          block.disabled && "cursor-not-allowed opacity-50 hover:translate-y-0",
+        )}
+        style={style}
+      >
+        {block.label || "Button"}
+      </div>
+    </div>
+  );
+}
+
 // ── Button group ─────────────────────────────────────────────────────────
 function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
   if (block.buttons.length === 0) {
