@@ -37,6 +37,7 @@ import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppMonetizationRouteImport } from './routes/_authenticated.app.monetization'
 import { Route as AuthenticatedAppMediaRouteImport } from './routes/_authenticated.app.media'
 import { Route as AuthenticatedAppIntegrationsRouteImport } from './routes/_authenticated.app.integrations'
+import { Route as AuthenticatedAppInfrastructureRouteImport } from './routes/_authenticated.app.infrastructure'
 import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated.app.help'
 import { Route as AuthenticatedAppEnterpriseRouteImport } from './routes/_authenticated.app.enterprise'
 import { Route as AuthenticatedAppDomainsRouteImport } from './routes/_authenticated.app.domains'
@@ -210,6 +211,12 @@ const AuthenticatedAppIntegrationsRoute =
     path: '/integrations',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppInfrastructureRoute =
+  AuthenticatedAppInfrastructureRouteImport.update({
+    id: '/infrastructure',
+    path: '/infrastructure',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppHelpRoute = AuthenticatedAppHelpRouteImport.update({
   id: '/help',
   path: '/help',
@@ -379,6 +386,7 @@ export interface FileRoutesByFullPath {
   '/app/domains': typeof AuthenticatedAppDomainsRoute
   '/app/enterprise': typeof AuthenticatedAppEnterpriseRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
+  '/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
@@ -431,6 +439,7 @@ export interface FileRoutesByTo {
   '/app/domains': typeof AuthenticatedAppDomainsRoute
   '/app/enterprise': typeof AuthenticatedAppEnterpriseRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
+  '/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
@@ -487,6 +496,7 @@ export interface FileRoutesById {
   '/_authenticated/app/domains': typeof AuthenticatedAppDomainsRoute
   '/_authenticated/app/enterprise': typeof AuthenticatedAppEnterpriseRoute
   '/_authenticated/app/help': typeof AuthenticatedAppHelpRoute
+  '/_authenticated/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/_authenticated/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/_authenticated/app/media': typeof AuthenticatedAppMediaRoute
   '/_authenticated/app/monetization': typeof AuthenticatedAppMonetizationRoute
@@ -543,6 +553,7 @@ export interface FileRouteTypes {
     | '/app/domains'
     | '/app/enterprise'
     | '/app/help'
+    | '/app/infrastructure'
     | '/app/integrations'
     | '/app/media'
     | '/app/monetization'
@@ -595,6 +606,7 @@ export interface FileRouteTypes {
     | '/app/domains'
     | '/app/enterprise'
     | '/app/help'
+    | '/app/infrastructure'
     | '/app/integrations'
     | '/app/media'
     | '/app/monetization'
@@ -650,6 +662,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/domains'
     | '/_authenticated/app/enterprise'
     | '/_authenticated/app/help'
+    | '/_authenticated/app/infrastructure'
     | '/_authenticated/app/integrations'
     | '/_authenticated/app/media'
     | '/_authenticated/app/monetization'
@@ -894,6 +907,13 @@ declare module '@tanstack/react-router' {
       path: '/integrations'
       fullPath: '/app/integrations'
       preLoaderRoute: typeof AuthenticatedAppIntegrationsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/infrastructure': {
+      id: '/_authenticated/app/infrastructure'
+      path: '/infrastructure'
+      fullPath: '/app/infrastructure'
+      preLoaderRoute: typeof AuthenticatedAppInfrastructureRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/help': {
@@ -1149,6 +1169,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppDomainsRoute: typeof AuthenticatedAppDomainsRoute
   AuthenticatedAppEnterpriseRoute: typeof AuthenticatedAppEnterpriseRoute
   AuthenticatedAppHelpRoute: typeof AuthenticatedAppHelpRoute
+  AuthenticatedAppInfrastructureRoute: typeof AuthenticatedAppInfrastructureRoute
   AuthenticatedAppIntegrationsRoute: typeof AuthenticatedAppIntegrationsRoute
   AuthenticatedAppMediaRoute: typeof AuthenticatedAppMediaRoute
   AuthenticatedAppMonetizationRoute: typeof AuthenticatedAppMonetizationRoute
@@ -1174,6 +1195,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDomainsRoute: AuthenticatedAppDomainsRoute,
   AuthenticatedAppEnterpriseRoute: AuthenticatedAppEnterpriseRoute,
   AuthenticatedAppHelpRoute: AuthenticatedAppHelpRoute,
+  AuthenticatedAppInfrastructureRoute: AuthenticatedAppInfrastructureRoute,
   AuthenticatedAppIntegrationsRoute: AuthenticatedAppIntegrationsRoute,
   AuthenticatedAppMediaRoute: AuthenticatedAppMediaRoute,
   AuthenticatedAppMonetizationRoute: AuthenticatedAppMonetizationRoute,
