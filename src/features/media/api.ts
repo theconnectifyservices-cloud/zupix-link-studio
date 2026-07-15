@@ -102,7 +102,7 @@ export async function listAssets(q: ListAssetsQuery): Promise<MediaAsset[]> {
   query = query.range(q.offset ?? 0, (q.offset ?? 0) + (q.limit ?? 60) - 1);
   const { data, error } = await query;
   if (error) throw error;
-  return (data ?? []) as MediaAsset[];
+  return (data ?? []) as unknown as MediaAsset[];
 }
 
 export async function getAsset(id: string): Promise<MediaAsset | null> {
@@ -112,7 +112,7 @@ export async function getAsset(id: string): Promise<MediaAsset | null> {
     .eq("id", id)
     .maybeSingle();
   if (error) throw error;
-  return (data ?? null) as MediaAsset | null;
+  return (data ?? null) as unknown as MediaAsset | null;
 }
 
 export async function updateAsset(
@@ -250,7 +250,7 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
     throw insErr;
   }
   onProgress?.(100);
-  return row as MediaAsset;
+  return row as unknown as MediaAsset;
 }
 
 /* -------------------- USAGE -------------------- */
