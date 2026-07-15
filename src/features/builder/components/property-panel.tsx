@@ -2382,3 +2382,329 @@ function ButtonEffectControls({
     </div>
   );
 }
+
+/* ─────────── Hero Effects Studio (v2.0) ─────────── */
+
+import type { HeroEffectsConfig } from "../effects/hero-effects";
+import { DEFAULT_HERO_EFFECTS } from "../effects/hero-effects";
+
+type ProfileBlockT = Extract<Block, { type: "profile" }>;
+
+function HeroEffectsStudio({
+  block,
+  update,
+}: {
+  block: ProfileBlockT;
+  update: (id: string, patch: Partial<Block>) => void;
+}) {
+  const fx: HeroEffectsConfig = block.effects ?? {};
+  function setFx(patch: Partial<HeroEffectsConfig>) {
+    update(block.id, { effects: { ...fx, ...patch } } as Partial<Block>);
+  }
+  function setGroup<K extends keyof HeroEffectsConfig>(
+    key: K,
+    patch: Partial<NonNullable<HeroEffectsConfig[K]>>,
+  ) {
+    const cur = (fx[key] ?? {}) as Record<string, unknown>;
+    setFx({ [key]: { ...cur, ...patch } } as Partial<HeroEffectsConfig>);
+  }
+  const a = { ...DEFAULT_HERO_EFFECTS.avatar, ...fx.avatar };
+  const r = { ...DEFAULT_HERO_EFFECTS.ring, ...fx.ring };
+  const bd = { ...DEFAULT_HERO_EFFECTS.badge, ...fx.badge };
+  const c = { ...DEFAULT_HERO_EFFECTS.card, ...fx.card };
+  const bg = { ...DEFAULT_HERO_EFFECTS.background, ...fx.background };
+  const enabled = fx.enabled !== false;
+
+  return (
+    <>
+      <SectionTitle>Hero Effects Studio</SectionTitle>
+
+      <div className="flex items-center justify-between rounded-md border p-2">
+        <div className="text-xs">
+          <div className="font-medium">Effects enabled</div>
+          <div className="text-muted-foreground">Master switch for all hero animations.</div>
+        </div>
+        <Switch checked={enabled} onCheckedChange={(v) => setFx({ enabled: v })} />
+      </div>
+      <div className="flex items-center justify-between rounded-md border p-2">
+        <div className="text-xs">
+          <div className="font-medium">Reduce motion</div>
+          <div className="text-muted-foreground">Force-disable animations for this block.</div>
+        </div>
+        <Switch
+          checked={fx.reduceMotion === true}
+          onCheckedChange={(v) => setFx({ reduceMotion: v })}
+        />
+      </div>
+
+      {/* Avatar */}
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        Avatar
+      </div>
+      <Field label="Effect">
+        <SelectSimple
+          value={a.effect ?? "none"}
+          onChange={(v) => setGroup("avatar", { effect: v as typeof a.effect })}
+          options={[
+            ["none", "None"],
+            ["glow", "Glow"],
+            ["floating", "Floating"],
+            ["softFloating", "Soft floating"],
+            ["pulse", "Pulse"],
+            ["breathing", "Breathing"],
+            ["bounce", "Bounce"],
+            ["neonGlow", "Neon glow"],
+            ["shadowDepth", "Shadow depth"],
+            ["blurGlow", "Blur glow"],
+          ]}
+        />
+      </Field>
+      {(a.effect ?? "none") !== "none" && (
+        <>
+          <NamedColorField
+            label="Color"
+            value={a.color}
+            onChange={(v) => setGroup("avatar", { color: v })}
+          />
+          <Field label="Intensity (0–100)">
+            <Input
+              type="number"
+              min={0}
+              max={100}
+              value={a.strength ?? 60}
+              onChange={(e) => setGroup("avatar", { strength: Number(e.target.value) })}
+            />
+          </Field>
+          <Field label="Speed (ms)">
+            <Input
+              type="number"
+              min={200}
+              max={20000}
+              value={a.speed ?? 3200}
+              onChange={(e) => setGroup("avatar", { speed: Number(e.target.value) })}
+            />
+          </Field>
+        </>
+      )}
+
+      {/* Ring */}
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        Ring
+      </div>
+      <Field label="Style">
+        <SelectSimple
+          value={r.style ?? "none"}
+          onChange={(v) => setGroup("ring", { style: v as typeof r.style })}
+          options={[
+            ["none", "None"],
+            ["solid", "Solid"],
+            ["gradient", "Gradient"],
+            ["animatedGradient", "Animated gradient"],
+            ["neon", "Neon"],
+            ["glass", "Glass"],
+            ["double", "Double"],
+            ["dashed", "Dashed"],
+          ]}
+        />
+      </Field>
+      {(r.style ?? "none") !== "none" && (
+        <>
+          <Field label="Animation">
+            <SelectSimple
+              value={r.animation ?? "static"}
+              onChange={(v) => setGroup("ring", { animation: v as typeof r.animation })}
+              options={[
+                ["static", "Static"],
+                ["rotateCw", "Rotate CW"],
+                ["rotateCcw", "Rotate CCW"],
+                ["pulse", "Pulse"],
+                ["expand", "Expand"],
+                ["ripple", "Ripple"],
+              ]}
+            />
+          </Field>
+          <Field label="Width (px)">
+            <Input
+              type="number"
+              min={1}
+              max={24}
+              value={r.width ?? 3}
+              onChange={(e) => setGroup("ring", { width: Number(e.target.value) })}
+            />
+          </Field>
+          <NamedColorField
+            label="Color"
+            value={r.color}
+            onChange={(v) => setGroup("ring", { color: v })}
+          />
+          <NamedColorField
+            label="Color 2 (gradient)"
+            value={r.color2}
+            onChange={(v) => setGroup("ring", { color2: v })}
+          />
+          <Field label="Speed (ms)">
+            <Input
+              type="number"
+              min={500}
+              max={20000}
+              value={r.speed ?? 4000}
+              onChange={(e) => setGroup("ring", { speed: Number(e.target.value) })}
+            />
+          </Field>
+        </>
+      )}
+
+      {/* Badge */}
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        Verified badge
+      </div>
+      <Field label="Effect">
+        <SelectSimple
+          value={bd.effect ?? "static"}
+          onChange={(v) => setGroup("badge", { effect: v as typeof bd.effect })}
+          options={[
+            ["static", "Static"],
+            ["pulse", "Pulse"],
+            ["glow", "Glow"],
+            ["shine", "Shine"],
+            ["bounce", "Bounce"],
+            ["blink", "Blink"],
+            ["rotate", "Rotate"],
+            ["floating", "Floating"],
+          ]}
+        />
+      </Field>
+      {(bd.effect ?? "static") !== "static" && (
+        <>
+          <NamedColorField
+            label="Color"
+            value={bd.color}
+            onChange={(v) => setGroup("badge", { color: v })}
+          />
+          <Field label="Speed (ms)">
+            <Input
+              type="number"
+              min={200}
+              max={10000}
+              value={bd.speed ?? 1600}
+              onChange={(e) => setGroup("badge", { speed: Number(e.target.value) })}
+            />
+          </Field>
+        </>
+      )}
+
+      {/* Card */}
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        Card container
+      </div>
+      <Field label="Effect">
+        <SelectSimple
+          value={c.effect ?? "none"}
+          onChange={(v) => setGroup("card", { effect: v as typeof c.effect })}
+          options={[
+            ["none", "None"],
+            ["glass", "Glass"],
+            ["floating", "Floating"],
+            ["borderGlow", "Border glow"],
+            ["animatedBorder", "Animated border"],
+            ["gradientBorder", "Gradient border"],
+            ["spotlight", "Spotlight"],
+            ["shadowLift", "Shadow lift"],
+            ["aurora", "Aurora"],
+          ]}
+        />
+      </Field>
+      {(c.effect ?? "none") !== "none" && (
+        <>
+          <Field label="Radius (px)">
+            <Input
+              type="number"
+              min={0}
+              max={64}
+              value={c.borderRadius ?? 20}
+              onChange={(e) => setGroup("card", { borderRadius: Number(e.target.value) })}
+            />
+          </Field>
+          <Field label="Shadow (0–100)">
+            <Input
+              type="number"
+              min={0}
+              max={100}
+              value={c.shadow ?? 30}
+              onChange={(e) => setGroup("card", { shadow: Number(e.target.value) })}
+            />
+          </Field>
+          <NamedColorField
+            label="Glow color"
+            value={c.glowColor}
+            onChange={(v) => setGroup("card", { glowColor: v })}
+          />
+          <NamedColorField
+            label="Border color"
+            value={c.borderColor}
+            onChange={(v) => setGroup("card", { borderColor: v })}
+          />
+        </>
+      )}
+
+      {/* Background effect */}
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        Background effect
+      </div>
+      <Field label="Effect">
+        <SelectSimple
+          value={bg.effect ?? "none"}
+          onChange={(v) => setGroup("background", { effect: v as typeof bg.effect })}
+          options={[
+            ["none", "None"],
+            ["animatedGradient", "Animated gradient"],
+            ["aurora", "Aurora"],
+            ["meshGradient", "Mesh gradient"],
+            ["particles", "Particles"],
+            ["glassOverlay", "Glass overlay"],
+            ["blurOverlay", "Blur overlay"],
+            ["ambientGlow", "Ambient glow"],
+          ]}
+        />
+      </Field>
+      {(bg.effect ?? "none") !== "none" && (
+        <>
+          <NamedColorField
+            label="Color 1"
+            value={bg.color1}
+            onChange={(v) => setGroup("background", { color1: v })}
+          />
+          <NamedColorField
+            label="Color 2"
+            value={bg.color2}
+            onChange={(v) => setGroup("background", { color2: v })}
+          />
+          <NamedColorField
+            label="Color 3"
+            value={bg.color3}
+            onChange={(v) => setGroup("background", { color3: v })}
+          />
+          <Field label="Speed (ms)">
+            <Input
+              type="number"
+              min={1000}
+              max={30000}
+              value={bg.speed ?? 8000}
+              onChange={(e) => setGroup("background", { speed: Number(e.target.value) })}
+            />
+          </Field>
+        </>
+      )}
+      <Field label="Overlay opacity (0–1)">
+        <Input
+          type="number"
+          step="0.05"
+          min={0}
+          max={1}
+          value={bg.overlayOpacity ?? 0.35}
+          onChange={(e) => setGroup("background", { overlayOpacity: Number(e.target.value) })}
+        />
+      </Field>
+    </>
+  );
+}
