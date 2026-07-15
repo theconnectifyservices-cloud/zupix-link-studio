@@ -250,7 +250,7 @@ function IntegrationCard({
         {(current.lastMessage as string | undefined) && (
           <p className="text-xs text-muted-foreground">
             {current.lastMessage as string}
-            {current.lastCheckedAt && (
+            {(current.lastCheckedAt as string | undefined) && (
               <> · {new Date(current.lastCheckedAt as string).toLocaleString()}</>
             )}
           </p>
