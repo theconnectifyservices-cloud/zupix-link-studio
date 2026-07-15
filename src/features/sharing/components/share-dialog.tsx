@@ -68,21 +68,27 @@ import { buttonEmbed, iframeEmbed, qrWidgetEmbed } from "../embed";
 interface Props {
   pageId: string;
   trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (v: boolean) => void;
 }
 
 /** Full-featured Smart Sharing Hub: QR designer, share buttons, embed, print. */
-export function ShareDialog({ pageId, trigger }: Props) {
-  const [open, setOpen] = useState(false);
+export function ShareDialog({ pageId, trigger, open: controlledOpen, onOpenChange }: Props) {
+  const [uncontrolled, setUncontrolled] = useState(false);
+  const open = controlledOpen ?? uncontrolled;
+  const setOpen = onOpenChange ?? setUncontrolled;
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger ?? (
-          <Button variant="outline" size="sm" className="gap-1.5">
-            <Share2 className="h-4 w-4" />
-            <span className="hidden sm:inline">Share</span>
-          </Button>
-        )}
-      </DialogTrigger>
+      {trigger !== null && (
+        <DialogTrigger asChild>
+          {trigger ?? (
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Share2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Share</span>
+            </Button>
+          )}
+        </DialogTrigger>
+      )}
       <DialogContent className="flex h-[88vh] max-w-5xl flex-col gap-0 p-0">
         <DialogHeader className="border-b px-5 pt-5">
           <DialogTitle className="flex items-center gap-2">
