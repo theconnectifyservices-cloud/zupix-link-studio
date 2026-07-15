@@ -54,12 +54,25 @@ export function PublicBioRenderer({
     for (const f of families) ensureGoogleFont(f);
   }, [theme.typography]);
 
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!pageId || !slug || !rootRef.current) return;
+    const handle = initTracker(pageId, slug, rootRef.current);
+    return () => handle.end();
+  }, [pageId, slug]);
+
   return (
     <div
+      ref={rootRef}
       data-theme-mode={resolvedMode}
       className={cn(
         resolvedMode === "dark" && "dark",
         "min-h-dvh w-full",
+        `zx-vp-${viewport}`,
+        bgCls,
+      )}
+      style={themeStyle}
+    >
         `zx-vp-${viewport}`,
         bgCls,
       )}
