@@ -134,7 +134,8 @@ export type BackgroundPosition =
 export interface ThemeBackground {
   kind: BackgroundKind;
   imageUrl?: string;
-  videoUrl?: string; // architecture only — not rendered yet
+  videoUrl?: string;
+  posterUrl?: string; // poster frame for video backgrounds
   patternId?: string; // key into BACKGROUND_PATTERNS
   size?: BackgroundSize;
   position?: BackgroundPosition;
