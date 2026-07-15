@@ -161,6 +161,12 @@ export interface BaseBlock {
   settings?: BlockSettings;
 }
 
+export type ProfileLayout = "left" | "center" | "right" | "stacked" | "split";
+export type ProfileBgType = "none" | "solid" | "gradient" | "image" | "video" | "glass";
+export type ProfileShadow = "none" | "sm" | "md" | "lg" | "xl";
+export type ProfileRing = "none" | "solid" | "gradient" | "glow";
+export type BadgePosition = "inline" | "top-right" | "bottom-right";
+
 export interface ProfileBlock extends BaseBlock {
   type: "profile";
   avatarUrl?: string;
@@ -171,7 +177,59 @@ export interface ProfileBlock extends BaseBlock {
   location?: string;
   shortDescription?: string;
   verified?: boolean;
+
+  /** Layout */
+  layout?: ProfileLayout;
+
+  /** Name typography */
+  nameColor?: string;
+  nameFontFamily?: string;
+  nameFontSizePx?: number;
+  nameFontWeight?: FontWeight;
+  nameLetterSpacing?: number;
+  nameLineHeight?: number;
+  nameTextShadow?: string;
+
+  /** Bio typography */
+  bioColor?: string;
+  bioFontFamily?: string;
+  bioFontSizePx?: number;
+  bioFontWeight?: FontWeight;
+  bioLetterSpacing?: number;
+  bioLineHeight?: number;
+  bioMaxLines?: number;
+
+  /** Verified badge */
+  badgeColor?: string;
+  badgeBgColor?: string;
+  badgeBorderColor?: string;
+  badgeSize?: number;
+  badgePosition?: BadgePosition;
+
+  /** Profile image */
+  avatarSize?: number;
+  avatarRadius?: number;
+  avatarBorderWidth?: number;
+  avatarBorderColor?: string;
+  avatarShadow?: ProfileShadow;
+  avatarRing?: ProfileRing;
+  avatarRingColor?: string;
+  avatarObjectFit?: "cover" | "contain";
+  avatarZoom?: number;
+
+  /** Hero background */
+  bgType?: ProfileBgType;
+  bgColor?: string;
+  bgGradientFrom?: string;
+  bgGradientTo?: string;
+  bgGradientAngle?: number;
+  bgImageUrl?: string;
+  bgVideoUrl?: string;
+  bgBlur?: number;
+  overlayColor?: string;
+  overlayOpacity?: number;
 }
+
 
 export type TextAlign = "left" | "center" | "right";
 export type TextKind = "heading" | "paragraph";
