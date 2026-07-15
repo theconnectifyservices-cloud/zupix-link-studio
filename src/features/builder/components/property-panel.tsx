@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Plus, Trash2, ArrowUp, ArrowDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ICON_LIBRARY, ICON_KEYS } from "../button-icons";
 import { useBuilderStore, selectedBlock } from "../store";
 import type {
   Block,
