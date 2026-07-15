@@ -14,6 +14,7 @@ import {
   FileEdit,
   CheckCircle2,
   Loader2,
+  Share2,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -56,6 +57,7 @@ import {
   restoreBioPage,
   type BioPageRow,
 } from "../api";
+import { ShareDialog } from "@/features/sharing";
 
 const statusMeta: Record<
   BioPageRow["status"],
@@ -101,6 +103,7 @@ export function ProjectCard({
   const qc = useQueryClient();
   const [renameOpen, setRenameOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [name, setName] = useState(project.name);
   const [busy, setBusy] = useState(false);
 
@@ -156,6 +159,9 @@ export function ProjectCard({
           onClick={() => withBusy(() => duplicateBioPage(project), "Project duplicated")}
         >
           <Copy className="mr-2 h-4 w-4" /> Duplicate
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setShareOpen(true)}>
+          <Share2 className="mr-2 h-4 w-4" /> Share & QR
         </DropdownMenuItem>
         {project.status === "archived" ? (
           <DropdownMenuItem
@@ -304,6 +310,13 @@ export function ProjectCard({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ShareDialog
+        pageId={project.id}
+        trigger={null}
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+      />
     </>
   );
 }

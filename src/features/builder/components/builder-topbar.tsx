@@ -40,6 +40,7 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { TemplateGallery, SaveTemplateDialog } from "@/features/templates";
 import { PublishDialog } from "@/features/publishing";
 import { SeoDialog } from "@/features/seo";
+import { ShareDialog } from "@/features/sharing";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -178,6 +179,7 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
           <Save className="h-4 w-4" />
           <span className="hidden sm:inline">Save</span>
         </Button>
+        {pageId && <ShareDialog pageId={pageId} />}
         {pageId && <PublishDialog pageId={pageId} content={content} />}
       </div>
     </header>
