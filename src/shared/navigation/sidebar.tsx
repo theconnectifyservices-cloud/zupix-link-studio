@@ -55,6 +55,7 @@ const appItems: Item[] = [
   { icon: Sparkles, label: "ZUPIX AI", href: "/app/ai" },
   { icon: Users, label: "Workspace", href: "/app/team" },
   { icon: Building2, label: "Agency", href: "/app/agency" },
+  { icon: Shield, label: "Enterprise", href: "/app/enterprise" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
