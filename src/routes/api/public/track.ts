@@ -246,6 +246,12 @@ async function handlePost(request: Request): Promise<Response> {
     referrer_source: ref.source,
     referrer_host: ref.host,
     qr_source: envelope.qrSource,
+    utm_source: envelope.utm.source ?? null,
+    utm_medium: envelope.utm.medium ?? null,
+    utm_campaign: envelope.utm.campaign ?? null,
+    utm_term: envelope.utm.term ?? null,
+    utm_content: envelope.utm.content ?? null,
+    campaign_id: campaignId,
     is_bot: false,
   } as const;
 
