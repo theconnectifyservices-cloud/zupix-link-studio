@@ -58,6 +58,10 @@ export interface MediaAsset {
   view_count: number;
   last_viewed_at: string | null;
   current_version: number;
+  // LS-10D intelligence
+  archived_at: string | null;
+  deleted_at?: string | null;
+  health_score: number | null;
 }
 
 /* -------------------- LS-10C ORGANIZATION -------------------- */
