@@ -113,7 +113,7 @@ export const useBackupsStore = create<BackupsState>()(
             {
               id: crypto.randomUUID(),
               kind,
-              status: "success",
+              status: "success" as BackupStatus,
               sizeMb: Math.round(rndSize(kind)),
               durationSec: Math.round(5 + Math.random() * 40),
               verified: false,
