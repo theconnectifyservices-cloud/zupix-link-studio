@@ -210,7 +210,7 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
     .maybeSingle();
   if (existing) {
     onProgress?.(100);
-    return existing as MediaAsset;
+    return existing as unknown as MediaAsset;
   }
 
   onProgress?.(15);

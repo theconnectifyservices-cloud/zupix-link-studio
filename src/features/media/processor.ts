@@ -102,12 +102,14 @@ export async function processImageAsset(input: {
   const img = await decodeImage(input.file);
   if (!img) return { status: "failed", variants: [], optimizedBytes: 0, reason: "decode-failed" };
 
-  const specs: VariantSpec[] = [
-    { role: "thumb", width: VARIANT_WIDTHS.thumb },
-    { role: "small", width: VARIANT_WIDTHS.small },
-    { role: "medium", width: VARIANT_WIDTHS.medium },
-    { role: "large", width: VARIANT_WIDTHS.large },
-  ].filter((s) => s.width <= img.naturalWidth || s.role === "thumb");
+  const specs: VariantSpec[] = (
+    [
+      { role: "thumb", width: VARIANT_WIDTHS.thumb },
+      { role: "small", width: VARIANT_WIDTHS.small },
+      { role: "medium", width: VARIANT_WIDTHS.medium },
+      { role: "large", width: VARIANT_WIDTHS.large },
+    ] as VariantSpec[]
+  ).filter((s) => s.width <= img.naturalWidth || s.role === "thumb");
 
   const variants: MediaVariant[] = [];
   let optimizedBytes = 0;
