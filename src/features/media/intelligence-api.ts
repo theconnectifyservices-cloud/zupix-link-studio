@@ -252,12 +252,8 @@ export async function globalReplaceAsset(input: {
     .eq("asset_id", oldAssetId);
   if (reErr) throw reErr;
 
-  // Recount usage_count
-  await supabase.rpc("update_updated_at_column").then(() => undefined, () => undefined);
-  await Promise.all([
-    updateUsageCount(oldAssetId),
-    updateUsageCount(newAssetId),
-  ]);
+  // Recount usage_count on both sides
+  await Promise.all([updateUsageCount(oldAssetId), updateUsageCount(newAssetId)]);
 
   return { pagesUpdated, usagesUpdated: count ?? 0 };
 }
