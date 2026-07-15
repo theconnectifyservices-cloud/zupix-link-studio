@@ -20,6 +20,9 @@ import {
   Building2,
   Gem,
   Paintbrush,
+  Briefcase,
+
+
 
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
@@ -60,6 +63,7 @@ const appItems: Item[] = [
   { icon: Shield, label: "Enterprise", href: "/app/enterprise" },
   { icon: Gem, label: "Monetization", href: "/app/monetization" },
   { icon: Paintbrush, label: "White Label", href: "/app/white-label" },
+  { icon: Briefcase, label: "Reseller", href: "/app/reseller" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
