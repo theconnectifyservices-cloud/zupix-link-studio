@@ -51,6 +51,7 @@ export function MediaPicker({
   onSelect,
   title = "Select image",
   crop,
+}: MediaPickerProps) {
   const { workspace, userId } = useCurrentWorkspace();
   const workspaceId = workspace?.id;
 
