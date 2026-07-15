@@ -64,6 +64,19 @@ export function PublicBioRenderer({
     return () => handle.end();
   }, [pageId, slug]);
 
+  // LS-11A: inject workspace-level tracking pixels & custom scripts
+  useEffect(() => {
+    if (!workspaceId) return;
+    let cancelled = false;
+    fetchPublicTracking(workspaceId).then((settings) => {
+      if (!cancelled) injectTracking(settings);
+    });
+    return () => {
+      cancelled = true;
+      removeTracking();
+    };
+  }, [workspaceId]);
+
   return (
     <div
       ref={rootRef}
