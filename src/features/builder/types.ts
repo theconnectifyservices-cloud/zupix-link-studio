@@ -59,18 +59,35 @@ export type HoverEffect =
   | "brightness"
   | "blur";
 
-/** Rich effect layered onto button-like blocks. */
+/** Rich effect layered onto button-like blocks. v2.0 library. */
 export type ButtonEffect =
   | "none"
   | "shine"
   | "ripple"
-  | "pulse"
-  | "glow"
   | "neon"
   | "floating"
+  | "pulse"
   | "bounce"
+  | "glow"
+  | "gradientFlow"
+  | "magnetic"
+  | "glass"
+  | "borderGlow"
+  | "breathing"
+  | "shake"
+  | "floatingGlow"
+  | "lift3d"
+  | "liquidFill"
+  | "rainbowBorder"
+  | "spotlight"
+  | "premiumCta"
+  // legacy — kept for backward compatibility with saved pages
   | "expand"
   | "press";
+
+/** Direction options for effects that sweep or fill. */
+export type ButtonEffectDirection = "lr" | "rl" | "tb" | "bt" | "diag";
+
 
 /** Per-viewport spacing / typography overrides. */
 export interface ResponsiveOverrides {
@@ -102,10 +119,33 @@ export interface BlockSettings {
   buttonEffect?: ButtonEffect;
   /** Trigger mode for Shine (default: hover). */
   buttonEffectMode?: "always" | "hover" | "click";
-  /** Animation speed in ms for continuous button effects (shine sweep, floating). */
+  /** Animation speed / duration in ms for continuous effects. */
   buttonEffectSpeed?: number;
-  /** Accent color used by Neon (glow) and Ripple effects. */
+  /** Delay before the animation starts, ms. */
+  buttonEffectDelay?: number;
+  /** Iteration count: "infinite" or a number. */
+  buttonEffectRepeat?: "infinite" | number;
+  /** Primary accent color (glow, ripple, neon, spotlight, liquid fill). */
   buttonEffectColor?: string;
+  /** Secondary color (glass reflection tint, rainbow accent). */
+  buttonEffectColor2?: string;
+  /** Intensity 0-100 — maps to glow blur, magnetic pull strength, etc. */
+  buttonEffectIntensity?: number;
+  /** Direction for sweeping/filling effects. */
+  buttonEffectDirection?: ButtonEffectDirection;
+  /** Effect-specific "size" (shine width %, ripple max scale, spotlight radius px). */
+  buttonEffectSize?: number;
+  /** Effect-specific opacity 0-1 (ripple, glass). */
+  buttonEffectOpacity?: number;
+  /** Effect-specific distance in px (floating, bounce, shake, 3d lift). */
+  buttonEffectDistance?: number;
+  /** Effect-specific scale factor (pulse, breathing). */
+  buttonEffectScale?: number;
+  /** Gradient stops for Gradient Flow / Rainbow Border. */
+  buttonEffectGradient?: string[];
+  /** Master enable toggle — false disables all button effects for this block. */
+  buttonEffectEnabled?: boolean;
+
   /** Per-viewport visibility. `undefined` = shown. */
   visibility?: { desktop?: boolean; tablet?: boolean; mobile?: boolean };
   /** Per-viewport spacing / typography overrides. */
