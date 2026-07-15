@@ -34,6 +34,7 @@ import { Route as AuthenticatedAppTeamRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated.app.settings'
 import { Route as AuthenticatedAppSecurityRouteImport } from './routes/_authenticated.app.security'
 import { Route as AuthenticatedAppResellerRouteImport } from './routes/_authenticated.app.reseller'
+import { Route as AuthenticatedAppReleaseRouteImport } from './routes/_authenticated.app.release'
 import { Route as AuthenticatedAppQaRouteImport } from './routes/_authenticated.app.qa'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
 import { Route as AuthenticatedAppPerformanceRouteImport } from './routes/_authenticated.app.performance'
@@ -201,6 +202,11 @@ const AuthenticatedAppResellerRoute =
     path: '/reseller',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppReleaseRoute = AuthenticatedAppReleaseRouteImport.update({
+  id: '/release',
+  path: '/release',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppQaRoute = AuthenticatedAppQaRouteImport.update({
   id: '/qa',
   path: '/qa',
@@ -443,6 +449,7 @@ export interface FileRoutesByFullPath {
   '/app/performance': typeof AuthenticatedAppPerformanceRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/qa': typeof AuthenticatedAppQaRoute
+  '/app/release': typeof AuthenticatedAppReleaseRoute
   '/app/reseller': typeof AuthenticatedAppResellerRoute
   '/app/security': typeof AuthenticatedAppSecurityRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
@@ -503,6 +510,7 @@ export interface FileRoutesByTo {
   '/app/performance': typeof AuthenticatedAppPerformanceRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/qa': typeof AuthenticatedAppQaRoute
+  '/app/release': typeof AuthenticatedAppReleaseRoute
   '/app/reseller': typeof AuthenticatedAppResellerRoute
   '/app/security': typeof AuthenticatedAppSecurityRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
@@ -567,6 +575,7 @@ export interface FileRoutesById {
   '/_authenticated/app/performance': typeof AuthenticatedAppPerformanceRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/qa': typeof AuthenticatedAppQaRoute
+  '/_authenticated/app/release': typeof AuthenticatedAppReleaseRoute
   '/_authenticated/app/reseller': typeof AuthenticatedAppResellerRoute
   '/_authenticated/app/security': typeof AuthenticatedAppSecurityRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
@@ -631,6 +640,7 @@ export interface FileRouteTypes {
     | '/app/performance'
     | '/app/projects'
     | '/app/qa'
+    | '/app/release'
     | '/app/reseller'
     | '/app/security'
     | '/app/settings'
@@ -691,6 +701,7 @@ export interface FileRouteTypes {
     | '/app/performance'
     | '/app/projects'
     | '/app/qa'
+    | '/app/release'
     | '/app/reseller'
     | '/app/security'
     | '/app/settings'
@@ -754,6 +765,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/performance'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/qa'
+    | '/_authenticated/app/release'
     | '/_authenticated/app/reseller'
     | '/_authenticated/app/security'
     | '/_authenticated/app/settings'
@@ -976,6 +988,13 @@ declare module '@tanstack/react-router' {
       path: '/reseller'
       fullPath: '/app/reseller'
       preLoaderRoute: typeof AuthenticatedAppResellerRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/release': {
+      id: '/_authenticated/app/release'
+      path: '/release'
+      fullPath: '/app/release'
+      preLoaderRoute: typeof AuthenticatedAppReleaseRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/qa': {
@@ -1321,6 +1340,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppPerformanceRoute: typeof AuthenticatedAppPerformanceRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
   AuthenticatedAppQaRoute: typeof AuthenticatedAppQaRoute
+  AuthenticatedAppReleaseRoute: typeof AuthenticatedAppReleaseRoute
   AuthenticatedAppResellerRoute: typeof AuthenticatedAppResellerRoute
   AuthenticatedAppSecurityRoute: typeof AuthenticatedAppSecurityRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRouteWithChildren
@@ -1352,6 +1372,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppPerformanceRoute: AuthenticatedAppPerformanceRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
   AuthenticatedAppQaRoute: AuthenticatedAppQaRoute,
+  AuthenticatedAppReleaseRoute: AuthenticatedAppReleaseRoute,
   AuthenticatedAppResellerRoute: AuthenticatedAppResellerRoute,
   AuthenticatedAppSecurityRoute: AuthenticatedAppSecurityRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRouteWithChildren,
