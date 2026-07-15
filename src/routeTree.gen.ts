@@ -28,6 +28,7 @@ import { Route as ApiAiChatRouteImport } from './routes/api/ai.chat'
 import { Route as AuthenticatedBuilderIdRouteImport } from './routes/_authenticated.builder.$id'
 import { Route as AuthenticatedAppTrackingRouteImport } from './routes/_authenticated.app.tracking'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated.app.templates'
+import { Route as AuthenticatedAppTeamRouteImport } from './routes/_authenticated.app.team'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated.app.settings'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
 import { Route as AuthenticatedAppMediaRouteImport } from './routes/_authenticated.app.media'
@@ -152,6 +153,11 @@ const AuthenticatedAppTemplatesRoute =
     path: '/templates',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppTeamRoute = AuthenticatedAppTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppSettingsRoute =
   AuthenticatedAppSettingsRouteImport.update({
     id: '/settings',
@@ -334,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
+  '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
@@ -379,6 +386,7 @@ export interface FileRoutesByTo {
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
+  '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
@@ -428,6 +436,7 @@ export interface FileRoutesById {
   '/_authenticated/app/media': typeof AuthenticatedAppMediaRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
+  '/_authenticated/app/team': typeof AuthenticatedAppTeamRoute
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
@@ -477,6 +486,7 @@ export interface FileRouteTypes {
     | '/app/media'
     | '/app/projects'
     | '/app/settings'
+    | '/app/team'
     | '/app/templates'
     | '/app/tracking'
     | '/builder/$id'
@@ -522,6 +532,7 @@ export interface FileRouteTypes {
     | '/app/media'
     | '/app/projects'
     | '/app/settings'
+    | '/app/team'
     | '/app/templates'
     | '/app/tracking'
     | '/builder/$id'
@@ -570,6 +581,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/media'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/settings'
+    | '/_authenticated/app/team'
     | '/_authenticated/app/templates'
     | '/_authenticated/app/tracking'
     | '/_authenticated/builder/$id'
@@ -742,6 +754,13 @@ declare module '@tanstack/react-router' {
       path: '/templates'
       fullPath: '/app/templates'
       preLoaderRoute: typeof AuthenticatedAppTemplatesRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/team': {
+      id: '/_authenticated/app/team'
+      path: '/team'
+      fullPath: '/app/team'
+      preLoaderRoute: typeof AuthenticatedAppTeamRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/settings': {
@@ -1013,6 +1032,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppMediaRoute: typeof AuthenticatedAppMediaRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRouteWithChildren
+  AuthenticatedAppTeamRoute: typeof AuthenticatedAppTeamRoute
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppTrackingRoute: typeof AuthenticatedAppTrackingRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
@@ -1032,6 +1052,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppMediaRoute: AuthenticatedAppMediaRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRouteWithChildren,
+  AuthenticatedAppTeamRoute: AuthenticatedAppTeamRoute,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppTrackingRoute: AuthenticatedAppTrackingRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
