@@ -57,6 +57,7 @@ import {
   restoreBioPage,
   type BioPageRow,
 } from "../api";
+import { ShareDialog } from "@/features/sharing";
 
 const statusMeta: Record<
   BioPageRow["status"],
