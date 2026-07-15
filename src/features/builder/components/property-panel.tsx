@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { getBlockDef } from "../block-registry";
 import { ImageField } from "./image-field";
+import { VideoSourceField } from "./video-source-field";
 
 export function PropertyPanel() {
   const block = useBuilderStore(selectedBlock);
