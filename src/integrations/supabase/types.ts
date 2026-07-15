@@ -71,6 +71,208 @@ export type Database = {
           },
         ]
       }
+      analytics_events: {
+        Row: {
+          bio_page_id: string
+          block_id: string | null
+          browser: string | null
+          city: string | null
+          click_source: string | null
+          country: string | null
+          created_at: string
+          device_type: Database["public"]["Enums"]["analytics_device_type"]
+          duration_ms: number | null
+          event_type: Database["public"]["Enums"]["analytics_event_type"]
+          id: number
+          is_bot: boolean
+          link_host: string | null
+          link_url: string | null
+          os: string | null
+          qr_source: string | null
+          referrer_host: string | null
+          referrer_source: string | null
+          region: string | null
+          session_id: string | null
+          timezone: string | null
+          visitor_hash: string
+          workspace_id: string
+        }
+        Insert: {
+          bio_page_id: string
+          block_id?: string | null
+          browser?: string | null
+          city?: string | null
+          click_source?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: Database["public"]["Enums"]["analytics_device_type"]
+          duration_ms?: number | null
+          event_type: Database["public"]["Enums"]["analytics_event_type"]
+          id?: number
+          is_bot?: boolean
+          link_host?: string | null
+          link_url?: string | null
+          os?: string | null
+          qr_source?: string | null
+          referrer_host?: string | null
+          referrer_source?: string | null
+          region?: string | null
+          session_id?: string | null
+          timezone?: string | null
+          visitor_hash: string
+          workspace_id: string
+        }
+        Update: {
+          bio_page_id?: string
+          block_id?: string | null
+          browser?: string | null
+          city?: string | null
+          click_source?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: Database["public"]["Enums"]["analytics_device_type"]
+          duration_ms?: number | null
+          event_type?: Database["public"]["Enums"]["analytics_event_type"]
+          id?: number
+          is_bot?: boolean
+          link_host?: string | null
+          link_url?: string | null
+          os?: string | null
+          qr_source?: string | null
+          referrer_host?: string | null
+          referrer_source?: string | null
+          region?: string | null
+          session_id?: string | null
+          timezone?: string | null
+          visitor_hash?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_bio_page_id_fkey"
+            columns: ["bio_page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "analytics_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analytics_sessions: {
+        Row: {
+          bio_page_id: string
+          browser: string | null
+          city: string | null
+          country: string | null
+          device_type: Database["public"]["Enums"]["analytics_device_type"]
+          duration_ms: number
+          id: string
+          is_bounce: boolean
+          is_returning: boolean
+          last_seen_at: string
+          link_clicks: number
+          os: string | null
+          page_views: number
+          qr_source: string | null
+          referrer_host: string | null
+          referrer_source: string | null
+          region: string | null
+          screen_size: string | null
+          session_key: string
+          started_at: string
+          timezone: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          visitor_hash: string
+          workspace_id: string
+        }
+        Insert: {
+          bio_page_id: string
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          device_type?: Database["public"]["Enums"]["analytics_device_type"]
+          duration_ms?: number
+          id?: string
+          is_bounce?: boolean
+          is_returning?: boolean
+          last_seen_at?: string
+          link_clicks?: number
+          os?: string | null
+          page_views?: number
+          qr_source?: string | null
+          referrer_host?: string | null
+          referrer_source?: string | null
+          region?: string | null
+          screen_size?: string | null
+          session_key: string
+          started_at?: string
+          timezone?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          visitor_hash: string
+          workspace_id: string
+        }
+        Update: {
+          bio_page_id?: string
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          device_type?: Database["public"]["Enums"]["analytics_device_type"]
+          duration_ms?: number
+          id?: string
+          is_bounce?: boolean
+          is_returning?: boolean
+          last_seen_at?: string
+          link_clicks?: number
+          os?: string | null
+          page_views?: number
+          qr_source?: string | null
+          referrer_host?: string | null
+          referrer_source?: string | null
+          region?: string | null
+          screen_size?: string | null
+          session_key?: string
+          started_at?: string
+          timezone?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          visitor_hash?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_sessions_bio_page_id_fkey"
+            columns: ["bio_page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_sessions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -1153,6 +1355,12 @@ export type Database = {
         | "invitation.send"
         | "invitation.accept"
         | "settings.update"
+      analytics_device_type: "mobile" | "tablet" | "desktop" | "bot" | "unknown"
+      analytics_event_type:
+        | "page_view"
+        | "link_click"
+        | "qr_scan"
+        | "session_end"
       app_role: "admin" | "moderator" | "user"
       bio_page_status:
         | "draft"
@@ -1327,6 +1535,13 @@ export const Constants = {
         "invitation.send",
         "invitation.accept",
         "settings.update",
+      ],
+      analytics_device_type: ["mobile", "tablet", "desktop", "bot", "unknown"],
+      analytics_event_type: [
+        "page_view",
+        "link_click",
+        "qr_scan",
+        "session_end",
       ],
       app_role: ["admin", "moderator", "user"],
       bio_page_status: [
