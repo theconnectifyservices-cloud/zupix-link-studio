@@ -109,8 +109,8 @@ export function PartnerCommerceDashboard({ tenantId, tenantName, userId }: Props
       <PageHeader
         title="Partner Commerce"
         description={`Billing · commissions · marketplace · payouts for ${tenantName}`}
-        icon={<Store className="h-5 w-5" />}
       />
+
 
       {/* KPI GRID */}
       <div className="grid gap-3 border-b bg-muted/10 p-4 sm:grid-cols-2 lg:grid-cols-4">
