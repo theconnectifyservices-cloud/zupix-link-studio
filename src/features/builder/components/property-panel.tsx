@@ -369,13 +369,15 @@ export function PropertyPanel() {
           </Field>
 
           <SectionTitle>Hero background</SectionTitle>
-          <Field label="Cover image URL (legacy top banner)">
-            <Input
-              value={block.coverUrl ?? ""}
-              onChange={(e) => set("coverUrl", e.target.value)}
-              placeholder="https://…"
-            />
-          </Field>
+          <ImageField
+            label="Cover image"
+            value={block.coverUrl}
+            onChange={(url) => set("coverUrl", url)}
+            crop={{ shape: "rect", aspect: 16 / 9 }}
+            previewAspect="16 / 9"
+            pickerTitle="Choose cover image"
+          />
+
           <Field label="Background type">
             <SelectSimple
               value={block.bgType ?? "none"}
