@@ -13,6 +13,7 @@ import {
 import type { BioContent } from "@/features/builder/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { initTracker } from "@/features/analytics/tracker";
+import { fetchPublicTracking, injectTracking, removeTracking } from "@/features/tracking";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
