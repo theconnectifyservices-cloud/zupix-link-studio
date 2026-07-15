@@ -239,9 +239,11 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
       file_name: file.name,
       mime_type: file.type,
       size_bytes: file.size,
+      original_size_bytes: file.size,
       width: dims?.width ?? null,
       height: dims?.height ?? null,
       sha256: hash,
+      processing_status: "pending",
     })
     .select()
     .single();
@@ -250,7 +252,51 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
     throw insErr;
   }
   onProgress?.(100);
-  return row as unknown as MediaAsset;
+
+  // Fire-and-forget async processing so uploads feel instant.
+  const asset = row as unknown as MediaAsset;
+  const storageDir = `${workspaceId}/${objectId}`;
+  void (async () => {
+    try {
+      await supabase
+        .from("media_assets")
+        .update({ processing_status: "processing" })
+        .eq("id", asset.id);
+      const { processImageAsset, processVideoAsset, saveProcessingReport } = await import("./processor");
+      if (kind === "image") {
+        const report = await processImageAsset({ assetId: asset.id, file, storageDir });
+        await saveProcessingReport(asset.id, report);
+      } else if (kind === "video") {
+        const poster = await processVideoAsset({ file, storageDir });
+        await saveProcessingReport(
+          asset.id,
+          {
+            status: poster ? "completed" : "skipped",
+            variants: poster ? [poster.variant] : [],
+            optimizedBytes: poster?.variant.size ?? 0,
+            reason: poster ? undefined : "no-poster-frame",
+          },
+          { videoThumbnailPath: poster?.posterPath ?? null },
+        );
+      } else {
+        await supabase
+          .from("media_assets")
+          .update({ processing_status: "skipped", processed_at: new Date().toISOString() })
+          .eq("id", asset.id);
+      }
+    } catch (e) {
+      await supabase
+        .from("media_assets")
+        .update({
+          processing_status: "failed",
+          processing_error: e instanceof Error ? e.message : "processing-failed",
+          processed_at: new Date().toISOString(),
+        })
+        .eq("id", asset.id);
+    }
+  })();
+
+  return asset;
 }
 
 /* -------------------- USAGE -------------------- */
