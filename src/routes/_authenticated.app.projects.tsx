@@ -33,8 +33,28 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/_authenticated/app/projects")({
   validateSearch: zodValidator(searchSchema),
-  component: ProjectsPage,
+  component: ProjectsPageWrapper,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-6xl p-6">
+      <EmptyState
+        icon={<SearchIcon className="h-8 w-8" />}
+        title="Something went wrong"
+        description={error instanceof Error ? error.message : "Please try again."}
+        action={<Button onClick={reset}>Try again</Button>}
+      />
+    </div>
+  ),
 });
+
+import { ErrorBoundary } from "@/shared/error";
+
+function ProjectsPageWrapper() {
+  return (
+    <ErrorBoundary>
+      <ProjectsPage />
+    </ErrorBoundary>
+  );
+}
 
 type SortKey = "updated" | "created" | "oldest" | "alpha";
 type StatusFilter = "all" | BioPageStatus;
