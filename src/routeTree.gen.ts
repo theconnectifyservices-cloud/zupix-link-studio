@@ -54,6 +54,7 @@ import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authentic
 import { Route as ApiPublicWebhooksRazorpayRouteImport } from './routes/api/public/webhooks/razorpay'
 import { Route as AuthenticatedAppSettingsSessionsRouteImport } from './routes/_authenticated.app.settings.sessions'
 import { Route as AuthenticatedAppSettingsSecurityRouteImport } from './routes/_authenticated.app.settings.security'
+import { Route as AuthenticatedAppSettingsPwaRouteImport } from './routes/_authenticated.app.settings.pwa'
 import { Route as AuthenticatedAppSettingsProfileRouteImport } from './routes/_authenticated.app.settings.profile'
 import { Route as AuthenticatedAppSettingsPreferencesRouteImport } from './routes/_authenticated.app.settings.preferences'
 import { Route as AuthenticatedAppSettingsPasswordRouteImport } from './routes/_authenticated.app.settings.password'
@@ -308,6 +309,12 @@ const AuthenticatedAppSettingsSecurityRoute =
     path: '/security',
     getParentRoute: () => AuthenticatedAppSettingsRoute,
   } as any)
+const AuthenticatedAppSettingsPwaRoute =
+  AuthenticatedAppSettingsPwaRouteImport.update({
+    id: '/pwa',
+    path: '/pwa',
+    getParentRoute: () => AuthenticatedAppSettingsRoute,
+  } as any)
 const AuthenticatedAppSettingsProfileRoute =
   AuthenticatedAppSettingsProfileRouteImport.update({
     id: '/profile',
@@ -420,6 +427,7 @@ export interface FileRoutesByFullPath {
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
   '/app/settings/preferences': typeof AuthenticatedAppSettingsPreferencesRoute
   '/app/settings/profile': typeof AuthenticatedAppSettingsProfileRoute
+  '/app/settings/pwa': typeof AuthenticatedAppSettingsPwaRoute
   '/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
@@ -474,6 +482,7 @@ export interface FileRoutesByTo {
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
   '/app/settings/preferences': typeof AuthenticatedAppSettingsPreferencesRoute
   '/app/settings/profile': typeof AuthenticatedAppSettingsProfileRoute
+  '/app/settings/pwa': typeof AuthenticatedAppSettingsPwaRoute
   '/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
@@ -532,6 +541,7 @@ export interface FileRoutesById {
   '/_authenticated/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
   '/_authenticated/app/settings/preferences': typeof AuthenticatedAppSettingsPreferencesRoute
   '/_authenticated/app/settings/profile': typeof AuthenticatedAppSettingsProfileRoute
+  '/_authenticated/app/settings/pwa': typeof AuthenticatedAppSettingsPwaRoute
   '/_authenticated/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/_authenticated/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
@@ -590,6 +600,7 @@ export interface FileRouteTypes {
     | '/app/settings/password'
     | '/app/settings/preferences'
     | '/app/settings/profile'
+    | '/app/settings/pwa'
     | '/app/settings/security'
     | '/app/settings/sessions'
     | '/api/public/webhooks/razorpay'
@@ -644,6 +655,7 @@ export interface FileRouteTypes {
     | '/app/settings/password'
     | '/app/settings/preferences'
     | '/app/settings/profile'
+    | '/app/settings/pwa'
     | '/app/settings/security'
     | '/app/settings/sessions'
     | '/api/public/webhooks/razorpay'
@@ -701,6 +713,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/settings/password'
     | '/_authenticated/app/settings/preferences'
     | '/_authenticated/app/settings/profile'
+    | '/_authenticated/app/settings/pwa'
     | '/_authenticated/app/settings/security'
     | '/_authenticated/app/settings/sessions'
     | '/api/public/webhooks/razorpay'
@@ -1041,6 +1054,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSettingsSecurityRouteImport
       parentRoute: typeof AuthenticatedAppSettingsRoute
     }
+    '/_authenticated/app/settings/pwa': {
+      id: '/_authenticated/app/settings/pwa'
+      path: '/pwa'
+      fullPath: '/app/settings/pwa'
+      preLoaderRoute: typeof AuthenticatedAppSettingsPwaRouteImport
+      parentRoute: typeof AuthenticatedAppSettingsRoute
+    }
     '/_authenticated/app/settings/profile': {
       id: '/_authenticated/app/settings/profile'
       path: '/profile'
@@ -1151,6 +1171,7 @@ interface AuthenticatedAppSettingsRouteChildren {
   AuthenticatedAppSettingsPasswordRoute: typeof AuthenticatedAppSettingsPasswordRoute
   AuthenticatedAppSettingsPreferencesRoute: typeof AuthenticatedAppSettingsPreferencesRoute
   AuthenticatedAppSettingsProfileRoute: typeof AuthenticatedAppSettingsProfileRoute
+  AuthenticatedAppSettingsPwaRoute: typeof AuthenticatedAppSettingsPwaRoute
   AuthenticatedAppSettingsSecurityRoute: typeof AuthenticatedAppSettingsSecurityRoute
   AuthenticatedAppSettingsSessionsRoute: typeof AuthenticatedAppSettingsSessionsRoute
 }
@@ -1166,6 +1187,7 @@ const AuthenticatedAppSettingsRouteChildren: AuthenticatedAppSettingsRouteChildr
     AuthenticatedAppSettingsPreferencesRoute:
       AuthenticatedAppSettingsPreferencesRoute,
     AuthenticatedAppSettingsProfileRoute: AuthenticatedAppSettingsProfileRoute,
+    AuthenticatedAppSettingsPwaRoute: AuthenticatedAppSettingsPwaRoute,
     AuthenticatedAppSettingsSecurityRoute:
       AuthenticatedAppSettingsSecurityRoute,
     AuthenticatedAppSettingsSessionsRoute:

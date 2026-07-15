@@ -60,7 +60,7 @@ export async function registerServiceWorker(
   const wb = new Workbox(SW_URL);
 
   wb.addEventListener("waiting", () => onUpdate?.(wb));
-  wb.addEventListener("externalwaiting", () => onUpdate?.(wb));
+  
 
   const registration = (await wb.register()) ?? null;
   cached = { wb, registration };
