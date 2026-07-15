@@ -114,6 +114,3 @@ export function useAdvancedSearch(q: AdvancedSearchQuery, enabled: boolean) {
     staleTime: 10_000,
   });
 }
-
-// Silence unused import
-void _u;
