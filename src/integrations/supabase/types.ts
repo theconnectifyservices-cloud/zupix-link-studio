@@ -253,6 +253,139 @@ export type Database = {
           },
         ]
       }
+      ai_workflow_runs: {
+        Row: {
+          approved_at: string | null
+          created_at: string
+          error: string | null
+          executed_at: string | null
+          id: string
+          input: Json
+          latency_ms: number | null
+          model: string | null
+          preview: Json
+          provider: string | null
+          result: Json
+          retries: number
+          scheduled_at: string | null
+          status: string
+          target: Json
+          tokens_in: number | null
+          tokens_out: number | null
+          trigger_type: string
+          undo_data: Json
+          updated_at: string
+          user_id: string
+          workflow_id: string
+          workspace_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          created_at?: string
+          error?: string | null
+          executed_at?: string | null
+          id?: string
+          input?: Json
+          latency_ms?: number | null
+          model?: string | null
+          preview?: Json
+          provider?: string | null
+          result?: Json
+          retries?: number
+          scheduled_at?: string | null
+          status?: string
+          target?: Json
+          tokens_in?: number | null
+          tokens_out?: number | null
+          trigger_type?: string
+          undo_data?: Json
+          updated_at?: string
+          user_id: string
+          workflow_id: string
+          workspace_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          created_at?: string
+          error?: string | null
+          executed_at?: string | null
+          id?: string
+          input?: Json
+          latency_ms?: number | null
+          model?: string | null
+          preview?: Json
+          provider?: string | null
+          result?: Json
+          retries?: number
+          scheduled_at?: string | null
+          status?: string
+          target?: Json
+          tokens_in?: number | null
+          tokens_out?: number | null
+          trigger_type?: string
+          undo_data?: Json
+          updated_at?: string
+          user_id?: string
+          workflow_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_workflow_runs_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_workspace_memory: {
+        Row: {
+          brand_voice: string | null
+          content_preferences: Json
+          created_at: string
+          design_preferences: Json
+          notes: string | null
+          preferred_tone: string | null
+          target_audience: string | null
+          updated_at: string
+          updated_by: string | null
+          workspace_id: string
+        }
+        Insert: {
+          brand_voice?: string | null
+          content_preferences?: Json
+          created_at?: string
+          design_preferences?: Json
+          notes?: string | null
+          preferred_tone?: string | null
+          target_audience?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id: string
+        }
+        Update: {
+          brand_voice?: string | null
+          content_preferences?: Json
+          created_at?: string
+          design_preferences?: Json
+          notes?: string | null
+          preferred_tone?: string | null
+          target_audience?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_workspace_memory_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       analytics_events: {
         Row: {
           bio_page_id: string

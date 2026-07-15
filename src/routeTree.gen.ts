@@ -48,6 +48,7 @@ import { Route as AuthenticatedAppSettingsPreferencesRouteImport } from './route
 import { Route as AuthenticatedAppSettingsPasswordRouteImport } from './routes/_authenticated.app.settings.password'
 import { Route as AuthenticatedAppSettingsNotificationsRouteImport } from './routes/_authenticated.app.settings.notifications'
 import { Route as AuthenticatedAppSettingsIdentityRouteImport } from './routes/_authenticated.app.settings.identity'
+import { Route as AuthenticatedAppAiWorkflowsRouteImport } from './routes/_authenticated.app.ai.workflows'
 import { Route as AuthenticatedAppAiStudioRouteImport } from './routes/_authenticated.app.ai.studio'
 import { Route as AuthenticatedAppAiGrowthRouteImport } from './routes/_authenticated.app.ai.growth'
 import { Route as AuthenticatedAppAiDesignRouteImport } from './routes/_authenticated.app.ai.design'
@@ -264,6 +265,12 @@ const AuthenticatedAppSettingsIdentityRoute =
     path: '/identity',
     getParentRoute: () => AuthenticatedAppSettingsRoute,
   } as any)
+const AuthenticatedAppAiWorkflowsRoute =
+  AuthenticatedAppAiWorkflowsRouteImport.update({
+    id: '/workflows',
+    path: '/workflows',
+    getParentRoute: () => AuthenticatedAppAiRoute,
+  } as any)
 const AuthenticatedAppAiStudioRoute =
   AuthenticatedAppAiStudioRouteImport.update({
     id: '/studio',
@@ -324,6 +331,7 @@ export interface FileRoutesByFullPath {
   '/app/ai/design': typeof AuthenticatedAppAiDesignRoute
   '/app/ai/growth': typeof AuthenticatedAppAiGrowthRoute
   '/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
+  '/app/ai/workflows': typeof AuthenticatedAppAiWorkflowsRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -366,6 +374,7 @@ export interface FileRoutesByTo {
   '/app/ai/design': typeof AuthenticatedAppAiDesignRoute
   '/app/ai/growth': typeof AuthenticatedAppAiGrowthRoute
   '/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
+  '/app/ai/workflows': typeof AuthenticatedAppAiWorkflowsRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -412,6 +421,7 @@ export interface FileRoutesById {
   '/_authenticated/app/ai/design': typeof AuthenticatedAppAiDesignRoute
   '/_authenticated/app/ai/growth': typeof AuthenticatedAppAiGrowthRoute
   '/_authenticated/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
+  '/_authenticated/app/ai/workflows': typeof AuthenticatedAppAiWorkflowsRoute
   '/_authenticated/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/_authenticated/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/_authenticated/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -458,6 +468,7 @@ export interface FileRouteTypes {
     | '/app/ai/design'
     | '/app/ai/growth'
     | '/app/ai/studio'
+    | '/app/ai/workflows'
     | '/app/settings/identity'
     | '/app/settings/notifications'
     | '/app/settings/password'
@@ -500,6 +511,7 @@ export interface FileRouteTypes {
     | '/app/ai/design'
     | '/app/ai/growth'
     | '/app/ai/studio'
+    | '/app/ai/workflows'
     | '/app/settings/identity'
     | '/app/settings/notifications'
     | '/app/settings/password'
@@ -545,6 +557,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/ai/design'
     | '/_authenticated/app/ai/growth'
     | '/_authenticated/app/ai/studio'
+    | '/_authenticated/app/ai/workflows'
     | '/_authenticated/app/settings/identity'
     | '/_authenticated/app/settings/notifications'
     | '/_authenticated/app/settings/password'
@@ -845,6 +858,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSettingsIdentityRouteImport
       parentRoute: typeof AuthenticatedAppSettingsRoute
     }
+    '/_authenticated/app/ai/workflows': {
+      id: '/_authenticated/app/ai/workflows'
+      path: '/workflows'
+      fullPath: '/app/ai/workflows'
+      preLoaderRoute: typeof AuthenticatedAppAiWorkflowsRouteImport
+      parentRoute: typeof AuthenticatedAppAiRoute
+    }
     '/_authenticated/app/ai/studio': {
       id: '/_authenticated/app/ai/studio'
       path: '/studio'
@@ -891,6 +911,7 @@ interface AuthenticatedAppAiRouteChildren {
   AuthenticatedAppAiDesignRoute: typeof AuthenticatedAppAiDesignRoute
   AuthenticatedAppAiGrowthRoute: typeof AuthenticatedAppAiGrowthRoute
   AuthenticatedAppAiStudioRoute: typeof AuthenticatedAppAiStudioRoute
+  AuthenticatedAppAiWorkflowsRoute: typeof AuthenticatedAppAiWorkflowsRoute
   AuthenticatedAppAiIndexRoute: typeof AuthenticatedAppAiIndexRoute
 }
 
@@ -899,6 +920,7 @@ const AuthenticatedAppAiRouteChildren: AuthenticatedAppAiRouteChildren = {
   AuthenticatedAppAiDesignRoute: AuthenticatedAppAiDesignRoute,
   AuthenticatedAppAiGrowthRoute: AuthenticatedAppAiGrowthRoute,
   AuthenticatedAppAiStudioRoute: AuthenticatedAppAiStudioRoute,
+  AuthenticatedAppAiWorkflowsRoute: AuthenticatedAppAiWorkflowsRoute,
   AuthenticatedAppAiIndexRoute: AuthenticatedAppAiIndexRoute,
 }
 
