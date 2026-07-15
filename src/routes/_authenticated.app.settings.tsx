@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 
 const tabs = [
   { to: "/app/settings/profile", label: "Profile" },
+  { to: "/app/settings/identity", label: "Identity" },
   { to: "/app/settings/security", label: "Security" },
   { to: "/app/settings/password", label: "Password" },
   { to: "/app/settings/sessions", label: "Sessions" },
