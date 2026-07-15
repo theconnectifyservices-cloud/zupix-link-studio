@@ -121,12 +121,8 @@ function hashVisitor(ip: string, ua: string, pageId: string, visitorId: string):
 
 function pickIp(req: Request): string {
   const h = req.headers;
-  return (
-    h.get("cf-connecting-ip") ??
-    h.get("x-real-ip") ??
-    (h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "") ??
-    "0.0.0.0"
-  );
+  const fwd = h.get("x-forwarded-for")?.split(",")[0]?.trim();
+  return h.get("cf-connecting-ip") ?? h.get("x-real-ip") ?? fwd ?? "0.0.0.0";
 }
 
 async function handlePost(request: Request): Promise<Response> {
