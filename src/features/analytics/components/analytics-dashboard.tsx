@@ -169,6 +169,18 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
     [events, pageName],
   );
 
+  // Visitor intelligence memoized aggregations
+  const engagement = useMemo(() => computeEngagement(sessions), [sessions]);
+  const buttonStats = useMemo(() => buttonPerformance(events), [events]);
+  const blockStats = useMemo(() => blockPerformance(events), [events]);
+  const pageStats = useMemo(() => pagePerformance(events, sessions, pages), [events, sessions, pages]);
+  const deviceStats = useMemo(() => deviceBehaviour(sessions), [sessions]);
+  const referrerStats = useMemo(() => referrerInsights(events, sessions), [events, sessions]);
+  const loyalVisitors = useMemo(() => returningVisitors(sessions), [sessions]);
+  const journeys = useMemo(() => visitorJourneys(events, sessions, pages), [events, sessions, pages]);
+  const trends = useMemo(() => trendCompare(events, sessions, range), [events, sessions, range]);
+  const insights = useMemo(() => generateInsights(events, sessions), [events, sessions]);
+
   const loading = eventsQ.isLoading || sessionsQ.isLoading;
 
   const refetchAll = () => {
