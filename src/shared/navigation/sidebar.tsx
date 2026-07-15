@@ -15,6 +15,8 @@ import {
   LifeBuoy,
   ChevronLeft,
   Shield,
+  Sparkles,
+
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";

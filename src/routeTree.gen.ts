@@ -38,6 +38,8 @@ import { Route as AuthenticatedAppCommunicationsRouteImport } from './routes/_au
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated.app.campaigns'
 import { Route as AuthenticatedAppAutomationRouteImport } from './routes/_authenticated.app.automation'
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated.app.analytics'
+import { Route as AuthenticatedAppAiRouteImport } from './routes/_authenticated.app.ai'
+import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authenticated.app.ai.index'
 import { Route as AuthenticatedAppSettingsSessionsRouteImport } from './routes/_authenticated.app.settings.sessions'
 import { Route as AuthenticatedAppSettingsSecurityRouteImport } from './routes/_authenticated.app.settings.security'
 import { Route as AuthenticatedAppSettingsProfileRouteImport } from './routes/_authenticated.app.settings.profile'
@@ -45,6 +47,7 @@ import { Route as AuthenticatedAppSettingsPreferencesRouteImport } from './route
 import { Route as AuthenticatedAppSettingsPasswordRouteImport } from './routes/_authenticated.app.settings.password'
 import { Route as AuthenticatedAppSettingsNotificationsRouteImport } from './routes/_authenticated.app.settings.notifications'
 import { Route as AuthenticatedAppSettingsIdentityRouteImport } from './routes/_authenticated.app.settings.identity'
+import { Route as AuthenticatedAppAiConversationIdRouteImport } from './routes/_authenticated.app.ai.$conversationId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -200,6 +203,16 @@ const AuthenticatedAppAnalyticsRoute =
     path: '/analytics',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppAiRoute = AuthenticatedAppAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppAiIndexRoute = AuthenticatedAppAiIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAppAiRoute,
+} as any)
 const AuthenticatedAppSettingsSessionsRoute =
   AuthenticatedAppSettingsSessionsRouteImport.update({
     id: '/sessions',
@@ -242,6 +255,12 @@ const AuthenticatedAppSettingsIdentityRoute =
     path: '/identity',
     getParentRoute: () => AuthenticatedAppSettingsRoute,
   } as any)
+const AuthenticatedAppAiConversationIdRoute =
+  AuthenticatedAppAiConversationIdRouteImport.update({
+    id: '/$conversationId',
+    path: '/$conversationId',
+    getParentRoute: () => AuthenticatedAppAiRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -255,6 +274,7 @@ export interface FileRoutesByFullPath {
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/': typeof AuthIndexRoute
+  '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -272,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -279,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/app/settings/profile': typeof AuthenticatedAppSettingsProfileRoute
   '/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
+  '/app/ai/': typeof AuthenticatedAppAiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -308,6 +330,7 @@ export interface FileRoutesByTo {
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -315,6 +338,7 @@ export interface FileRoutesByTo {
   '/app/settings/profile': typeof AuthenticatedAppSettingsProfileRoute
   '/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
+  '/app/ai': typeof AuthenticatedAppAiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -330,6 +354,7 @@ export interface FileRoutesById {
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/': typeof AuthIndexRoute
+  '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/_authenticated/app/automation': typeof AuthenticatedAppAutomationRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -347,6 +372,7 @@ export interface FileRoutesById {
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
   '/_authenticated/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/_authenticated/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/_authenticated/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -354,6 +380,7 @@ export interface FileRoutesById {
   '/_authenticated/app/settings/profile': typeof AuthenticatedAppSettingsProfileRoute
   '/_authenticated/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/_authenticated/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
+  '/_authenticated/app/ai/': typeof AuthenticatedAppAiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -369,6 +396,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/auth/'
+    | '/app/ai'
     | '/app/analytics'
     | '/app/automation'
     | '/app/campaigns'
@@ -386,6 +414,7 @@ export interface FileRouteTypes {
     | '/api/ai/chat'
     | '/api/public/track'
     | '/app/'
+    | '/app/ai/$conversationId'
     | '/app/settings/identity'
     | '/app/settings/notifications'
     | '/app/settings/password'
@@ -393,6 +422,7 @@ export interface FileRouteTypes {
     | '/app/settings/profile'
     | '/app/settings/security'
     | '/app/settings/sessions'
+    | '/app/ai/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -422,6 +452,7 @@ export interface FileRouteTypes {
     | '/api/ai/chat'
     | '/api/public/track'
     | '/app'
+    | '/app/ai/$conversationId'
     | '/app/settings/identity'
     | '/app/settings/notifications'
     | '/app/settings/password'
@@ -429,6 +460,7 @@ export interface FileRouteTypes {
     | '/app/settings/profile'
     | '/app/settings/security'
     | '/app/settings/sessions'
+    | '/app/ai'
   id:
     | '__root__'
     | '/'
@@ -443,6 +475,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/auth/'
+    | '/_authenticated/app/ai'
     | '/_authenticated/app/analytics'
     | '/_authenticated/app/automation'
     | '/_authenticated/app/campaigns'
@@ -460,6 +493,7 @@ export interface FileRouteTypes {
     | '/api/ai/chat'
     | '/api/public/track'
     | '/_authenticated/app/'
+    | '/_authenticated/app/ai/$conversationId'
     | '/_authenticated/app/settings/identity'
     | '/_authenticated/app/settings/notifications'
     | '/_authenticated/app/settings/password'
@@ -467,6 +501,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/settings/profile'
     | '/_authenticated/app/settings/security'
     | '/_authenticated/app/settings/sessions'
+    | '/_authenticated/app/ai/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -688,6 +723,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAnalyticsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/ai': {
+      id: '/_authenticated/app/ai'
+      path: '/ai'
+      fullPath: '/app/ai'
+      preLoaderRoute: typeof AuthenticatedAppAiRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/ai/': {
+      id: '/_authenticated/app/ai/'
+      path: '/'
+      fullPath: '/app/ai/'
+      preLoaderRoute: typeof AuthenticatedAppAiIndexRouteImport
+      parentRoute: typeof AuthenticatedAppAiRoute
+    }
     '/_authenticated/app/settings/sessions': {
       id: '/_authenticated/app/settings/sessions'
       path: '/sessions'
@@ -737,6 +786,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSettingsIdentityRouteImport
       parentRoute: typeof AuthenticatedAppSettingsRoute
     }
+    '/_authenticated/app/ai/$conversationId': {
+      id: '/_authenticated/app/ai/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/app/ai/$conversationId'
+      preLoaderRoute: typeof AuthenticatedAppAiConversationIdRouteImport
+      parentRoute: typeof AuthenticatedAppAiRoute
+    }
   }
 }
 
@@ -749,6 +805,19 @@ const SlugRouteChildren: SlugRouteChildren = {
 }
 
 const SlugRouteWithChildren = SlugRoute._addFileChildren(SlugRouteChildren)
+
+interface AuthenticatedAppAiRouteChildren {
+  AuthenticatedAppAiConversationIdRoute: typeof AuthenticatedAppAiConversationIdRoute
+  AuthenticatedAppAiIndexRoute: typeof AuthenticatedAppAiIndexRoute
+}
+
+const AuthenticatedAppAiRouteChildren: AuthenticatedAppAiRouteChildren = {
+  AuthenticatedAppAiConversationIdRoute: AuthenticatedAppAiConversationIdRoute,
+  AuthenticatedAppAiIndexRoute: AuthenticatedAppAiIndexRoute,
+}
+
+const AuthenticatedAppAiRouteWithChildren =
+  AuthenticatedAppAiRoute._addFileChildren(AuthenticatedAppAiRouteChildren)
 
 interface AuthenticatedAppSettingsRouteChildren {
   AuthenticatedAppSettingsIdentityRoute: typeof AuthenticatedAppSettingsIdentityRoute
@@ -783,6 +852,7 @@ const AuthenticatedAppSettingsRouteWithChildren =
   )
 
 interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppAiRoute: typeof AuthenticatedAppAiRouteWithChildren
   AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
   AuthenticatedAppAutomationRoute: typeof AuthenticatedAppAutomationRoute
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
@@ -800,6 +870,7 @@ interface AuthenticatedAppRouteChildren {
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppAiRoute: AuthenticatedAppAiRouteWithChildren,
   AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
   AuthenticatedAppAutomationRoute: AuthenticatedAppAutomationRoute,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
