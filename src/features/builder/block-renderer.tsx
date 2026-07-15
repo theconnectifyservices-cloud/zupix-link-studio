@@ -559,7 +559,13 @@ export function autoContrastText(bg: string | undefined): string | undefined {
   const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
   return lum > 0.5 ? "#000000" : "#ffffff";
 }
-function ButtonRender({ block }: { block: ButtonBlock }) {
+function ButtonRender({
+  block,
+  reduceMotion = false,
+}: {
+  block: ButtonBlock;
+  reduceMotion?: boolean;
+}) {
   const [hover, setHover] = useState(false);
   const autoOn = block.autoContrast !== false;
   const normalBg = block.bgColor;
@@ -571,6 +577,8 @@ function ButtonRender({ block }: { block: ButtonBlock }) {
   const bg = hover && hoverBg ? hoverBg : normalBg;
   const fg = hover && (hoverText || block.hoverTextColor) ? hoverText : normalText;
   const borderCol = hover && block.hoverBorderColor ? block.hoverBorderColor : block.borderColor;
+
+  const fx = computeButtonFx(block.settings ?? {}, reduceMotion);
 
   const style: CSSProperties = {
     background: bg ?? "var(--zx-btn-bg)",
@@ -597,28 +605,54 @@ function ButtonRender({ block }: { block: ButtonBlock }) {
             : block.fontWeight === "normal"
               ? 400
               : undefined,
-    backdropFilter: "blur(0)",
+    // Clip pseudo-element effects (shine/liquid/spotlight/gradient/etc.)
+    // to the button's rounded shape so they never bleed into a rectangle.
+    overflow: "hidden",
+    position: "relative",
+    isolation: "isolate",
+    ...fx.style,
   };
-  return (
-    <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>
-      <div
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        className={cn(
-          "inline-flex items-center justify-center gap-2 font-medium transition-all hover:-translate-y-0.5",
-          WIDTH_CLASS[block.width ?? "full"],
-          block.disabled && "cursor-not-allowed opacity-50 hover:translate-y-0",
-        )}
-        style={style}
-      >
-        {block.label || "Button"}
-      </div>
+  const pillClass = cn(
+    "inline-flex items-center justify-center gap-2 font-medium transition-all hover:-translate-y-0.5",
+    WIDTH_CLASS[block.width ?? "full"],
+    block.disabled && "cursor-not-allowed opacity-50 hover:translate-y-0",
+    fx.className,
+  );
+  const pill = fx.needsInteractive ? (
+    <InteractiveFxWrapper
+      className={pillClass}
+      style={style}
+      effect={fx.effect as "magnetic" | "spotlight"}
+      intensity={fx.intensity}
+      distance={fx.distance}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {block.label || "Button"}
+    </InteractiveFxWrapper>
+  ) : (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className={pillClass}
+      style={style}
+    >
+      {block.label || "Button"}
     </div>
+  );
+  return (
+    <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>{pill}</div>
   );
 }
 
 // ── Button group ─────────────────────────────────────────────────────────
-function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
+function ButtonGroupRender({
+  block,
+  reduceMotion = false,
+}: {
+  block: ButtonGroupBlock;
+  reduceMotion?: boolean;
+}) {
   if (block.buttons.length === 0) {
     return (
       <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
@@ -632,6 +666,7 @@ function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
       : block.layout === "grid"
         ? `grid gap-2 grid-cols-${block.columns ?? 2}`
         : "flex flex-col gap-2";
+  const fx = computeButtonFx(block.settings ?? {}, reduceMotion);
   return (
     <div className={cls}>
       {block.buttons.map((b) => {
@@ -641,15 +676,28 @@ function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
             : b.style === "soft"
               ? "bg-muted text-foreground"
               : "bg-foreground text-background";
+        const btnClass = cn(
+          "relative overflow-hidden isolate rounded-full px-4 py-2.5 text-center text-sm font-medium",
+          v,
+          block.layout === "vertical" && "w-full",
+          fx.className,
+        );
+        if (fx.needsInteractive) {
+          return (
+            <InteractiveFxWrapper
+              key={b.id}
+              className={btnClass}
+              style={fx.style}
+              effect={fx.effect as "magnetic" | "spotlight"}
+              intensity={fx.intensity}
+              distance={fx.distance}
+            >
+              {b.label}
+            </InteractiveFxWrapper>
+          );
+        }
         return (
-          <div
-            key={b.id}
-            className={cn(
-              "rounded-full px-4 py-2.5 text-center text-sm font-medium",
-              v,
-              block.layout === "vertical" && "w-full",
-            )}
-          >
+          <div key={b.id} className={btnClass} style={fx.style}>
             {b.label}
           </div>
         );
@@ -657,6 +705,7 @@ function ButtonGroupRender({ block }: { block: ButtonGroupBlock }) {
     </div>
   );
 }
+
 
 // ── Video ────────────────────────────────────────────────────────────────
 function extractYouTubeId(url: string): string | null {
