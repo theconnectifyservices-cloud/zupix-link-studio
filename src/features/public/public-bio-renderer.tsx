@@ -27,10 +27,12 @@ export function PublicBioRenderer({
   content,
   pageId,
   slug,
+  workspaceId,
 }: {
   content: BioContent;
   pageId?: string;
   slug?: string;
+  workspaceId?: string;
 }) {
   const theme = content.theme ?? DEFAULT_THEME;
   const motion = theme.motion ?? DEFAULT_MOTION;
