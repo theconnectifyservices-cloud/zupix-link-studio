@@ -459,6 +459,9 @@ export function MediaLibrary({ workspaceId, userId }: Props) {
         <TabsContent value="duplicates" className="mt-4">
           <DuplicateFinder workspaceId={workspaceId} />
         </TabsContent>
+        <TabsContent value="intelligence" className="mt-4">
+          <AssetIntelligencePanel workspaceId={workspaceId} />
+        </TabsContent>
       </Tabs>
 
       <MediaDetailsPanel asset={selected} userId={userId} onClose={() => setSelected(null)} />
