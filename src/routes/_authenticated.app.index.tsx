@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Plus, Link2, Images, BarChart3, ArrowRight, Sparkles, Clock, Rocket } from "lucide-react";
+import { toast } from "sonner";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/auth/hooks/use-profile";
 import { useCurrentWorkspace, useBioPages, CreateProjectModal } from "@/features/bio-pages";
