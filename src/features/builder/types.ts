@@ -274,7 +274,15 @@ export type ButtonAction =
 
 export type ButtonWidth = "full" | "auto" | "half";
 export type ButtonAlign = "left" | "center" | "right";
-export type ButtonStyle = "filled" | "outline" | "soft";
+export type ButtonStyle =
+  | "filled"
+  | "outline"
+  | "soft"
+  | "ghost"
+  | "glass"
+  | "gradient"
+  | "elevated"
+  | "neumorphism";
 
 export type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
 
@@ -475,12 +483,77 @@ export interface ButtonGroupItem {
   id: string;
   label: string;
   url: string;
+  /** Link behavior */
+  newTab?: boolean;
+  relNofollow?: boolean;
+  relNoopener?: boolean;
+  disabled?: boolean;
+  /** Visual style variant */
   style?: ButtonStyle;
+  /** Colors — Normal state */
+  bgColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  /** Colors — Hover state */
+  hoverBgColor?: string;
+  hoverTextColor?: string;
+  hoverBorderColor?: string;
+  /** Colors — Pressed / active state */
+  pressedBgColor?: string;
+  pressedTextColor?: string;
+  /** Gradient (used when style === "gradient") */
+  gradientFrom?: string;
+  gradientTo?: string;
+  gradientAngle?: number; // deg
+  /** Auto-contrast text from bg. Default true. */
+  autoContrast?: boolean;
+  /** Typography overrides */
+  fontFamily?: string;
+  fontSizePx?: number;
+  fontWeight?: FontWeight;
+  letterSpacing?: number;
+  lineHeight?: number;
+  textTransform?: TextTransform;
+  textAlign?: TextAlign;
+  /** Layout / sizing */
+  widthMode?: "full" | "auto";
+  minHeight?: number;
+  paddingX?: number;
+  paddingY?: number;
+  marginTop?: number;
+  marginBottom?: number;
+  radius?: number; // px, use 9999 for pill
+  borderWidth?: number;
+  /** Icons (lucide-react icon key from ICON_LIBRARY) */
+  leftIcon?: string;
+  rightIcon?: string;
+  iconSize?: number;
+  iconColor?: string;
+  iconGap?: number;
+  /** Effect layer — reuses the button effects engine */
+  effect?: ButtonEffect;
+  effectColor?: string;
+  effectColor2?: string;
+  effectSpeed?: number;
+  effectIntensity?: number;
+  effectMode?: "always" | "hover" | "click";
+  /** Shadow */
+  shadowColor?: string;
+  shadowBlur?: number;
+  shadowSpread?: number;
+  shadowOpacity?: number;
+  shadowY?: number;
 }
 export interface ButtonGroupBlock extends BaseBlock {
   type: "buttonGroup";
   layout: ButtonGroupLayout;
   columns?: 2 | 3;
+  /** Gap between buttons in px */
+  gap?: number;
+  /** Group alignment */
+  align?: "left" | "center" | "right" | "stretch";
+  /** On mobile viewports, force vertical stack */
+  stackOnMobile?: boolean;
   buttons: ButtonGroupItem[];
 }
 

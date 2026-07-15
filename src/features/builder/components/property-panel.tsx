@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Plus, Trash2, ArrowUp, ArrowDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ICON_LIBRARY, ICON_KEYS } from "../button-icons";
 import { useBuilderStore, selectedBlock } from "../store";
 import type {
   Block,
@@ -705,15 +708,9 @@ export function PropertyPanel() {
       )}
 
       {block.type === "buttonGroup" && (
-        <ButtonGroupEditor
-          layout={block.layout}
-          columns={block.columns}
-          buttons={block.buttons}
-          onLayout={(v) => set("layout", v)}
-          onColumns={(v) => set("columns", v)}
-          onButtons={(v) => set("buttons", v)}
-        />
+        <ButtonGroupEditor block={block} set={set} />
       )}
+
 
       {block.type === "image" && (
         <>
@@ -1612,21 +1609,44 @@ function FaqEditor({
   );
 }
 
+const BUTTON_STYLES: [ButtonStyle, string][] = [
+  ["filled", "Filled"],
+  ["outline", "Outline"],
+  ["soft", "Soft"],
+  ["ghost", "Ghost"],
+  ["glass", "Glass"],
+  ["gradient", "Gradient"],
+  ["elevated", "Elevated"],
+  ["neumorphism", "Neumorphism"],
+];
+const ITEM_EFFECTS: [string, string][] = [
+  ["none", "None"],
+  ["shine", "Shine"],
+  ["neon", "Neon"],
+  ["glow", "Glow"],
+  ["pulse", "Pulse"],
+  ["bounce", "Bounce"],
+  ["floating", "Floating"],
+  ["ripple", "Ripple"],
+  ["breathing", "Breathing"],
+  ["magnetic", "Magnetic"],
+  ["spotlight", "Spotlight"],
+  ["gradientFlow", "Gradient Flow"],
+  ["rainbowBorder", "Rainbow Border"],
+  ["borderGlow", "Border Glow"],
+];
+
 function ButtonGroupEditor({
-  layout,
-  columns,
-  buttons,
-  onLayout,
-  onColumns,
-  onButtons,
+  block,
+  set,
 }: {
-  layout: "horizontal" | "vertical" | "grid";
-  columns?: 2 | 3;
-  buttons: ButtonGroupItem[];
-  onLayout: (v: string) => void;
-  onColumns: (v: number) => void;
-  onButtons: (v: ButtonGroupItem[]) => void;
+  block: import("../types").ButtonGroupBlock;
+  set: (k: string, v: unknown) => void;
 }) {
+  const buttons = block.buttons;
+  const onButtons = (v: ButtonGroupItem[]) => set("buttons", v);
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
   function move(i: number, dir: -1 | 1) {
     const t = i + dir;
     if (t < 0 || t >= buttons.length) return;
@@ -1640,12 +1660,19 @@ function ButtonGroupEditor({
     n[i] = { ...n[i], ...patch };
     onButtons(n);
   }
+  function duplicate(i: number) {
+    const n = [...buttons];
+    n.splice(i + 1, 0, { ...buttons[i], id: newId() });
+    onButtons(n);
+  }
+
   return (
     <>
+      <SectionTitle>Group layout</SectionTitle>
       <Field label="Layout">
         <SelectSimple
-          value={layout}
-          onChange={onLayout}
+          value={block.layout}
+          onChange={(v) => set("layout", v)}
           options={[
             ["vertical", "Vertical"],
             ["horizontal", "Horizontal"],
@@ -1653,11 +1680,11 @@ function ButtonGroupEditor({
           ]}
         />
       </Field>
-      {layout === "grid" && (
+      {block.layout === "grid" && (
         <Field label="Columns">
           <SelectSimple
-            value={String(columns ?? 2)}
-            onChange={(v) => onColumns(Number(v))}
+            value={String(block.columns ?? 2)}
+            onChange={(v) => set("columns", Number(v))}
             options={[
               ["2", "2"],
               ["3", "3"],
@@ -1665,52 +1692,441 @@ function ButtonGroupEditor({
           />
         </Field>
       )}
+      <Field label="Gap (px)">
+        <Input
+          type="number"
+          value={block.gap ?? 8}
+          onChange={(e) => set("gap", Number(e.target.value) || 0)}
+        />
+      </Field>
+      <Field label="Alignment">
+        <SelectSimple
+          value={block.align ?? "center"}
+          onChange={(v) => set("align", v)}
+          options={[
+            ["left", "Left"],
+            ["center", "Center"],
+            ["right", "Right"],
+            ["stretch", "Stretch"],
+          ]}
+        />
+      </Field>
+      <Row>
+        <Label className="text-xs">Stack on mobile</Label>
+        <Switch
+          checked={!!block.stackOnMobile}
+          onCheckedChange={(v) => set("stackOnMobile", v)}
+        />
+      </Row>
+
+      <SectionTitle>Buttons</SectionTitle>
       <div className="space-y-2">
-        <Label className="text-xs">Buttons</Label>
-        {buttons.map((b, i) => (
-          <div key={b.id} className="space-y-1.5 rounded-md border p-2">
-            <Input
-              value={b.label}
-              placeholder="Label"
-              onChange={(e) => upd(i, { label: e.target.value })}
-            />
-            <Input
-              value={b.url}
-              placeholder="https://…"
-              onChange={(e) => upd(i, { url: e.target.value })}
-            />
-            <SelectSimple
-              value={b.style ?? "filled"}
-              onChange={(v) => upd(i, { style: v as ButtonStyle })}
-              options={[
-                ["filled", "Filled"],
-                ["outline", "Outline"],
-                ["soft", "Soft"],
-              ]}
-            />
-            <div className="flex justify-end gap-0.5">
-              <IconBtn label="Up" onClick={() => move(i, -1)}>
-                <ArrowUp className="h-3.5 w-3.5" />
-              </IconBtn>
-              <IconBtn label="Down" onClick={() => move(i, 1)}>
-                <ArrowDown className="h-3.5 w-3.5" />
-              </IconBtn>
-              <IconBtn label="Remove" onClick={() => onButtons(buttons.filter((_, j) => j !== i))}>
-                <Trash2 className="h-3.5 w-3.5 text-destructive" />
-              </IconBtn>
+        {buttons.map((b, i) => {
+          const open = openIdx === i;
+          return (
+            <div key={b.id} className="rounded-md border">
+              <div className="flex items-center gap-1 p-2">
+                <Input
+                  value={b.label}
+                  placeholder="Label"
+                  onChange={(e) => upd(i, { label: e.target.value })}
+                  className="h-8"
+                />
+                <IconBtn label={open ? "Collapse" : "Expand"} onClick={() => setOpenIdx(open ? null : i)}>
+                  <ArrowDown className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-180")} />
+                </IconBtn>
+              </div>
+              {open && (
+                <div className="space-y-2 border-t p-2">
+                  <Field label="Link URL">
+                    <Input
+                      value={b.url}
+                      placeholder="https://…"
+                      onChange={(e) => upd(i, { url: e.target.value })}
+                    />
+                  </Field>
+                  <Row>
+                    <Label className="text-xs">Open in new tab</Label>
+                    <Switch
+                      checked={!!b.newTab}
+                      onCheckedChange={(v) => upd(i, { newTab: v })}
+                    />
+                  </Row>
+                  <Row>
+                    <Label className="text-xs">Disabled</Label>
+                    <Switch
+                      checked={!!b.disabled}
+                      onCheckedChange={(v) => upd(i, { disabled: v })}
+                    />
+                  </Row>
+
+                  <SectionTitle>Style</SectionTitle>
+                  <Field label="Variant">
+                    <SelectSimple
+                      value={b.style ?? "filled"}
+                      onChange={(v) => upd(i, { style: v as ButtonStyle })}
+                      options={BUTTON_STYLES.map(([v, l]) => [v, l] as [string, string])}
+                    />
+                  </Field>
+                  {b.style === "gradient" && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <NamedColorField label="From" value={b.gradientFrom} onChange={(v) => upd(i, { gradientFrom: v })} />
+                      <NamedColorField label="To" value={b.gradientTo} onChange={(v) => upd(i, { gradientTo: v })} />
+                      <Field label="Angle (deg)">
+                        <Input
+                          type="number"
+                          value={b.gradientAngle ?? 90}
+                          onChange={(e) => upd(i, { gradientAngle: Number(e.target.value) })}
+                        />
+                      </Field>
+                    </div>
+                  )}
+
+                  <SectionTitle>Colors — Normal</SectionTitle>
+                  <div className="grid grid-cols-2 gap-2">
+                    <NamedColorField label="Background" value={b.bgColor} onChange={(v) => upd(i, { bgColor: v })} />
+                    <NamedColorField label="Text" value={b.textColor} onChange={(v) => upd(i, { textColor: v })} />
+                    <NamedColorField label="Border" value={b.borderColor} onChange={(v) => upd(i, { borderColor: v })} />
+                  </div>
+
+                  <SectionTitle>Colors — Hover</SectionTitle>
+                  <div className="grid grid-cols-2 gap-2">
+                    <NamedColorField label="Background" value={b.hoverBgColor} onChange={(v) => upd(i, { hoverBgColor: v })} />
+                    <NamedColorField label="Text" value={b.hoverTextColor} onChange={(v) => upd(i, { hoverTextColor: v })} />
+                    <NamedColorField label="Border" value={b.hoverBorderColor} onChange={(v) => upd(i, { hoverBorderColor: v })} />
+                  </div>
+
+                  <SectionTitle>Colors — Pressed</SectionTitle>
+                  <div className="grid grid-cols-2 gap-2">
+                    <NamedColorField label="Background" value={b.pressedBgColor} onChange={(v) => upd(i, { pressedBgColor: v })} />
+                    <NamedColorField label="Text" value={b.pressedTextColor} onChange={(v) => upd(i, { pressedTextColor: v })} />
+                  </div>
+                  <Row>
+                    <Label className="text-xs">Auto-contrast text</Label>
+                    <Switch
+                      checked={b.autoContrast !== false}
+                      onCheckedChange={(v) => upd(i, { autoContrast: v })}
+                    />
+                  </Row>
+
+                  <SectionTitle>Typography</SectionTitle>
+                  <Field label="Font family">
+                    <Input
+                      value={b.fontFamily ?? ""}
+                      placeholder="Inherit"
+                      onChange={(e) => upd(i, { fontFamily: e.target.value || undefined })}
+                    />
+                  </Field>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Field label="Size (px)">
+                      <Input
+                        type="number"
+                        value={b.fontSizePx ?? ""}
+                        onChange={(e) =>
+                          upd(i, { fontSizePx: e.target.value ? Number(e.target.value) : undefined })
+                        }
+                      />
+                    </Field>
+                    <FontWeightField
+                      value={b.fontWeight ?? "medium"}
+                      onChange={(v) => upd(i, { fontWeight: v as ButtonGroupItem["fontWeight"] })}
+                    />
+                    <Field label="Letter spacing">
+                      <Input
+                        type="number"
+                        value={b.letterSpacing ?? ""}
+                        onChange={(e) =>
+                          upd(i, {
+                            letterSpacing: e.target.value ? Number(e.target.value) : undefined,
+                          })
+                        }
+                      />
+                    </Field>
+                    <Field label="Line height">
+                      <Input
+                        type="number"
+                        step="0.05"
+                        value={b.lineHeight ?? ""}
+                        onChange={(e) =>
+                          upd(i, {
+                            lineHeight: e.target.value ? Number(e.target.value) : undefined,
+                          })
+                        }
+                      />
+                    </Field>
+                  </div>
+                  <Field label="Text transform">
+                    <SelectSimple
+                      value={b.textTransform ?? "none"}
+                      onChange={(v) => upd(i, { textTransform: v as ButtonGroupItem["textTransform"] })}
+                      options={[
+                        ["none", "None"],
+                        ["uppercase", "Uppercase"],
+                        ["lowercase", "Lowercase"],
+                        ["capitalize", "Capitalize"],
+                      ]}
+                    />
+                  </Field>
+
+                  <SectionTitle>Layout & sizing</SectionTitle>
+                  <Field label="Width">
+                    <SelectSimple
+                      value={b.widthMode ?? "full"}
+                      onChange={(v) => upd(i, { widthMode: v as "full" | "auto" })}
+                      options={[
+                        ["full", "Full width"],
+                        ["auto", "Auto"],
+                      ]}
+                    />
+                  </Field>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Field label="Min height (px)">
+                      <Input
+                        type="number"
+                        value={b.minHeight ?? ""}
+                        onChange={(e) =>
+                          upd(i, { minHeight: e.target.value ? Number(e.target.value) : undefined })
+                        }
+                      />
+                    </Field>
+                    <Field label="Radius (px)">
+                      <Input
+                        type="number"
+                        value={b.radius ?? ""}
+                        placeholder="9999 = pill"
+                        onChange={(e) =>
+                          upd(i, { radius: e.target.value ? Number(e.target.value) : undefined })
+                        }
+                      />
+                    </Field>
+                    <Field label="Padding X">
+                      <Input
+                        type="number"
+                        value={b.paddingX ?? ""}
+                        onChange={(e) =>
+                          upd(i, { paddingX: e.target.value ? Number(e.target.value) : undefined })
+                        }
+                      />
+                    </Field>
+                    <Field label="Padding Y">
+                      <Input
+                        type="number"
+                        value={b.paddingY ?? ""}
+                        onChange={(e) =>
+                          upd(i, { paddingY: e.target.value ? Number(e.target.value) : undefined })
+                        }
+                      />
+                    </Field>
+                    <Field label="Border width">
+                      <Input
+                        type="number"
+                        value={b.borderWidth ?? ""}
+                        onChange={(e) =>
+                          upd(i, {
+                            borderWidth: e.target.value ? Number(e.target.value) : undefined,
+                          })
+                        }
+                      />
+                    </Field>
+                  </div>
+
+                  <SectionTitle>Icons</SectionTitle>
+                  <div className="grid grid-cols-2 gap-2">
+                    <IconPickerField
+                      label="Left icon"
+                      value={b.leftIcon}
+                      onChange={(v) => upd(i, { leftIcon: v })}
+                    />
+                    <IconPickerField
+                      label="Right icon"
+                      value={b.rightIcon}
+                      onChange={(v) => upd(i, { rightIcon: v })}
+                    />
+                    <Field label="Icon size (px)">
+                      <Input
+                        type="number"
+                        value={b.iconSize ?? 16}
+                        onChange={(e) => upd(i, { iconSize: Number(e.target.value) })}
+                      />
+                    </Field>
+                    <NamedColorField
+                      label="Icon color"
+                      value={b.iconColor}
+                      onChange={(v) => upd(i, { iconColor: v })}
+                    />
+                    <Field label="Gap (px)">
+                      <Input
+                        type="number"
+                        value={b.iconGap ?? 8}
+                        onChange={(e) => upd(i, { iconGap: Number(e.target.value) })}
+                      />
+                    </Field>
+                  </div>
+
+                  <SectionTitle>Effect</SectionTitle>
+                  <Field label="Type">
+                    <SelectSimple
+                      value={b.effect ?? "none"}
+                      onChange={(v) =>
+                        upd(i, {
+                          effect: v as ButtonGroupItem["effect"],
+                        })
+                      }
+                      options={ITEM_EFFECTS}
+                    />
+                  </Field>
+                  {b.effect && b.effect !== "none" && (
+                    <>
+                      <div className="grid grid-cols-2 gap-2">
+                        <NamedColorField
+                          label="Color"
+                          value={b.effectColor}
+                          onChange={(v) => upd(i, { effectColor: v })}
+                        />
+                        <NamedColorField
+                          label="Color 2"
+                          value={b.effectColor2}
+                          onChange={(v) => upd(i, { effectColor2: v })}
+                        />
+                        <Field label="Speed (ms)">
+                          <Input
+                            type="number"
+                            value={b.effectSpeed ?? ""}
+                            onChange={(e) =>
+                              upd(i, {
+                                effectSpeed: e.target.value ? Number(e.target.value) : undefined,
+                              })
+                            }
+                          />
+                        </Field>
+                        <Field label="Intensity">
+                          <Input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={b.effectIntensity ?? ""}
+                            onChange={(e) =>
+                              upd(i, {
+                                effectIntensity: e.target.value
+                                  ? Number(e.target.value)
+                                  : undefined,
+                              })
+                            }
+                          />
+                        </Field>
+                      </div>
+                      <Field label="Trigger">
+                        <SelectSimple
+                          value={b.effectMode ?? "hover"}
+                          onChange={(v) =>
+                            upd(i, { effectMode: v as "always" | "hover" | "click" })
+                          }
+                          options={[
+                            ["hover", "Hover"],
+                            ["always", "Always"],
+                            ["click", "Click"],
+                          ]}
+                        />
+                      </Field>
+                    </>
+                  )}
+
+                  <SectionTitle>Shadow</SectionTitle>
+                  <div className="grid grid-cols-2 gap-2">
+                    <NamedColorField
+                      label="Color"
+                      value={b.shadowColor}
+                      onChange={(v) => upd(i, { shadowColor: v })}
+                    />
+                    <Field label="Blur">
+                      <Input
+                        type="number"
+                        value={b.shadowBlur ?? ""}
+                        onChange={(e) =>
+                          upd(i, {
+                            shadowBlur: e.target.value ? Number(e.target.value) : undefined,
+                          })
+                        }
+                      />
+                    </Field>
+                    <Field label="Spread">
+                      <Input
+                        type="number"
+                        value={b.shadowSpread ?? ""}
+                        onChange={(e) =>
+                          upd(i, {
+                            shadowSpread: e.target.value ? Number(e.target.value) : undefined,
+                          })
+                        }
+                      />
+                    </Field>
+                    <Field label="Offset Y">
+                      <Input
+                        type="number"
+                        value={b.shadowY ?? ""}
+                        onChange={(e) =>
+                          upd(i, {
+                            shadowY: e.target.value ? Number(e.target.value) : undefined,
+                          })
+                        }
+                      />
+                    </Field>
+                    <Field label="Opacity (0-1)">
+                      <Input
+                        type="number"
+                        step="0.05"
+                        min={0}
+                        max={1}
+                        value={b.shadowOpacity ?? ""}
+                        onChange={(e) =>
+                          upd(i, {
+                            shadowOpacity: e.target.value ? Number(e.target.value) : undefined,
+                          })
+                        }
+                      />
+                    </Field>
+                  </div>
+
+                  <div className="flex justify-end gap-0.5 pt-1">
+                    <IconBtn label="Duplicate" onClick={() => duplicate(i)}>
+                      <Plus className="h-3.5 w-3.5" />
+                    </IconBtn>
+                    <IconBtn label="Move up" onClick={() => move(i, -1)}>
+                      <ArrowUp className="h-3.5 w-3.5" />
+                    </IconBtn>
+                    <IconBtn label="Move down" onClick={() => move(i, 1)}>
+                      <ArrowDown className="h-3.5 w-3.5" />
+                    </IconBtn>
+                    <IconBtn
+                      label="Remove"
+                      onClick={() => onButtons(buttons.filter((_, j) => j !== i))}
+                    >
+                      <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                    </IconBtn>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
         <Button
           variant="outline"
           size="sm"
           className="w-full"
-          onClick={() =>
-            onButtons([
+          onClick={() => {
+            const next = [
               ...buttons,
-              { id: newId(), label: "New button", url: "https://", style: "filled" },
-            ])
-          }
+              {
+                id: newId(),
+                label: "New button",
+                url: "https://",
+                style: "filled" as ButtonStyle,
+                widthMode: "full" as const,
+              },
+            ];
+            onButtons(next);
+            setOpenIdx(next.length - 1);
+          }}
         >
           <Plus className="mr-2 h-3.5 w-3.5" /> Add button
         </Button>
@@ -1718,6 +2134,41 @@ function ButtonGroupEditor({
     </>
   );
 }
+
+function IconPickerField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value?: string;
+  onChange: (v: string | undefined) => void;
+}) {
+  const Icon = value ? ICON_LIBRARY[value] : null;
+  return (
+    <Field label={label}>
+      <div className="flex items-center gap-2">
+        <div className="flex h-9 w-9 items-center justify-center rounded border bg-muted/40">
+          {Icon ? <Icon size={16} /> : <span className="text-[10px] text-muted-foreground">—</span>}
+        </div>
+        <Select value={value ?? "__none"} onValueChange={(v) => onChange(v === "__none" ? undefined : v)}>
+          <SelectTrigger className="flex-1">
+            <SelectValue placeholder="None" />
+          </SelectTrigger>
+          <SelectContent className="max-h-64">
+            <SelectItem value="__none">None</SelectItem>
+            {ICON_KEYS.map((k) => (
+              <SelectItem key={k} value={k}>
+                {k}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </Field>
+  );
+}
+
 
 function FileEditor({ block, set }: { block: FileBlock; set: (k: string, v: unknown) => void }) {
   return (
