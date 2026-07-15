@@ -68,8 +68,10 @@ export interface EventRow {
   link_url: string | null;
   link_host: string | null;
   block_id: string | null;
+  block_type: string | null;
   qr_source: string | null;
   duration_ms: number | null;
+  scroll_pct: number | null;
   created_at: string;
 }
 
@@ -84,6 +86,13 @@ export interface SessionRow {
   region: string | null;
   page_views: number;
   link_clicks: number;
+  duration_ms: number;
+  is_bounce: boolean;
+  max_scroll_pct: number;
+  engagement_score: number;
+  entry_url: string | null;
+  exit_url: string | null;
+  referrer_source: string | null;
   last_seen_at: string;
   started_at: string;
 }
