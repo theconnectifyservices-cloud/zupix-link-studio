@@ -21,6 +21,7 @@ import type {
   Viewport,
 } from "./types";
 import { cn } from "@/lib/utils";
+import { buildEmbed } from "./video-source";
 import {
   Twitter,
   Instagram,
