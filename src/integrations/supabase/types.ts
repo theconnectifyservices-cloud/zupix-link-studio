@@ -890,6 +890,116 @@ export type Database = {
           },
         ]
       }
+      connected_accounts: {
+        Row: {
+          avatar_url: string | null
+          connected_at: string
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          last_used_at: string | null
+          metadata: Json
+          provider: string
+          provider_account_id: string
+          scopes: string[] | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          connected_at?: string
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          last_used_at?: string | null
+          metadata?: Json
+          provider: string
+          provider_account_id: string
+          scopes?: string[] | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          connected_at?: string
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          last_used_at?: string | null
+          metadata?: Json
+          provider?: string
+          provider_account_id?: string
+          scopes?: string[] | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      connected_apps: {
+        Row: {
+          app_icon_url: string | null
+          app_name: string
+          app_slug: string
+          connected_at: string
+          created_at: string
+          id: string
+          last_activity_at: string | null
+          metadata: Json
+          permissions: string[]
+          revoked_at: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          workspace_id: string | null
+        }
+        Insert: {
+          app_icon_url?: string | null
+          app_name: string
+          app_slug: string
+          connected_at?: string
+          created_at?: string
+          id?: string
+          last_activity_at?: string | null
+          metadata?: Json
+          permissions?: string[]
+          revoked_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          workspace_id?: string | null
+        }
+        Update: {
+          app_icon_url?: string | null
+          app_name?: string
+          app_slug?: string
+          connected_at?: string
+          created_at?: string
+          id?: string
+          last_activity_at?: string | null
+          metadata?: Json
+          permissions?: string[]
+          revoked_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connected_apps_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversion_goals: {
         Row: {
           bio_page_id: string | null
@@ -1116,6 +1226,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      login_history: {
+        Row: {
+          browser: string | null
+          created_at: string
+          device_type: string | null
+          failure_reason: string | null
+          id: string
+          ip_address: unknown
+          location: Json | null
+          os: string | null
+          provider: string
+          success: boolean
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          browser?: string | null
+          created_at?: string
+          device_type?: string | null
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown
+          location?: Json | null
+          os?: string | null
+          provider?: string
+          success?: boolean
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          browser?: string | null
+          created_at?: string
+          device_type?: string | null
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown
+          location?: Json | null
+          os?: string | null
+          provider?: string
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       media_asset_versions: {
         Row: {
@@ -1790,8 +1945,12 @@ export type Database = {
           id: string
           language: string | null
           last_login_at: string | null
+          mfa_enabled: boolean
           onboarding_completed: boolean
           phone: string | null
+          recovery_email: string | null
+          recovery_phone: string | null
+          security_alerts_enabled: boolean
           status: Database["public"]["Enums"]["account_status"]
           subscription_tier: string
           timezone: string | null
@@ -1810,8 +1969,12 @@ export type Database = {
           id: string
           language?: string | null
           last_login_at?: string | null
+          mfa_enabled?: boolean
           onboarding_completed?: boolean
           phone?: string | null
+          recovery_email?: string | null
+          recovery_phone?: string | null
+          security_alerts_enabled?: boolean
           status?: Database["public"]["Enums"]["account_status"]
           subscription_tier?: string
           timezone?: string | null
@@ -1830,8 +1993,12 @@ export type Database = {
           id?: string
           language?: string | null
           last_login_at?: string | null
+          mfa_enabled?: boolean
           onboarding_completed?: boolean
           phone?: string | null
+          recovery_email?: string | null
+          recovery_phone?: string | null
+          security_alerts_enabled?: boolean
           status?: Database["public"]["Enums"]["account_status"]
           subscription_tier?: string
           timezone?: string | null
@@ -1914,6 +2081,110 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "permissions"
             referencedColumns: ["key"]
+          },
+        ]
+      }
+      security_alerts: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          message: string | null
+          metadata: Json
+          read_at: string | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          read_at?: string | null
+          severity?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          read_at?: string | null
+          severity?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      sso_configurations: {
+        Row: {
+          config: Json
+          created_at: string
+          created_by: string | null
+          domain_allowlist: string[] | null
+          entity_id: string | null
+          id: string
+          metadata_url: string | null
+          protocol: string
+          provider_name: string
+          role_mappings: Json
+          scim_enabled: boolean
+          scim_token_hash: string | null
+          sso_url: string | null
+          status: string
+          updated_at: string
+          workspace_id: string
+          x509_cert: string | null
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          domain_allowlist?: string[] | null
+          entity_id?: string | null
+          id?: string
+          metadata_url?: string | null
+          protocol: string
+          provider_name: string
+          role_mappings?: Json
+          scim_enabled?: boolean
+          scim_token_hash?: string | null
+          sso_url?: string | null
+          status?: string
+          updated_at?: string
+          workspace_id: string
+          x509_cert?: string | null
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          domain_allowlist?: string[] | null
+          entity_id?: string | null
+          id?: string
+          metadata_url?: string | null
+          protocol?: string
+          provider_name?: string
+          role_mappings?: Json
+          scim_enabled?: boolean
+          scim_token_hash?: string | null
+          sso_url?: string | null
+          status?: string
+          updated_at?: string
+          workspace_id?: string
+          x509_cert?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sso_configurations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
           },
         ]
       }
