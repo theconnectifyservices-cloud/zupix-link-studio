@@ -23,8 +23,7 @@ import {
   Briefcase,
   Server,
   Activity,
-
-
+  ClipboardCheck,
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
@@ -68,6 +67,7 @@ const appItems: Item[] = [
   { icon: Server, label: "Infrastructure", href: "/app/infrastructure" },
   { icon: Activity, label: "Performance", href: "/app/performance" },
   { icon: Shield, label: "Security", href: "/app/security" },
+  { icon: ClipboardCheck, label: "Production QA", href: "/app/qa" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];
 
