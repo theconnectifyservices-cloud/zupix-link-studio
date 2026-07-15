@@ -1750,3 +1750,270 @@ function fromLocalDT(v: string): string {
   const d = new Date(v);
   return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+   Button Effect controls (v2.0). Renders per-effect fields based on the
+   currently-selected effect id. Keep in sync with `ButtonEffect` in
+   src/features/builder/types.ts and the CSS classes in src/styles.css.
+   ──────────────────────────────────────────────────────────────────────── */
+
+const DIRECTION_OPTIONS: Array<[string, string]> = [
+  ["lr", "Left → Right"],
+  ["rl", "Right → Left"],
+  ["tb", "Top → Bottom"],
+  ["bt", "Bottom → Top"],
+  ["diag", "Diagonal"],
+];
+
+function ButtonEffectControls({
+  s,
+  onChange,
+}: {
+  s: BlockSettings;
+  onChange: (patch: Partial<BlockSettings>) => void;
+}) {
+  const fx = s.buttonEffect ?? "none";
+  if (fx === "none") return null;
+
+  const Num = ({
+    label,
+    field,
+    min,
+    max,
+    step = 1,
+    fallback,
+  }: {
+    label: string;
+    field: keyof BlockSettings;
+    min?: number;
+    max?: number;
+    step?: number;
+    fallback?: number;
+  }) => (
+    <Field label={label}>
+      <Input
+        type="number"
+        min={min}
+        max={max}
+        step={step}
+        value={(s[field] as number | undefined) ?? fallback ?? ""}
+        onChange={(e) =>
+          onChange({ [field]: e.target.value === "" ? undefined : Number(e.target.value) } as Partial<BlockSettings>)
+        }
+      />
+    </Field>
+  );
+  const Color = ({
+    label,
+    field,
+    fallback = "#6366f1",
+  }: {
+    label: string;
+    field: "buttonEffectColor" | "buttonEffectColor2";
+    fallback?: string;
+  }) => (
+    <Field label={label}>
+      <Input
+        type="color"
+        className="h-9 w-full p-1"
+        value={(s[field] as string | undefined) ?? fallback}
+        onChange={(e) => onChange({ [field]: e.target.value })}
+      />
+    </Field>
+  );
+  const Dir = () => (
+    <Field label="Direction">
+      <SelectSimple
+        value={s.buttonEffectDirection ?? "lr"}
+        onChange={(v) =>
+          onChange({ buttonEffectDirection: v as BlockSettings["buttonEffectDirection"] })
+        }
+        options={DIRECTION_OPTIONS}
+      />
+    </Field>
+  );
+
+  const gradient = s.buttonEffectGradient ?? ["#6366f1", "#ec4899", "#f59e0b"];
+
+  return (
+    <div className="mt-2 space-y-2 rounded-md border bg-muted/30 p-2">
+      <Field label="Enabled">
+        <Switch
+          checked={s.buttonEffectEnabled !== false}
+          onCheckedChange={(v) => onChange({ buttonEffectEnabled: v })}
+        />
+      </Field>
+
+      {fx === "shine" && (
+        <>
+          <Field label="Trigger">
+            <SelectSimple
+              value={s.buttonEffectMode ?? "hover"}
+              onChange={(v) =>
+                onChange({ buttonEffectMode: v as BlockSettings["buttonEffectMode"] })
+              }
+              options={[["always", "Always"], ["hover", "Hover"], ["click", "Click"]]}
+            />
+          </Field>
+          <Dir />
+          <Num label="Sweep width (%)" field="buttonEffectSize" min={10} max={100} fallback={40} />
+          <Num label="Speed (ms)" field="buttonEffectSpeed" min={200} max={10000} step={100} fallback={1500} />
+          <Num label="Delay (ms)" field="buttonEffectDelay" min={0} max={5000} step={50} fallback={0} />
+          <Color label="Shine color" field="buttonEffectColor2" fallback="#ffffff" />
+        </>
+      )}
+
+      {fx === "ripple" && (
+        <>
+          <Color label="Ripple color" field="buttonEffectColor" />
+          <Num label="Max size" field="buttonEffectDistance" min={10} max={80} fallback={30} />
+          <Num label="Duration (ms)" field="buttonEffectSpeed" min={100} max={2000} step={50} fallback={600} />
+          <Num label="Opacity" field="buttonEffectOpacity" min={0.1} max={1} step={0.05} fallback={0.55} />
+        </>
+      )}
+
+      {fx === "neon" && (
+        <>
+          <Color label="Glow color" field="buttonEffectColor" />
+          <Num label="Glow strength" field="buttonEffectIntensity" min={20} max={200} fallback={50} />
+          <Num label="Pulse speed (ms)" field="buttonEffectSpeed" min={400} max={6000} step={100} fallback={2000} />
+          <Field label="Mode">
+            <SelectSimple
+              value={s.buttonEffectMode ?? "hover"}
+              onChange={(v) =>
+                onChange({ buttonEffectMode: v as BlockSettings["buttonEffectMode"] })
+              }
+              options={[["hover", "Animated"], ["always", "Animated (always)"], ["click", "Static"]]}
+            />
+          </Field>
+        </>
+      )}
+
+      {(fx === "floating" || fx === "floatingGlow") && (
+        <>
+          <Num label="Distance (px)" field="buttonEffectDistance" min={1} max={30} fallback={4} />
+          <Num label="Speed (ms)" field="buttonEffectSpeed" min={500} max={10000} step={100} fallback={3000} />
+          <Dir />
+          {fx === "floatingGlow" && <Color label="Glow color" field="buttonEffectColor" />}
+        </>
+      )}
+
+      {fx === "pulse" && (
+        <>
+          <Num label="Scale" field="buttonEffectScale" min={1.01} max={1.4} step={0.01} fallback={1.04} />
+          <Num label="Speed (ms)" field="buttonEffectSpeed" min={300} max={6000} step={100} fallback={1600} />
+        </>
+      )}
+
+      {fx === "bounce" && (
+        <>
+          <Num label="Height (px)" field="buttonEffectDistance" min={2} max={40} fallback={8} />
+          <Num label="Speed (ms)" field="buttonEffectSpeed" min={400} max={6000} step={100} fallback={1400} />
+        </>
+      )}
+
+      {fx === "glow" && (
+        <>
+          <Color label="Glow color" field="buttonEffectColor" />
+          <Num label="Blur (px)" field="buttonEffectSize" min={4} max={80} fallback={24} />
+          <Num label="Intensity" field="buttonEffectIntensity" min={20} max={200} fallback={50} />
+        </>
+      )}
+
+      {(fx === "gradientFlow" || fx === "borderGlow" || fx === "rainbowBorder") && (
+        <>
+          <Num label="Speed (ms)" field="buttonEffectSpeed" min={800} max={20000} step={100} fallback={fx === "rainbowBorder" ? 4000 : 6000} />
+          {(fx === "borderGlow" || fx === "rainbowBorder") && (
+            <Num label="Border width (px)" field="buttonEffectSize" min={1} max={8} fallback={2} />
+          )}
+          {(fx === "gradientFlow" || fx === "borderGlow") && (
+            <>
+              <Dir />
+              <div className="grid grid-cols-3 gap-2">
+                {[0, 1, 2].map((i) => (
+                  <Field key={i} label={`Color ${i + 1}`}>
+                    <Input
+                      type="color"
+                      className="h-9 w-full p-1"
+                      value={gradient[i] ?? "#6366f1"}
+                      onChange={(e) => {
+                        const next = [...gradient];
+                        next[i] = e.target.value;
+                        onChange({ buttonEffectGradient: next });
+                      }}
+                    />
+                  </Field>
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      )}
+
+      {fx === "magnetic" && (
+        <>
+          <Num label="Pull distance (px)" field="buttonEffectDistance" min={4} max={60} fallback={20} />
+          <Num label="Sensitivity" field="buttonEffectIntensity" min={10} max={100} fallback={50} />
+          <div className="text-[11px] text-muted-foreground">Desktop only — touch devices disable this effect.</div>
+        </>
+      )}
+
+      {fx === "glass" && (
+        <>
+          <Num label="Reflection width (%)" field="buttonEffectSize" min={10} max={100} fallback={40} />
+          <Num label="Speed (ms)" field="buttonEffectSpeed" min={800} max={10000} step={100} fallback={4000} />
+          <Num label="Opacity" field="buttonEffectOpacity" min={0.1} max={1} step={0.05} fallback={0.5} />
+          <Color label="Reflection tint" field="buttonEffectColor2" fallback="#ffffff" />
+        </>
+      )}
+
+      {fx === "breathing" && (
+        <>
+          <Num label="Scale" field="buttonEffectScale" min={1.01} max={1.15} step={0.01} fallback={1.03} />
+          <Num label="Duration (ms)" field="buttonEffectSpeed" min={1000} max={8000} step={100} fallback={3200} />
+        </>
+      )}
+
+      {fx === "shake" && (
+        <>
+          <Num label="Distance (px)" field="buttonEffectDistance" min={1} max={12} fallback={4} />
+          <Num label="Speed (ms)" field="buttonEffectSpeed" min={300} max={2000} step={50} fallback={600} />
+          <Num label="Repeat delay (ms)" field="buttonEffectDelay" min={0} max={20000} step={100} fallback={3000} />
+        </>
+      )}
+
+      {fx === "lift3d" && (
+        <>
+          <Num label="Elevation (px)" field="buttonEffectDistance" min={2} max={20} fallback={6} />
+        </>
+      )}
+
+      {fx === "liquidFill" && (
+        <>
+          <Color label="Fill color" field="buttonEffectColor" />
+          <Num label="Fill speed (ms)" field="buttonEffectSpeed" min={150} max={3000} step={50} fallback={500} />
+          <Dir />
+        </>
+      )}
+
+      {fx === "spotlight" && (
+        <>
+          <Color label="Spotlight color" field="buttonEffectColor2" fallback="#ffffff" />
+          <Num label="Spot radius (px)" field="buttonEffectSize" min={40} max={400} fallback={120} />
+          <Num label="Light strength" field="buttonEffectIntensity" min={10} max={100} fallback={60} />
+          <div className="text-[11px] text-muted-foreground">Desktop only.</div>
+        </>
+      )}
+
+      {fx === "premiumCta" && (
+        <>
+          <Color label="Accent color" field="buttonEffectColor" />
+          <Color label="Shine tint" field="buttonEffectColor2" fallback="#ffffff" />
+          <div className="text-[11px] text-muted-foreground">
+            Composite: Glow + Breathing + Floating + Shine — tuned for conversion.
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
