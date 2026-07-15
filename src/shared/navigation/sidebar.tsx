@@ -34,6 +34,9 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { APP_CONFIG } from "@/config/app.config";
 
+import { useUserRoles } from "@/features/auth/hooks/use-user-roles";
+import type { Permission } from "@/features/auth/rbac";
+
 interface SidebarProps {
   variant?: "app" | "admin";
   className?: string;
@@ -45,6 +48,8 @@ type Item = {
   href: string;
   soon?: boolean;
   exact?: boolean;
+  /** Any of these permissions grants visibility. If omitted, always visible. */
+  requires?: Permission[];
 };
 
 const appItems: Item[] = [
