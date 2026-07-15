@@ -24,11 +24,11 @@ import {
   CheckCircle2,
   Loader2,
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
-import { Badge } from "@/shared/ui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared/ui/tabs";
-import { Textarea } from "@/shared/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { WORKFLOWS, type WorkflowDefinition } from "./registry";
 import {
