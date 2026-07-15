@@ -500,14 +500,13 @@ export function ThemePanel() {
 
           {bg.kind === "image" && (
             <>
-              <Field label="Image URL">
-                <Input
-                  className="h-8"
-                  value={bg.imageUrl ?? ""}
-                  onChange={(e) => patchBg({ imageUrl: e.target.value })}
-                  placeholder="https://…"
-                />
-              </Field>
+              <ImageField
+                label="Background image"
+                value={bg.imageUrl}
+                onChange={(url) => patchBg({ imageUrl: url })}
+                pickerTitle="Choose background image"
+                previewAspect="16 / 9"
+              />
               <Field label="Size">
                 <Select
                   value={bg.size ?? "cover"}
@@ -566,6 +565,11 @@ export function ThemePanel() {
                   </SelectContent>
                 </Select>
               </Field>
+              <AdvancedUrl
+                label="Image URL (advanced)"
+                value={bg.imageUrl ?? ""}
+                onChange={(v) => patchBg({ imageUrl: v || undefined })}
+              />
             </>
           )}
 
