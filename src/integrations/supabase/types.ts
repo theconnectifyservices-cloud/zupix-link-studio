@@ -900,62 +900,190 @@ export type Database = {
       }
       media_assets: {
         Row: {
+          alt_text: string | null
           bucket: string
           created_at: string
           deleted_at: string | null
           duration_seconds: number | null
           file_name: string | null
+          folder_id: string | null
           height: number | null
           id: string
           kind: Database["public"]["Enums"]["media_kind"]
+          last_used_at: string | null
           metadata: Json
           mime_type: string | null
           owner_id: string
           path: string
+          sha256: string | null
           size_bytes: number | null
+          tags: string[]
+          thumbnail_path: string | null
           updated_at: string
+          usage_count: number
           width: number | null
           workspace_id: string | null
         }
         Insert: {
+          alt_text?: string | null
           bucket: string
           created_at?: string
           deleted_at?: string | null
           duration_seconds?: number | null
           file_name?: string | null
+          folder_id?: string | null
           height?: number | null
           id?: string
           kind?: Database["public"]["Enums"]["media_kind"]
+          last_used_at?: string | null
           metadata?: Json
           mime_type?: string | null
           owner_id: string
           path: string
+          sha256?: string | null
           size_bytes?: number | null
+          tags?: string[]
+          thumbnail_path?: string | null
           updated_at?: string
+          usage_count?: number
           width?: number | null
           workspace_id?: string | null
         }
         Update: {
+          alt_text?: string | null
           bucket?: string
           created_at?: string
           deleted_at?: string | null
           duration_seconds?: number | null
           file_name?: string | null
+          folder_id?: string | null
           height?: number | null
           id?: string
           kind?: Database["public"]["Enums"]["media_kind"]
+          last_used_at?: string | null
           metadata?: Json
           mime_type?: string | null
           owner_id?: string
           path?: string
+          sha256?: string | null
           size_bytes?: number | null
+          tags?: string[]
+          thumbnail_path?: string | null
           updated_at?: string
+          usage_count?: number
           width?: number | null
           workspace_id?: string | null
         }
         Relationships: [
           {
+            foreignKeyName: "media_assets_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "media_folders"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "media_assets_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_folders: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          parent_id: string | null
+          path: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          name: string
+          parent_id?: string | null
+          path?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          parent_id?: string | null
+          path?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_folders_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "media_folders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_folders_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_usages: {
+        Row: {
+          asset_id: string
+          bio_page_id: string | null
+          block_id: string | null
+          context: string | null
+          created_at: string
+          id: string
+          workspace_id: string
+        }
+        Insert: {
+          asset_id: string
+          bio_page_id?: string | null
+          block_id?: string | null
+          context?: string | null
+          created_at?: string
+          id?: string
+          workspace_id: string
+        }
+        Update: {
+          asset_id?: string
+          bio_page_id?: string | null
+          block_id?: string | null
+          context?: string | null
+          created_at?: string
+          id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_usages_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_usages_bio_page_id_fkey"
+            columns: ["bio_page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_usages_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
