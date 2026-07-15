@@ -43,19 +43,22 @@ export async function createCollection(input: {
       name: input.name.trim(),
       kind: input.kind ?? "manual",
       description: input.description ?? null,
-      rules: input.rules ?? {},
+      rules: (input.rules ?? {}) as never,
     })
     .select()
     .single();
   if (error) throw error;
-  return data as MediaCollection;
+  return data as unknown as MediaCollection;
 }
 
 export async function updateCollection(
   id: string,
   patch: Partial<Pick<MediaCollection, "name" | "description" | "rules" | "is_favorite" | "cover_asset_id">>,
 ): Promise<void> {
-  const { error } = await supabase.from("media_collections").update(patch).eq("id", id);
+  const { error } = await supabase
+    .from("media_collections")
+    .update(patch as never)
+    .eq("id", id);
   if (error) throw error;
 }
 
