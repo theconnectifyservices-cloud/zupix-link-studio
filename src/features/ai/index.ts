@@ -10,3 +10,4 @@ export { ToolsPanel } from "./components/tools-panel";
 export { ActivityList } from "./components/activity-list";
 export { ContextSummary } from "./components/context-summary";
 export { MessageBubble } from "./components/message-bubble";
+export * from "./content-studio";
