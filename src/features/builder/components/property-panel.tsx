@@ -1349,14 +1349,16 @@ function GalleryEditor({
         <Label className="text-xs">Images</Label>
         {images.map((img, i) => (
           <div key={img.id} className="space-y-1.5 rounded-md border p-2">
-            <Input
-              value={img.url}
-              placeholder="https://…"
-              onChange={(e) => {
+            <ImageField
+              label={`Image ${i + 1}`}
+              value={img.url || undefined}
+              onChange={(url) => {
                 const n = [...images];
-                n[i] = { ...img, url: e.target.value };
+                n[i] = { ...img, url: url ?? "" };
                 onImages(n);
               }}
+              crop={{ shape: "rect", aspect: "free" }}
+              pickerTitle="Choose image"
             />
             <Input
               value={img.alt ?? ""}
