@@ -102,6 +102,7 @@ export function ProjectCard({
   const qc = useQueryClient();
   const [renameOpen, setRenameOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [name, setName] = useState(project.name);
   const [busy, setBusy] = useState(false);
 
