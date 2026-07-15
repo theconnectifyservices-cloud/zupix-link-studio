@@ -5,6 +5,7 @@ import {
   LayoutTemplate,
   BarChart3,
   Target,
+  Megaphone,
   Globe,
   Puzzle,
   Settings,
@@ -39,6 +40,7 @@ const appItems: Item[] = [
   { icon: LayoutTemplate, label: "Templates", href: "/app/templates", soon: true },
   { icon: BarChart3, label: "Analytics", href: "/app/analytics", soon: true },
   { icon: Target, label: "Conversions", href: "/app/conversions" },
+  { icon: Megaphone, label: "Campaigns", href: "/app/campaigns" },
   { icon: Globe, label: "Domains", href: "/app/domains" },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
 ];

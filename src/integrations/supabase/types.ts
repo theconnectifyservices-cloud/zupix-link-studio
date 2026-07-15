@@ -77,6 +77,7 @@ export type Database = {
           block_id: string | null
           block_type: string | null
           browser: string | null
+          campaign_id: string | null
           city: string | null
           click_source: string | null
           country: string | null
@@ -96,6 +97,11 @@ export type Database = {
           scroll_pct: number | null
           session_id: string | null
           timezone: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
           visitor_hash: string
           workspace_id: string
         }
@@ -104,6 +110,7 @@ export type Database = {
           block_id?: string | null
           block_type?: string | null
           browser?: string | null
+          campaign_id?: string | null
           city?: string | null
           click_source?: string | null
           country?: string | null
@@ -123,6 +130,11 @@ export type Database = {
           scroll_pct?: number | null
           session_id?: string | null
           timezone?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
           visitor_hash: string
           workspace_id: string
         }
@@ -131,6 +143,7 @@ export type Database = {
           block_id?: string | null
           block_type?: string | null
           browser?: string | null
+          campaign_id?: string | null
           city?: string | null
           click_source?: string | null
           country?: string | null
@@ -150,6 +163,11 @@ export type Database = {
           scroll_pct?: number | null
           session_id?: string | null
           timezone?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
           visitor_hash?: string
           workspace_id?: string
         }
@@ -159,6 +177,13 @@ export type Database = {
             columns: ["bio_page_id"]
             isOneToOne: false
             referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
             referencedColumns: ["id"]
           },
           {
@@ -181,6 +206,7 @@ export type Database = {
         Row: {
           bio_page_id: string
           browser: string | null
+          campaign_id: string | null
           city: string | null
           country: string | null
           device_type: Database["public"]["Enums"]["analytics_device_type"]
@@ -205,14 +231,17 @@ export type Database = {
           started_at: string
           timezone: string | null
           utm_campaign: string | null
+          utm_content: string | null
           utm_medium: string | null
           utm_source: string | null
+          utm_term: string | null
           visitor_hash: string
           workspace_id: string
         }
         Insert: {
           bio_page_id: string
           browser?: string | null
+          campaign_id?: string | null
           city?: string | null
           country?: string | null
           device_type?: Database["public"]["Enums"]["analytics_device_type"]
@@ -237,14 +266,17 @@ export type Database = {
           started_at?: string
           timezone?: string | null
           utm_campaign?: string | null
+          utm_content?: string | null
           utm_medium?: string | null
           utm_source?: string | null
+          utm_term?: string | null
           visitor_hash: string
           workspace_id: string
         }
         Update: {
           bio_page_id?: string
           browser?: string | null
+          campaign_id?: string | null
           city?: string | null
           country?: string | null
           device_type?: Database["public"]["Enums"]["analytics_device_type"]
@@ -269,8 +301,10 @@ export type Database = {
           started_at?: string
           timezone?: string | null
           utm_campaign?: string | null
+          utm_content?: string | null
           utm_medium?: string | null
           utm_source?: string | null
+          utm_term?: string | null
           visitor_hash?: string
           workspace_id?: string
         }
@@ -280,6 +314,13 @@ export type Database = {
             columns: ["bio_page_id"]
             isOneToOne: false
             referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_sessions_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
             referencedColumns: ["id"]
           },
           {
@@ -542,6 +583,87 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "bio_pages_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaigns: {
+        Row: {
+          bio_page_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          name: string
+          notes: string | null
+          short_code: string | null
+          starts_at: string | null
+          status: Database["public"]["Enums"]["campaign_status"]
+          target_url: string
+          updated_at: string
+          utm_campaign: string
+          utm_content: string | null
+          utm_medium: string
+          utm_source: string
+          utm_term: string | null
+          workspace_id: string
+        }
+        Insert: {
+          bio_page_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          short_code?: string | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["campaign_status"]
+          target_url: string
+          updated_at?: string
+          utm_campaign: string
+          utm_content?: string | null
+          utm_medium: string
+          utm_source: string
+          utm_term?: string | null
+          workspace_id: string
+        }
+        Update: {
+          bio_page_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          short_code?: string | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["campaign_status"]
+          target_url?: string
+          updated_at?: string
+          utm_campaign?: string
+          utm_content?: string | null
+          utm_medium?: string
+          utm_source?: string
+          utm_term?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_bio_page_id_fkey"
+            columns: ["bio_page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaigns_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -1450,6 +1572,7 @@ export type Database = {
         | "scheduled"
         | "unpublished"
       bio_page_visibility: "public" | "private" | "unlisted" | "password"
+      campaign_status: "draft" | "active" | "paused" | "completed" | "archived"
       conversion_goal_type:
         | "whatsapp_click"
         | "phone_call"
@@ -1643,6 +1766,7 @@ export const Constants = {
         "unpublished",
       ],
       bio_page_visibility: ["public", "private", "unlisted", "password"],
+      campaign_status: ["draft", "active", "paused", "completed", "archived"],
       conversion_goal_type: [
         "whatsapp_click",
         "phone_call",

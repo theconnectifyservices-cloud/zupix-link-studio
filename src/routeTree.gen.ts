@@ -32,6 +32,7 @@ import { Route as AuthenticatedAppIntegrationsRouteImport } from './routes/_auth
 import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated.app.help'
 import { Route as AuthenticatedAppDomainsRouteImport } from './routes/_authenticated.app.domains'
 import { Route as AuthenticatedAppConversionsRouteImport } from './routes/_authenticated.app.conversions'
+import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated.app.campaigns'
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated.app.analytics'
 import { Route as AuthenticatedAppSettingsSessionsRouteImport } from './routes/_authenticated.app.settings.sessions'
 import { Route as AuthenticatedAppSettingsSecurityRouteImport } from './routes/_authenticated.app.settings.security'
@@ -159,6 +160,12 @@ const AuthenticatedAppConversionsRoute =
     path: '/conversions',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppCampaignsRoute =
+  AuthenticatedAppCampaignsRouteImport.update({
+    id: '/campaigns',
+    path: '/campaigns',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppAnalyticsRoute =
   AuthenticatedAppAnalyticsRouteImport.update({
     id: '/analytics',
@@ -215,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/': typeof AuthIndexRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
+  '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
   '/app/domains': typeof AuthenticatedAppDomainsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -245,6 +253,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth': typeof AuthIndexRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
+  '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
   '/app/domains': typeof AuthenticatedAppDomainsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -278,6 +287,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/': typeof AuthIndexRoute
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
+  '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/conversions': typeof AuthenticatedAppConversionsRoute
   '/_authenticated/app/domains': typeof AuthenticatedAppDomainsRoute
   '/_authenticated/app/help': typeof AuthenticatedAppHelpRoute
@@ -311,6 +321,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/'
     | '/app/analytics'
+    | '/app/campaigns'
     | '/app/conversions'
     | '/app/domains'
     | '/app/help'
@@ -341,6 +352,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth'
     | '/app/analytics'
+    | '/app/campaigns'
     | '/app/conversions'
     | '/app/domains'
     | '/app/help'
@@ -373,6 +385,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/'
     | '/_authenticated/app/analytics'
+    | '/_authenticated/app/campaigns'
     | '/_authenticated/app/conversions'
     | '/_authenticated/app/domains'
     | '/_authenticated/app/help'
@@ -568,6 +581,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppConversionsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/campaigns': {
+      id: '/_authenticated/app/campaigns'
+      path: '/campaigns'
+      fullPath: '/app/campaigns'
+      preLoaderRoute: typeof AuthenticatedAppCampaignsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/analytics': {
       id: '/_authenticated/app/analytics'
       path: '/analytics'
@@ -661,6 +681,7 @@ const AuthenticatedAppSettingsRouteWithChildren =
 
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
+  AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppConversionsRoute: typeof AuthenticatedAppConversionsRoute
   AuthenticatedAppDomainsRoute: typeof AuthenticatedAppDomainsRoute
   AuthenticatedAppHelpRoute: typeof AuthenticatedAppHelpRoute
@@ -674,6 +695,7 @@ interface AuthenticatedAppRouteChildren {
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
+  AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppConversionsRoute: AuthenticatedAppConversionsRoute,
   AuthenticatedAppDomainsRoute: AuthenticatedAppDomainsRoute,
   AuthenticatedAppHelpRoute: AuthenticatedAppHelpRoute,
