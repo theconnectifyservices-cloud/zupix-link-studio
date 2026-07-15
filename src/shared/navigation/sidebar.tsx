@@ -8,6 +8,7 @@ import {
   Megaphone,
   Globe,
   Puzzle,
+  Radar,
   Settings,
   LifeBuoy,
   ChevronLeft,
