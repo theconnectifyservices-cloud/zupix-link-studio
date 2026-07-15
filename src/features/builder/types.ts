@@ -274,7 +274,15 @@ export type ButtonAction =
 
 export type ButtonWidth = "full" | "auto" | "half";
 export type ButtonAlign = "left" | "center" | "right";
-export type ButtonStyle = "filled" | "outline" | "soft";
+export type ButtonStyle =
+  | "filled"
+  | "outline"
+  | "soft"
+  | "ghost"
+  | "glass"
+  | "gradient"
+  | "elevated"
+  | "neumorphism";
 
 export type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
 
