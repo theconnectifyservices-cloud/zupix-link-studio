@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Sparkles, MessageSquare, Plus, Wand2, Palette } from "lucide-react";
+import { Sparkles, MessageSquare, Plus, Wand2, Palette, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/shared/navigation/page-header";
 import { PageLoader } from "@/shared/ui/page-loader";
@@ -58,6 +58,9 @@ function AiHome() {
         breadcrumbs={[{ label: "Dashboard", href: "/app" }, { label: "AI" }]}
         actions={
           <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate({ to: "/app/ai/growth" })}>
+              <TrendingUp className="mr-1 h-4 w-4" /> Growth Coach
+            </Button>
             <Button variant="outline" onClick={() => navigate({ to: "/app/ai/design" })}>
               <Palette className="mr-1 h-4 w-4" /> Design Studio
             </Button>

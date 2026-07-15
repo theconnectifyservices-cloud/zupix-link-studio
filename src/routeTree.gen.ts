@@ -49,6 +49,7 @@ import { Route as AuthenticatedAppSettingsPasswordRouteImport } from './routes/_
 import { Route as AuthenticatedAppSettingsNotificationsRouteImport } from './routes/_authenticated.app.settings.notifications'
 import { Route as AuthenticatedAppSettingsIdentityRouteImport } from './routes/_authenticated.app.settings.identity'
 import { Route as AuthenticatedAppAiStudioRouteImport } from './routes/_authenticated.app.ai.studio'
+import { Route as AuthenticatedAppAiGrowthRouteImport } from './routes/_authenticated.app.ai.growth'
 import { Route as AuthenticatedAppAiDesignRouteImport } from './routes/_authenticated.app.ai.design'
 import { Route as AuthenticatedAppAiConversationIdRouteImport } from './routes/_authenticated.app.ai.$conversationId'
 
@@ -269,6 +270,12 @@ const AuthenticatedAppAiStudioRoute =
     path: '/studio',
     getParentRoute: () => AuthenticatedAppAiRoute,
   } as any)
+const AuthenticatedAppAiGrowthRoute =
+  AuthenticatedAppAiGrowthRouteImport.update({
+    id: '/growth',
+    path: '/growth',
+    getParentRoute: () => AuthenticatedAppAiRoute,
+  } as any)
 const AuthenticatedAppAiDesignRoute =
   AuthenticatedAppAiDesignRouteImport.update({
     id: '/design',
@@ -315,6 +322,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
   '/app/ai/design': typeof AuthenticatedAppAiDesignRoute
+  '/app/ai/growth': typeof AuthenticatedAppAiGrowthRoute
   '/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
@@ -356,6 +364,7 @@ export interface FileRoutesByTo {
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
   '/app/ai/design': typeof AuthenticatedAppAiDesignRoute
+  '/app/ai/growth': typeof AuthenticatedAppAiGrowthRoute
   '/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
@@ -401,6 +410,7 @@ export interface FileRoutesById {
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
   '/_authenticated/app/ai/design': typeof AuthenticatedAppAiDesignRoute
+  '/_authenticated/app/ai/growth': typeof AuthenticatedAppAiGrowthRoute
   '/_authenticated/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
   '/_authenticated/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/_authenticated/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
@@ -446,6 +456,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/ai/$conversationId'
     | '/app/ai/design'
+    | '/app/ai/growth'
     | '/app/ai/studio'
     | '/app/settings/identity'
     | '/app/settings/notifications'
@@ -487,6 +498,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/ai/$conversationId'
     | '/app/ai/design'
+    | '/app/ai/growth'
     | '/app/ai/studio'
     | '/app/settings/identity'
     | '/app/settings/notifications'
@@ -531,6 +543,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/'
     | '/_authenticated/app/ai/$conversationId'
     | '/_authenticated/app/ai/design'
+    | '/_authenticated/app/ai/growth'
     | '/_authenticated/app/ai/studio'
     | '/_authenticated/app/settings/identity'
     | '/_authenticated/app/settings/notifications'
@@ -839,6 +852,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAiStudioRouteImport
       parentRoute: typeof AuthenticatedAppAiRoute
     }
+    '/_authenticated/app/ai/growth': {
+      id: '/_authenticated/app/ai/growth'
+      path: '/growth'
+      fullPath: '/app/ai/growth'
+      preLoaderRoute: typeof AuthenticatedAppAiGrowthRouteImport
+      parentRoute: typeof AuthenticatedAppAiRoute
+    }
     '/_authenticated/app/ai/design': {
       id: '/_authenticated/app/ai/design'
       path: '/design'
@@ -869,6 +889,7 @@ const SlugRouteWithChildren = SlugRoute._addFileChildren(SlugRouteChildren)
 interface AuthenticatedAppAiRouteChildren {
   AuthenticatedAppAiConversationIdRoute: typeof AuthenticatedAppAiConversationIdRoute
   AuthenticatedAppAiDesignRoute: typeof AuthenticatedAppAiDesignRoute
+  AuthenticatedAppAiGrowthRoute: typeof AuthenticatedAppAiGrowthRoute
   AuthenticatedAppAiStudioRoute: typeof AuthenticatedAppAiStudioRoute
   AuthenticatedAppAiIndexRoute: typeof AuthenticatedAppAiIndexRoute
 }
@@ -876,6 +897,7 @@ interface AuthenticatedAppAiRouteChildren {
 const AuthenticatedAppAiRouteChildren: AuthenticatedAppAiRouteChildren = {
   AuthenticatedAppAiConversationIdRoute: AuthenticatedAppAiConversationIdRoute,
   AuthenticatedAppAiDesignRoute: AuthenticatedAppAiDesignRoute,
+  AuthenticatedAppAiGrowthRoute: AuthenticatedAppAiGrowthRoute,
   AuthenticatedAppAiStudioRoute: AuthenticatedAppAiStudioRoute,
   AuthenticatedAppAiIndexRoute: AuthenticatedAppAiIndexRoute,
 }
