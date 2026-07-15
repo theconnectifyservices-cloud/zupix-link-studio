@@ -1611,50 +1611,26 @@ function SharedSettings({
                   ["ripple", "Ripple"],
                   ["neon", "Neon"],
                   ["floating", "Floating"],
+                  ["pulse", "Pulse"],
+                  ["bounce", "Bounce"],
+                  ["glow", "Glow"],
+                  ["gradientFlow", "Gradient Flow"],
+                  ["magnetic", "Magnetic Hover"],
+                  ["glass", "Glass Reflection"],
+                  ["borderGlow", "Border Glow"],
+                  ["breathing", "Soft Breathing"],
+                  ["shake", "Shake Attention"],
+                  ["floatingGlow", "Floating Glow"],
+                  ["lift3d", "3D Lift"],
+                  ["liquidFill", "Liquid Fill"],
+                  ["rainbowBorder", "Rainbow Border"],
+                  ["spotlight", "Spotlight Hover"],
+                  ["premiumCta", "Premium CTA"],
                 ]}
               />
             </Field>
-            {s.buttonEffect === "shine" && (
-              <Field label="Shine trigger">
-                <SelectSimple
-                  value={s.buttonEffectMode ?? "hover"}
-                  onChange={(v) =>
-                    onChange({ buttonEffectMode: v as BlockSettings["buttonEffectMode"] })
-                  }
-                  options={[
-                    ["always", "Always"],
-                    ["hover", "Hover"],
-                    ["click", "Click"],
-                  ]}
-                />
-              </Field>
-            )}
-            {(s.buttonEffect === "shine" || s.buttonEffect === "floating") && (
-              <Field label="Effect speed (ms)">
-                <Input
-                  type="number"
-                  min={200}
-                  max={10000}
-                  step={100}
-                  value={s.buttonEffectSpeed ?? (s.buttonEffect === "floating" ? 3000 : 1500)}
-                  onChange={(e) =>
-                    onChange({ buttonEffectSpeed: Number(e.target.value) || undefined })
-                  }
-                />
-              </Field>
-            )}
-            {(s.buttonEffect === "neon" || s.buttonEffect === "ripple") && (
-              <Field
-                label={s.buttonEffect === "neon" ? "Glow color" : "Ripple color"}
-              >
-                <Input
-                  type="color"
-                  value={s.buttonEffectColor ?? "#6366f1"}
-                  onChange={(e) => onChange({ buttonEffectColor: e.target.value })}
-                  className="h-9 w-full p-1"
-                />
-              </Field>
-            )}
+            <ButtonEffectControls s={s} onChange={onChange} />
+
           </div>
         </div>
 
