@@ -4,6 +4,7 @@ import type { SeoSettings } from "@/features/seo/types";
 
 export interface PublicBioPage {
   id: string;
+  workspaceId: string;
   name: string;
   slug: string;
   description: string | null;
