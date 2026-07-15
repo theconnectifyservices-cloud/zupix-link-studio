@@ -34,6 +34,7 @@ import { Route as AuthenticatedAppTeamRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated.app.settings'
 import { Route as AuthenticatedAppResellerRouteImport } from './routes/_authenticated.app.reseller'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
+import { Route as AuthenticatedAppPartnerCommerceRouteImport } from './routes/_authenticated.app.partner-commerce'
 import { Route as AuthenticatedAppMonetizationRouteImport } from './routes/_authenticated.app.monetization'
 import { Route as AuthenticatedAppMediaRouteImport } from './routes/_authenticated.app.media'
 import { Route as AuthenticatedAppIntegrationsRouteImport } from './routes/_authenticated.app.integrations'
@@ -192,6 +193,12 @@ const AuthenticatedAppProjectsRoute =
   AuthenticatedAppProjectsRouteImport.update({
     id: '/projects',
     path: '/projects',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppPartnerCommerceRoute =
+  AuthenticatedAppPartnerCommerceRouteImport.update({
+    id: '/partner-commerce',
+    path: '/partner-commerce',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppMonetizationRoute =
@@ -390,6 +397,7 @@ export interface FileRoutesByFullPath {
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
+  '/app/partner-commerce': typeof AuthenticatedAppPartnerCommerceRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/reseller': typeof AuthenticatedAppResellerRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
@@ -443,6 +451,7 @@ export interface FileRoutesByTo {
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
+  '/app/partner-commerce': typeof AuthenticatedAppPartnerCommerceRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/reseller': typeof AuthenticatedAppResellerRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
@@ -500,6 +509,7 @@ export interface FileRoutesById {
   '/_authenticated/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/_authenticated/app/media': typeof AuthenticatedAppMediaRoute
   '/_authenticated/app/monetization': typeof AuthenticatedAppMonetizationRoute
+  '/_authenticated/app/partner-commerce': typeof AuthenticatedAppPartnerCommerceRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/reseller': typeof AuthenticatedAppResellerRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
@@ -557,6 +567,7 @@ export interface FileRouteTypes {
     | '/app/integrations'
     | '/app/media'
     | '/app/monetization'
+    | '/app/partner-commerce'
     | '/app/projects'
     | '/app/reseller'
     | '/app/settings'
@@ -610,6 +621,7 @@ export interface FileRouteTypes {
     | '/app/integrations'
     | '/app/media'
     | '/app/monetization'
+    | '/app/partner-commerce'
     | '/app/projects'
     | '/app/reseller'
     | '/app/settings'
@@ -666,6 +678,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/integrations'
     | '/_authenticated/app/media'
     | '/_authenticated/app/monetization'
+    | '/_authenticated/app/partner-commerce'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/reseller'
     | '/_authenticated/app/settings'
@@ -886,6 +899,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/app/projects'
       preLoaderRoute: typeof AuthenticatedAppProjectsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/partner-commerce': {
+      id: '/_authenticated/app/partner-commerce'
+      path: '/partner-commerce'
+      fullPath: '/app/partner-commerce'
+      preLoaderRoute: typeof AuthenticatedAppPartnerCommerceRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/monetization': {
@@ -1173,6 +1193,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppIntegrationsRoute: typeof AuthenticatedAppIntegrationsRoute
   AuthenticatedAppMediaRoute: typeof AuthenticatedAppMediaRoute
   AuthenticatedAppMonetizationRoute: typeof AuthenticatedAppMonetizationRoute
+  AuthenticatedAppPartnerCommerceRoute: typeof AuthenticatedAppPartnerCommerceRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
   AuthenticatedAppResellerRoute: typeof AuthenticatedAppResellerRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRouteWithChildren
@@ -1199,6 +1220,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppIntegrationsRoute: AuthenticatedAppIntegrationsRoute,
   AuthenticatedAppMediaRoute: AuthenticatedAppMediaRoute,
   AuthenticatedAppMonetizationRoute: AuthenticatedAppMonetizationRoute,
+  AuthenticatedAppPartnerCommerceRoute: AuthenticatedAppPartnerCommerceRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
   AuthenticatedAppResellerRoute: AuthenticatedAppResellerRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRouteWithChildren,

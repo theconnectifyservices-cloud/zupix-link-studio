@@ -2098,6 +2098,136 @@ export type Database = {
           },
         ]
       }
+      commission_rules: {
+        Row: {
+          active: boolean
+          client_id: string | null
+          config: Json
+          created_at: string
+          id: string
+          name: string
+          priority: number
+          rule_type: Database["public"]["Enums"]["commission_rule_type"]
+          tenant_id: string
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          active?: boolean
+          client_id?: string | null
+          config?: Json
+          created_at?: string
+          id?: string
+          name: string
+          priority?: number
+          rule_type?: Database["public"]["Enums"]["commission_rule_type"]
+          tenant_id: string
+          updated_at?: string
+          value?: number
+        }
+        Update: {
+          active?: boolean
+          client_id?: string | null
+          config?: Json
+          created_at?: string
+          id?: string
+          name?: string
+          priority?: number
+          rule_type?: Database["public"]["Enums"]["commission_rule_type"]
+          tenant_id?: string
+          updated_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_rules_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "reseller_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_rules_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commissions: {
+        Row: {
+          base_amount_cents: number
+          client_id: string | null
+          commission_cents: number
+          created_at: string
+          currency: string
+          earned_at: string
+          id: string
+          invoice_ref: string | null
+          metadata: Json
+          payout_id: string | null
+          rule_id: string | null
+          status: Database["public"]["Enums"]["commission_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          base_amount_cents?: number
+          client_id?: string | null
+          commission_cents?: number
+          created_at?: string
+          currency?: string
+          earned_at?: string
+          id?: string
+          invoice_ref?: string | null
+          metadata?: Json
+          payout_id?: string | null
+          rule_id?: string | null
+          status?: Database["public"]["Enums"]["commission_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          base_amount_cents?: number
+          client_id?: string | null
+          commission_cents?: number
+          created_at?: string
+          currency?: string
+          earned_at?: string
+          id?: string
+          invoice_ref?: string | null
+          metadata?: Json
+          payout_id?: string | null
+          rule_id?: string | null
+          status?: Database["public"]["Enums"]["commission_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commissions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "reseller_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "commission_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       compliance_records: {
         Row: {
           created_at: string
@@ -2829,6 +2959,214 @@ export type Database = {
         }
         Relationships: []
       }
+      marketplace_asset_versions: {
+        Row: {
+          asset: Json
+          asset_id: string
+          changelog: string | null
+          created_at: string
+          id: string
+          published_at: string | null
+          tenant_id: string
+          version: string
+        }
+        Insert: {
+          asset?: Json
+          asset_id: string
+          changelog?: string | null
+          created_at?: string
+          id?: string
+          published_at?: string | null
+          tenant_id: string
+          version: string
+        }
+        Update: {
+          asset?: Json
+          asset_id?: string
+          changelog?: string | null
+          created_at?: string
+          id?: string
+          published_at?: string | null
+          tenant_id?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_asset_versions_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_asset_versions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_assets: {
+        Row: {
+          asset: Json
+          category_key: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          downloads: number
+          featured: boolean
+          id: string
+          kind: Database["public"]["Enums"]["marketplace_asset_kind"]
+          metadata: Json
+          preview_url: string | null
+          price_cents: number
+          published_at: string | null
+          rating: number
+          review_count: number
+          slug: string
+          status: Database["public"]["Enums"]["marketplace_asset_status"]
+          tags: string[]
+          tenant_id: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          asset?: Json
+          category_key?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          downloads?: number
+          featured?: boolean
+          id?: string
+          kind: Database["public"]["Enums"]["marketplace_asset_kind"]
+          metadata?: Json
+          preview_url?: string | null
+          price_cents?: number
+          published_at?: string | null
+          rating?: number
+          review_count?: number
+          slug: string
+          status?: Database["public"]["Enums"]["marketplace_asset_status"]
+          tags?: string[]
+          tenant_id: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          asset?: Json
+          category_key?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          downloads?: number
+          featured?: boolean
+          id?: string
+          kind?: Database["public"]["Enums"]["marketplace_asset_kind"]
+          metadata?: Json
+          preview_url?: string | null
+          price_cents?: number
+          published_at?: string | null
+          rating?: number
+          review_count?: number
+          slug?: string
+          status?: Database["public"]["Enums"]["marketplace_asset_status"]
+          tags?: string[]
+          tenant_id?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_assets_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          key: string
+          kind: Database["public"]["Enums"]["marketplace_asset_kind"]
+          label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          key: string
+          kind: Database["public"]["Enums"]["marketplace_asset_kind"]
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          key?: string
+          kind?: Database["public"]["Enums"]["marketplace_asset_kind"]
+          label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      marketplace_reviews: {
+        Row: {
+          asset_id: string
+          created_at: string
+          id: string
+          rating: number
+          review: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          review?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          review?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_reviews_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media_asset_versions: {
         Row: {
           asset_id: string
@@ -3517,6 +3855,356 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_admin_actions: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          id: string
+          meta: Json
+          tenant_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          tenant_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_admin_actions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_invoices: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          due_at: string | null
+          id: string
+          issued_at: string
+          line_items: Json
+          metadata: Json
+          number: string
+          paid_at: string | null
+          pdf_url: string | null
+          status: Database["public"]["Enums"]["partner_invoice_status"]
+          subscription_id: string | null
+          tax_cents: number
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          due_at?: string | null
+          id?: string
+          issued_at?: string
+          line_items?: Json
+          metadata?: Json
+          number: string
+          paid_at?: string | null
+          pdf_url?: string | null
+          status?: Database["public"]["Enums"]["partner_invoice_status"]
+          subscription_id?: string | null
+          tax_cents?: number
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          due_at?: string | null
+          id?: string
+          issued_at?: string
+          line_items?: Json
+          metadata?: Json
+          number?: string
+          paid_at?: string | null
+          pdf_url?: string | null
+          status?: Database["public"]["Enums"]["partner_invoice_status"]
+          subscription_id?: string | null
+          tax_cents?: number
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "partner_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_invoices_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_payments: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          id: string
+          invoice_id: string | null
+          metadata: Json
+          method: string | null
+          paid_at: string | null
+          reference: string | null
+          status: Database["public"]["Enums"]["partner_payment_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          invoice_id?: string | null
+          metadata?: Json
+          method?: string | null
+          paid_at?: string | null
+          reference?: string | null
+          status?: Database["public"]["Enums"]["partner_payment_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          invoice_id?: string | null
+          metadata?: Json
+          method?: string | null
+          paid_at?: string | null
+          reference?: string | null
+          status?: Database["public"]["Enums"]["partner_payment_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "partner_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_payments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_promotions: {
+        Row: {
+          applies_to: Json
+          campaign_key: string | null
+          code: string
+          created_at: string
+          description: string | null
+          discount_type: Database["public"]["Enums"]["promotion_discount_type"]
+          discount_value: number
+          ends_at: string | null
+          id: string
+          max_redemptions: number | null
+          name: string
+          redemptions: number
+          starts_at: string | null
+          status: Database["public"]["Enums"]["promotion_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          applies_to?: Json
+          campaign_key?: string | null
+          code: string
+          created_at?: string
+          description?: string | null
+          discount_type?: Database["public"]["Enums"]["promotion_discount_type"]
+          discount_value?: number
+          ends_at?: string | null
+          id?: string
+          max_redemptions?: number | null
+          name: string
+          redemptions?: number
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["promotion_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          applies_to?: Json
+          campaign_key?: string | null
+          code?: string
+          created_at?: string
+          description?: string | null
+          discount_type?: Database["public"]["Enums"]["promotion_discount_type"]
+          discount_value?: number
+          ends_at?: string | null
+          id?: string
+          max_redemptions?: number | null
+          name?: string
+          redemptions?: number
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["promotion_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_promotions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_subscriptions: {
+        Row: {
+          billing_interval: string
+          cancelled_at: string | null
+          created_at: string
+          currency: string
+          id: string
+          metadata: Json
+          outstanding_cents: number
+          plan_key: string
+          price_cents: number
+          renewal_at: string | null
+          started_at: string
+          status: Database["public"]["Enums"]["partner_subscription_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          billing_interval?: string
+          cancelled_at?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json
+          outstanding_cents?: number
+          plan_key: string
+          price_cents?: number
+          renewal_at?: string | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["partner_subscription_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          billing_interval?: string
+          cancelled_at?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json
+          outstanding_cents?: number
+          plan_key?: string
+          price_cents?: number
+          renewal_at?: string | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["partner_subscription_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_subscriptions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payouts: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          id: string
+          metadata: Json
+          method: string | null
+          notes: string | null
+          paid_at: string | null
+          processed_at: string | null
+          reference: string | null
+          requested_at: string
+          status: Database["public"]["Enums"]["payout_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json
+          method?: string | null
+          notes?: string | null
+          paid_at?: string | null
+          processed_at?: string | null
+          reference?: string | null
+          requested_at?: string
+          status?: Database["public"]["Enums"]["payout_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json
+          method?: string | null
+          notes?: string | null
+          paid_at?: string | null
+          processed_at?: string | null
+          reference?: string | null
+          requested_at?: string
+          status?: Database["public"]["Enums"]["payout_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payouts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -4357,6 +5045,8 @@ export type Database = {
           brand_kit: Json
           company_name: string
           created_at: string
+          default_commission_type: Database["public"]["Enums"]["commission_rule_type"]
+          default_commission_value: number
           email_footer_html: string | null
           email_logo_url: string | null
           email_reply_to: string | null
@@ -4379,6 +5069,9 @@ export type Database = {
           logo_dark_url: string | null
           logo_url: string | null
           owner_id: string
+          partner_status: Database["public"]["Enums"]["partner_status"]
+          payout_details: Json
+          payout_method: string | null
           primary_color: string | null
           register_enabled: boolean
           secondary_color: string | null
@@ -4396,6 +5089,8 @@ export type Database = {
           brand_kit?: Json
           company_name: string
           created_at?: string
+          default_commission_type?: Database["public"]["Enums"]["commission_rule_type"]
+          default_commission_value?: number
           email_footer_html?: string | null
           email_logo_url?: string | null
           email_reply_to?: string | null
@@ -4418,6 +5113,9 @@ export type Database = {
           logo_dark_url?: string | null
           logo_url?: string | null
           owner_id: string
+          partner_status?: Database["public"]["Enums"]["partner_status"]
+          payout_details?: Json
+          payout_method?: string | null
           primary_color?: string | null
           register_enabled?: boolean
           secondary_color?: string | null
@@ -4435,6 +5133,8 @@ export type Database = {
           brand_kit?: Json
           company_name?: string
           created_at?: string
+          default_commission_type?: Database["public"]["Enums"]["commission_rule_type"]
+          default_commission_value?: number
           email_footer_html?: string | null
           email_logo_url?: string | null
           email_reply_to?: string | null
@@ -4457,6 +5157,9 @@ export type Database = {
           logo_dark_url?: string | null
           logo_url?: string | null
           owner_id?: string
+          partner_status?: Database["public"]["Enums"]["partner_status"]
+          payout_details?: Json
+          payout_method?: string | null
           primary_color?: string | null
           register_enabled?: boolean
           secondary_color?: string | null
@@ -5262,6 +5965,8 @@ export type Database = {
       bio_page_visibility: "public" | "private" | "unlisted" | "password"
       campaign_status: "draft" | "active" | "paused" | "completed" | "archived"
       client_status: "trial" | "active" | "suspended" | "archived"
+      commission_rule_type: "fixed" | "percentage" | "tiered" | "custom"
+      commission_status: "pending" | "approved" | "paid" | "void"
       conversion_goal_type:
         | "whatsapp_click"
         | "phone_call"
@@ -5282,6 +5987,18 @@ export type Database = {
         | "void"
         | "uncollectible"
         | "refunded"
+      marketplace_asset_kind:
+        | "template"
+        | "theme"
+        | "component"
+        | "prompt_pack"
+        | "brand_kit"
+        | "plugin"
+      marketplace_asset_status:
+        | "draft"
+        | "published"
+        | "unpublished"
+        | "archived"
       media_collection_kind: "manual" | "smart" | "dynamic"
       media_kind: "image" | "video" | "audio" | "document" | "other"
       media_processing_status:
@@ -5300,6 +6017,21 @@ export type Database = {
         | "collaboration"
       org_plan: "free" | "pro" | "business" | "enterprise"
       org_role: "owner" | "admin" | "manager" | "member"
+      partner_invoice_status:
+        | "draft"
+        | "open"
+        | "paid"
+        | "overdue"
+        | "void"
+        | "refunded"
+      partner_payment_status: "pending" | "succeeded" | "failed" | "refunded"
+      partner_status: "pending" | "approved" | "suspended" | "rejected"
+      partner_subscription_status:
+        | "trialing"
+        | "active"
+        | "past_due"
+        | "cancelled"
+        | "expired"
       payment_gateway: "razorpay" | "stripe" | "paypal" | "paddle" | "manual"
       payment_status:
         | "pending"
@@ -5307,6 +6039,9 @@ export type Database = {
         | "failed"
         | "refunded"
         | "partially_refunded"
+      payout_status: "pending" | "processing" | "paid" | "failed" | "cancelled"
+      promotion_discount_type: "percentage" | "fixed"
+      promotion_status: "scheduled" | "active" | "expired" | "disabled"
       reseller_client_status:
         | "lead"
         | "trial"
@@ -5541,6 +6276,8 @@ export const Constants = {
       bio_page_visibility: ["public", "private", "unlisted", "password"],
       campaign_status: ["draft", "active", "paused", "completed", "archived"],
       client_status: ["trial", "active", "suspended", "archived"],
+      commission_rule_type: ["fixed", "percentage", "tiered", "custom"],
+      commission_status: ["pending", "approved", "paid", "void"],
       conversion_goal_type: [
         "whatsapp_click",
         "phone_call",
@@ -5563,6 +6300,20 @@ export const Constants = {
         "uncollectible",
         "refunded",
       ],
+      marketplace_asset_kind: [
+        "template",
+        "theme",
+        "component",
+        "prompt_pack",
+        "brand_kit",
+        "plugin",
+      ],
+      marketplace_asset_status: [
+        "draft",
+        "published",
+        "unpublished",
+        "archived",
+      ],
       media_collection_kind: ["manual", "smart", "dynamic"],
       media_kind: ["image", "video", "audio", "document", "other"],
       media_processing_status: [
@@ -5583,6 +6334,23 @@ export const Constants = {
       ],
       org_plan: ["free", "pro", "business", "enterprise"],
       org_role: ["owner", "admin", "manager", "member"],
+      partner_invoice_status: [
+        "draft",
+        "open",
+        "paid",
+        "overdue",
+        "void",
+        "refunded",
+      ],
+      partner_payment_status: ["pending", "succeeded", "failed", "refunded"],
+      partner_status: ["pending", "approved", "suspended", "rejected"],
+      partner_subscription_status: [
+        "trialing",
+        "active",
+        "past_due",
+        "cancelled",
+        "expired",
+      ],
       payment_gateway: ["razorpay", "stripe", "paypal", "paddle", "manual"],
       payment_status: [
         "pending",
@@ -5591,6 +6359,9 @@ export const Constants = {
         "refunded",
         "partially_refunded",
       ],
+      payout_status: ["pending", "processing", "paid", "failed", "cancelled"],
+      promotion_discount_type: ["percentage", "fixed"],
+      promotion_status: ["scheduled", "active", "expired", "disabled"],
       reseller_client_status: [
         "lead",
         "trial",
