@@ -51,9 +51,8 @@ export function MediaPicker({
   onSelect,
   title = "Select image",
   crop,
-}: MediaPickerProps) {
-  const workspaceId = useWorkspaceStore((s) => s.current?.id);
-  const user = useAuthStore((s) => s.user);
+  const { workspace, userId } = useCurrentWorkspace();
+  const workspaceId = workspace?.id;
 
   const [tab, setTab] = useState<"library" | "upload" | "url">("library");
   const [search, setSearch] = useState("");
