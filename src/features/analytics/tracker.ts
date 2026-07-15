@@ -317,7 +317,6 @@ export function initTracker(pageId: string, slug: string, rootEl: HTMLElement): 
   const onHide = () => {
     if (document.visibilityState !== "hidden") return;
     const duration = Date.now() - session.startedAt;
-    session.duration_msSent = true;
     void send({
       envelope,
       event: {
@@ -328,6 +327,27 @@ export function initTracker(pageId: string, slug: string, rootEl: HTMLElement): 
       },
     });
   };
+  document.addEventListener("visibilitychange", onHide);
+  window.addEventListener("pagehide", onHide);
+
+  return {
+    trackClick: (opts) => {
+      session.linkClicks += 1;
+      session.lastSeenAt = Date.now();
+      persistSession(session);
+      void send({ envelope, event: { type: "link_click", ...opts, clickSource: opts.clickSource ?? "manual" } });
+    },
+    trackQrScan: (source) => {
+      void send({ envelope, event: { type: "qr_scan", qrSource: source ?? envelope.qrSource ?? undefined } });
+    },
+    end: () => {
+      rootEl.removeEventListener("click", onClick, { capture: true } as EventListenerOptions);
+      document.removeEventListener("visibilitychange", onHide);
+      window.removeEventListener("pagehide", onHide);
+    },
+  };
+}
+
   document.addEventListener("visibilitychange", onHide);
   window.addEventListener("pagehide", onHide);
 
