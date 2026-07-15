@@ -71,6 +71,60 @@ export type Database = {
           },
         ]
       }
+      addons: {
+        Row: {
+          billing_cycle: string
+          category: string
+          code: string
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          is_active: boolean
+          metadata: Json
+          metric_key: string | null
+          name: string
+          price_minor: number
+          quantity_per_unit: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          billing_cycle?: string
+          category?: string
+          code: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          metadata?: Json
+          metric_key?: string | null
+          name: string
+          price_minor?: number
+          quantity_per_unit?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          billing_cycle?: string
+          category?: string
+          code?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          metadata?: Json
+          metric_key?: string | null
+          name?: string
+          price_minor?: number
+          quantity_per_unit?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ai_activity: {
         Row: {
           created_at: string
@@ -946,6 +1000,73 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      billing_events: {
+        Row: {
+          actor_id: string | null
+          amount_minor: number | null
+          created_at: string
+          currency: string | null
+          event_type: string
+          from_plan: string | null
+          id: string
+          invoice_id: string | null
+          metadata: Json
+          subscription_id: string | null
+          to_plan: string | null
+          workspace_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          amount_minor?: number | null
+          created_at?: string
+          currency?: string | null
+          event_type: string
+          from_plan?: string | null
+          id?: string
+          invoice_id?: string | null
+          metadata?: Json
+          subscription_id?: string | null
+          to_plan?: string | null
+          workspace_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          amount_minor?: number | null
+          created_at?: string
+          currency?: string | null
+          event_type?: string
+          from_plan?: string | null
+          id?: string
+          invoice_id?: string | null
+          metadata?: Json
+          subscription_id?: string | null
+          to_plan?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_events_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "billing_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_events_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "billing_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_events_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       billing_invoices: {
         Row: {
@@ -2200,6 +2321,56 @@ export type Database = {
           },
         ]
       }
+      credit_ledger: {
+        Row: {
+          actor_id: string | null
+          balance_after: number
+          created_at: string
+          credit_type: string
+          delta: number
+          id: string
+          metadata: Json
+          reason: string
+          reference_id: string | null
+          reference_type: string | null
+          workspace_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          balance_after: number
+          created_at?: string
+          credit_type: string
+          delta: number
+          id?: string
+          metadata?: Json
+          reason: string
+          reference_id?: string | null
+          reference_type?: string | null
+          workspace_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          balance_after?: number
+          created_at?: string
+          credit_type?: string
+          delta?: number
+          id?: string
+          metadata?: Json
+          reason?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_ledger_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       department_members: {
         Row: {
           created_at: string
@@ -3371,6 +3542,85 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_features: {
+        Row: {
+          config: Json
+          created_at: string
+          enabled: boolean
+          feature_key: string
+          id: string
+          plan_id: string
+          updated_at: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          feature_key: string
+          id?: string
+          plan_id: string
+          updated_at?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          feature_key?: string
+          id?: string
+          plan_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_features_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "billing_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plan_limits: {
+        Row: {
+          created_at: string
+          id: string
+          is_unlimited: boolean
+          limit_value: number
+          metric_key: string
+          plan_id: string
+          soft_limit: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_unlimited?: boolean
+          limit_value?: number
+          metric_key: string
+          plan_id: string
+          soft_limit?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_unlimited?: boolean
+          limit_value?: number
+          metric_key?: string
+          plan_id?: string
+          soft_limit?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_limits_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "billing_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"] | null
@@ -3677,6 +3927,92 @@ export type Database = {
           },
         ]
       }
+      trial_extensions: {
+        Row: {
+          created_at: string
+          extended_days: number
+          granted_by: string | null
+          id: string
+          new_trial_end: string
+          reason: string | null
+          subscription_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          extended_days: number
+          granted_by?: string | null
+          id?: string
+          new_trial_end: string
+          reason?: string | null
+          subscription_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          extended_days?: number
+          granted_by?: string | null
+          id?: string
+          new_trial_end?: string
+          reason?: string | null
+          subscription_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trial_extensions_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "billing_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trial_extensions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      usage_counters: {
+        Row: {
+          id: string
+          metric_key: string
+          period_end: string
+          period_start: string
+          updated_at: string
+          value: number
+          workspace_id: string
+        }
+        Insert: {
+          id?: string
+          metric_key: string
+          period_end?: string
+          period_start?: string
+          updated_at?: string
+          value?: number
+          workspace_id: string
+        }
+        Update: {
+          id?: string
+          metric_key?: string
+          period_end?: string
+          period_start?: string
+          updated_at?: string
+          value?: number
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_counters_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_devices: {
         Row: {
           browser: string | null
@@ -3933,6 +4269,66 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "webhooks_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_addons: {
+        Row: {
+          addon_id: string
+          created_at: string
+          ends_at: string | null
+          gateway: string | null
+          gateway_reference: string | null
+          id: string
+          metadata: Json
+          quantity: number
+          starts_at: string
+          status: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          addon_id: string
+          created_at?: string
+          ends_at?: string | null
+          gateway?: string | null
+          gateway_reference?: string | null
+          id?: string
+          metadata?: Json
+          quantity?: number
+          starts_at?: string
+          status?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          addon_id?: string
+          created_at?: string
+          ends_at?: string | null
+          gateway?: string | null
+          gateway_reference?: string | null
+          id?: string
+          metadata?: Json
+          quantity?: number
+          starts_at?: string
+          status?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_addons_addon_id_fkey"
+            columns: ["addon_id"]
+            isOneToOne: false
+            referencedRelation: "addons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_addons_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -4233,6 +4629,17 @@ export type Database = {
       org_role_of: {
         Args: { _org_id: string; _user_id: string }
         Returns: Database["public"]["Enums"]["org_role"]
+      }
+      workspace_get_limit: {
+        Args: { _metric_key: string; _workspace_id: string }
+        Returns: {
+          is_unlimited: boolean
+          limit_value: number
+        }[]
+      }
+      workspace_has_feature: {
+        Args: { _feature_key: string; _workspace_id: string }
+        Returns: boolean
       }
       workspace_permissions_of: {
         Args: { _user_id: string; _workspace_id: string }
