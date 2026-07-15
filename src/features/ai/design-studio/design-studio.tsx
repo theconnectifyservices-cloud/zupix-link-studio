@@ -70,9 +70,8 @@ interface Props {
   userId: string;
 }
 
-type DeepPartial<T> = {
-  [K in keyof T]?: NonNullable<T[K]> extends object ? DeepPartial<NonNullable<T[K]>> : T[K];
-};
+
+
 
 export function DesignStudio({ workspaceId, userId }: Props) {
   const { data: pages = [], isLoading: pagesLoading } = useBioPages(workspaceId);
