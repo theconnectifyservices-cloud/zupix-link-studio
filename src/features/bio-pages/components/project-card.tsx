@@ -107,8 +107,8 @@ export function ProjectCard({
   const [name, setName] = useState(project.name);
   const [busy, setBusy] = useState(false);
 
-  const Status = statusMeta[project.status];
-  const VisIcon = visibilityIcon[project.visibility];
+  const Status = statusMeta[project.status] ?? statusMeta.draft;
+  const VisIcon = visibilityIcon[project.visibility] ?? visibilityIcon.public;
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["bio-pages"] });
 
