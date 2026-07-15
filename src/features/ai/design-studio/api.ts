@@ -199,6 +199,6 @@ export async function listDesignHistory(
 
 // ── util ──────────────────────────────────────────────────────────────
 
-type DeepPartial<T> = {
+export type DeepPartial<T> = {
   [K in keyof T]?: NonNullable<T[K]> extends object ? DeepPartial<NonNullable<T[K]>> : T[K];
 };
