@@ -9,6 +9,7 @@ import {
   Globe,
   Puzzle,
   Radar,
+  Radio,
   Settings,
   LifeBuoy,
   ChevronLeft,
