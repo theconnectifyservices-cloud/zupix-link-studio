@@ -33,7 +33,7 @@ function PublicSubPage() {
   });
   if (isLoading) return <PageLoader />;
   if (!data) throw notFound();
-  return <PublicBioRenderer content={data.content} />;
+  return <PublicBioRenderer content={data.content} pageId={data.id} slug={page} />;
 }
 
 function SubNotFound() {
