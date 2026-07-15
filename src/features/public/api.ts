@@ -26,7 +26,7 @@ export async function fetchPublicBioPage(slug: string): Promise<PublicBioPage | 
   const { data, error } = await supabase
     .from("bio_pages")
     .select(
-      "id,name,slug,description,published_content,updated_at,published_at,visibility,seo,favicon_url,apple_touch_icon_url",
+      "id,workspace_id,name,slug,description,published_content,updated_at,published_at,visibility,seo,favicon_url,apple_touch_icon_url",
     )
     .eq("slug", slug.toLowerCase())
     .is("deleted_at", null)
@@ -35,6 +35,7 @@ export async function fetchPublicBioPage(slug: string): Promise<PublicBioPage | 
   if (!data) return null;
   const row = data as unknown as {
     id: string;
+    workspace_id: string;
     name: string;
     slug: string;
     description: string | null;
@@ -49,6 +50,7 @@ export async function fetchPublicBioPage(slug: string): Promise<PublicBioPage | 
   if (!row.published_content) return null;
   return {
     id: row.id,
+    workspaceId: row.workspace_id,
     name: row.name,
     slug: row.slug,
     description: row.description,
