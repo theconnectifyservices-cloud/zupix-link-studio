@@ -158,6 +158,8 @@ export function ProjectCard({
         >
           <Copy className="mr-2 h-4 w-4" /> Duplicate
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setShareOpen(true)}>
+          <Share2 className="mr-2 h-4 w-4" /> Share & QR
         {project.status === "archived" ? (
           <DropdownMenuItem
             onClick={() => withBusy(() => restoreBioPage(project.id), "Project restored")}
