@@ -40,6 +40,7 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { TemplateGallery, SaveTemplateDialog } from "@/features/templates";
 import { PublishDialog } from "@/features/publishing";
 import { SeoDialog } from "@/features/seo";
+import { ShareDialog } from "@/features/sharing";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
