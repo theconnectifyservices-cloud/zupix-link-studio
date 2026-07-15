@@ -479,6 +479,83 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
         </Card>
         <RankedList title="Top QR-driven pages" data={qrByPage} emptyLabel="No QR scans yet" />
       </div>
+
+      {/* ================== Visitor Intelligence ================== */}
+      <div className="space-y-4 pt-4">
+        <div className="flex items-center gap-2">
+          <div className="h-px flex-1 bg-border" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Visitor Intelligence
+          </h2>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        {/* Auto insights */}
+        {!loading && <InsightCards cards={insights} />}
+
+        {/* Trend comparison */}
+        {!loading && <TrendCompareCard rows={trends} label="Current vs previous period" />}
+
+        {/* Engagement metrics */}
+        {!loading && <EngagementPanel m={engagement} />}
+
+        {/* Page + Block performance */}
+        <div className="grid gap-4 lg:grid-cols-2">
+          <PagePerformanceCard stats={pageStats} />
+          <BlockPerformanceCard stats={blockStats} />
+        </div>
+
+        {/* Device behavior */}
+        <DeviceComparisonCard rows={deviceStats} />
+
+        {/* Referrer insights + Loyal visitors */}
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ReferrerInsightsCard rows={referrerStats} />
+          <ReturningVisitorsCard rows={loyalVisitors} />
+        </div>
+
+        {/* Button ranking */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold">Button performance ranking</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {buttonStats.length === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                No button clicks in this range.
+              </p>
+            ) : (
+              <ol className="space-y-2 text-sm">
+                {buttonStats.slice(0, 12).map((b) => (
+                  <li
+                    key={b.url}
+                    className="flex items-center justify-between gap-3 rounded-lg border border-border/60 p-2.5"
+                  >
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums">
+                        {b.rank}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate font-medium">{b.host || b.label}</p>
+                        <p className="truncate text-[11px] text-muted-foreground">{b.url}</p>
+                      </div>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="text-sm font-semibold tabular-nums">{b.clicks.toLocaleString()}</p>
+                      <p className="text-[11px] text-muted-foreground tabular-nums">
+                        {b.ctr.toFixed(1)}% CTR
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Visitor journeys */}
+        <VisitorJourneyCard steps={journeys} />
+      </div>
     </div>
   );
 }
