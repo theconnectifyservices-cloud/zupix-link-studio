@@ -189,6 +189,7 @@ export function MediaLibrary({ workspaceId, userId }: Props) {
           <TabsTrigger value="favorites">Favorites &amp; Recents</TabsTrigger>
           <TabsTrigger value="search">Advanced Search</TabsTrigger>
           <TabsTrigger value="duplicates">Duplicates</TabsTrigger>
+          <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
         </TabsList>
 
         <TabsContent value="library" className="mt-4">
