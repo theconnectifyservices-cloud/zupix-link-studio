@@ -39,6 +39,7 @@ const EnvelopeSchema = z.object({
   }),
   timezone: z.string().max(80).nullable(),
   qrSource: z.string().max(80).nullable(),
+  entryUrl: z.string().max(2048).nullable().optional(),
 });
 
 const EventSchema = z.discriminatedUnion("type", [
@@ -49,6 +50,7 @@ const EventSchema = z.discriminatedUnion("type", [
     blockType: z.string().max(40).optional(),
     linkUrl: z.string().max(2048),
     clickSource: z.string().max(40).optional(),
+    scrollPct: z.number().int().min(0).max(100).optional(),
   }),
   z.object({ type: z.literal("qr_scan"), qrSource: z.string().max(80).optional() }),
   z.object({
@@ -56,6 +58,8 @@ const EventSchema = z.discriminatedUnion("type", [
     durationMs: z.number().int().min(0).max(24 * 60 * 60 * 1000),
     pageViews: z.number().int().min(0).max(10_000),
     linkClicks: z.number().int().min(0).max(10_000),
+    maxScrollPct: z.number().int().min(0).max(100).optional(),
+    exitUrl: z.string().max(2048).nullable().optional(),
   }),
 ]);
 
@@ -200,8 +204,9 @@ async function handlePost(request: Request): Promise<Response> {
         utm_medium: envelope.utm.medium ?? null,
         utm_campaign: envelope.utm.campaign ?? null,
         qr_source: envelope.qrSource,
+        entry_url: envelope.entryUrl ?? null,
         last_seen_at: new Date().toISOString(),
-      },
+      } as never,
       { onConflict: "bio_page_id,session_key" },
     )
     .select("id")
