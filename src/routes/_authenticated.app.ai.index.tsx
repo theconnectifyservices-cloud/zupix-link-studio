@@ -58,6 +58,9 @@ function AiHome() {
         breadcrumbs={[{ label: "Dashboard", href: "/app" }, { label: "AI" }]}
         actions={
           <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate({ to: "/app/ai/design" })}>
+              <Palette className="mr-1 h-4 w-4" /> Design Studio
+            </Button>
             <Button variant="outline" onClick={() => navigate({ to: "/app/ai/studio" })}>
               <Wand2 className="mr-1 h-4 w-4" /> Content Studio
             </Button>
