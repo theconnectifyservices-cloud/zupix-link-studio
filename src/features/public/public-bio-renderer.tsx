@@ -13,6 +13,7 @@ import {
 import type { BioContent } from "@/features/builder/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { initTracker } from "@/features/analytics/tracker";
+import { fetchPublicTracking, injectTracking, removeTracking } from "@/features/tracking";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -26,10 +27,12 @@ export function PublicBioRenderer({
   content,
   pageId,
   slug,
+  workspaceId,
 }: {
   content: BioContent;
   pageId?: string;
   slug?: string;
+  workspaceId?: string;
 }) {
   const theme = content.theme ?? DEFAULT_THEME;
   const motion = theme.motion ?? DEFAULT_MOTION;
@@ -60,6 +63,19 @@ export function PublicBioRenderer({
     const handle = initTracker(pageId, slug, rootRef.current);
     return () => handle.end();
   }, [pageId, slug]);
+
+  // LS-11A: inject workspace-level tracking pixels & custom scripts
+  useEffect(() => {
+    if (!workspaceId) return;
+    let cancelled = false;
+    fetchPublicTracking(workspaceId).then((settings) => {
+      if (!cancelled) injectTracking(settings);
+    });
+    return () => {
+      cancelled = true;
+      removeTracking();
+    };
+  }, [workspaceId]);
 
   return (
     <div

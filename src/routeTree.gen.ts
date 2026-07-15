@@ -24,6 +24,7 @@ import { Route as SlugPageRouteImport } from './routes/$slug.$page'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
 import { Route as AuthenticatedBuilderIdRouteImport } from './routes/_authenticated.builder.$id'
+import { Route as AuthenticatedAppTrackingRouteImport } from './routes/_authenticated.app.tracking'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated.app.templates'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated.app.settings'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
@@ -115,6 +116,12 @@ const AuthenticatedBuilderIdRoute = AuthenticatedBuilderIdRouteImport.update({
   path: '/builder/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAppTrackingRoute =
+  AuthenticatedAppTrackingRouteImport.update({
+    id: '/tracking',
+    path: '/tracking',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppTemplatesRoute =
   AuthenticatedAppTemplatesRouteImport.update({
     id: '/templates',
@@ -231,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
@@ -262,6 +270,7 @@ export interface FileRoutesByTo {
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app': typeof AuthenticatedAppIndexRoute
@@ -296,6 +305,7 @@ export interface FileRoutesById {
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/_authenticated/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/settings'
     | '/app/templates'
+    | '/app/tracking'
     | '/builder/$id'
     | '/api/public/track'
     | '/app/'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/settings'
     | '/app/templates'
+    | '/app/tracking'
     | '/builder/$id'
     | '/api/public/track'
     | '/app'
@@ -394,6 +406,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/projects'
     | '/_authenticated/app/settings'
     | '/_authenticated/app/templates'
+    | '/_authenticated/app/tracking'
     | '/_authenticated/builder/$id'
     | '/api/public/track'
     | '/_authenticated/app/'
@@ -524,6 +537,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/builder/$id'
       preLoaderRoute: typeof AuthenticatedBuilderIdRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/app/tracking': {
+      id: '/_authenticated/app/tracking'
+      path: '/tracking'
+      fullPath: '/app/tracking'
+      preLoaderRoute: typeof AuthenticatedAppTrackingRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/templates': {
       id: '/_authenticated/app/templates'
@@ -690,6 +710,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRouteWithChildren
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
+  AuthenticatedAppTrackingRoute: typeof AuthenticatedAppTrackingRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
 
@@ -704,6 +725,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRouteWithChildren,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
+  AuthenticatedAppTrackingRoute: AuthenticatedAppTrackingRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
 
