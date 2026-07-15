@@ -1070,6 +1070,7 @@ export type Database = {
       media_assets: {
         Row: {
           alt_text: string | null
+          archived_at: string | null
           blurhash: string | null
           bucket: string
           created_at: string
@@ -1078,6 +1079,7 @@ export type Database = {
           duration_seconds: number | null
           file_name: string | null
           folder_id: string | null
+          health_score: number | null
           height: number | null
           id: string
           is_favorite: boolean
@@ -1107,6 +1109,7 @@ export type Database = {
         }
         Insert: {
           alt_text?: string | null
+          archived_at?: string | null
           blurhash?: string | null
           bucket: string
           created_at?: string
@@ -1115,6 +1118,7 @@ export type Database = {
           duration_seconds?: number | null
           file_name?: string | null
           folder_id?: string | null
+          health_score?: number | null
           height?: number | null
           id?: string
           is_favorite?: boolean
@@ -1144,6 +1148,7 @@ export type Database = {
         }
         Update: {
           alt_text?: string | null
+          archived_at?: string | null
           blurhash?: string | null
           bucket?: string
           created_at?: string
@@ -1152,6 +1157,7 @@ export type Database = {
           duration_seconds?: number | null
           file_name?: string | null
           folder_id?: string | null
+          health_score?: number | null
           height?: number | null
           id?: string
           is_favorite?: boolean
@@ -1928,6 +1934,7 @@ export type Database = {
           slug: string
           social_image_url: string | null
           subdomain: string | null
+          trash_retention_days: number
           updated_at: string
         }
         Insert: {
@@ -1945,6 +1952,7 @@ export type Database = {
           slug: string
           social_image_url?: string | null
           subdomain?: string | null
+          trash_retention_days?: number
           updated_at?: string
         }
         Update: {
@@ -1962,6 +1970,7 @@ export type Database = {
           slug?: string
           social_image_url?: string | null
           subdomain?: string | null
+          trash_retention_days?: number
           updated_at?: string
         }
         Relationships: [
