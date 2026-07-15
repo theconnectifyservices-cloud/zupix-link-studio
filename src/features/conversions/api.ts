@@ -92,7 +92,7 @@ export async function upsertGoal(input: UpsertGoalInput): Promise<Goal> {
     name: input.name,
     description: input.description ?? null,
     goal_type: input.goal_type,
-    match_rules: input.match_rules ?? {},
+    match_rules: input.match_rules as unknown as Record<string, unknown>,
     enabled: input.enabled,
     target_value: input.target_value ?? null,
     priority: input.priority ?? 0,
