@@ -1224,20 +1224,20 @@ function VideoEditor({ block, set }: { block: VideoBlock; set: (k: string, v: un
           ]}
         />
       </Field>
-      <Field label="Video URL">
-        <Input
-          value={block.url}
-          onChange={(e) => set("url", e.target.value)}
-          placeholder="https://…"
-        />
-      </Field>
-      <Field label="Thumbnail URL">
-        <Input
-          value={block.thumbnailUrl ?? ""}
-          onChange={(e) => set("thumbnailUrl", e.target.value)}
-          placeholder="https://…"
-        />
-      </Field>
+      <VideoSourceField
+        label="Video source"
+        value={block.url}
+        onChange={(url) => set("url", url ?? "")}
+        background={false}
+      />
+      <ImageField
+        label="Thumbnail / poster"
+        value={block.thumbnailUrl}
+        onChange={(url) => set("thumbnailUrl", url)}
+        crop={{ shape: "rect", aspect: 16 / 9 }}
+        previewAspect="16 / 9"
+        pickerTitle="Choose thumbnail"
+      />
       <Row>
         <Label className="text-xs">Autoplay</Label>
         <Switch checked={!!block.autoplay} onCheckedChange={(v) => set("autoplay", v)} />
