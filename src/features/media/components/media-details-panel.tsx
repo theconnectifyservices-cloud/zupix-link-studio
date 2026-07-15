@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { signedUrl, softDeleteAsset, updateAsset } from "../api";
+import { compressionRatio } from "../delivery";
 import { useAssetUsages } from "../hooks";
 import { humanSize } from "../types";
 import type { MediaAsset } from "../types";
