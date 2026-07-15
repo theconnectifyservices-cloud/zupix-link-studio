@@ -1,4 +1,7 @@
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,11 +12,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
+import { switchActiveWorkspace } from "@/features/workspace/api";
 
 export function WorkspaceSwitcher() {
-  const { workspace, workspaces } = useCurrentWorkspace();
+  const { workspace, workspaces, userId } = useCurrentWorkspace();
+  const qc = useQueryClient();
+  const navigate = useNavigate();
   const name = workspace?.name ?? "Personal";
   const initial = name.charAt(0).toUpperCase();
+
+  const switchMut = useMutation({
+    mutationFn: (wsId: string) => switchActiveWorkspace(userId!, wsId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["profile", userId] });
+      qc.invalidateQueries({ queryKey: ["workspaces", userId] });
+      toast.success("Workspace switched");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   return (
     <DropdownMenu>
@@ -31,11 +47,19 @@ export function WorkspaceSwitcher() {
         <DropdownMenuSeparator />
         {workspaces.length === 0 && <DropdownMenuItem disabled>No workspaces</DropdownMenuItem>}
         {workspaces.map((w) => (
-          <DropdownMenuItem key={w.id} className="justify-between">
+          <DropdownMenuItem
+            key={w.id}
+            className="justify-between"
+            onClick={() => userId && w.id !== workspace?.id && switchMut.mutate(w.id)}
+          >
             <span className="truncate">{w.name}</span>
             {w.id === workspace?.id && <Check className="h-4 w-4" />}
           </DropdownMenuItem>
         ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate({ to: "/app/team" })}>
+          <Plus className="mr-2 h-4 w-4" /> Manage workspaces
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
