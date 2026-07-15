@@ -6,6 +6,7 @@ import {
   listDesignHistory,
   recordDesignHistory,
   restoreContent,
+  type DeepPartial,
   type DesignHistoryEntry,
 } from "./api";
 import type { PageTheme } from "@/features/builder/theme";
