@@ -26,6 +26,7 @@ import { VersionHistoryPanel } from "./version-history-panel";
 
 interface Props {
   asset: MediaAsset | null;
+  userId?: string;
   onClose: () => void;
 }
 
