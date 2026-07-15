@@ -55,6 +55,7 @@ import { BrandKitManager } from "./brand-kit-manager";
 import { DuplicateFinder } from "./duplicate-finder";
 import { FavoritesRecentsPanel } from "./favorites-recents-panel";
 import { AdvancedSearch } from "./advanced-search";
+import { AssetIntelligencePanel } from "./asset-intelligence-panel";
 
 type FilterKey = "all" | "image" | "video" | "audio" | "document" | "svg" | "recent" | "largest" | "unused";
 type ViewMode = "grid" | "list";
