@@ -107,7 +107,7 @@ export const useBackupsStore = create<BackupsState>()(
       history: [],
       retentionDays: 30,
       setRetention: (retentionDays) => set({ retentionDays }),
-      run: (kind) =>
+      run: (kind: BackupKind) =>
         set((s) => ({
           history: [
             {
