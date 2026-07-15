@@ -576,6 +576,8 @@ export function ThemePanel() {
                   placeholder="https://…"
                 />
               </details>
+            </>
+          )}
 
           {bg.kind === "pattern" && (
             <div>
