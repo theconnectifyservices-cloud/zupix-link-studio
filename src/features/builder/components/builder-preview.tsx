@@ -30,6 +30,7 @@ import {
   themeToCssVars,
 } from "../theme";
 import { cn } from "@/lib/utils";
+import { ThemeBackgroundLayer } from "./theme-background-layer";
 import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
