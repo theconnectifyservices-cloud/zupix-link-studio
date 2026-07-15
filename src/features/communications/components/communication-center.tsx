@@ -131,7 +131,7 @@ const EMAIL_PROVIDERS: {
 ];
 
 function StatusBadge({ status }: { status?: string }) {
-  const map: Record<string, { label: string; className: string; icon: JSX.Element }> = {
+  const map: Record<string, { label: string; className: string; icon: React.ReactNode }> = {
     connected: { label: "Connected", className: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30", icon: <CheckCircle2 className="h-3 w-3" /> },
     disconnected: { label: "Disconnected", className: "bg-muted text-muted-foreground", icon: <XCircle className="h-3 w-3" /> },
     invalid: { label: "Invalid", className: "bg-red-500/15 text-red-500 border-red-500/30", icon: <XCircle className="h-3 w-3" /> },
