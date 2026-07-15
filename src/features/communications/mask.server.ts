@@ -39,23 +39,20 @@ function maskObject<T extends Record<string, unknown> | undefined>(
 }
 
 export function maskSettings(settings: CommunicationSettings): CommunicationSettings {
-  const p: Providers = { ...settings.providers };
-  if (p.whatsapp) p.whatsapp = maskObject(p.whatsapp, "whatsapp");
-  if (p.telegram) p.telegram = maskObject(p.telegram, "telegram");
-  if (p.slack) p.slack = maskObject(p.slack, "slack");
-  if (p.discord) p.discord = maskObject(p.discord, "discord");
+  const p = { ...settings.providers } as Record<string, unknown>;
+  if (p.whatsapp) p.whatsapp = maskObject(p.whatsapp as Record<string, unknown>, "whatsapp");
+  if (p.telegram) p.telegram = maskObject(p.telegram as Record<string, unknown>, "telegram");
+  if (p.slack) p.slack = maskObject(p.slack as Record<string, unknown>, "slack");
+  if (p.discord) p.discord = maskObject(p.discord as Record<string, unknown>, "discord");
   if (p.email) {
-    const email: EmailProviders = { ...p.email };
-    email.smtp = maskObject(email.smtp, "email.smtp");
-    email.brevo = maskObject(email.brevo, "email.brevo");
-    email.mailchimp = maskObject(email.mailchimp, "email.mailchimp");
-    email.convertkit = maskObject(email.convertkit, "email.convertkit");
-    email.resend = maskObject(email.resend, "email.resend");
-    email.ses = maskObject(email.ses, "email.ses");
-    p.email = email;
+    const email = { ...(p.email as Record<string, unknown>) };
+    for (const k of ["smtp", "brevo", "mailchimp", "convertkit", "resend", "ses"] as const) {
+      if (email[k]) email[k] = maskObject(email[k] as Record<string, unknown>, `email.${k}`);
+    }
+    p.email = email as EmailProviders;
   }
   return {
-    providers: p,
+    providers: p as Providers,
     notifications: settings.notifications,
     health: settings.health,
   };
