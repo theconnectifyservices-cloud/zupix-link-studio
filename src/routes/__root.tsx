@@ -98,6 +98,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: APP_CONFIG.shortName },
+      // Security hardening meta (LS-16A) — response headers are the source of truth,
+      // these are defense-in-depth for browsers that honour them.
+      { name: "referrer", content: "strict-origin-when-cross-origin" },
+      { httpEquiv: "X-Content-Type-Options", content: "nosniff" },
+      {
+        httpEquiv: "Permissions-Policy",
+        content: "camera=(), microphone=(), geolocation=(), payment=(self)",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
