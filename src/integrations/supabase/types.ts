@@ -820,6 +820,547 @@ export type Database = {
           },
         ]
       }
+      billing_coupon_redemptions: {
+        Row: {
+          amount_discounted_minor: number
+          coupon_id: string
+          created_at: string
+          currency: string | null
+          id: string
+          invoice_id: string | null
+          redeemed_at: string
+          subscription_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          amount_discounted_minor?: number
+          coupon_id: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          invoice_id?: string | null
+          redeemed_at?: string
+          subscription_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          amount_discounted_minor?: number
+          coupon_id?: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          invoice_id?: string | null
+          redeemed_at?: string
+          subscription_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_coupon_redemptions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "billing_coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_coupon_redemptions_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "billing_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_coupon_redemptions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_coupons: {
+        Row: {
+          amount_off_minor: number | null
+          applies_to_cycles: Database["public"]["Enums"]["billing_cycle"][]
+          applies_to_plans: string[]
+          code: string
+          created_at: string
+          currency: string | null
+          duration: Database["public"]["Enums"]["coupon_duration"]
+          duration_in_months: number | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          kind: Database["public"]["Enums"]["coupon_kind"]
+          max_redemptions: number | null
+          metadata: Json
+          name: string | null
+          percent_off: number | null
+          redeemed_count: number
+          starts_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_off_minor?: number | null
+          applies_to_cycles?: Database["public"]["Enums"]["billing_cycle"][]
+          applies_to_plans?: string[]
+          code: string
+          created_at?: string
+          currency?: string | null
+          duration?: Database["public"]["Enums"]["coupon_duration"]
+          duration_in_months?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          kind: Database["public"]["Enums"]["coupon_kind"]
+          max_redemptions?: number | null
+          metadata?: Json
+          name?: string | null
+          percent_off?: number | null
+          redeemed_count?: number
+          starts_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_off_minor?: number | null
+          applies_to_cycles?: Database["public"]["Enums"]["billing_cycle"][]
+          applies_to_plans?: string[]
+          code?: string
+          created_at?: string
+          currency?: string | null
+          duration?: Database["public"]["Enums"]["coupon_duration"]
+          duration_in_months?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          kind?: Database["public"]["Enums"]["coupon_kind"]
+          max_redemptions?: number | null
+          metadata?: Json
+          name?: string | null
+          percent_off?: number | null
+          redeemed_count?: number
+          starts_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      billing_invoices: {
+        Row: {
+          amount_due_minor: number
+          amount_paid_minor: number
+          billing_address: Json
+          created_at: string
+          currency: string
+          customer_gstin: string | null
+          discount_minor: number
+          due_at: string | null
+          gateway: Database["public"]["Enums"]["payment_gateway"] | null
+          gateway_invoice_id: string | null
+          hsn_sac: string | null
+          id: string
+          invoice_number: string | null
+          issued_at: string | null
+          line_items: Json
+          metadata: Json
+          paid_at: string | null
+          pdf_url: string | null
+          place_of_supply: string | null
+          seller_gstin: string | null
+          status: Database["public"]["Enums"]["invoice_status"]
+          subscription_id: string | null
+          subtotal_minor: number
+          tax_details: Json
+          tax_minor: number
+          total_minor: number
+          updated_at: string
+          voided_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          amount_due_minor?: number
+          amount_paid_minor?: number
+          billing_address?: Json
+          created_at?: string
+          currency?: string
+          customer_gstin?: string | null
+          discount_minor?: number
+          due_at?: string | null
+          gateway?: Database["public"]["Enums"]["payment_gateway"] | null
+          gateway_invoice_id?: string | null
+          hsn_sac?: string | null
+          id?: string
+          invoice_number?: string | null
+          issued_at?: string | null
+          line_items?: Json
+          metadata?: Json
+          paid_at?: string | null
+          pdf_url?: string | null
+          place_of_supply?: string | null
+          seller_gstin?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"]
+          subscription_id?: string | null
+          subtotal_minor?: number
+          tax_details?: Json
+          tax_minor?: number
+          total_minor?: number
+          updated_at?: string
+          voided_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          amount_due_minor?: number
+          amount_paid_minor?: number
+          billing_address?: Json
+          created_at?: string
+          currency?: string
+          customer_gstin?: string | null
+          discount_minor?: number
+          due_at?: string | null
+          gateway?: Database["public"]["Enums"]["payment_gateway"] | null
+          gateway_invoice_id?: string | null
+          hsn_sac?: string | null
+          id?: string
+          invoice_number?: string | null
+          issued_at?: string | null
+          line_items?: Json
+          metadata?: Json
+          paid_at?: string | null
+          pdf_url?: string | null
+          place_of_supply?: string | null
+          seller_gstin?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"]
+          subscription_id?: string | null
+          subtotal_minor?: number
+          tax_details?: Json
+          tax_minor?: number
+          total_minor?: number
+          updated_at?: string
+          voided_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "billing_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_invoices_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_payments: {
+        Row: {
+          amount_minor: number
+          captured_at: string | null
+          created_at: string
+          currency: string
+          failure_reason: string | null
+          gateway: Database["public"]["Enums"]["payment_gateway"]
+          gateway_order_id: string | null
+          gateway_payment_id: string | null
+          gateway_signature: string | null
+          id: string
+          invoice_id: string | null
+          metadata: Json
+          method: string | null
+          refund_amount_minor: number
+          status: Database["public"]["Enums"]["payment_status"]
+          subscription_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          amount_minor?: number
+          captured_at?: string | null
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          gateway: Database["public"]["Enums"]["payment_gateway"]
+          gateway_order_id?: string | null
+          gateway_payment_id?: string | null
+          gateway_signature?: string | null
+          id?: string
+          invoice_id?: string | null
+          metadata?: Json
+          method?: string | null
+          refund_amount_minor?: number
+          status?: Database["public"]["Enums"]["payment_status"]
+          subscription_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          amount_minor?: number
+          captured_at?: string | null
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          gateway?: Database["public"]["Enums"]["payment_gateway"]
+          gateway_order_id?: string | null
+          gateway_payment_id?: string | null
+          gateway_signature?: string | null
+          id?: string
+          invoice_id?: string | null
+          metadata?: Json
+          method?: string | null
+          refund_amount_minor?: number
+          status?: Database["public"]["Enums"]["payment_status"]
+          subscription_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "billing_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "billing_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_payments_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_plans: {
+        Row: {
+          code: string
+          created_at: string
+          currency: string
+          description: string | null
+          features: Json
+          id: string
+          is_active: boolean
+          is_custom: boolean
+          is_public: boolean
+          limits: Json
+          metadata: Json
+          name: string
+          price_lifetime_minor: number | null
+          price_monthly_minor: number | null
+          price_quarterly_minor: number | null
+          price_yearly_minor: number | null
+          sort_order: number
+          tier: string
+          trial_days: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean
+          is_custom?: boolean
+          is_public?: boolean
+          limits?: Json
+          metadata?: Json
+          name: string
+          price_lifetime_minor?: number | null
+          price_monthly_minor?: number | null
+          price_quarterly_minor?: number | null
+          price_yearly_minor?: number | null
+          sort_order?: number
+          tier: string
+          trial_days?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean
+          is_custom?: boolean
+          is_public?: boolean
+          limits?: Json
+          metadata?: Json
+          name?: string
+          price_lifetime_minor?: number | null
+          price_monthly_minor?: number | null
+          price_quarterly_minor?: number | null
+          price_yearly_minor?: number | null
+          sort_order?: number
+          tier?: string
+          trial_days?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      billing_subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          canceled_at: string | null
+          coupon_id: string | null
+          created_at: string
+          currency: string
+          current_period_end: string | null
+          current_period_start: string | null
+          cycle: Database["public"]["Enums"]["billing_cycle"]
+          ended_at: string | null
+          gateway: Database["public"]["Enums"]["payment_gateway"] | null
+          gateway_customer_id: string | null
+          gateway_subscription_id: string | null
+          id: string
+          metadata: Json
+          paused_at: string | null
+          plan_id: string
+          quantity: number
+          resumed_at: string | null
+          status: Database["public"]["Enums"]["subscription_status"]
+          trial_end: string | null
+          trial_start: string | null
+          unit_amount_minor: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          coupon_id?: string | null
+          created_at?: string
+          currency?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          cycle?: Database["public"]["Enums"]["billing_cycle"]
+          ended_at?: string | null
+          gateway?: Database["public"]["Enums"]["payment_gateway"] | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          metadata?: Json
+          paused_at?: string | null
+          plan_id: string
+          quantity?: number
+          resumed_at?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          trial_end?: string | null
+          trial_start?: string | null
+          unit_amount_minor?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          coupon_id?: string | null
+          created_at?: string
+          currency?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          cycle?: Database["public"]["Enums"]["billing_cycle"]
+          ended_at?: string | null
+          gateway?: Database["public"]["Enums"]["payment_gateway"] | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          metadata?: Json
+          paused_at?: string | null
+          plan_id?: string
+          quantity?: number
+          resumed_at?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          trial_end?: string | null
+          trial_start?: string | null
+          unit_amount_minor?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "billing_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_subscriptions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_tax_settings: {
+        Row: {
+          billing_address: Json
+          country: string | null
+          created_at: string
+          gstin: string | null
+          legal_name: string | null
+          metadata: Json
+          prices_include_tax: boolean
+          state: string | null
+          tax_rate: number
+          tax_type: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          billing_address?: Json
+          country?: string | null
+          created_at?: string
+          gstin?: string | null
+          legal_name?: string | null
+          metadata?: Json
+          prices_include_tax?: boolean
+          state?: string | null
+          tax_rate?: number
+          tax_type?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          billing_address?: Json
+          country?: string | null
+          created_at?: string
+          gstin?: string | null
+          legal_name?: string | null
+          metadata?: Json
+          prices_include_tax?: boolean
+          state?: string | null
+          tax_rate?: number
+          tax_type?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_tax_settings_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bio_page_publish_events: {
         Row: {
           action: string
@@ -2919,10 +3460,15 @@ export type Database = {
         Returns: boolean
       }
       is_reserved_username: { Args: { _username: string }; Returns: boolean }
+      is_workspace_admin: {
+        Args: { _user_id: string; _workspace_id: string }
+        Returns: boolean
+      }
       is_workspace_member: {
         Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
       }
+      next_invoice_number: { Args: never; Returns: string }
       org_role_of: {
         Args: { _org_id: string; _user_id: string }
         Returns: Database["public"]["Enums"]["org_role"]
@@ -2966,6 +3512,7 @@ export type Database = {
         | "qr_scan"
         | "session_end"
       app_role: "admin" | "moderator" | "user"
+      billing_cycle: "monthly" | "quarterly" | "yearly" | "lifetime"
       bio_page_status:
         | "draft"
         | "published"
@@ -2984,7 +3531,16 @@ export type Database = {
         | "booking_click"
         | "qr_scan"
         | "custom_url_click"
+      coupon_duration: "one_time" | "recurring" | "forever"
+      coupon_kind: "percentage" | "flat"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
+      invoice_status:
+        | "draft"
+        | "open"
+        | "paid"
+        | "void"
+        | "uncollectible"
+        | "refunded"
       media_collection_kind: "manual" | "smart" | "dynamic"
       media_kind: "image" | "video" | "audio" | "document" | "other"
       media_processing_status:
@@ -3003,6 +3559,21 @@ export type Database = {
         | "collaboration"
       org_plan: "free" | "pro" | "business" | "enterprise"
       org_role: "owner" | "admin" | "manager" | "member"
+      payment_gateway: "razorpay" | "stripe" | "paypal" | "paddle" | "manual"
+      payment_status:
+        | "pending"
+        | "succeeded"
+        | "failed"
+        | "refunded"
+        | "partially_refunded"
+      subscription_status:
+        | "trialing"
+        | "active"
+        | "past_due"
+        | "canceled"
+        | "paused"
+        | "expired"
+        | "incomplete"
       workspace_role: "owner" | "admin" | "member"
     }
     CompositeTypes: {
@@ -3166,6 +3737,7 @@ export const Constants = {
         "session_end",
       ],
       app_role: ["admin", "moderator", "user"],
+      billing_cycle: ["monthly", "quarterly", "yearly", "lifetime"],
       bio_page_status: [
         "draft",
         "published",
@@ -3186,7 +3758,17 @@ export const Constants = {
         "qr_scan",
         "custom_url_click",
       ],
+      coupon_duration: ["one_time", "recurring", "forever"],
+      coupon_kind: ["percentage", "flat"],
       invitation_status: ["pending", "accepted", "revoked", "expired"],
+      invoice_status: [
+        "draft",
+        "open",
+        "paid",
+        "void",
+        "uncollectible",
+        "refunded",
+      ],
       media_collection_kind: ["manual", "smart", "dynamic"],
       media_kind: ["image", "video", "audio", "document", "other"],
       media_processing_status: [
@@ -3207,6 +3789,23 @@ export const Constants = {
       ],
       org_plan: ["free", "pro", "business", "enterprise"],
       org_role: ["owner", "admin", "manager", "member"],
+      payment_gateway: ["razorpay", "stripe", "paypal", "paddle", "manual"],
+      payment_status: [
+        "pending",
+        "succeeded",
+        "failed",
+        "refunded",
+        "partially_refunded",
+      ],
+      subscription_status: [
+        "trialing",
+        "active",
+        "past_due",
+        "canceled",
+        "paused",
+        "expired",
+        "incomplete",
+      ],
       workspace_role: ["owner", "admin", "member"],
     },
   },
