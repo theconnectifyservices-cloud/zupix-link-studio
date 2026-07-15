@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { BlockRenderer } from "@/features/builder/block-renderer";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/features/builder/theme";
 import type { BioContent } from "@/features/builder/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { initTracker } from "@/features/analytics/tracker";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -21,7 +22,15 @@ type Viewport = "mobile" | "tablet" | "desktop";
  * The viewport is derived from the browser width so responsive tokens
  * (padding, font scale, per-viewport visibility) apply live.
  */
-export function PublicBioRenderer({ content }: { content: BioContent }) {
+export function PublicBioRenderer({
+  content,
+  pageId,
+  slug,
+}: {
+  content: BioContent;
+  pageId?: string;
+  slug?: string;
+}) {
   const theme = content.theme ?? DEFAULT_THEME;
   const motion = theme.motion ?? DEFAULT_MOTION;
 
@@ -45,8 +54,16 @@ export function PublicBioRenderer({ content }: { content: BioContent }) {
     for (const f of families) ensureGoogleFont(f);
   }, [theme.typography]);
 
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!pageId || !slug || !rootRef.current) return;
+    const handle = initTracker(pageId, slug, rootRef.current);
+    return () => handle.end();
+  }, [pageId, slug]);
+
   return (
     <div
+      ref={rootRef}
       data-theme-mode={resolvedMode}
       className={cn(
         resolvedMode === "dark" && "dark",

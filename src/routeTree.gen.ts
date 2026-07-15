@@ -22,6 +22,7 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.app'
 import { Route as SlugPageRouteImport } from './routes/$slug.$page'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
+import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
 import { Route as AuthenticatedBuilderIdRouteImport } from './routes/_authenticated.builder.$id'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated.app.templates'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated.app.settings'
@@ -101,6 +102,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const ApiPublicTrackRoute = ApiPublicTrackRouteImport.update({
+  id: '/api/public/track',
+  path: '/api/public/track',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedBuilderIdRoute = AuthenticatedBuilderIdRouteImport.update({
   id: '/builder/$id',
@@ -210,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
+  '/api/public/track': typeof ApiPublicTrackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -238,6 +245,7 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
+  '/api/public/track': typeof ApiPublicTrackRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -269,6 +277,7 @@ export interface FileRoutesById {
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
+  '/api/public/track': typeof ApiPublicTrackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
   '/_authenticated/app/settings/password': typeof AuthenticatedAppSettingsPasswordRoute
@@ -300,6 +309,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/templates'
     | '/builder/$id'
+    | '/api/public/track'
     | '/app/'
     | '/app/settings/notifications'
     | '/app/settings/password'
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/templates'
     | '/builder/$id'
+    | '/api/public/track'
     | '/app'
     | '/app/settings/notifications'
     | '/app/settings/password'
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/settings'
     | '/_authenticated/app/templates'
     | '/_authenticated/builder/$id'
+    | '/api/public/track'
     | '/_authenticated/app/'
     | '/_authenticated/app/settings/notifications'
     | '/_authenticated/app/settings/password'
@@ -377,6 +389,7 @@ export interface RootRouteChildren {
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthIndexRoute: typeof AuthIndexRoute
+  ApiPublicTrackRoute: typeof ApiPublicTrackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -471,6 +484,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/api/public/track': {
+      id: '/api/public/track'
+      path: '/api/public/track'
+      fullPath: '/api/public/track'
+      preLoaderRoute: typeof ApiPublicTrackRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/builder/$id': {
       id: '/_authenticated/builder/$id'
@@ -672,6 +692,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthIndexRoute: AuthIndexRoute,
+  ApiPublicTrackRoute: ApiPublicTrackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

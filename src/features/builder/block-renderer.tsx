@@ -200,6 +200,8 @@ export function BlockRenderer({
     <div
       className={wrapCls}
       style={style}
+      data-block-id={block.id}
+      data-block-type={block.type}
       data-hide-mobile={vis.mobile === false || undefined}
       data-hide-tablet={vis.tablet === false || undefined}
       data-hide-desktop={vis.desktop === false || undefined}
