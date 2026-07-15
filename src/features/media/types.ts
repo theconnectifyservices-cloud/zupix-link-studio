@@ -3,6 +3,24 @@ import type { Database } from "@/integrations/supabase/types";
 
 export type MediaKind = Database["public"]["Enums"]["media_kind"];
 
+export type MediaProcessingStatus = "pending" | "processing" | "completed" | "failed" | "skipped";
+
+export interface MediaVariant {
+  role: "thumb" | "small" | "medium" | "large" | "poster";
+  format: "webp" | "jpeg" | "png" | "avif";
+  width: number;
+  height: number;
+  size: number;
+  path: string;
+}
+
+export interface ProcessingReport {
+  status: MediaProcessingStatus;
+  variants: MediaVariant[];
+  optimizedBytes: number;
+  reason?: string;
+}
+
 export interface MediaAsset {
   id: string;
   workspace_id: string | null;
@@ -26,6 +44,15 @@ export interface MediaAsset {
   metadata: Record<string, unknown>;
   created_at: string;
   updated_at: string;
+  // Processing pipeline (LS-10B)
+  variants: MediaVariant[];
+  original_size_bytes: number | null;
+  optimized_size_bytes: number | null;
+  video_thumbnail_path: string | null;
+  blurhash: string | null;
+  processing_status: MediaProcessingStatus;
+  processing_error: string | null;
+  processed_at: string | null;
 }
 
 export interface MediaFolder {
