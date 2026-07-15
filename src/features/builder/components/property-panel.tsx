@@ -705,15 +705,9 @@ export function PropertyPanel() {
       )}
 
       {block.type === "buttonGroup" && (
-        <ButtonGroupEditor
-          layout={block.layout}
-          columns={block.columns}
-          buttons={block.buttons}
-          onLayout={(v) => set("layout", v)}
-          onColumns={(v) => set("columns", v)}
-          onButtons={(v) => set("buttons", v)}
-        />
+        <ButtonGroupEditor block={block} set={set} />
       )}
+
 
       {block.type === "image" && (
         <>
