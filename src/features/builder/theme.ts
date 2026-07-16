@@ -956,8 +956,7 @@ export function backgroundPatternUrl(id?: string): string | undefined {
   return BACKGROUND_PATTERNS.find((x) => x.id === id)?.url;
 }
 
-  return style;
-}
+
 
 /** Resolve auto → light/dark using the browser preference. */
 export function resolveMode(mode: ThemeMode): "light" | "dark" {
