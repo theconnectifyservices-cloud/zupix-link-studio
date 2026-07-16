@@ -562,6 +562,36 @@ export function autoContrastText(bg: string | undefined): string | undefined {
   const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
   return lum > 0.5 ? "#000000" : "#ffffff";
 }
+/**
+ * Resolve a raw url + action into an href suitable for an <a> tag.
+ * Handles WhatsApp (wa.me), Telegram (t.me), tel:, mailto:, and prepends https://
+ * for bare domains. Returns undefined when nothing usable is configured.
+ */
+function resolveHref(
+  url: string | undefined,
+  action?: import("./types").ButtonAction,
+): string | undefined {
+  const raw = (url ?? "").trim();
+  if (!raw) return undefined;
+  const lower = raw.toLowerCase();
+  const hasScheme = /^[a-z][a-z0-9+.-]*:/.test(lower);
+  switch (action) {
+    case "phone":
+      return lower.startsWith("tel:") ? raw : `tel:${raw.replace(/[^\d+]/g, "")}`;
+    case "email":
+      return lower.startsWith("mailto:") ? raw : `mailto:${raw}`;
+    case "whatsapp": {
+      if (hasScheme) return raw;
+      const digits = raw.replace(/[^\d]/g, "");
+      return digits ? `https://wa.me/${digits}` : raw;
+    }
+    case "telegram":
+      return hasScheme ? raw : `https://t.me/${raw.replace(/^@/, "")}`;
+    default:
+      return hasScheme || lower.startsWith("/") || lower.startsWith("#") ? raw : `https://${raw}`;
+  }
+}
+
 function ButtonRender({
   block,
   reduceMotion = false,
