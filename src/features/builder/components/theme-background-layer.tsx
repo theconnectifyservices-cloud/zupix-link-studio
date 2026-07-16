@@ -85,14 +85,8 @@ export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
 
   const hasImageLayer = !!imageStyle;
   const hasOverlay = overlayOp > 0;
-  const hasNoise = !!bg.noise;
-  const hasMesh = !!bg.meshGradient;
-  const hasAnimatedGradient =
-    !!bg.animatedGradient && (bg.kind === "color" || bg.kind === "gradient");
 
-  if (!hasImageLayer && !hasOverlay && !hasNoise && !hasMesh && !hasAnimatedGradient) {
-    return null;
-  }
+  if (!hasImageLayer && !hasOverlay) return null;
 
   return (
     <>
@@ -104,27 +98,9 @@ export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
             ...imageStyle!,
             filter: blur ? `blur(${blur}px)` : undefined,
             mixBlendMode: blend,
-            // Slightly expand to hide blur edges
             transform: blur ? "scale(1.06)" : undefined,
             transformOrigin: "center",
           }}
-        />
-      )}
-      {hasAnimatedGradient && (
-        <div
-          aria-hidden
-          className="zx-bg-animated-gradient pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background: theme.colors.background,
-            filter: blur ? `blur(${blur}px)` : undefined,
-            mixBlendMode: blend,
-          }}
-        />
-      )}
-      {hasMesh && (
-        <div
-          aria-hidden
-          className="zx-bg-mesh pointer-events-none absolute inset-0 -z-10"
         />
       )}
       {hasOverlay && (
@@ -137,13 +113,7 @@ export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
           }}
         />
       )}
-      {hasNoise && (
-        <div
-          aria-hidden
-          className="zx-bg-noise-layer pointer-events-none absolute inset-0 -z-10"
-          style={{ opacity: bg.noiseOpacity ?? 0.08 }}
-        />
-      )}
     </>
   );
 }
+
