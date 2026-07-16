@@ -848,18 +848,12 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
         ? s.pagePaddingTablet
         : s.pagePaddingDesktop) ?? s.pagePadding;
 
-  // Resolve final background — image/pattern override the colors.background
+  // Base background painted on the outer container. Image/pattern layers
+  // are painted by `ThemeBackgroundLayer` so they can be blurred + overlaid
+  // without affecting the page content.
   let finalBg = c.background;
-  let backgroundImage = "";
-  if (bg.kind === "image" && bg.imageUrl) {
+  if (bg.kind === "image" || bg.kind === "pattern") {
     finalBg = c.backgroundSolid;
-    backgroundImage = `url("${bg.imageUrl}")`;
-  } else if (bg.kind === "pattern" && bg.patternId) {
-    const p = BACKGROUND_PATTERNS.find((x) => x.id === bg.patternId);
-    if (p) {
-      finalBg = c.backgroundSolid;
-      backgroundImage = p.url;
-    }
   }
 
   const vars: Record<string, string> = {
