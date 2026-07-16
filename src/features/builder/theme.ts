@@ -131,6 +131,16 @@ export type BackgroundPosition =
   | "bottom left"
   | "bottom right";
 
+export type BackgroundBlendMode =
+  | "normal"
+  | "multiply"
+  | "overlay"
+  | "soft-light"
+  | "screen"
+  | "color-dodge"
+  | "darken"
+  | "lighten";
+
 export interface ThemeBackground {
   kind: BackgroundKind;
   imageUrl?: string;
@@ -139,9 +149,10 @@ export interface ThemeBackground {
   patternId?: string; // key into BACKGROUND_PATTERNS
   size?: BackgroundSize;
   position?: BackgroundPosition;
-  blur?: number; // px, background blur
-  overlay?: string; // css overlay color (rgba)
+  blur?: number; // px, background blur (applied to bg layer only)
+  overlay?: string; // css overlay color (rgba/hex/hsl)
   overlayOpacity?: number; // 0..1
+  blendMode?: BackgroundBlendMode; // mix-blend-mode on the bg layer
   /** LS-07C — background effects. */
   noise?: boolean;
   noiseOpacity?: number; // 0..1, default 0.08
@@ -156,6 +167,7 @@ export const DEFAULT_BACKGROUND: ThemeBackground = {
   blur: 0,
   overlay: "#000000",
   overlayOpacity: 0,
+  blendMode: "normal",
   noise: false,
   noiseOpacity: 0.08,
   animatedGradient: false,
@@ -836,18 +848,12 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
         ? s.pagePaddingTablet
         : s.pagePaddingDesktop) ?? s.pagePadding;
 
-  // Resolve final background — image/pattern override the colors.background
+  // Base background painted on the outer container. Image/pattern layers
+  // are painted by `ThemeBackgroundLayer` so they can be blurred + overlaid
+  // without affecting the page content.
   let finalBg = c.background;
-  let backgroundImage = "";
-  if (bg.kind === "image" && bg.imageUrl) {
+  if (bg.kind === "image" || bg.kind === "pattern") {
     finalBg = c.backgroundSolid;
-    backgroundImage = `url("${bg.imageUrl}")`;
-  } else if (bg.kind === "pattern" && bg.patternId) {
-    const p = BACKGROUND_PATTERNS.find((x) => x.id === bg.patternId);
-    if (p) {
-      finalBg = c.backgroundSolid;
-      backgroundImage = p.url;
-    }
   }
 
   const vars: Record<string, string> = {
@@ -941,14 +947,16 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
     fontWeight: t.bodyWeight,
     position: "relative",
   };
-  if (backgroundImage) {
-    style.backgroundImage = backgroundImage;
-    style.backgroundSize = bg.size ?? "cover";
-    style.backgroundPosition = bg.position ?? "center";
-    style.backgroundRepeat = bg.kind === "pattern" ? "repeat" : "no-repeat";
-  }
   return style;
 }
+
+/** Resolve a background pattern URL by id (used by the layer renderer). */
+export function backgroundPatternUrl(id?: string): string | undefined {
+  if (!id) return undefined;
+  return BACKGROUND_PATTERNS.find((x) => x.id === id)?.url;
+}
+
+
 
 /** Resolve auto → light/dark using the browser preference. */
 export function resolveMode(mode: ThemeMode): "light" | "dark" {
