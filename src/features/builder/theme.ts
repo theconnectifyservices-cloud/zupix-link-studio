@@ -947,12 +947,15 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
     fontWeight: t.bodyWeight,
     position: "relative",
   };
-  if (backgroundImage) {
-    style.backgroundImage = backgroundImage;
-    style.backgroundSize = bg.size ?? "cover";
-    style.backgroundPosition = bg.position ?? "center";
-    style.backgroundRepeat = bg.kind === "pattern" ? "repeat" : "no-repeat";
-  }
+  return style;
+}
+
+/** Resolve a background pattern URL by id (used by the layer renderer). */
+export function backgroundPatternUrl(id?: string): string | undefined {
+  if (!id) return undefined;
+  return BACKGROUND_PATTERNS.find((x) => x.id === id)?.url;
+}
+
   return style;
 }
 
