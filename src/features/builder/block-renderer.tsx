@@ -673,8 +673,23 @@ function ButtonRender({
       {block.label || "Button"}
     </div>
   );
+  const href = block.disabled ? undefined : resolveHref(block.url, block.action);
+  const newTab = block.newTab ?? true;
+  const wrapped = href ? (
+    <a
+      href={href}
+      target={newTab ? "_blank" : undefined}
+      rel={newTab ? "noopener noreferrer" : undefined}
+      className={cn("contents", WIDTH_CLASS[block.width ?? "full"] === "w-full" && "w-full")}
+      aria-label={block.label || "Button"}
+    >
+      {pill}
+    </a>
+  ) : (
+    pill
+  );
   return (
-    <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>{pill}</div>
+    <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>{wrapped}</div>
   );
 }
 
