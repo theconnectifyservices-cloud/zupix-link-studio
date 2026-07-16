@@ -601,35 +601,61 @@ export function ThemePanel() {
             </div>
           )}
 
-          {(bg.kind === "image" || bg.kind === "pattern" || bg.kind === "glass") && (
-            <>
-              <NumField
-                label="Blur"
-                min={0}
-                max={40}
-                step={1}
-                value={bg.blur ?? 0}
-                suffix="px"
-                onChange={(v) => patchBg({ blur: v })}
-              />
-              <ColorField
-                label="Overlay color"
-                value={bg.overlay ?? "#000000"}
-                brands={brands}
-                onSaveBrand={addBrand}
-                onChange={(v) => patchBg({ overlay: v })}
-              />
-              <NumField
-                label="Overlay opacity"
-                min={0}
-                max={1}
-                step={0.05}
-                value={bg.overlayOpacity ?? 0}
-                suffix=""
-                onChange={(v) => patchBg({ overlayOpacity: v })}
-              />
-            </>
-          )}
+          {/* Blur + overlay + blend mode — available for all bg kinds */}
+          <NumField
+            label="Background blur"
+            min={0}
+            max={100}
+            step={1}
+            value={bg.blur ?? 0}
+            suffix="px"
+            onChange={(v) => patchBg({ blur: v })}
+          />
+          <ColorField
+            label="Overlay color"
+            value={bg.overlay ?? "#000000"}
+            brands={brands}
+            onSaveBrand={addBrand}
+            onChange={(v) => patchBg({ overlay: v })}
+          />
+          <NumField
+            label="Overlay opacity"
+            min={0}
+            max={1}
+            step={0.05}
+            value={bg.overlayOpacity ?? 0}
+            suffix=""
+            onChange={(v) => patchBg({ overlayOpacity: v })}
+          />
+          <div>
+            <div className="mb-1 text-[11px] text-muted-foreground">Blend mode</div>
+            <select
+              className="h-8 w-full rounded-md border bg-background px-2 text-xs"
+              value={bg.blendMode ?? "normal"}
+              onChange={(e) =>
+                patchBg({
+                  blendMode: e.target.value as NonNullable<typeof bg.blendMode>,
+                })
+              }
+            >
+              {(
+                [
+                  "normal",
+                  "multiply",
+                  "overlay",
+                  "soft-light",
+                  "screen",
+                  "color-dodge",
+                  "darken",
+                  "lighten",
+                ] as const
+              ).map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {bg.kind === "video" && (
             <>
@@ -673,6 +699,11 @@ export function ThemePanel() {
               label="Animated gradient"
               checked={!!bg.animatedGradient}
               onChange={(v) => patchBg({ animatedGradient: v })}
+            />
+            <ToggleRow
+              label="Mesh gradient"
+              checked={!!bg.meshGradient}
+              onChange={(v) => patchBg({ meshGradient: v })}
             />
           </div>
         </TabsContent>
