@@ -859,24 +859,41 @@ function GroupItemRender({
     onMouseUp: () => setPressed(false),
   };
 
-  if (fx.needsInteractive) {
-    return (
-      <InteractiveFxWrapper
-        className={btnClass}
-        style={style}
-        effect={fx.effect as "magnetic" | "spotlight"}
-        intensity={fx.intensity}
-        distance={fx.distance}
-        {...handlers}
-      >
-        {inner}
-      </InteractiveFxWrapper>
-    );
-  }
-  return (
+  const href = item.disabled ? undefined : resolveHref(item.url);
+  const newTab = item.newTab ?? true;
+  const relParts = [
+    newTab || item.relNoopener ? "noopener noreferrer" : null,
+    item.relNofollow ? "nofollow" : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const body = fx.needsInteractive ? (
+    <InteractiveFxWrapper
+      className={btnClass}
+      style={style}
+      effect={fx.effect as "magnetic" | "spotlight"}
+      intensity={fx.intensity}
+      distance={fx.distance}
+      {...handlers}
+    >
+      {inner}
+    </InteractiveFxWrapper>
+  ) : (
     <div className={btnClass} style={style} {...handlers}>
       {inner}
     </div>
+  );
+  if (!href) return body;
+  return (
+    <a
+      href={href}
+      target={newTab ? "_blank" : undefined}
+      rel={relParts || undefined}
+      className={cn("contents", widthCls === "w-full" && "w-full")}
+      aria-label={item.label || "Button"}
+    >
+      {body}
+    </a>
   );
 }
 
