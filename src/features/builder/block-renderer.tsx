@@ -562,6 +562,36 @@ export function autoContrastText(bg: string | undefined): string | undefined {
   const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
   return lum > 0.5 ? "#000000" : "#ffffff";
 }
+/**
+ * Resolve a raw url + action into an href suitable for an <a> tag.
+ * Handles WhatsApp (wa.me), Telegram (t.me), tel:, mailto:, and prepends https://
+ * for bare domains. Returns undefined when nothing usable is configured.
+ */
+function resolveHref(
+  url: string | undefined,
+  action?: import("./types").ButtonAction,
+): string | undefined {
+  const raw = (url ?? "").trim();
+  if (!raw) return undefined;
+  const lower = raw.toLowerCase();
+  const hasScheme = /^[a-z][a-z0-9+.-]*:/.test(lower);
+  switch (action) {
+    case "phone":
+      return lower.startsWith("tel:") ? raw : `tel:${raw.replace(/[^\d+]/g, "")}`;
+    case "email":
+      return lower.startsWith("mailto:") ? raw : `mailto:${raw}`;
+    case "whatsapp": {
+      if (hasScheme) return raw;
+      const digits = raw.replace(/[^\d]/g, "");
+      return digits ? `https://wa.me/${digits}` : raw;
+    }
+    case "telegram":
+      return hasScheme ? raw : `https://t.me/${raw.replace(/^@/, "")}`;
+    default:
+      return hasScheme || lower.startsWith("/") || lower.startsWith("#") ? raw : `https://${raw}`;
+  }
+}
+
 function ButtonRender({
   block,
   reduceMotion = false,
@@ -643,8 +673,23 @@ function ButtonRender({
       {block.label || "Button"}
     </div>
   );
+  const href = block.disabled ? undefined : resolveHref(block.url, block.action);
+  const newTab = block.newTab ?? true;
+  const wrapped = href ? (
+    <a
+      href={href}
+      target={newTab ? "_blank" : undefined}
+      rel={newTab ? "noopener noreferrer" : undefined}
+      className={cn("contents", WIDTH_CLASS[block.width ?? "full"] === "w-full" && "w-full")}
+      aria-label={block.label || "Button"}
+    >
+      {pill}
+    </a>
+  ) : (
+    pill
+  );
   return (
-    <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>{pill}</div>
+    <div className={cn("flex", ALIGN_WRAP[block.align ?? "center"])}>{wrapped}</div>
   );
 }
 
@@ -814,24 +859,41 @@ function GroupItemRender({
     onMouseUp: () => setPressed(false),
   };
 
-  if (fx.needsInteractive) {
-    return (
-      <InteractiveFxWrapper
-        className={btnClass}
-        style={style}
-        effect={fx.effect as "magnetic" | "spotlight"}
-        intensity={fx.intensity}
-        distance={fx.distance}
-        {...handlers}
-      >
-        {inner}
-      </InteractiveFxWrapper>
-    );
-  }
-  return (
+  const href = item.disabled ? undefined : resolveHref(item.url);
+  const newTab = item.newTab ?? true;
+  const relParts = [
+    newTab || item.relNoopener ? "noopener noreferrer" : null,
+    item.relNofollow ? "nofollow" : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const body = fx.needsInteractive ? (
+    <InteractiveFxWrapper
+      className={btnClass}
+      style={style}
+      effect={fx.effect as "magnetic" | "spotlight"}
+      intensity={fx.intensity}
+      distance={fx.distance}
+      {...handlers}
+    >
+      {inner}
+    </InteractiveFxWrapper>
+  ) : (
     <div className={btnClass} style={style} {...handlers}>
       {inner}
     </div>
+  );
+  if (!href) return body;
+  return (
+    <a
+      href={href}
+      target={newTab ? "_blank" : undefined}
+      rel={relParts || undefined}
+      className={cn("contents", widthCls === "w-full" && "w-full")}
+      aria-label={item.label || "Button"}
+    >
+      {body}
+    </a>
   );
 }
 
