@@ -131,6 +131,16 @@ export type BackgroundPosition =
   | "bottom left"
   | "bottom right";
 
+export type BackgroundBlendMode =
+  | "normal"
+  | "multiply"
+  | "overlay"
+  | "soft-light"
+  | "screen"
+  | "color-dodge"
+  | "darken"
+  | "lighten";
+
 export interface ThemeBackground {
   kind: BackgroundKind;
   imageUrl?: string;
@@ -139,9 +149,10 @@ export interface ThemeBackground {
   patternId?: string; // key into BACKGROUND_PATTERNS
   size?: BackgroundSize;
   position?: BackgroundPosition;
-  blur?: number; // px, background blur
-  overlay?: string; // css overlay color (rgba)
+  blur?: number; // px, background blur (applied to bg layer only)
+  overlay?: string; // css overlay color (rgba/hex/hsl)
   overlayOpacity?: number; // 0..1
+  blendMode?: BackgroundBlendMode; // mix-blend-mode on the bg layer
   /** LS-07C — background effects. */
   noise?: boolean;
   noiseOpacity?: number; // 0..1, default 0.08
@@ -156,6 +167,7 @@ export const DEFAULT_BACKGROUND: ThemeBackground = {
   blur: 0,
   overlay: "#000000",
   overlayOpacity: 0,
+  blendMode: "normal",
   noise: false,
   noiseOpacity: 0.08,
   animatedGradient: false,
