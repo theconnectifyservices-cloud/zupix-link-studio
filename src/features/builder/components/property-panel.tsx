@@ -21,6 +21,7 @@ import type {
   VideoBlock,
 } from "../types";
 import { newId } from "../types";
+import { CustomCodeEditor } from "./property-editors/custom-code-editor";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -959,6 +960,8 @@ export function PropertyPanel() {
         </>
       )}
       {block.type === "embed" && <EmbedEditor block={block} set={set} />}
+      {block.type === "customCode" && <CustomCodeEditor block={block} update={update} />}
+
 
       <SharedSettings settings={block.settings} onChange={setSettings} />
     </div>
