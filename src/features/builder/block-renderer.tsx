@@ -1733,15 +1733,17 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
         if (!embed) return null;
         if (embed.kind === "video") {
           return (
-            <video
-              src={embed.src}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            <div
+              className="pointer-events-none absolute inset-0 overflow-hidden"
               style={{ filter: bgMediaFilter }}
-            />
+            >
+              <AutoplayVideo
+                src={embed.src}
+                poster={block.bgImageUrl}
+                background
+                className="h-full w-full"
+              />
+            </div>
           );
         }
         return (
@@ -1752,7 +1754,8 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
             <iframe
               src={embed.src}
               title="Background video"
-              allow="autoplay; encrypted-media; picture-in-picture"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
               className="absolute left-1/2 top-1/2 h-[110%] w-[110%] -translate-x-1/2 -translate-y-1/2 border-0"
               style={{ minWidth: "177.78vh", minHeight: "56.25vw" }}
             />
