@@ -1053,7 +1053,7 @@ function VideoRender({ block }: { block: VideoBlock }) {
       <iframe
         src={src}
         className="h-full w-full"
-        allow="autoplay; encrypted-media; picture-in-picture"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
         allowFullScreen
         title="Video"
       />
