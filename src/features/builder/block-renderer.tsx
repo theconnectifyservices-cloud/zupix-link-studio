@@ -4,6 +4,7 @@ import type {
   BlockSettings,
   ContactBlock,
   CountdownBlock,
+  CustomCodeBlock,
   EmbedBlock,
   EntranceAnim,
   FaqBlock,
@@ -20,6 +21,7 @@ import type {
   ButtonBlock,
   Viewport,
 } from "./types";
+import { buildSrcDoc } from "@/features/custom-code/sanitize";
 import { resolveHeroEffects } from "./effects/hero-effects";
 import { getIcon as getButtonIcon } from "./button-icons";
 import { cn } from "@/lib/utils";
@@ -472,6 +474,9 @@ function renderInner(block: Block, reduceMotion: boolean) {
       return <ContactRender block={block} />;
     case "embed":
       return <EmbedRender block={block} />;
+    case "customCode":
+      return <CustomCodeRender block={block} />;
+
 
     default:
       return (
@@ -1756,3 +1761,107 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
 }
 
 
+
+// ── Custom Code ──────────────────────────────────────────────────────────
+function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
+  const ref = useRef<HTMLIFrameElement>(null);
+  const [height, setHeight] = useState<number>(block.minHeight ?? 120);
+  const [visible, setVisible] = useState<boolean>(!block.lazy);
+  const [allowJs, setAllowJs] = useState<boolean>(false);
+
+  // Fetch workspace-level JS toggle once (public — the sanitizer strips
+  // <script> unless the workspace has explicitly opted-in).
+  useEffect(() => {
+    let live = true;
+    // Public renderer: read via anon client is fine because it's a boolean flag.
+    // If unavailable we default to off.
+    (async () => {
+      try {
+        const { supabase } = await import("@/integrations/supabase/client");
+        // find the workspace id via URL? For safety default to disabled.
+        // Renderer preview inside the builder reads the block as-is.
+        setAllowJs(false);
+        void supabase;
+      } catch {
+        if (live) setAllowJs(false);
+      }
+    })();
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  // Lazy-render via IntersectionObserver
+  useEffect(() => {
+    if (!block.lazy || visible) return;
+    const el = ref.current?.parentElement;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [block.lazy, visible]);
+
+  useEffect(() => {
+    function onMessage(e: MessageEvent) {
+      const d = e.data as { __zxcc?: boolean; height?: number } | undefined;
+      if (!d || !d.__zxcc || typeof d.height !== "number") return;
+      if (e.source !== ref.current?.contentWindow) return;
+      setHeight(Math.max(block.minHeight ?? 60, Math.ceil(d.height)));
+    }
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [block.minHeight]);
+
+  const srcDoc = visible
+    ? buildSrcDoc({
+        html: block.html ?? "",
+        css: block.css ?? "",
+        js: block.js ?? "",
+        allowJs: allowJs && !!block.jsEnabled,
+      })
+    : "";
+
+  const maxWidth =
+    block.containerWidth === "narrow"
+      ? 480
+      : block.containerWidth === "wide"
+        ? 960
+        : undefined;
+
+  return (
+    <div
+      style={{
+        maxWidth,
+        marginInline: maxWidth ? "auto" : undefined,
+        borderRadius: block.borderRadius ?? 0,
+        overflow: "hidden",
+      }}
+    >
+      <iframe
+        ref={ref}
+        title={block.title || "Custom Code"}
+        sandbox="allow-scripts allow-popups allow-forms allow-popups-to-escape-sandbox"
+        srcDoc={srcDoc}
+        loading={block.lazy ? "lazy" : "eager"}
+        style={{
+          width: "100%",
+          height,
+          border: 0,
+          background: "transparent",
+          display: "block",
+        }}
+      />
+    </div>
+  );
+}

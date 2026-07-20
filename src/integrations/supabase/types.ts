@@ -2756,6 +2756,71 @@ export type Database = {
           },
         ]
       }
+      html_library: {
+        Row: {
+          archived_at: string | null
+          category: string | null
+          created_at: string
+          created_by: string
+          css: string
+          description: string | null
+          html: string
+          id: string
+          js: string
+          name: string
+          page_id: string | null
+          preset_key: string | null
+          scope: string
+          theme_key: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          category?: string | null
+          created_at?: string
+          created_by: string
+          css?: string
+          description?: string | null
+          html?: string
+          id?: string
+          js?: string
+          name: string
+          page_id?: string | null
+          preset_key?: string | null
+          scope?: string
+          theme_key?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string
+          css?: string
+          description?: string | null
+          html?: string
+          id?: string
+          js?: string
+          name?: string
+          page_id?: string | null
+          preset_key?: string | null
+          scope?: string
+          theme_key?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "html_library_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invitations: {
         Row: {
           accepted_at: string | null
@@ -5750,6 +5815,7 @@ export type Database = {
       }
       workspaces: {
         Row: {
+          allow_custom_js: boolean
           brand_name: string | null
           created_at: string
           deleted_at: string | null
@@ -5772,6 +5838,7 @@ export type Database = {
           workspace_type: Database["public"]["Enums"]["workspace_type"]
         }
         Insert: {
+          allow_custom_js?: boolean
           brand_name?: string | null
           created_at?: string
           deleted_at?: string | null
@@ -5794,6 +5861,7 @@ export type Database = {
           workspace_type?: Database["public"]["Enums"]["workspace_type"]
         }
         Update: {
+          allow_custom_js?: boolean
           brand_name?: string | null
           created_at?: string
           deleted_at?: string | null
@@ -5840,6 +5908,7 @@ export type Database = {
       ensure_personal_workspace: {
         Args: never
         Returns: {
+          allow_custom_js: boolean
           brand_name: string | null
           created_at: string
           deleted_at: string | null
