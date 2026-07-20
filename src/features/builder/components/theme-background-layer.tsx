@@ -32,20 +32,18 @@ export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
           style={{ filter: bg.blur ? `blur(${bg.blur}px)` : undefined }}
         >
           {embed.kind === "video" ? (
-            <video
+            <AutoplayVideo
               src={embed.src}
               poster={bg.posterUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="h-full w-full object-cover"
+              background
+              className="h-full w-full"
             />
           ) : (
             <iframe
               src={embed.src}
               title="Background video"
-              allow="autoplay; encrypted-media; picture-in-picture"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
               className="h-full w-full scale-[1.35] border-0"
             />
           )}
