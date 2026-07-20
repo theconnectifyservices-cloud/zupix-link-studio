@@ -1012,9 +1012,17 @@ function VideoRender({ block }: { block: VideoBlock }) {
     );
   }
   const params = new URLSearchParams();
-  if (block.autoplay) params.set("autoplay", "1");
-  if (block.muted) params.set("mute", "1");
-  if (block.loop) params.set("loop", "1");
+  const wantAutoplay = block.autoplay !== false;
+  if (wantAutoplay) {
+    params.set("autoplay", "1");
+    // Autoplay requires muted on mobile browsers.
+    params.set("mute", "1");
+  } else if (block.muted) {
+    params.set("mute", "1");
+  }
+  params.set("playsinline", "1");
+  params.set("rel", "0");
+  params.set("modestbranding", "1");
   let src = "";
   if (block.provider === "youtube") {
     const id = extractYouTubeId(block.url);
@@ -1024,6 +1032,10 @@ function VideoRender({ block }: { block: VideoBlock }) {
           Invalid YouTube URL
         </div>
       );
+    if (block.loop) {
+      params.set("loop", "1");
+      params.set("playlist", id);
+    }
     src = `https://www.youtube.com/embed/${id}?${params.toString()}`;
   } else {
     const id = extractVimeoId(block.url);
@@ -1033,6 +1045,7 @@ function VideoRender({ block }: { block: VideoBlock }) {
           Invalid Vimeo URL
         </div>
       );
+    if (block.loop) params.set("loop", "1");
     src = `https://player.vimeo.com/video/${id}?${params.toString()}`;
   }
   return (
