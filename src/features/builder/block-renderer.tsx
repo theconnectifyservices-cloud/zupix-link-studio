@@ -22,6 +22,7 @@ import type {
   Viewport,
 } from "./types";
 import { buildSrcDoc } from "@/features/custom-code/sanitize";
+import { useRendererMode } from "./renderer-mode";
 import { resolveHeroEffects } from "./effects/hero-effects";
 import { getIcon as getButtonIcon } from "./button-icons";
 import { cn } from "@/lib/utils";
@@ -1764,10 +1765,29 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
 
 // ── Custom Code ──────────────────────────────────────────────────────────
 function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
+  const mode = useRendererMode();
   const ref = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState<number>(block.minHeight ?? 120);
   const [visible, setVisible] = useState<boolean>(!block.lazy);
   const [allowJs, setAllowJs] = useState<boolean>(false);
+
+  const hasContent =
+    !!(block.html && block.html.trim()) ||
+    !!(block.css && block.css.trim()) ||
+    !!(block.js && block.js.trim());
+
+  if (!hasContent) {
+    if (mode === "public") return null;
+    return (
+      <div
+        className="rounded-md border border-dashed p-6 text-center text-xs text-muted-foreground"
+        data-builder-only="true"
+      >
+        <div className="font-medium text-foreground">Custom Code block</div>
+        <div className="mt-1">Insert HTML, an embed, or pick a preset from the right panel.</div>
+      </div>
+    );
+  }
 
   // Fetch workspace-level JS toggle once (public — the sanitizer strips
   // <script> unless the workspace has explicitly opted-in).
