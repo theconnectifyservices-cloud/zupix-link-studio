@@ -985,13 +985,27 @@ function VideoRender({ block }: { block: VideoBlock }) {
     );
   }
   if (block.provider === "mp4") {
+    const wantAutoplay = block.autoplay !== false;
+    if (wantAutoplay) {
+      return (
+        <AutoplayVideo
+          src={block.url}
+          poster={block.thumbnailUrl}
+          loop={block.loop !== false}
+          controls
+          objectFit="contain"
+          className={cn("aspect-video w-full bg-black", roundedCls)}
+        />
+      );
+    }
     return (
       <video
         src={block.url}
         controls
         muted={block.muted}
         loop={block.loop}
-        autoPlay={block.autoplay}
+        playsInline
+        preload="metadata"
         poster={block.thumbnailUrl}
         className={cn("aspect-video w-full bg-black", roundedCls)}
       />
