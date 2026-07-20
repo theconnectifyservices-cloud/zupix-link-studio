@@ -9,7 +9,12 @@ const bioQuery = (slug: string) =>
   queryOptions({
     queryKey: ["public-bio", slug],
     queryFn: () => fetchPublicBioPage(slug),
-    staleTime: 30_000,
+    // Always refetch so a freshly published change appears immediately on the
+    // live URL — no stale window between publish and visible update.
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
 export const Route = createFileRoute("/$slug")({
