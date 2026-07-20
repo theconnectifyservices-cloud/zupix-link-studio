@@ -119,13 +119,35 @@ function PublishDialogBody({
   const canPublish = validation.ok;
 
   const publishMut = useMutation({
-    mutationFn: (note?: string) => publishPage(pageId, { content, note }),
-    onSuccess: () => {
-      toast.success("Published! Live now.");
+    mutationFn: async (note?: string) => {
+      // Persist the current draft first so `content` and `published_content`
+      // stay identical even if the last autosave hadn't landed yet.
+      const { saveBuilderContent } = await import("@/features/builder/api");
+      try {
+        await saveBuilderContent(pageId, content);
+      } catch {
+        /* non-fatal — publishPage below also writes content */
+      }
+      return publishPage(pageId, { content, note });
+    },
+    onSuccess: (res) => {
+      const liveUrl = `${window.location.origin}/${state?.slug ?? ""}`;
+      toast.success("Published — live now", {
+        description: `Updated ${new Date(res.publishedAt).toLocaleString()}`,
+        action: {
+          label: "Open live",
+          onClick: () => window.open(liveUrl, "_blank", "noopener,noreferrer"),
+        },
+      });
       qc.invalidateQueries({ queryKey: ["publish-state", pageId] });
       qc.invalidateQueries({ queryKey: ["publish-versions", pageId] });
       qc.invalidateQueries({ queryKey: ["publish-events", pageId] });
       qc.invalidateQueries({ queryKey: ["bio-pages"] });
+      // Bust the public renderer cache so the live URL shows the new version.
+      if (state?.slug) {
+        qc.removeQueries({ queryKey: ["public-bio", state.slug] });
+        qc.invalidateQueries({ queryKey: ["public-bio", state.slug] });
+      }
     },
     onError: (e: Error) => toast.error(e.message || "Publish failed"),
   });
@@ -223,20 +245,39 @@ const statusStyles: Record<PublishState["status"], { label: string; cls: string 
 
 function StatusCard({ state }: { state: PublishState }) {
   const s = statusStyles[state.status];
+  const liveUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${state.slug}`;
+  const publishedAt = state.published_at ? new Date(state.published_at) : null;
   return (
     <div className="rounded-lg border p-4">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
             <Badge className={cn("border-0", s.cls)}>{s.label}</Badge>
             <span className="text-sm font-medium">@{state.slug}</span>
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {state.published_at
-              ? `Live since ${new Date(state.published_at).toLocaleString()}`
-              : "Not yet published"}
-          </p>
+          {publishedAt ? (
+            <div className="mt-1 space-y-0.5 text-xs text-muted-foreground">
+              <div>
+                <span className="font-medium text-foreground">Last published:</span>{" "}
+                {formatDistanceToNow(publishedAt, { addSuffix: true })}
+              </div>
+              <div className="text-[11px] opacity-80">{publishedAt.toLocaleString()}</div>
+            </div>
+          ) : (
+            <p className="mt-1 text-xs text-muted-foreground">Not yet published</p>
+          )}
         </div>
+        {state.published_at && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5"
+            onClick={() => window.open(liveUrl, "_blank", "noopener,noreferrer")}
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            Open live
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -172,9 +172,12 @@ export async function publishPage(pageId: string, opts: PublishOptions) {
     isPublish: true,
   });
   const now = new Date().toISOString();
+  // Sync draft + published so the Builder and the live site stay in lockstep.
   const { error } = await supabase
     .from(PAGES)
     .update({
+      content: opts.content,
+      last_saved_at: now,
       published_content: opts.content,
       published_at: now,
       published_version_id: version.id,
@@ -186,7 +189,7 @@ export async function publishPage(pageId: string, opts: PublishOptions) {
   await logEvent(pageId, state.workspace_id, isFirst ? "published" : "updated", version.id, {
     note: opts.note ?? null,
   });
-  return version;
+  return { version, publishedAt: now };
 }
 
 export async function unpublishPage(pageId: string) {
