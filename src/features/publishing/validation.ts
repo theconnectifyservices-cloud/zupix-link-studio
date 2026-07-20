@@ -37,6 +37,7 @@ const SUPPORTED_TYPES: Block["type"][] = [
   "contact",
   "buttonGroup",
   "embed",
+  "customCode",
 ];
 
 const URL_LIKE =
