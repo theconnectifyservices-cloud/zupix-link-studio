@@ -106,16 +106,18 @@ export function PublicBioRenderer({
             Nothing here yet.
           </div>
         ) : (
-          blocks.map((b, i) => (
-            <BlockRenderer
-              key={b.id}
-              block={b}
-              index={i}
-              viewport={viewport}
-              staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
-              reduceMotion={!!motion.reduce}
-            />
-          ))
+          <RendererModeProvider mode="public">
+            {blocks.map((b, i) => (
+              <BlockRenderer
+                key={b.id}
+                block={b}
+                index={i}
+                viewport={viewport}
+                staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
+                reduceMotion={!!motion.reduce}
+              />
+            ))}
+          </RendererModeProvider>
         )}
       </div>
     </div>
