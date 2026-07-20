@@ -4,6 +4,7 @@ import type {
   BlockSettings,
   ContactBlock,
   CountdownBlock,
+  CustomCodeBlock,
   EmbedBlock,
   EntranceAnim,
   FaqBlock,
@@ -20,6 +21,7 @@ import type {
   ButtonBlock,
   Viewport,
 } from "./types";
+import { buildSrcDoc } from "@/features/custom-code/sanitize";
 import { resolveHeroEffects } from "./effects/hero-effects";
 import { getIcon as getButtonIcon } from "./button-icons";
 import { cn } from "@/lib/utils";
@@ -472,6 +474,9 @@ function renderInner(block: Block, reduceMotion: boolean) {
       return <ContactRender block={block} />;
     case "embed":
       return <EmbedRender block={block} />;
+    case "customCode":
+      return <CustomCodeRender block={block} />;
+
 
     default:
       return (
