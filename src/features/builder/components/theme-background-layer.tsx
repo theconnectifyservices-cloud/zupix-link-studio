@@ -14,6 +14,7 @@ import {
   type PageTheme,
 } from "../theme";
 import { buildEmbed } from "../video-source";
+import { AutoplayVideo } from "./autoplay-video";
 
 export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
   const bg = theme.background ?? DEFAULT_BACKGROUND;
