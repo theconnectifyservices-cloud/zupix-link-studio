@@ -23,6 +23,7 @@ export type BlockType =
   | "contact"
   | "buttonGroup"
   | "embed"
+  | "customCode"
   // reserved for later phases
   | "html"
   | "form"
@@ -575,6 +576,26 @@ export interface EmbedBlock extends BaseBlock {
   height?: number; // px
 }
 
+// ── Custom Code (HTML / CSS / optional JS) ───────────────────────────────
+export interface CustomCodeBlock extends BaseBlock {
+  type: "customCode";
+  title?: string;
+  description?: string;
+  html?: string;
+  css?: string;
+  js?: string;
+  /** Per-block toggle. Runs only if workspace also enables custom JS. */
+  jsEnabled?: boolean;
+  /** Key of the preset last inserted, for analytics/UX. */
+  presetKey?: string;
+  /** Origin library entry, when inserted from HTML Library. */
+  sourceLibraryId?: string;
+  containerWidth?: "narrow" | "full" | "wide";
+  minHeight?: number;
+  borderRadius?: number;
+  lazy?: boolean;
+}
+
 export interface GenericBlock extends BaseBlock {
   type: Exclude<
     BlockType,
@@ -597,6 +618,7 @@ export interface GenericBlock extends BaseBlock {
     | "contact"
     | "buttonGroup"
     | "embed"
+    | "customCode"
   >;
   [key: string]: unknown;
 }
@@ -621,6 +643,7 @@ export type Block =
   | ContactBlock
   | ButtonGroupBlock
   | EmbedBlock
+  | CustomCodeBlock
   | GenericBlock;
 
 import type { PageTheme } from "./theme";

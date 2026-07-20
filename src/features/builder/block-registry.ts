@@ -332,6 +332,27 @@ export const BLOCK_DEFS: BlockDef[] = [
       height: 232,
     }),
   },
+  {
+    type: "customCode",
+    label: "Custom Code",
+    description: "HTML, CSS & embeds",
+    icon: Code,
+    group: "advanced",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "customCode",
+      title: "Custom Code",
+      html: '<div style="padding:24px;text-align:center;font-family:system-ui;border:1px dashed #ccc;border-radius:12px">\n  <b>Custom Code block</b>\n  <p style="margin:8px 0 0;color:#666">Insert HTML, an embed, or pick a preset.</p>\n</div>',
+      css: "",
+      js: "",
+      jsEnabled: false,
+      containerWidth: "full",
+      minHeight: 120,
+      borderRadius: 0,
+      lazy: true,
+    }),
+  },
   // Reserved / later phases
   {
     type: "html",
@@ -371,8 +392,7 @@ export const BLOCK_DEFS: BlockDef[] = [
   },
 ];
 
-// keep unused imports referenced to satisfy tree-shaking noise
-void Code;
+// (Code icon now used by customCode block above)
 
 export function getBlockDef(type: BlockType): BlockDef | undefined {
   return BLOCK_DEFS.find((d) => d.type === type);
