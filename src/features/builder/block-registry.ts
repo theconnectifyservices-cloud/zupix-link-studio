@@ -343,7 +343,7 @@ export const BLOCK_DEFS: BlockDef[] = [
       id: newId(),
       type: "customCode",
       title: "Custom Code",
-      html: '<div style="padding:24px;text-align:center;font-family:system-ui;border:1px dashed #ccc;border-radius:12px">\n  <b>Custom Code block</b>\n  <p style="margin:8px 0 0;color:#666">Insert HTML, an embed, or pick a preset.</p>\n</div>',
+      html: "",
       css: "",
       js: "",
       jsEnabled: false,
