@@ -27,6 +27,7 @@ import { resolveHeroEffects } from "./effects/hero-effects";
 import { getIcon as getButtonIcon } from "./button-icons";
 import { cn } from "@/lib/utils";
 import { buildEmbed } from "./video-source";
+import { AutoplayVideo } from "./components/autoplay-video";
 import {
   Twitter,
   Instagram,
