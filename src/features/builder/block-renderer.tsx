@@ -27,6 +27,7 @@ import { resolveHeroEffects } from "./effects/hero-effects";
 import { getIcon as getButtonIcon } from "./button-icons";
 import { cn } from "@/lib/utils";
 import { buildEmbed } from "./video-source";
+import { AutoplayVideo } from "./components/autoplay-video";
 import {
   Twitter,
   Instagram,
@@ -984,22 +985,44 @@ function VideoRender({ block }: { block: VideoBlock }) {
     );
   }
   if (block.provider === "mp4") {
+    const wantAutoplay = block.autoplay !== false;
+    if (wantAutoplay) {
+      return (
+        <AutoplayVideo
+          src={block.url}
+          poster={block.thumbnailUrl}
+          loop={block.loop !== false}
+          controls
+          objectFit="contain"
+          className={cn("aspect-video w-full bg-black", roundedCls)}
+        />
+      );
+    }
     return (
       <video
         src={block.url}
         controls
         muted={block.muted}
         loop={block.loop}
-        autoPlay={block.autoplay}
+        playsInline
+        preload="metadata"
         poster={block.thumbnailUrl}
         className={cn("aspect-video w-full bg-black", roundedCls)}
       />
     );
   }
   const params = new URLSearchParams();
-  if (block.autoplay) params.set("autoplay", "1");
-  if (block.muted) params.set("mute", "1");
-  if (block.loop) params.set("loop", "1");
+  const wantAutoplay = block.autoplay !== false;
+  if (wantAutoplay) {
+    params.set("autoplay", "1");
+    // Autoplay requires muted on mobile browsers.
+    params.set("mute", "1");
+  } else if (block.muted) {
+    params.set("mute", "1");
+  }
+  params.set("playsinline", "1");
+  params.set("rel", "0");
+  params.set("modestbranding", "1");
   let src = "";
   if (block.provider === "youtube") {
     const id = extractYouTubeId(block.url);
@@ -1009,6 +1032,10 @@ function VideoRender({ block }: { block: VideoBlock }) {
           Invalid YouTube URL
         </div>
       );
+    if (block.loop) {
+      params.set("loop", "1");
+      params.set("playlist", id);
+    }
     src = `https://www.youtube.com/embed/${id}?${params.toString()}`;
   } else {
     const id = extractVimeoId(block.url);
@@ -1018,6 +1045,7 @@ function VideoRender({ block }: { block: VideoBlock }) {
           Invalid Vimeo URL
         </div>
       );
+    if (block.loop) params.set("loop", "1");
     src = `https://player.vimeo.com/video/${id}?${params.toString()}`;
   }
   return (
@@ -1025,7 +1053,7 @@ function VideoRender({ block }: { block: VideoBlock }) {
       <iframe
         src={src}
         className="h-full w-full"
-        allow="autoplay; encrypted-media; picture-in-picture"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
         allowFullScreen
         title="Video"
       />
@@ -1705,15 +1733,17 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
         if (!embed) return null;
         if (embed.kind === "video") {
           return (
-            <video
-              src={embed.src}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            <div
+              className="pointer-events-none absolute inset-0 overflow-hidden"
               style={{ filter: bgMediaFilter }}
-            />
+            >
+              <AutoplayVideo
+                src={embed.src}
+                poster={block.bgImageUrl}
+                background
+                className="h-full w-full"
+              />
+            </div>
           );
         }
         return (
@@ -1724,7 +1754,8 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
             <iframe
               src={embed.src}
               title="Background video"
-              allow="autoplay; encrypted-media; picture-in-picture"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
               className="absolute left-1/2 top-1/2 h-[110%] w-[110%] -translate-x-1/2 -translate-y-1/2 border-0"
               style={{ minWidth: "177.78vh", minHeight: "56.25vw" }}
             />
