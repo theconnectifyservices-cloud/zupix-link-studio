@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { ThemeBackgroundLayer } from "@/features/builder/components/theme-background-layer";
 import { BlockRenderer } from "@/features/builder/block-renderer";
+import { RendererModeProvider } from "@/features/builder/renderer-mode";
 import {
   DEFAULT_MOTION,
   DEFAULT_THEME,
