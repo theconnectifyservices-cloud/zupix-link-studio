@@ -27,6 +27,7 @@ function Index() {
   return (
     <PublicLayout>
       <LandingHero />
+      <LandingShowcase />
     </PublicLayout>
   );
 }
