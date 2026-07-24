@@ -733,6 +733,24 @@ function useMagnet<T extends HTMLElement>(strength = 14) {
 /* ────────────────────────────────────────────────────────── phone mock */
 
 function PhoneMock({ demo }: { demo: Demo }) {
+  // rotating in-screen live activity toast
+  const toasts = useMemo(
+    () => [
+      { icon: IndianRupee, tone: "#22c55e", title: `UPI ₹${(Math.floor(Math.random() * 40) + 4) * 100} received`, sub: demo.upi },
+      { icon: MessageCircle, tone: "#22d3ee", title: "New WhatsApp order", sub: `${demo.name} · 2 items` },
+      { icon: Eye, tone: "#a78bfa", title: "+128 profile views", sub: "last 5 minutes" },
+      { icon: BellRing, tone: "#f59e0b", title: "New booking", sub: demo.actions[0]?.sub ?? "Today" },
+      { icon: Heart, tone: "#e84393", title: "New follower", sub: demo.handle },
+    ],
+    [demo],
+  );
+  const [tIdx, setTIdx] = useState(0);
+  useEffect(() => {
+    const t = window.setInterval(() => setTIdx((i) => (i + 1) % toasts.length), 2200);
+    return () => window.clearInterval(t);
+  }, [toasts.length]);
+  const toast = toasts[tIdx];
+  const ToastIcon = toast.icon;
 
   return (
     <div className="relative h-full w-full overflow-hidden" style={{ background: demo.gradient }}>
@@ -740,89 +758,259 @@ function PhoneMock({ demo }: { demo: Demo }) {
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
         style={{
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px)",
           backgroundSize: "3px 3px",
         }}
       />
-      <div className="relative flex h-full flex-col px-5 pb-6 pt-14 text-white">
-        {/* Header row */}
-        <div className="mb-4 flex items-center justify-between text-[10px] font-medium text-white/70">
-          <span>zupix.link{demo.handle}</span>
-          <span className="flex items-center gap-1 rounded-full bg-white/15 px-2 py-[3px] backdrop-blur">
-            <BadgeCheck className="h-3 w-3" /> Verified
-          </span>
-        </div>
 
-        {/* Cover */}
-        <div className="mb-3 h-24 w-full overflow-hidden rounded-2xl border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,.15)]">
-          <img
-            src={demo.cover}
-            alt=""
-            className="h-full w-full object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
+      {/* Status bar */}
+      <div className="absolute inset-x-0 top-2.5 z-20 flex items-center justify-between px-6 text-[10px] font-semibold text-white/85">
+        <span>9:41</span>
+        <span className="flex items-center gap-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-white/80" />
+          <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
+          <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+          <span className="ml-1 rounded-sm border border-white/60 px-1 text-[8px] leading-[10px]">92</span>
+        </span>
+      </div>
 
-        {/* Avatar */}
-        <div className="mb-3 flex items-center gap-3">
-          <div className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,.35)]">
-            <img
-              src={demo.avatar}
-              alt={demo.name}
-              className="h-full w-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+      {/* Scrollable content */}
+      <div
+        className="relative h-full overflow-y-auto pb-6 pt-11 text-white [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        style={{ animation: "zx-feed-scroll 22s ease-in-out infinite" }}
+      >
+        <div className="px-4">
+          {/* URL bar */}
+          <div className="mb-3 flex items-center justify-between text-[9.5px] font-medium text-white/70">
+            <span className="rounded-full bg-black/30 px-2 py-[3px] backdrop-blur">{demo.domain}</span>
+            <span className="rounded-full bg-white/15 px-2 py-[3px] backdrop-blur">Share</span>
           </div>
-          <div className="min-w-0">
-            <div className="truncate text-[15px] font-semibold leading-tight">{demo.name}</div>
-            <div className="truncate text-[11px] text-white/70">{demo.tagline}</div>
+
+          {/* Cover */}
+          <div className="relative mb-0 h-24 w-full overflow-hidden rounded-t-2xl border border-white/15">
+            <img src={demo.cover} alt="" className="h-full w-full object-cover" loading="eager" decoding="async" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
-        </div>
 
-
-        {/* Chips */}
-        <div className="mb-3 flex flex-wrap gap-1.5">
-          {demo.chips.map((c) => (
-            <span
-              key={c}
-              className="rounded-full border border-white/25 bg-white/10 px-2 py-[3px] text-[10px] font-medium backdrop-blur"
-            >
-              {c}
-            </span>
-          ))}
-        </div>
-
-        {/* Featured */}
-        <div className="mb-3 rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur-md">
-          <div className="text-[12px] font-semibold">{demo.featured.title}</div>
-          <div className="mt-0.5 text-[10.5px] text-white/70">{demo.featured.meta}</div>
-        </div>
-
-        {/* Actions */}
-        <div className="space-y-2">
-          {demo.actions.map((a) => (
-            <div
-              key={a.label}
-              className="flex items-center justify-between rounded-2xl border border-white/20 bg-white/12 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,.25)] backdrop-blur"
-            >
-              <div className="min-w-0">
-                <div className="truncate text-[12px] font-semibold">{a.label}</div>
-                <div className="truncate text-[10px] text-white/70">{a.sub}</div>
-              </div>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-white/80" />
+          {/* Avatar + verified pulse */}
+          <div className="relative -mt-8 mb-3 flex items-end gap-3 px-1">
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border-2 border-white/80 bg-white shadow-[0_10px_30px_-8px_rgba(0,0,0,.5)]">
+              <img src={demo.avatar} alt={demo.name} className="h-full w-full object-cover" loading="eager" decoding="async" />
             </div>
-          ))}
-        </div>
-
-        {/* Pay */}
-        <div className="mt-auto flex items-center justify-between rounded-2xl bg-black/40 px-3 py-2 backdrop-blur">
-          <div className="flex items-center gap-2 text-[11px] font-medium">
-            <IndianRupee className="h-3.5 w-3.5" /> UPI · Cards · Wallets
+            <div className="relative mt-1 min-w-0 flex-1 pb-1">
+              <div className="flex items-center gap-1">
+                <span className="truncate text-[14px] font-semibold leading-tight">{demo.name}</span>
+                <span className="relative inline-flex h-3.5 w-3.5 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22d3ee] opacity-60" />
+                  <BadgeCheck className="relative h-3.5 w-3.5 text-[#22d3ee]" fill="currentColor" />
+                </span>
+              </div>
+              <div className="truncate text-[10.5px] text-white/75">{demo.tagline}</div>
+              <div className="mt-0.5 flex items-center gap-2 text-[10px] text-white/70">
+                <span className="flex items-center gap-0.5">
+                  <Star className="h-2.5 w-2.5 fill-[#fbbf24] text-[#fbbf24]" /> {demo.rating}
+                </span>
+                <span>· {demo.reviewsCount.toLocaleString("en-IN")} reviews</span>
+              </div>
+            </div>
           </div>
-          <div className="text-[10px] text-white/60">Instant payout</div>
+
+          {/* Description */}
+          <p className="mb-3 text-[10.5px] leading-snug text-white/75">{demo.description}</p>
+
+          {/* Hours */}
+          <div className="mb-3 flex items-center gap-1.5 text-[10px] text-white/80">
+            <Clock className="h-3 w-3 text-[#22c55e]" />
+            <span className="font-medium">{demo.hours}</span>
+          </div>
+
+          {/* Action rail: WA / Call / Directions / UPI */}
+          <div className="mb-3 grid grid-cols-4 gap-1.5">
+            {[
+              { icon: MessageCircle, label: "WhatsApp", tone: "#22c55e" },
+              { icon: Phone, label: "Call", tone: "#38bdf8" },
+              { icon: MapPin, label: "Directions", tone: "#f472b6" },
+              { icon: IndianRupee, label: "Pay UPI", tone: "#f59e0b" },
+            ].map((a) => {
+              const AI = a.icon;
+              return (
+                <button
+                  key={a.label}
+                  type="button"
+                  className="flex flex-col items-center gap-1 rounded-xl border border-white/15 bg-white/10 py-2 backdrop-blur"
+                >
+                  <span
+                    className="grid h-6 w-6 place-items-center rounded-lg"
+                    style={{ background: `${a.tone}30`, color: a.tone }}
+                  >
+                    <AI className="h-3 w-3" />
+                  </span>
+                  <span className="text-[8.5px] font-semibold">{a.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Chips */}
+          <div className="mb-3 flex flex-wrap gap-1">
+            {demo.chips.map((c) => (
+              <span
+                key={c}
+                className="rounded-full border border-white/25 bg-white/10 px-2 py-[2px] text-[9.5px] font-medium backdrop-blur"
+              >
+                {c}
+              </span>
+            ))}
+          </div>
+
+          {/* Featured */}
+          <div className="mb-3 overflow-hidden rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md">
+            <div className="flex items-center gap-2 p-2.5">
+              <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg">
+                <img src={demo.gallery[0] ?? demo.cover} alt="" className="h-full w-full object-cover" loading="lazy" />
+              </div>
+              <div className="min-w-0">
+                <div className="truncate text-[11px] font-semibold">{demo.featured.title}</div>
+                <div className="truncate text-[9.5px] text-white/70">{demo.featured.meta}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="mb-3 space-y-1.5">
+            {demo.actions.map((a) => (
+              <div
+                key={a.label}
+                className="flex items-center justify-between rounded-2xl border border-white/20 bg-white/12 px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,.25)] backdrop-blur"
+              >
+                <div className="min-w-0">
+                  <div className="truncate text-[11px] font-semibold">{a.label}</div>
+                  <div className="truncate text-[9.5px] text-white/70">{a.sub}</div>
+                </div>
+                <ArrowRight className="h-3 w-3 shrink-0 text-white/80" />
+              </div>
+            ))}
+          </div>
+
+          {/* Products / Services */}
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[9.5px] font-semibold uppercase tracking-wider text-white/60">Shop</span>
+            <span className="text-[9px] text-white/50">See all</span>
+          </div>
+          <div className="mb-3 grid grid-cols-2 gap-1.5">
+            {demo.products.slice(0, 4).map((p) => (
+              <div key={p.name} className="overflow-hidden rounded-xl border border-white/15 bg-white/10 backdrop-blur">
+                <div className="aspect-square w-full overflow-hidden">
+                  <img src={p.image} alt={p.name} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                </div>
+                <div className="p-1.5">
+                  <div className="truncate text-[9.5px] font-semibold">{p.name}</div>
+                  <div className="truncate text-[9px] text-white/70">{p.price}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Services */}
+          <div className="mb-2 text-[9.5px] font-semibold uppercase tracking-wider text-white/60">Services</div>
+          <div className="mb-3 flex flex-wrap gap-1">
+            {demo.services.map((s) => (
+              <span
+                key={s}
+                className="rounded-full border border-white/15 bg-white/[0.08] px-2 py-[2px] text-[9.5px] text-white/85"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+
+          {/* Gallery */}
+          <div className="mb-2 text-[9.5px] font-semibold uppercase tracking-wider text-white/60">Gallery</div>
+          <div className="mb-3 grid grid-cols-3 gap-1">
+            {demo.gallery.map((g, i) => (
+              <div key={i} className="aspect-square overflow-hidden rounded-lg border border-white/15">
+                <img src={g} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+              </div>
+            ))}
+          </div>
+
+          {/* Reviews */}
+          <div className="mb-2 text-[9.5px] font-semibold uppercase tracking-wider text-white/60">Reviews</div>
+          <div className="mb-3 space-y-1.5">
+            {demo.reviews.slice(0, 2).map((r) => (
+              <div
+                key={r.name}
+                className="flex gap-2 rounded-2xl border border-white/15 bg-white/[0.08] p-2 backdrop-blur"
+              >
+                <img
+                  src={r.photo}
+                  alt={r.name}
+                  className="h-7 w-7 shrink-0 rounded-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1 text-[9.5px] font-semibold">
+                    {r.name}
+                    <span className="flex">
+                      {Array.from({ length: r.stars }).map((_, i) => (
+                        <Star key={i} className="h-2 w-2 fill-[#fbbf24] text-[#fbbf24]" />
+                      ))}
+                    </span>
+                  </div>
+                  <div className="line-clamp-2 text-[9.5px] leading-snug text-white/75">{r.text}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Socials */}
+          <div className="mb-3 flex items-center justify-center gap-2">
+            {demo.socials.map((s) => {
+              const SI = s.icon;
+              return (
+                <span
+                  key={s.handle}
+                  className="grid h-7 w-7 place-items-center rounded-full border border-white/20 bg-white/10 backdrop-blur"
+                >
+                  <SI className="h-3.5 w-3.5" />
+                </span>
+              );
+            })}
+          </div>
+
+          {/* Pay footer */}
+          <div className="flex items-center justify-between rounded-2xl bg-black/40 px-2.5 py-2 backdrop-blur">
+            <div className="flex items-center gap-1.5 text-[10px] font-medium">
+              <IndianRupee className="h-3 w-3" /> UPI · Cards · Wallets
+            </div>
+            <div className="text-[9px] text-white/60">Instant payout</div>
+          </div>
+
+          {/* Domain footer */}
+          <div className="mt-2 text-center text-[9px] text-white/50">
+            {demo.domain} · powered by ZUPIX
+          </div>
+        </div>
+      </div>
+
+      {/* Live activity toast overlay */}
+      <div className="pointer-events-none absolute inset-x-3 top-11 z-30">
+        <div
+          key={`${demo.id}-${tIdx}`}
+          className="flex items-center gap-2 rounded-2xl border border-white/25 bg-black/55 px-2.5 py-2 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)] backdrop-blur-xl"
+          style={{ animation: "zx-toast-in .5s cubic-bezier(.2,.8,.2,1) both" }}
+        >
+          <span
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-lg"
+            style={{ background: `${toast.tone}30`, color: toast.tone }}
+          >
+            <ToastIcon className="h-3.5 w-3.5" />
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-[10.5px] font-semibold text-white">{toast.title}</span>
+            <span className="block truncate text-[9.5px] text-white/70">{toast.sub}</span>
+          </span>
         </div>
       </div>
     </div>
