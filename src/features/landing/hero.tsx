@@ -655,38 +655,42 @@ export function LandingHero() {
           </div>
 
           {/* Phone cell */}
-          <div className="relative overflow-hidden rounded-[36px] border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-6 backdrop-blur-md md:col-span-4 md:row-span-6">
-            <div
-              className="pointer-events-none absolute inset-0 opacity-70"
-              style={{
-                background:
-                  "radial-gradient(120% 60% at 50% 0%, rgba(255,107,53,.25), transparent 60%)",
-              }}
-            />
-            <div className="relative mx-auto flex h-full items-center justify-center">
+          <div className="relative rounded-[36px] border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-6 backdrop-blur-md md:col-span-4 md:row-span-6">
+            {/* Inner clipped surface holds the phone + glow so floating cards can extend beyond */}
+            <div className="relative h-full overflow-hidden rounded-[30px]">
               <div
-                className="relative h-[560px] w-[270px] rounded-[52px] border-[10px] border-[#1a1a22] bg-black shadow-[0_60px_120px_-30px_rgba(0,0,0,0.8),inset_0_0_0_1px_rgba(255,255,255,0.06)]"
-                style={phoneWrapStyle}
-              >
-                {/* side buttons */}
-                <span className="absolute -left-[13px] top-24 h-8 w-[3px] rounded-l bg-[#2a2a34]" />
-                <span className="absolute -left-[13px] top-36 h-12 w-[3px] rounded-l bg-[#2a2a34]" />
-                <span className="absolute -left-[13px] top-52 h-12 w-[3px] rounded-l bg-[#2a2a34]" />
-                <span className="absolute -right-[13px] top-32 h-16 w-[3px] rounded-r bg-[#2a2a34]" />
-                {/* dynamic island */}
-                <span className="absolute left-1/2 top-2.5 z-30 h-7 w-24 -translate-x-1/2 rounded-full bg-black shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]" />
-                {/* screen */}
-                <div className="absolute inset-0 overflow-hidden rounded-[42px]">
-                  <div
-                    key={demo.id}
-                    className="absolute inset-0"
-                    style={{ animation: "zx-screen-in .7s cubic-bezier(.2,.8,.2,1) both" }}
-                  >
-                    <PhoneMock demo={demo} />
+                className="pointer-events-none absolute inset-0 opacity-70"
+                style={{
+                  background:
+                    "radial-gradient(120% 60% at 50% 0%, rgba(255,107,53,.25), transparent 60%)",
+                }}
+              />
+              <div className="relative mx-auto flex h-full items-center justify-center">
+                <div
+                  className="relative h-[560px] w-[270px] rounded-[52px] border-[10px] border-[#1a1a22] bg-black shadow-[0_60px_120px_-30px_rgba(0,0,0,0.8),inset_0_0_0_1px_rgba(255,255,255,0.06)]"
+                  style={phoneWrapStyle}
+                >
+                  {/* side buttons */}
+                  <span className="absolute -left-[13px] top-24 h-8 w-[3px] rounded-l bg-[#2a2a34]" />
+                  <span className="absolute -left-[13px] top-36 h-12 w-[3px] rounded-l bg-[#2a2a34]" />
+                  <span className="absolute -left-[13px] top-52 h-12 w-[3px] rounded-l bg-[#2a2a34]" />
+                  <span className="absolute -right-[13px] top-32 h-16 w-[3px] rounded-r bg-[#2a2a34]" />
+                  {/* dynamic island */}
+                  <span className="absolute left-1/2 top-2.5 z-30 h-7 w-24 -translate-x-1/2 rounded-full bg-black shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]" />
+                  {/* screen */}
+                  <div className="absolute inset-0 overflow-hidden rounded-[42px]">
+                    <div
+                      key={demo.id}
+                      className="absolute inset-0"
+                      style={{ animation: "zx-screen-in .7s cubic-bezier(.2,.8,.2,1) both" }}
+                    >
+                      <PhoneMock demo={demo} />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
 
             {/* Floating cards around phone */}
             <FloatCard
