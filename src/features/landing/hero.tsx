@@ -31,11 +31,19 @@ import { PORTRAITS, COVERS } from "./demo-media";
 
 /* ────────────────────────────────────────────────────────── demo content */
 
+import { PRODUCTS } from "./demo-media";
+import { Instagram, Youtube, Facebook, Phone, MapPin, Clock, Heart } from "lucide-react";
+
+type Review = { name: string; photo: string; stars: number; text: string };
+type Product = { name: string; price: string; image: string };
+type Social = { icon: typeof Instagram; handle: string };
+
 type Demo = {
   id: string;
   name: string;
   handle: string;
   tagline: string;
+  description: string;
   gradient: string;
   accent: string;
   icon: typeof Gem;
@@ -44,8 +52,17 @@ type Demo = {
   featured: { title: string; meta: string };
   avatar: string;
   cover: string;
+  rating: number;
+  reviewsCount: number;
+  hours: string;
+  domain: string;
+  upi: string;
+  services: string[];
+  products: Product[];
+  gallery: string[];
+  reviews: Review[];
+  socials: Social[];
 };
-
 
 const DEMOS: Demo[] = [
   {
@@ -53,10 +70,11 @@ const DEMOS: Demo[] = [
     name: "Kalyan Heritage",
     handle: "@kalyanheritage",
     tagline: "Handcrafted 22K jewellery · Mumbai",
+    description: "Family-run bridal & everyday gold since 1974. BIS-hallmarked, lifetime buy-back, in-house designers.",
     gradient: "linear-gradient(160deg,#ff6b35 0%,#e84393 55%,#0b0b12 100%)",
     accent: "#ff6b35",
     icon: Gem,
-    chips: ["Bridal", "22K Gold", "Certified"],
+    chips: ["Bridal", "22K Gold", "BIS Hallmark"],
     actions: [
       { label: "Book a private viewing", sub: "Bandra flagship" },
       { label: "Shop bridal collection", sub: "New this week" },
@@ -64,12 +82,34 @@ const DEMOS: Demo[] = [
     featured: { title: "Diwali Edit ’26", meta: "Live drop · ₹48,900 onwards" },
     avatar: PORTRAITS.jewellerOwner,
     cover: COVERS.jewellery,
+    rating: 4.9, reviewsCount: 2148,
+    hours: "Open · 10 AM – 9 PM",
+    domain: "kalyan.link",
+    upi: "kalyan@hdfcbank",
+    services: ["Bridal consult", "Custom design", "Old-gold exchange", "Insurance"],
+    products: [
+      { name: "Polki choker", price: "₹1,84,000", image: PRODUCTS.jewellery },
+      { name: "Temple haaram", price: "₹96,500", image: PRODUCTS.fashion },
+      { name: "Kundan set", price: "₹1,24,000", image: PRODUCTS.jewellery },
+      { name: "Uncut studs", price: "₹42,900", image: PRODUCTS.fashion },
+    ],
+    gallery: [COVERS.jewellery, COVERS.fashion, PRODUCTS.jewellery],
+    reviews: [
+      { name: "Meera S.", photo: PORTRAITS.meera, stars: 5, text: "Bridal set was breathtaking. Fittings were perfect." },
+      { name: "Ayesha K.", photo: PORTRAITS.ayesha, stars: 5, text: "Genuine 22K, honest weight — trusted for years." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@kalyanheritage" },
+      { icon: Youtube, handle: "Kalyan Heritage" },
+      { icon: Facebook, handle: "kalyanheritage" },
+    ],
   },
   {
     id: "restaurant",
     name: "Bombay Canteen",
     handle: "@bombaycanteen",
     tagline: "Modern Indian · Kala Ghoda",
+    description: "Regional Indian plates reimagined with seasonal produce and small-batch spirits. Chef Thomas Zacharias.",
     gradient: "linear-gradient(160deg,#e84393 0%,#6c5ce7 60%,#0b0b12 100%)",
     accent: "#e84393",
     icon: Utensils,
@@ -81,12 +121,33 @@ const DEMOS: Demo[] = [
     featured: { title: "Monsoon tasting menu", meta: "7 courses · ₹2,400 pp" },
     avatar: PORTRAITS.chefRestaurant,
     cover: COVERS.restaurant,
+    rating: 4.8, reviewsCount: 3821,
+    hours: "Open · 12 PM – 1 AM",
+    domain: "bombaycanteen.in",
+    upi: "canteen@icici",
+    services: ["Reservations", "Private dining", "Curated tastings", "Corporate events"],
+    products: [
+      { name: "Monsoon thali", price: "₹1,150", image: PRODUCTS.food },
+      { name: "Kokum sour", price: "₹520", image: PRODUCTS.coffee },
+      { name: "Goan pulled pork", price: "₹780", image: PRODUCTS.food },
+      { name: "Ragi malpua", price: "₹360", image: PRODUCTS.food },
+    ],
+    gallery: [COVERS.restaurant, COVERS.cafe, PRODUCTS.food],
+    reviews: [
+      { name: "Rohan D.", photo: PORTRAITS.rohan, stars: 5, text: "The thali is a love letter to the coast. Service impeccable." },
+      { name: "Kavya M.", photo: PORTRAITS.kavya, stars: 5, text: "Best cocktails in Mumbai. Warli-inspired plates are unreal." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@bombaycanteen" },
+      { icon: Facebook, handle: "bombaycanteen" },
+    ],
   },
   {
     id: "doctor",
     name: "Dr. Ananya Rao",
     handle: "@dranyarao",
     tagline: "Dermatologist · MBBS, MD",
+    description: "Fortis-affiliated dermatologist & cosmetologist. Evidence-based skin, hair & laser care since 2011.",
     gradient: "linear-gradient(160deg,#6c5ce7 0%,#4f46e5 60%,#0b0b12 100%)",
     accent: "#a78bfa",
     icon: Stethoscope,
@@ -98,12 +159,31 @@ const DEMOS: Demo[] = [
     featured: { title: "Slot open · Sat 11:00", meta: "Bandra clinic · in-person" },
     avatar: PORTRAITS.drAnanya,
     cover: COVERS.doctor,
+    rating: 4.9, reviewsCount: 987,
+    hours: "Open · Mon–Sat · 10 AM – 7 PM",
+    domain: "drananyarao.in",
+    upi: "clinic@axis",
+    services: ["Acne care", "Laser hair removal", "PRP for hair", "Chemical peels", "Anti-ageing"],
+    products: [
+      { name: "Skin audit", price: "₹1,200", image: PRODUCTS.salonKit },
+      { name: "PRP session", price: "₹6,500", image: PRODUCTS.salonKit },
+    ],
+    gallery: [COVERS.doctor, COVERS.salon],
+    reviews: [
+      { name: "Nisha P.", photo: PORTRAITS.nisha, stars: 5, text: "Cleared my hormonal acne in 4 months. Honest, patient, kind." },
+      { name: "Arjun R.", photo: PORTRAITS.arjun, stars: 5, text: "Best hair PRP experience — visible results by session 3." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@dranyarao" },
+      { icon: Youtube, handle: "Dr. Ananya Rao" },
+    ],
   },
   {
     id: "school",
     name: "Sunrise Academy",
     handle: "@sunriseacademy",
     tagline: "CBSE · Pre-K to Grade 12",
+    description: "Inquiry-based CBSE school on 8 acres in Baner, Pune. STEM labs, performing arts, 1:14 teacher ratio.",
     gradient: "linear-gradient(160deg,#ff6b35 0%,#f59e0b 55%,#0b0b12 100%)",
     accent: "#f59e0b",
     icon: GraduationCap,
@@ -115,12 +195,107 @@ const DEMOS: Demo[] = [
     featured: { title: "Open house — Sunday", meta: "Pune campus · 10 AM" },
     avatar: PORTRAITS.teacher,
     cover: COVERS.school,
+    rating: 4.7, reviewsCount: 512,
+    hours: "Admissions office · 9 AM – 5 PM",
+    domain: "sunrise.edu.in",
+    upi: "fees@sunrise",
+    services: ["Pre-primary", "Primary", "Middle school", "Senior secondary", "Boarding"],
+    products: [
+      { name: "Admission form", price: "₹2,000", image: PRODUCTS.books },
+      { name: "Prospectus", price: "Free", image: PRODUCTS.books },
+    ],
+    gallery: [COVERS.school, COVERS.coaching],
+    reviews: [
+      { name: "Priya K.", photo: PORTRAITS.priya, stars: 5, text: "My daughter thrives here. Real focus on curiosity." },
+      { name: "Vikram S.", photo: PORTRAITS.vikram, stars: 5, text: "Excellent STEM program. Transparent leadership." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@sunriseacademy" },
+      { icon: Facebook, handle: "sunriseacademypune" },
+    ],
+  },
+  {
+    id: "salon",
+    name: "Studio Lakmé Pro",
+    handle: "@studiolakmepro",
+    tagline: "Luxury salon & spa · Juhu",
+    description: "Signature colour bar, keratin lab, and bridal suite. L’Oréal Colour Trophy 2025 finalists.",
+    gradient: "linear-gradient(160deg,#e84393 0%,#f472b6 55%,#0b0b12 100%)",
+    accent: "#f472b6",
+    icon: Sparkles,
+    chips: ["Bridal", "Colour bar", "Keratin"],
+    actions: [
+      { label: "Book an appointment", sub: "Today · 5 slots open" },
+      { label: "Bridal packages", sub: "From ₹18,000" },
+    ],
+    featured: { title: "Free consultation this week", meta: "Colour · cut · care" },
+    avatar: PORTRAITS.salonOwner,
+    cover: COVERS.salon,
+    rating: 4.8, reviewsCount: 1642,
+    hours: "Open · 10 AM – 9 PM · Daily",
+    domain: "studiolakme.pro",
+    upi: "studio@kotak",
+    services: ["Hair colour", "Keratin", "Bridal makeup", "Facials", "Manicure"],
+    products: [
+      { name: "Signature blowout", price: "₹2,400", image: PRODUCTS.salonKit },
+      { name: "Global colour", price: "₹7,800", image: PRODUCTS.salonKit },
+      { name: "Bridal trial", price: "₹8,500", image: PRODUCTS.fashion },
+      { name: "Keratin treatment", price: "₹12,000", image: PRODUCTS.salonKit },
+    ],
+    gallery: [COVERS.salon, COVERS.fashion, PRODUCTS.salonKit],
+    reviews: [
+      { name: "Anaya G.", photo: PORTRAITS.anaya, stars: 5, text: "Colour turned out exactly like the reference. Loved it." },
+      { name: "Kavya M.", photo: PORTRAITS.kavya, stars: 5, text: "Bridal team was calm and precise on the big day." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@studiolakmepro" },
+      { icon: Youtube, handle: "Studio Lakmé Pro" },
+    ],
+  },
+  {
+    id: "hotel",
+    name: "Taj Colaba Suites",
+    handle: "@tajcolabasuites",
+    tagline: "Heritage boutique hotel · South Mumbai",
+    description: "42 suites overlooking the Gateway. Butler service, rooftop infinity pool, Michelin-recommended dining.",
+    gradient: "linear-gradient(160deg,#0ea5e9 0%,#6c5ce7 55%,#0b0b12 100%)",
+    accent: "#38bdf8",
+    icon: Globe2,
+    chips: ["5★", "Heritage", "Sea-view"],
+    actions: [
+      { label: "Book a suite", sub: "From ₹18,900 / night" },
+      { label: "Weekend packages", sub: "Includes brunch" },
+    ],
+    featured: { title: "Monsoon escape · 20% off", meta: "Fri–Sun · 3-night stays" },
+    avatar: PORTRAITS.rehan,
+    cover: COVERS.hotel,
+    rating: 4.9, reviewsCount: 5218,
+    hours: "Reception · 24 × 7",
+    domain: "tajcolaba.in",
+    upi: "reservations@taj",
+    services: ["Butler", "Spa", "Airport pickup", "Fine dining", "Concierge"],
+    products: [
+      { name: "Sea-view suite", price: "₹18,900", image: PRODUCTS.travel },
+      { name: "Presidential", price: "₹94,000", image: PRODUCTS.travel },
+      { name: "Sunday brunch", price: "₹3,200", image: PRODUCTS.food },
+      { name: "Spa journey 90 min", price: "₹6,800", image: PRODUCTS.salonKit },
+    ],
+    gallery: [COVERS.hotel, COVERS.restaurant, PRODUCTS.travel],
+    reviews: [
+      { name: "Rajesh N.", photo: PORTRAITS.rajesh, stars: 5, text: "Old-world charm, faultless service. Butler remembered our tea." },
+      { name: "Farhan A.", photo: PORTRAITS.farhan, stars: 5, text: "The rooftop pool at sunset is a religious experience." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@tajcolabasuites" },
+      { icon: Facebook, handle: "tajcolabasuites" },
+    ],
   },
   {
     id: "realestate",
     name: "Lodha Skyline",
     handle: "@lodhaskyline",
     tagline: "Sea-view residences · Worli",
+    description: "RERA-registered 3 & 4 BHK sky-homes on Worli sea-face. 42nd–70th floor, ready to move.",
     gradient: "linear-gradient(160deg,#0ea5e9 0%,#6c5ce7 55%,#0b0b12 100%)",
     accent: "#38bdf8",
     icon: Hospital,
@@ -132,12 +307,107 @@ const DEMOS: Demo[] = [
     featured: { title: "₹6.8 Cr onwards", meta: "42nd floor sea-face" },
     avatar: PORTRAITS.realEstate,
     cover: COVERS.realestate,
+    rating: 4.6, reviewsCount: 214,
+    hours: "Sales gallery · 10 AM – 8 PM",
+    domain: "lodhaskyline.in",
+    upi: "sales@lodha",
+    services: ["Site visit", "Home loan desk", "Interior design", "NRI concierge"],
+    products: [
+      { name: "3 BHK Signature", price: "₹6.8 Cr", image: PRODUCTS.furniture },
+      { name: "4 BHK Sky Villa", price: "₹12.4 Cr", image: PRODUCTS.furniture },
+    ],
+    gallery: [COVERS.realestate, COVERS.furniture],
+    reviews: [
+      { name: "Karan T.", photo: PORTRAITS.karan, stars: 5, text: "Handover was on time, finishes are premium." },
+      { name: "Priya K.", photo: PORTRAITS.priyaKapoor, stars: 4, text: "Views are stunning. Amenities well maintained." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@lodhaskyline" },
+      { icon: Facebook, handle: "lodhaskyline" },
+    ],
+  },
+  {
+    id: "travel",
+    name: "Wanderer & Co.",
+    handle: "@wandererco",
+    tagline: "Curated small-group travel · India + Asia",
+    description: "Slow, small-group journeys across Ladakh, Kerala, Bhutan and Japan. Max 12 travellers per trip.",
+    gradient: "linear-gradient(160deg,#22d3ee 0%,#0ea5e9 55%,#0b0b12 100%)",
+    accent: "#22d3ee",
+    icon: Globe2,
+    chips: ["Small group", "IATA", "1000+ trips"],
+    actions: [
+      { label: "See ’26 departures", sub: "12 curated trips" },
+      { label: "Talk to a planner", sub: "Free 20-min call" },
+    ],
+    featured: { title: "Ladakh · Aug ’26", meta: "9 nights · 3 seats left" },
+    avatar: PORTRAITS.travelAgent,
+    cover: COVERS.travel,
+    rating: 4.9, reviewsCount: 1284,
+    hours: "Planners · 10 AM – 7 PM · Mon–Sat",
+    domain: "wanderer.co.in",
+    upi: "trips@wanderer",
+    services: ["Group tours", "Honeymoons", "Bespoke itineraries", "Visa assist"],
+    products: [
+      { name: "Ladakh · 9N", price: "₹1,48,000", image: PRODUCTS.travel },
+      { name: "Kerala · 7N", price: "₹92,000", image: PRODUCTS.travel },
+      { name: "Bhutan · 6N", price: "₹1,26,000", image: PRODUCTS.travel },
+      { name: "Japan · 12N", price: "₹3,84,000", image: PRODUCTS.travel },
+    ],
+    gallery: [COVERS.travel, COVERS.hotel, PRODUCTS.travel],
+    reviews: [
+      { name: "Aditya B.", photo: PORTRAITS.aditya, stars: 5, text: "Ladakh trip was perfectly paced. Local guides were brilliant." },
+      { name: "Meera S.", photo: PORTRAITS.meera, stars: 5, text: "The honeymoon in Bhutan blew us away. Every detail sorted." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@wandererco" },
+      { icon: Youtube, handle: "Wanderer & Co." },
+    ],
+  },
+  {
+    id: "gym",
+    name: "Iron Republic",
+    handle: "@ironrepublic",
+    tagline: "Strength gym & coaching · HSR Layout",
+    description: "10,000 sq ft strength & conditioning gym. Certified coaches, powerlifting rack row, recovery lounge.",
+    gradient: "linear-gradient(160deg,#f59e0b 0%,#ef4444 55%,#0b0b12 100%)",
+    accent: "#f59e0b",
+    icon: HardHat,
+    chips: ["24/7", "Powerlifting", "Recovery"],
+    actions: [
+      { label: "Book a free trial", sub: "60-min session" },
+      { label: "1-on-1 coaching", sub: "8-week programs" },
+    ],
+    featured: { title: "New: recovery lounge", meta: "Ice bath · sauna · Normatec" },
+    avatar: PORTRAITS.gymTrainer,
+    cover: COVERS.gym,
+    rating: 4.9, reviewsCount: 942,
+    hours: "Open · 24 × 7",
+    domain: "ironrepublic.fit",
+    upi: "iron@yesbank",
+    services: ["Strength", "Personal training", "Nutrition", "Physio", "Recovery"],
+    products: [
+      { name: "Monthly pass", price: "₹3,800", image: PRODUCTS.gymPass },
+      { name: "Quarterly", price: "₹9,600", image: PRODUCTS.gymPass },
+      { name: "1-on-1 · 12 sessions", price: "₹22,000", image: PRODUCTS.gymPass },
+      { name: "Nutrition + training", price: "₹28,000", image: PRODUCTS.gymPass },
+    ],
+    gallery: [COVERS.gym, PRODUCTS.gymPass],
+    reviews: [
+      { name: "Farhan A.", photo: PORTRAITS.farhan, stars: 5, text: "Squatted my first 100kg here. Coaches actually coach." },
+      { name: "Nisha P.", photo: PORTRAITS.nisha, stars: 5, text: "Cleanest strength gym in Bengaluru. No ego, all effort." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@ironrepublic" },
+      { icon: Youtube, handle: "Iron Republic" },
+    ],
   },
   {
     id: "cafe",
     name: "Blue Tokai",
     handle: "@bluetokaicafe",
     tagline: "Single-origin coffee · Roasted daily",
+    description: "India’s largest specialty coffee roaster. 38 cafés, farm-direct beans from Chikmagalur & Coorg.",
     gradient: "linear-gradient(160deg,#f59e0b 0%,#ff6b35 55%,#0b0b12 100%)",
     accent: "#f59e0b",
     icon: Sparkles,
@@ -149,12 +419,109 @@ const DEMOS: Demo[] = [
     featured: { title: "Ethiopia Guji · Natural", meta: "Notes: peach, jasmine, cocoa" },
     avatar: PORTRAITS.cafeOwner,
     cover: COVERS.cafe,
+    rating: 4.7, reviewsCount: 6218,
+    hours: "Open · 8 AM – 10 PM · Daily",
+    domain: "bluetokai.link",
+    upi: "cafe@bluetokai",
+    services: ["Dine-in", "Bean subscription", "Brewing workshops", "Wholesale"],
+    products: [
+      { name: "Ethiopia Guji · 250g", price: "₹850", image: PRODUCTS.coffee },
+      { name: "Attikan Estate · 500g", price: "₹1,240", image: PRODUCTS.coffee },
+      { name: "Cold brew (4-pack)", price: "₹640", image: PRODUCTS.coffee },
+      { name: "Filter kit", price: "₹2,900", image: PRODUCTS.coffee },
+    ],
+    gallery: [COVERS.cafe, COVERS.coffee, PRODUCTS.coffee],
+    reviews: [
+      { name: "Rohan D.", photo: PORTRAITS.rohan, stars: 5, text: "Guji is my daily driver — fruity, clean, consistent." },
+      { name: "Ayesha K.", photo: PORTRAITS.ayesha, stars: 5, text: "The Bandra café is my second office. Baristas are gold." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@bluetokaicoffee" },
+      { icon: Youtube, handle: "Blue Tokai Coffee" },
+    ],
+  },
+  {
+    id: "electronics",
+    name: "Croma Elite",
+    handle: "@cromaelite",
+    tagline: "Premium electronics & smart home · Delhi NCR",
+    description: "Authorised premium reseller for Apple, Sony, Dyson, Bose. 7-day price-match, in-home installation.",
+    gradient: "linear-gradient(160deg,#0ea5e9 0%,#22d3ee 55%,#0b0b12 100%)",
+    accent: "#22d3ee",
+    icon: Sparkles,
+    chips: ["Apple ASP", "Sony Elite", "Dyson"],
+    actions: [
+      { label: "Shop iPhone 16 Pro", sub: "In stock · 256GB" },
+      { label: "Book in-home demo", sub: "Sony · Bose · Dyson" },
+    ],
+    featured: { title: "iPhone 16 Pro · from ₹1,19,900", meta: "0% EMI · same-day delivery" },
+    avatar: PORTRAITS.vikram,
+    cover: COVERS.electronics,
+    rating: 4.8, reviewsCount: 3210,
+    hours: "Open · 10 AM – 10 PM",
+    domain: "cromaelite.in",
+    upi: "shop@croma",
+    services: ["Same-day delivery", "In-home install", "AppleCare+", "Trade-in"],
+    products: [
+      { name: "iPhone 16 Pro · 256GB", price: "₹1,34,900", image: PRODUCTS.electronics },
+      { name: "MacBook Air M3", price: "₹1,14,900", image: PRODUCTS.electronics },
+      { name: "Sony WH-1000XM6", price: "₹34,990", image: PRODUCTS.electronics },
+      { name: "Dyson V15 Detect", price: "₹66,900", image: PRODUCTS.electronics },
+    ],
+    gallery: [COVERS.electronics, PRODUCTS.electronics],
+    reviews: [
+      { name: "Karan T.", photo: PORTRAITS.karan, stars: 5, text: "Installed the Sony bar the same evening. Price-matched too." },
+      { name: "Arjun R.", photo: PORTRAITS.arjun, stars: 5, text: "iPhone activation and data transfer in 15 minutes. Smooth." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@cromaelite" },
+      { icon: Facebook, handle: "cromaelite" },
+    ],
+  },
+  {
+    id: "furniture",
+    name: "Studio Pepperfry",
+    handle: "@studiopepperfry",
+    tagline: "Design-led furniture · Bengaluru",
+    description: "Hand-finished solid wood furniture and modular systems. 15-year warranty, white-glove delivery.",
+    gradient: "linear-gradient(160deg,#a78bfa 0%,#6c5ce7 55%,#0b0b12 100%)",
+    accent: "#a78bfa",
+    icon: HardHat,
+    chips: ["Solid wood", "Custom size", "15 yr warranty"],
+    actions: [
+      { label: "Browse living room", sub: "148 pieces" },
+      { label: "Free design consult", sub: "Book a home visit" },
+    ],
+    featured: { title: "New: Kyoto collection", meta: "Sheesham · walnut finish" },
+    avatar: PORTRAITS.architect,
+    cover: COVERS.furniture,
+    rating: 4.6, reviewsCount: 1876,
+    hours: "Studio · 11 AM – 8 PM · Daily",
+    domain: "studiopepperfry.in",
+    upi: "shop@pepperfry",
+    services: ["Free design", "Custom sizing", "White-glove delivery", "Buyback"],
+    products: [
+      { name: "Kyoto 3-seater", price: "₹68,000", image: PRODUCTS.furniture },
+      { name: "Osaka bed · King", price: "₹94,500", image: PRODUCTS.furniture },
+      { name: "Zen dining · 6", price: "₹1,18,000", image: PRODUCTS.furniture },
+      { name: "Study desk", price: "₹32,900", image: PRODUCTS.furniture },
+    ],
+    gallery: [COVERS.furniture, PRODUCTS.furniture],
+    reviews: [
+      { name: "Ananya D.", photo: PORTRAITS.ananya, stars: 5, text: "Craftsmanship is genuinely premium. Delivery team was careful." },
+      { name: "Rehan S.", photo: PORTRAITS.rehan, stars: 5, text: "Kyoto sofa is stunning. Design team helped us pick fabric." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@studiopepperfry" },
+      { icon: Youtube, handle: "Studio Pepperfry" },
+    ],
   },
   {
     id: "agency",
     name: "Studio North",
     handle: "@studionorth",
     tagline: "Brand & digital · Bengaluru",
+    description: "A 14-person studio building brands, sites and products for climate & consumer teams.",
     gradient: "linear-gradient(160deg,#6c5ce7 0%,#e84393 60%,#0b0b12 100%)",
     accent: "#a78bfa",
     icon: Palette,
@@ -164,14 +531,33 @@ const DEMOS: Demo[] = [
       { label: "See recent work", sub: "12 case studies" },
     ],
     featured: { title: "Currently booking Q1 ’27", meta: "2 slots remaining" },
-    avatar: PORTRAITS.architect,
+    avatar: PORTRAITS.fashionDesigner,
     cover: COVERS.agency,
+    rating: 5.0, reviewsCount: 82,
+    hours: "Studio · 10 AM – 7 PM · Mon–Fri",
+    domain: "studionorth.co",
+    upi: "hello@studionorth",
+    services: ["Brand identity", "Web design", "Motion", "Product design"],
+    products: [
+      { name: "Brand sprint · 2 wks", price: "₹4,80,000", image: PRODUCTS.books },
+      { name: "Website · 6 wks", price: "₹12,00,000", image: PRODUCTS.books },
+    ],
+    gallery: [COVERS.agency, COVERS.creator],
+    reviews: [
+      { name: "Priya K.", photo: PORTRAITS.priyaKapoor, stars: 5, text: "Best studio we’ve worked with. Sharp thinking, gorgeous craft." },
+      { name: "Rajesh N.", photo: PORTRAITS.rajesh, stars: 5, text: "Rebrand landed perfectly. Sales up 34% in Q1." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@studionorth" },
+      { icon: Youtube, handle: "Studio North" },
+    ],
   },
   {
     id: "law",
     name: "Mehta & Associates",
     handle: "@mehtalaw",
     tagline: "Corporate & tax law · Delhi",
+    description: "Full-service corporate, M&A and tax advisory. Chambers-ranked partners, 40+ lawyer team.",
     gradient: "linear-gradient(160deg,#1e3a5f 0%,#6c5ce7 55%,#0b0b12 100%)",
     accent: "#a78bfa",
     icon: ShieldCheck,
@@ -183,12 +569,31 @@ const DEMOS: Demo[] = [
     featured: { title: "Union Budget ’26 note", meta: "Impact on start-ups · PDF" },
     avatar: PORTRAITS.mehtaLawyer,
     cover: COVERS.law,
+    rating: 4.9, reviewsCount: 168,
+    hours: "Chambers · 10 AM – 7 PM · Mon–Fri",
+    domain: "mehtalaw.in",
+    upi: "accounts@mehta",
+    services: ["Corporate", "M&A", "Tax", "Litigation", "IP"],
+    products: [
+      { name: "30-min consult", price: "₹8,500", image: PRODUCTS.books },
+      { name: "Retainer · monthly", price: "₹1,25,000", image: PRODUCTS.books },
+    ],
+    gallery: [COVERS.law, COVERS.construction],
+    reviews: [
+      { name: "Vikram S.", photo: PORTRAITS.vikram, stars: 5, text: "Handled our Series B closing flawlessly. Sharp, responsive." },
+      { name: "Karan T.", photo: PORTRAITS.karan, stars: 5, text: "The best tax mind I’ve worked with. Saved us 22% last year." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@mehtalaw" },
+      { icon: Facebook, handle: "mehtalaw" },
+    ],
   },
   {
     id: "creator",
     name: "Priya Kapoor",
     handle: "@priyakapoor",
     tagline: "Design creator · 842K community",
+    description: "Weekly essays on design systems, careers and craft. 92K newsletter readers, YouTube 640K.",
     gradient: "linear-gradient(160deg,#e84393 0%,#ff6b35 55%,#0b0b12 100%)",
     accent: "#e84393",
     icon: Star,
@@ -200,23 +605,63 @@ const DEMOS: Demo[] = [
     featured: { title: "New drop · Bento kit v3", meta: "780 sold this week" },
     avatar: PORTRAITS.priyaKapoor,
     cover: COVERS.creator,
+    rating: 5.0, reviewsCount: 2189,
+    hours: "Newsletter drops · every Tue · 9 AM",
+    domain: "priyakapoor.design",
+    upi: "priya@upi",
+    services: ["Newsletter", "Courses", "Design system packs", "1:1 mentoring"],
+    products: [
+      { name: "Bento Kit v3", price: "₹1,999", image: PRODUCTS.books },
+      { name: "Career playbook", price: "₹1,499", image: PRODUCTS.books },
+      { name: "Portfolio review", price: "₹8,000", image: PRODUCTS.books },
+      { name: "Design system course", price: "₹6,999", image: PRODUCTS.books },
+    ],
+    gallery: [COVERS.creator, COVERS.agency],
+    reviews: [
+      { name: "Ayesha K.", photo: PORTRAITS.ayesha, stars: 5, text: "Bento kit paid for itself in one project. Excellent." },
+      { name: "Aditya B.", photo: PORTRAITS.aditya, stars: 5, text: "Career playbook helped me land a senior role. Thank you." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@priyakapoor.design" },
+      { icon: Youtube, handle: "Priya Kapoor" },
+    ],
   },
   {
-    id: "construction",
-    name: "Shapoorji Build",
-    handle: "@shapoorjibuild",
-    tagline: "Turnkey construction · Since 1865",
-    gradient: "linear-gradient(160deg,#ea580c 0%,#4a5568 55%,#0b0b12 100%)",
-    accent: "#f59e0b",
-    icon: HardHat,
-    chips: ["ISO 9001", "Green build", "Pan-India"],
+    id: "ngo",
+    name: "Ekta Foundation",
+    handle: "@ektafoundation",
+    tagline: "Girl-child education · Rajasthan",
+    description: "12(A) & 80G registered. Sponsors education for 4,800 girls across 62 villages since 2014.",
+    gradient: "linear-gradient(160deg,#22c55e 0%,#0ea5e9 55%,#0b0b12 100%)",
+    accent: "#22c55e",
+    icon: Heart,
+    chips: ["80G", "Verified", "10 yrs"],
     actions: [
-      { label: "Request a proposal", sub: "Commercial fit-out" },
-      { label: "Ongoing projects", sub: "17 across India" },
+      { label: "Sponsor a girl", sub: "₹1,500 / month" },
+      { label: "One-time donation", sub: "Any amount · secure" },
     ],
-    featured: { title: "Case study — Godrej HQ", meta: "42 mo · LEED Platinum" },
-    avatar: PORTRAITS.rehan,
-    cover: COVERS.construction,
+    featured: { title: "62 new admissions this term", meta: "4,800 girls in school" },
+    avatar: PORTRAITS.ngoFounder,
+    cover: COVERS.coaching,
+    rating: 4.9, reviewsCount: 1284,
+    hours: "Office · 10 AM – 6 PM · Mon–Sat",
+    domain: "ekta.ngo",
+    upi: "donate@ekta",
+    services: ["Sponsor a child", "One-time donations", "CSR partnerships", "Volunteer"],
+    products: [
+      { name: "Monthly sponsorship", price: "₹1,500", image: PRODUCTS.books },
+      { name: "One school kit", price: "₹2,400", image: PRODUCTS.books },
+      { name: "Annual scholarship", price: "₹18,000", image: PRODUCTS.books },
+    ],
+    gallery: [COVERS.coaching, COVERS.school],
+    reviews: [
+      { name: "Meera S.", photo: PORTRAITS.meera, stars: 5, text: "Transparent updates every quarter. My sponsored girl just finished Grade 10." },
+      { name: "Rajesh N.", photo: PORTRAITS.rajesh, stars: 5, text: "Genuine work. Field visit was eye-opening." },
+    ],
+    socials: [
+      { icon: Instagram, handle: "@ektafoundation" },
+      { icon: Facebook, handle: "ektafoundation" },
+    ],
   },
 ];
 
@@ -288,6 +733,24 @@ function useMagnet<T extends HTMLElement>(strength = 14) {
 /* ────────────────────────────────────────────────────────── phone mock */
 
 function PhoneMock({ demo }: { demo: Demo }) {
+  // rotating in-screen live activity toast
+  const toasts = useMemo(
+    () => [
+      { icon: IndianRupee, tone: "#22c55e", title: `UPI ₹${(Math.floor(Math.random() * 40) + 4) * 100} received`, sub: demo.upi },
+      { icon: MessageCircle, tone: "#22d3ee", title: "New WhatsApp order", sub: `${demo.name} · 2 items` },
+      { icon: Eye, tone: "#a78bfa", title: "+128 profile views", sub: "last 5 minutes" },
+      { icon: BellRing, tone: "#f59e0b", title: "New booking", sub: demo.actions[0]?.sub ?? "Today" },
+      { icon: Heart, tone: "#e84393", title: "New follower", sub: demo.handle },
+    ],
+    [demo],
+  );
+  const [tIdx, setTIdx] = useState(0);
+  useEffect(() => {
+    const t = window.setInterval(() => setTIdx((i) => (i + 1) % toasts.length), 2200);
+    return () => window.clearInterval(t);
+  }, [toasts.length]);
+  const toast = toasts[tIdx];
+  const ToastIcon = toast.icon;
 
   return (
     <div className="relative h-full w-full overflow-hidden" style={{ background: demo.gradient }}>
@@ -295,89 +758,259 @@ function PhoneMock({ demo }: { demo: Demo }) {
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
         style={{
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px)",
           backgroundSize: "3px 3px",
         }}
       />
-      <div className="relative flex h-full flex-col px-5 pb-6 pt-14 text-white">
-        {/* Header row */}
-        <div className="mb-4 flex items-center justify-between text-[10px] font-medium text-white/70">
-          <span>zupix.link{demo.handle}</span>
-          <span className="flex items-center gap-1 rounded-full bg-white/15 px-2 py-[3px] backdrop-blur">
-            <BadgeCheck className="h-3 w-3" /> Verified
-          </span>
-        </div>
 
-        {/* Cover */}
-        <div className="mb-3 h-24 w-full overflow-hidden rounded-2xl border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,.15)]">
-          <img
-            src={demo.cover}
-            alt=""
-            className="h-full w-full object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
+      {/* Status bar */}
+      <div className="absolute inset-x-0 top-2.5 z-20 flex items-center justify-between px-6 text-[10px] font-semibold text-white/85">
+        <span>9:41</span>
+        <span className="flex items-center gap-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-white/80" />
+          <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
+          <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+          <span className="ml-1 rounded-sm border border-white/60 px-1 text-[8px] leading-[10px]">92</span>
+        </span>
+      </div>
 
-        {/* Avatar */}
-        <div className="mb-3 flex items-center gap-3">
-          <div className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,.35)]">
-            <img
-              src={demo.avatar}
-              alt={demo.name}
-              className="h-full w-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+      {/* Scrollable content */}
+      <div
+        className="relative h-full overflow-y-auto pb-6 pt-11 text-white [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        style={{ animation: "zx-feed-scroll 22s ease-in-out infinite" }}
+      >
+        <div className="px-4">
+          {/* URL bar */}
+          <div className="mb-3 flex items-center justify-between text-[9.5px] font-medium text-white/70">
+            <span className="rounded-full bg-black/30 px-2 py-[3px] backdrop-blur">{demo.domain}</span>
+            <span className="rounded-full bg-white/15 px-2 py-[3px] backdrop-blur">Share</span>
           </div>
-          <div className="min-w-0">
-            <div className="truncate text-[15px] font-semibold leading-tight">{demo.name}</div>
-            <div className="truncate text-[11px] text-white/70">{demo.tagline}</div>
+
+          {/* Cover */}
+          <div className="relative mb-0 h-24 w-full overflow-hidden rounded-t-2xl border border-white/15">
+            <img src={demo.cover} alt="" className="h-full w-full object-cover" loading="eager" decoding="async" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
-        </div>
 
-
-        {/* Chips */}
-        <div className="mb-3 flex flex-wrap gap-1.5">
-          {demo.chips.map((c) => (
-            <span
-              key={c}
-              className="rounded-full border border-white/25 bg-white/10 px-2 py-[3px] text-[10px] font-medium backdrop-blur"
-            >
-              {c}
-            </span>
-          ))}
-        </div>
-
-        {/* Featured */}
-        <div className="mb-3 rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur-md">
-          <div className="text-[12px] font-semibold">{demo.featured.title}</div>
-          <div className="mt-0.5 text-[10.5px] text-white/70">{demo.featured.meta}</div>
-        </div>
-
-        {/* Actions */}
-        <div className="space-y-2">
-          {demo.actions.map((a) => (
-            <div
-              key={a.label}
-              className="flex items-center justify-between rounded-2xl border border-white/20 bg-white/12 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,.25)] backdrop-blur"
-            >
-              <div className="min-w-0">
-                <div className="truncate text-[12px] font-semibold">{a.label}</div>
-                <div className="truncate text-[10px] text-white/70">{a.sub}</div>
-              </div>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-white/80" />
+          {/* Avatar + verified pulse */}
+          <div className="relative -mt-8 mb-3 flex items-end gap-3 px-1">
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border-2 border-white/80 bg-white shadow-[0_10px_30px_-8px_rgba(0,0,0,.5)]">
+              <img src={demo.avatar} alt={demo.name} className="h-full w-full object-cover" loading="eager" decoding="async" />
             </div>
-          ))}
-        </div>
-
-        {/* Pay */}
-        <div className="mt-auto flex items-center justify-between rounded-2xl bg-black/40 px-3 py-2 backdrop-blur">
-          <div className="flex items-center gap-2 text-[11px] font-medium">
-            <IndianRupee className="h-3.5 w-3.5" /> UPI · Cards · Wallets
+            <div className="relative mt-1 min-w-0 flex-1 pb-1">
+              <div className="flex items-center gap-1">
+                <span className="truncate text-[14px] font-semibold leading-tight">{demo.name}</span>
+                <span className="relative inline-flex h-3.5 w-3.5 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22d3ee] opacity-60" />
+                  <BadgeCheck className="relative h-3.5 w-3.5 text-[#22d3ee]" fill="currentColor" />
+                </span>
+              </div>
+              <div className="truncate text-[10.5px] text-white/75">{demo.tagline}</div>
+              <div className="mt-0.5 flex items-center gap-2 text-[10px] text-white/70">
+                <span className="flex items-center gap-0.5">
+                  <Star className="h-2.5 w-2.5 fill-[#fbbf24] text-[#fbbf24]" /> {demo.rating}
+                </span>
+                <span>· {demo.reviewsCount.toLocaleString("en-IN")} reviews</span>
+              </div>
+            </div>
           </div>
-          <div className="text-[10px] text-white/60">Instant payout</div>
+
+          {/* Description */}
+          <p className="mb-3 text-[10.5px] leading-snug text-white/75">{demo.description}</p>
+
+          {/* Hours */}
+          <div className="mb-3 flex items-center gap-1.5 text-[10px] text-white/80">
+            <Clock className="h-3 w-3 text-[#22c55e]" />
+            <span className="font-medium">{demo.hours}</span>
+          </div>
+
+          {/* Action rail: WA / Call / Directions / UPI */}
+          <div className="mb-3 grid grid-cols-4 gap-1.5">
+            {[
+              { icon: MessageCircle, label: "WhatsApp", tone: "#22c55e" },
+              { icon: Phone, label: "Call", tone: "#38bdf8" },
+              { icon: MapPin, label: "Directions", tone: "#f472b6" },
+              { icon: IndianRupee, label: "Pay UPI", tone: "#f59e0b" },
+            ].map((a) => {
+              const AI = a.icon;
+              return (
+                <button
+                  key={a.label}
+                  type="button"
+                  className="flex flex-col items-center gap-1 rounded-xl border border-white/15 bg-white/10 py-2 backdrop-blur"
+                >
+                  <span
+                    className="grid h-6 w-6 place-items-center rounded-lg"
+                    style={{ background: `${a.tone}30`, color: a.tone }}
+                  >
+                    <AI className="h-3 w-3" />
+                  </span>
+                  <span className="text-[8.5px] font-semibold">{a.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Chips */}
+          <div className="mb-3 flex flex-wrap gap-1">
+            {demo.chips.map((c) => (
+              <span
+                key={c}
+                className="rounded-full border border-white/25 bg-white/10 px-2 py-[2px] text-[9.5px] font-medium backdrop-blur"
+              >
+                {c}
+              </span>
+            ))}
+          </div>
+
+          {/* Featured */}
+          <div className="mb-3 overflow-hidden rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md">
+            <div className="flex items-center gap-2 p-2.5">
+              <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg">
+                <img src={demo.gallery[0] ?? demo.cover} alt="" className="h-full w-full object-cover" loading="lazy" />
+              </div>
+              <div className="min-w-0">
+                <div className="truncate text-[11px] font-semibold">{demo.featured.title}</div>
+                <div className="truncate text-[9.5px] text-white/70">{demo.featured.meta}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="mb-3 space-y-1.5">
+            {demo.actions.map((a) => (
+              <div
+                key={a.label}
+                className="flex items-center justify-between rounded-2xl border border-white/20 bg-white/12 px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,.25)] backdrop-blur"
+              >
+                <div className="min-w-0">
+                  <div className="truncate text-[11px] font-semibold">{a.label}</div>
+                  <div className="truncate text-[9.5px] text-white/70">{a.sub}</div>
+                </div>
+                <ArrowRight className="h-3 w-3 shrink-0 text-white/80" />
+              </div>
+            ))}
+          </div>
+
+          {/* Products / Services */}
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[9.5px] font-semibold uppercase tracking-wider text-white/60">Shop</span>
+            <span className="text-[9px] text-white/50">See all</span>
+          </div>
+          <div className="mb-3 grid grid-cols-2 gap-1.5">
+            {demo.products.slice(0, 4).map((p) => (
+              <div key={p.name} className="overflow-hidden rounded-xl border border-white/15 bg-white/10 backdrop-blur">
+                <div className="aspect-square w-full overflow-hidden">
+                  <img src={p.image} alt={p.name} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                </div>
+                <div className="p-1.5">
+                  <div className="truncate text-[9.5px] font-semibold">{p.name}</div>
+                  <div className="truncate text-[9px] text-white/70">{p.price}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Services */}
+          <div className="mb-2 text-[9.5px] font-semibold uppercase tracking-wider text-white/60">Services</div>
+          <div className="mb-3 flex flex-wrap gap-1">
+            {demo.services.map((s) => (
+              <span
+                key={s}
+                className="rounded-full border border-white/15 bg-white/[0.08] px-2 py-[2px] text-[9.5px] text-white/85"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+
+          {/* Gallery */}
+          <div className="mb-2 text-[9.5px] font-semibold uppercase tracking-wider text-white/60">Gallery</div>
+          <div className="mb-3 grid grid-cols-3 gap-1">
+            {demo.gallery.map((g, i) => (
+              <div key={i} className="aspect-square overflow-hidden rounded-lg border border-white/15">
+                <img src={g} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+              </div>
+            ))}
+          </div>
+
+          {/* Reviews */}
+          <div className="mb-2 text-[9.5px] font-semibold uppercase tracking-wider text-white/60">Reviews</div>
+          <div className="mb-3 space-y-1.5">
+            {demo.reviews.slice(0, 2).map((r) => (
+              <div
+                key={r.name}
+                className="flex gap-2 rounded-2xl border border-white/15 bg-white/[0.08] p-2 backdrop-blur"
+              >
+                <img
+                  src={r.photo}
+                  alt={r.name}
+                  className="h-7 w-7 shrink-0 rounded-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1 text-[9.5px] font-semibold">
+                    {r.name}
+                    <span className="flex">
+                      {Array.from({ length: r.stars }).map((_, i) => (
+                        <Star key={i} className="h-2 w-2 fill-[#fbbf24] text-[#fbbf24]" />
+                      ))}
+                    </span>
+                  </div>
+                  <div className="line-clamp-2 text-[9.5px] leading-snug text-white/75">{r.text}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Socials */}
+          <div className="mb-3 flex items-center justify-center gap-2">
+            {demo.socials.map((s) => {
+              const SI = s.icon;
+              return (
+                <span
+                  key={s.handle}
+                  className="grid h-7 w-7 place-items-center rounded-full border border-white/20 bg-white/10 backdrop-blur"
+                >
+                  <SI className="h-3.5 w-3.5" />
+                </span>
+              );
+            })}
+          </div>
+
+          {/* Pay footer */}
+          <div className="flex items-center justify-between rounded-2xl bg-black/40 px-2.5 py-2 backdrop-blur">
+            <div className="flex items-center gap-1.5 text-[10px] font-medium">
+              <IndianRupee className="h-3 w-3" /> UPI · Cards · Wallets
+            </div>
+            <div className="text-[9px] text-white/60">Instant payout</div>
+          </div>
+
+          {/* Domain footer */}
+          <div className="mt-2 text-center text-[9px] text-white/50">
+            {demo.domain} · powered by ZUPIX
+          </div>
+        </div>
+      </div>
+
+      {/* Live activity toast overlay */}
+      <div className="pointer-events-none absolute inset-x-3 top-11 z-30">
+        <div
+          key={`${demo.id}-${tIdx}`}
+          className="flex items-center gap-2 rounded-2xl border border-white/25 bg-black/55 px-2.5 py-2 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)] backdrop-blur-xl"
+          style={{ animation: "zx-toast-in .5s cubic-bezier(.2,.8,.2,1) both" }}
+        >
+          <span
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-lg"
+            style={{ background: `${toast.tone}30`, color: toast.tone }}
+          >
+            <ToastIcon className="h-3.5 w-3.5" />
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-[10.5px] font-semibold text-white">{toast.title}</span>
+            <span className="block truncate text-[9.5px] text-white/70">{toast.sub}</span>
+          </span>
         </div>
       </div>
     </div>
@@ -491,6 +1124,10 @@ export function LandingHero() {
           inset 0 1px 0 rgba(255,255,255,.35); } }
         @keyframes zx-screen-in { from { opacity: 0; transform: scale(1.04); filter: blur(14px); }
           to { opacity: 1; transform: scale(1); filter: blur(0); } }
+        @keyframes zx-toast-in { from { opacity: 0; transform: translate3d(0,-14px,0) scale(.96); }
+          to { opacity: 1; transform: translate3d(0,0,0) scale(1); } }
+        @keyframes zx-feed-scroll { 0%,10% { transform: translateY(0); }
+          55%,70% { transform: translateY(-42%); } 100% { transform: translateY(0); } }
         .zx-word { display: inline-block; opacity: 0; }
         .zx-word.on { animation: zx-word .8s cubic-bezier(.2,.8,.2,1) forwards; }
         .zx-cta-primary { animation: zx-glow 4s ease-in-out infinite; }
