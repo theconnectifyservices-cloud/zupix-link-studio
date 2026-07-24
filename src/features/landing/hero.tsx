@@ -62,6 +62,8 @@ const DEMOS: Demo[] = [
       { label: "Shop bridal collection", sub: "New this week" },
     ],
     featured: { title: "Diwali Edit ’26", meta: "Live drop · ₹48,900 onwards" },
+    avatar: PORTRAITS.jewellerOwner,
+    cover: COVERS.jewellery,
   },
   {
     id: "restaurant",
@@ -77,6 +79,8 @@ const DEMOS: Demo[] = [
       { label: "Order on Swiggy", sub: "Free delivery" },
     ],
     featured: { title: "Monsoon tasting menu", meta: "7 courses · ₹2,400 pp" },
+    avatar: PORTRAITS.chefRestaurant,
+    cover: COVERS.restaurant,
   },
   {
     id: "doctor",
@@ -92,6 +96,8 @@ const DEMOS: Demo[] = [
       { label: "Skincare protocols", sub: "Guided plans" },
     ],
     featured: { title: "Slot open · Sat 11:00", meta: "Bandra clinic · in-person" },
+    avatar: PORTRAITS.drAnanya,
+    cover: COVERS.doctor,
   },
   {
     id: "school",
@@ -107,6 +113,8 @@ const DEMOS: Demo[] = [
       { label: "Virtual campus tour", sub: "10 min walk-through" },
     ],
     featured: { title: "Open house — Sunday", meta: "Pune campus · 10 AM" },
+    avatar: PORTRAITS.teacher,
+    cover: COVERS.school,
   },
   {
     id: "realestate",
@@ -122,6 +130,8 @@ const DEMOS: Demo[] = [
       { label: "Book site visit", sub: "Chauffeur pickup" },
     ],
     featured: { title: "₹6.8 Cr onwards", meta: "42nd floor sea-face" },
+    avatar: PORTRAITS.realEstate,
+    cover: COVERS.realestate,
   },
   {
     id: "cafe",
@@ -137,6 +147,8 @@ const DEMOS: Demo[] = [
       { label: "Find a café near you", sub: "38 locations" },
     ],
     featured: { title: "Ethiopia Guji · Natural", meta: "Notes: peach, jasmine, cocoa" },
+    avatar: PORTRAITS.cafeOwner,
+    cover: COVERS.cafe,
   },
   {
     id: "agency",
@@ -152,6 +164,8 @@ const DEMOS: Demo[] = [
       { label: "See recent work", sub: "12 case studies" },
     ],
     featured: { title: "Currently booking Q1 ’27", meta: "2 slots remaining" },
+    avatar: PORTRAITS.architect,
+    cover: COVERS.agency,
   },
   {
     id: "law",
@@ -167,6 +181,8 @@ const DEMOS: Demo[] = [
       { label: "Latest advisories", sub: "Compliance briefs" },
     ],
     featured: { title: "Union Budget ’26 note", meta: "Impact on start-ups · PDF" },
+    avatar: PORTRAITS.mehtaLawyer,
+    cover: COVERS.law,
   },
   {
     id: "creator",
@@ -182,6 +198,8 @@ const DEMOS: Demo[] = [
       { label: "Design system pack", sub: "₹1,999 · lifetime" },
     ],
     featured: { title: "New drop · Bento kit v3", meta: "780 sold this week" },
+    avatar: PORTRAITS.priyaKapoor,
+    cover: COVERS.creator,
   },
   {
     id: "construction",
@@ -197,6 +215,8 @@ const DEMOS: Demo[] = [
       { label: "Ongoing projects", sub: "17 across India" },
     ],
     featured: { title: "Case study — Godrej HQ", meta: "42 mo · LEED Platinum" },
+    avatar: PORTRAITS.rehan,
+    cover: COVERS.construction,
   },
 ];
 
