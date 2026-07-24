@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PublicLayout } from "@/shared/layouts";
 import { LandingHero } from "@/features/landing/hero";
 import { LandingShowcase } from "@/features/landing/showcase";
+import { LandingConversion } from "@/features/landing/conversion";
 
 const TITLE = "ZUPIX Link Studio — Build Beautiful Bio Links That Actually Convert";
 const DESCRIPTION =
@@ -28,6 +29,7 @@ function Index() {
     <PublicLayout>
       <LandingHero />
       <LandingShowcase />
+      <LandingConversion />
     </PublicLayout>
   );
 }
