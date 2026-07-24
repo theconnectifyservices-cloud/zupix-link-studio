@@ -687,19 +687,23 @@ function SectionVideoTestimonials() {
               >
                 <X className="h-4 w-4" />
               </button>
-              <div
-                className="grid aspect-video w-full place-items-center"
-                style={{
-                  background: `linear-gradient(140deg, ${open.colors[0]}, ${open.colors[1]})`,
-                }}
-              >
-                <div className="text-center">
-                  <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-white/95 text-[#e84393] shadow-2xl">
-                    <Play className="ml-1 h-8 w-8 fill-current" />
+              <div className="relative aspect-video w-full overflow-hidden bg-black">
+                <img
+                  src={COVERS[open.coverKey]}
+                  alt={open.business}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/45" />
+                <div className="relative grid h-full w-full place-items-center text-center">
+                  <div>
+                    <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-white/95 text-[#e84393] shadow-2xl">
+                      <Play className="ml-1 h-8 w-8 fill-current" />
+                    </div>
+                    <p className="mt-4 text-sm opacity-90">Preview available on request</p>
                   </div>
-                  <p className="mt-4 text-sm opacity-80">Preview available on request</p>
                 </div>
               </div>
+
               <div className="flex items-start gap-4 p-6">
                 <AvatarMonogram name={open.name} colors={open.colors} photo={open.photo} />
                 <div className="min-w-0">
