@@ -66,6 +66,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import { PORTRAITS, COVERS } from "./demo-media";
 
 // ============================================================================
 // Shared primitives
@@ -265,6 +266,8 @@ type Story = {
   before: { views: number; wa: number; revenue: number };
   after: { views: number; wa: number; revenue: number };
   revenueGrowthPct: number;
+  photo: string;
+  coverKey: keyof typeof COVERS;
 };
 
 const STORIES: Story[] = [
@@ -281,6 +284,8 @@ const STORIES: Story[] = [
     before: { views: 1240, wa: 46, revenue: 385000 },
     after: { views: 28960, wa: 812, revenue: 2470000 },
     revenueGrowthPct: 541,
+     photo: PORTRAITS.jewellerOwner,
+    coverKey: "jewellery",
   },
   {
     id: "canteen",
@@ -295,6 +300,8 @@ const STORIES: Story[] = [
     before: { views: 3400, wa: 120, revenue: 640000 },
     after: { views: 61200, wa: 1980, revenue: 3860000 },
     revenueGrowthPct: 503,
+     photo: PORTRAITS.chefRestaurant,
+    coverKey: "restaurant",
   },
   {
     id: "north",
@@ -309,6 +316,8 @@ const STORIES: Story[] = [
     before: { views: 890, wa: 22, revenue: 720000 },
     after: { views: 17300, wa: 340, revenue: 4180000 },
     revenueGrowthPct: 481,
+     photo: PORTRAITS.karan,
+    coverKey: "agency",
   },
   {
     id: "vaidya",
@@ -323,6 +332,8 @@ const STORIES: Story[] = [
     before: { views: 2100, wa: 88, revenue: 1120000 },
     after: { views: 38400, wa: 1420, revenue: 5210000 },
     revenueGrowthPct: 365,
+     photo: PORTRAITS.drAnanya,
+    coverKey: "doctor",
   },
   {
     id: "iit",
@@ -337,6 +348,8 @@ const STORIES: Story[] = [
     before: { views: 1560, wa: 60, revenue: 480000 },
     after: { views: 42100, wa: 1240, revenue: 3050000 },
     revenueGrowthPct: 535,
+     photo: PORTRAITS.rajesh,
+    coverKey: "coaching",
   },
   {
     id: "iron",
@@ -351,6 +364,8 @@ const STORIES: Story[] = [
     before: { views: 720, wa: 34, revenue: 210000 },
     after: { views: 19800, wa: 610, revenue: 1580000 },
     revenueGrowthPct: 652,
+     photo: PORTRAITS.gymTrainer,
+    coverKey: "gym",
   },
   {
     id: "casa",
@@ -365,6 +380,8 @@ const STORIES: Story[] = [
     before: { views: 980, wa: 41, revenue: 340000 },
     after: { views: 24600, wa: 720, revenue: 2260000 },
     revenueGrowthPct: 565,
+     photo: PORTRAITS.priya,
+    coverKey: "furniture",
   },
 ];
 
@@ -529,17 +546,19 @@ type VideoTestimonial = {
   duration: string;
   colors: [string, string];
   quote: string;
+  photo: string;
+  coverKey: keyof typeof COVERS;
 };
 
 const VIDEOS: VideoTestimonial[] = [
-  { id: "v1", name: "Meera Iyer", business: "Meera Silks", industry: "Textiles", duration: "1:24", colors: ["#c44569", "#6c5ce7"], quote: "Sold out our Kanjivaram festive drop in 6 days." },
-  { id: "v2", name: "Arjun Reddy", business: "Blue Tokai Coffee HQ", industry: "F&B", duration: "2:03", colors: ["#6b3a2a", "#e8b84a"], quote: "Subscription sign-ups from IG bio doubled." },
-  { id: "v3", name: "Dr. Nisha Menon", business: "Bloom Dental", industry: "Healthcare", duration: "1:47", colors: ["#2dd4a8", "#0d7a5f"], quote: "80% of new patient calls now start on the profile." },
-  { id: "v4", name: "Farhan Qureshi", business: "Qureshi Kababs", industry: "Restaurant", duration: "1:11", colors: ["#e85d3a", "#0d0d0d"], quote: "Weekend covers up 3× since we added the menu block." },
-  { id: "v5", name: "Anaya Kapoor", business: "Anaya Studio", industry: "Photography", duration: "2:22", colors: ["#4f46e5", "#22d3ee"], quote: "Wedding inquiries went from 4/mo to 40/mo." },
-  { id: "v6", name: "Vikram Joshi", business: "Joshi Motors", industry: "Automotive", duration: "1:38", colors: ["#0f1b3d", "#3b6fa0"], quote: "Test-drive bookings straight from QR at the showroom." },
-  { id: "v7", name: "Kavya Nair", business: "Kavya Yoga Kerala", industry: "Wellness", duration: "1:56", colors: ["#87a878", "#4a6741"], quote: "Retreat waitlist filled in 48 hours." },
-  { id: "v8", name: "Aditya Bose", business: "Bose Legal", industry: "Legal", duration: "2:10", colors: ["#0f1b3d", "#c9a84c"], quote: "Professional page that finally matches our reputation." },
+  { id: "v1", name: "Meera Iyer", business: "Meera Silks", industry: "Textiles", duration: "1:24", colors: ["#c44569", "#6c5ce7"], quote: "Sold out our Kanjivaram festive drop in 6 days.", photo: PORTRAITS.meera, coverKey: "fashion" },
+  { id: "v2", name: "Arjun Reddy", business: "Blue Tokai Coffee HQ", industry: "F&B", duration: "2:03", colors: ["#6b3a2a", "#e8b84a"], quote: "Subscription sign-ups from IG bio doubled.", photo: PORTRAITS.cafeOwner, coverKey: "coffee" },
+  { id: "v3", name: "Dr. Nisha Menon", business: "Bloom Dental", industry: "Healthcare", duration: "1:47", colors: ["#2dd4a8", "#0d7a5f"], quote: "80% of new patient calls now start on the profile.", photo: PORTRAITS.nisha, coverKey: "doctor" },
+  { id: "v4", name: "Farhan Qureshi", business: "Qureshi Kababs", industry: "Restaurant", duration: "1:11", colors: ["#e85d3a", "#0d0d0d"], quote: "Weekend covers up 3× since we added the menu block.", photo: PORTRAITS.farhan, coverKey: "restaurant" },
+  { id: "v5", name: "Anaya Kapoor", business: "Anaya Studio", industry: "Photography", duration: "2:22", colors: ["#4f46e5", "#22d3ee"], quote: "Wedding inquiries went from 4/mo to 40/mo.", photo: PORTRAITS.anaya, coverKey: "creator" },
+  { id: "v6", name: "Vikram Joshi", business: "Joshi Motors", industry: "Automotive", duration: "1:38", colors: ["#0f1b3d", "#3b6fa0"], quote: "Test-drive bookings straight from QR at the showroom.", photo: PORTRAITS.vikram, coverKey: "electronics" },
+  { id: "v7", name: "Kavya Nair", business: "Kavya Yoga Kerala", industry: "Wellness", duration: "1:56", colors: ["#87a878", "#4a6741"], quote: "Retreat waitlist filled in 48 hours.", photo: PORTRAITS.kavya, coverKey: "gym" },
+  { id: "v8", name: "Aditya Bose", business: "Bose Legal", industry: "Legal", duration: "2:10", colors: ["#0f1b3d", "#c9a84c"], quote: "Professional page that finally matches our reputation.", photo: PORTRAITS.aditya, coverKey: "law" },
 ];
 
 function VideoCard({ v, onOpen }: { v: VideoTestimonial; onOpen: () => void }) {
