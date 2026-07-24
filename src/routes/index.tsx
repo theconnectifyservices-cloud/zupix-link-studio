@@ -33,6 +33,7 @@ function Index() {
       <LandingShowcase />
       <LandingConversion />
       <LandingExperience />
+      <LandingEcosystem />
     </PublicLayout>
   );
 }
