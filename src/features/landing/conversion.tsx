@@ -701,7 +701,7 @@ function SectionVideoTestimonials() {
                 </div>
               </div>
               <div className="flex items-start gap-4 p-6">
-                <AvatarMonogram name={open.name} colors={open.colors} />
+                <AvatarMonogram name={open.name} colors={open.colors} photo={open.photo} />
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-semibold">{open.name}</h3>
