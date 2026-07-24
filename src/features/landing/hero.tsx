@@ -288,7 +288,7 @@ function useMagnet<T extends HTMLElement>(strength = 14) {
 /* ────────────────────────────────────────────────────────── phone mock */
 
 function PhoneMock({ demo }: { demo: Demo }) {
-  const Icon = demo.icon;
+
   return (
     <div className="relative h-full w-full overflow-hidden" style={{ background: demo.gradient }}>
       {/* Grain */}
