@@ -581,17 +581,19 @@ function VideoCard({ v, onOpen }: { v: VideoTestimonial; onOpen: () => void }) {
       onClick={onOpen}
       className="group relative w-[320px] shrink-0 overflow-hidden rounded-3xl border border-foreground/10 bg-background/60 text-left backdrop-blur-md"
     >
-      <div
-        className="relative aspect-[4/5] w-full overflow-hidden"
-        style={{
-          background: `linear-gradient(140deg, ${v.colors[0]}, ${v.colors[1]})`,
-        }}
-      >
-        <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{
-          backgroundImage:
-            "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.6), transparent 40%), radial-gradient(circle at 80% 90%, rgba(0,0,0,0.5), transparent 40%)",
-        }} />
-        <AvatarMonogram name={v.name} colors={v.colors} />
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-black">
+        <img
+          src={COVERS[v.coverKey]}
+          alt={v.business}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
+        <div className="absolute left-4 top-4">
+          <AvatarMonogram name={v.name} colors={v.colors} photo={v.photo} />
+        </div>
+
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-4">
           <div className="text-white">
             <div className="flex items-center gap-1.5 text-xs font-medium">
