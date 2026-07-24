@@ -4,6 +4,7 @@ import { LandingHero } from "@/features/landing/hero";
 import { LandingShowcase } from "@/features/landing/showcase";
 import { LandingConversion } from "@/features/landing/conversion";
 import { LandingExperience } from "@/features/landing/experience";
+import { LandingEcosystem } from "@/features/landing/ecosystem";
 
 const TITLE = "ZUPIX Link Studio — Build Beautiful Bio Links That Actually Convert";
 const DESCRIPTION =
@@ -32,6 +33,7 @@ function Index() {
       <LandingShowcase />
       <LandingConversion />
       <LandingExperience />
+      <LandingEcosystem />
     </PublicLayout>
   );
 }
