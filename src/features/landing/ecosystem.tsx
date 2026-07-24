@@ -36,7 +36,7 @@ import {
   IndianRupee,
   Instagram,
   LayoutTemplate,
-  Life BuoyIcon,
+  
   Lightbulb,
   Linkedin,
   Loader2,
