@@ -2175,15 +2175,33 @@ function IconPickerField({
 
 
 function FileEditor({ block, set }: { block: FileBlock; set: (k: string, v: unknown) => void }) {
+  const kindFromMime = (mime?: string): FileBlock["fileKind"] => {
+    if (!mime) return block.fileKind ?? "custom";
+    if (mime === "application/pdf") return "pdf";
+    if (mime.includes("word")) return "docx";
+    if (mime.includes("zip")) return "zip";
+    if (mime.startsWith("image/")) return "image";
+    return "custom";
+  };
   return (
     <>
-      <Field label="File URL">
-        <Input
-          value={block.fileUrl}
-          onChange={(e) => set("fileUrl", e.target.value)}
-          placeholder="https://…"
-        />
-      </Field>
+      <MediaFileField
+        label="File"
+        value={block.fileUrl || undefined}
+        fileName={block.fileName}
+        pickerTitle="Choose a file"
+        hint="Upload a PDF, DOC, XLS, PPT, ZIP or audio file — or pick one from your Media Library."
+        onChange={(v) => {
+          if (!v) {
+            set("fileUrl", "");
+            return;
+          }
+          set("fileUrl", v.url);
+          if (v.name) set("fileName", v.name);
+          if (v.size) set("sizeLabel", humanBytes(v.size));
+          set("fileKind", kindFromMime(v.mime));
+        }}
+      />
       <Field label="File name">
         <Input value={block.fileName} onChange={(e) => set("fileName", e.target.value)} />
       </Field>
@@ -2216,6 +2234,13 @@ function FileEditor({ block, set }: { block: FileBlock; set: (k: string, v: unkn
       </Field>
     </>
   );
+}
+
+function humanBytes(bytes: number): string {
+  if (!bytes) return "0 B";
+  const units = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return `${(bytes / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
 }
 
 function EmbedEditor({ block, set }: { block: EmbedBlock; set: (k: string, v: unknown) => void }) {
