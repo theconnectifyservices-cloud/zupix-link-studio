@@ -27,6 +27,7 @@ import {
   Stethoscope,
   Utensils,
 } from "lucide-react";
+import { PORTRAITS, COVERS } from "./demo-media";
 
 /* ────────────────────────────────────────────────────────── demo content */
 
@@ -41,7 +42,10 @@ type Demo = {
   chips: string[];
   actions: { label: string; sub: string }[];
   featured: { title: string; meta: string };
+  avatar: string;
+  cover: string;
 };
+
 
 const DEMOS: Demo[] = [
   {
