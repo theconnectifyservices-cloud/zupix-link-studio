@@ -484,7 +484,7 @@ function StoryCard({ s, index }: { s: Story; index: number }) {
       </blockquote>
 
       <div className="mt-5 flex items-center gap-3">
-        <AvatarMonogram name={s.owner} colors={s.logo} />
+        <AvatarMonogram name={s.owner} colors={s.logo} photo={s.photo} />
         <div>
           <div className="text-sm font-medium">{s.owner}</div>
           <div className="text-xs text-foreground/60">Founder</div>
