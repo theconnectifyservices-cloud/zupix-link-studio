@@ -1264,10 +1264,12 @@ function BentoCard({
 }
 
 function QrIllustration() {
+  // deterministic 6x6 pattern (SSR-safe)
+  const pat = "101101011010110110011001110011010110110110011001101101";
   return (
     <div className="mt-4 grid h-24 w-24 grid-cols-6 gap-[3px] rounded-xl bg-white p-2">
       {Array.from({ length: 36 }).map((_, i) => (
-        <div key={i} className="rounded-[2px]" style={{ background: Math.random() > 0.45 ? "#0a0a12" : "transparent" }} />
+        <div key={i} className="rounded-[2px]" style={{ background: pat[i % pat.length] === "1" ? "#0a0a12" : "transparent" }} />
       ))}
     </div>
   );
