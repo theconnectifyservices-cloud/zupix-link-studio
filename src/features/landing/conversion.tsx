@@ -396,9 +396,20 @@ function LogoMark({ initials, colors }: { initials: string; colors: [string, str
   );
 }
 
-function AvatarMonogram({ name, colors }: { name: string; colors: [string, string] }) {
+function AvatarMonogram({ name, colors, photo }: { name: string; colors: [string, string]; photo?: string }) {
   const parts = name.split(" ").filter(Boolean);
   const initials = ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase();
+  if (photo) {
+    return (
+      <img
+        src={photo}
+        alt={name}
+        loading="lazy"
+        decoding="async"
+        className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-background"
+      />
+    );
+  }
   return (
     <div
       className="grid h-12 w-12 shrink-0 place-items-center rounded-full text-sm font-semibold text-white ring-2 ring-background"
@@ -408,6 +419,7 @@ function AvatarMonogram({ name, colors }: { name: string; colors: [string, strin
     </div>
   );
 }
+
 
 function GrowthBar({ before, after, label, format }: {
   before: number;
