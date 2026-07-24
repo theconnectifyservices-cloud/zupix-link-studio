@@ -309,16 +309,34 @@ function PhoneMock({ demo }: { demo: Demo }) {
           </span>
         </div>
 
+        {/* Cover */}
+        <div className="mb-3 h-24 w-full overflow-hidden rounded-2xl border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,.15)]">
+          <img
+            src={demo.cover}
+            alt=""
+            className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
         {/* Avatar */}
         <div className="mb-3 flex items-center gap-3">
-          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,.35)] backdrop-blur">
-            <Icon className="h-6 w-6" />
+          <div className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,.35)]">
+            <img
+              src={demo.avatar}
+              alt={demo.name}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
           <div className="min-w-0">
             <div className="truncate text-[15px] font-semibold leading-tight">{demo.name}</div>
             <div className="truncate text-[11px] text-white/70">{demo.tagline}</div>
           </div>
         </div>
+
 
         {/* Chips */}
         <div className="mb-3 flex flex-wrap gap-1.5">
