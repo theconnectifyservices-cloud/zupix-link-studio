@@ -27,6 +27,7 @@ import {
   Stethoscope,
   Utensils,
 } from "lucide-react";
+import { PORTRAITS, COVERS } from "./demo-media";
 
 /* ────────────────────────────────────────────────────────── demo content */
 
@@ -41,7 +42,10 @@ type Demo = {
   chips: string[];
   actions: { label: string; sub: string }[];
   featured: { title: string; meta: string };
+  avatar: string;
+  cover: string;
 };
+
 
 const DEMOS: Demo[] = [
   {
@@ -58,6 +62,8 @@ const DEMOS: Demo[] = [
       { label: "Shop bridal collection", sub: "New this week" },
     ],
     featured: { title: "Diwali Edit ’26", meta: "Live drop · ₹48,900 onwards" },
+    avatar: PORTRAITS.jewellerOwner,
+    cover: COVERS.jewellery,
   },
   {
     id: "restaurant",
@@ -73,6 +79,8 @@ const DEMOS: Demo[] = [
       { label: "Order on Swiggy", sub: "Free delivery" },
     ],
     featured: { title: "Monsoon tasting menu", meta: "7 courses · ₹2,400 pp" },
+    avatar: PORTRAITS.chefRestaurant,
+    cover: COVERS.restaurant,
   },
   {
     id: "doctor",
@@ -88,6 +96,8 @@ const DEMOS: Demo[] = [
       { label: "Skincare protocols", sub: "Guided plans" },
     ],
     featured: { title: "Slot open · Sat 11:00", meta: "Bandra clinic · in-person" },
+    avatar: PORTRAITS.drAnanya,
+    cover: COVERS.doctor,
   },
   {
     id: "school",
@@ -103,6 +113,8 @@ const DEMOS: Demo[] = [
       { label: "Virtual campus tour", sub: "10 min walk-through" },
     ],
     featured: { title: "Open house — Sunday", meta: "Pune campus · 10 AM" },
+    avatar: PORTRAITS.teacher,
+    cover: COVERS.school,
   },
   {
     id: "realestate",
@@ -118,6 +130,8 @@ const DEMOS: Demo[] = [
       { label: "Book site visit", sub: "Chauffeur pickup" },
     ],
     featured: { title: "₹6.8 Cr onwards", meta: "42nd floor sea-face" },
+    avatar: PORTRAITS.realEstate,
+    cover: COVERS.realestate,
   },
   {
     id: "cafe",
@@ -133,6 +147,8 @@ const DEMOS: Demo[] = [
       { label: "Find a café near you", sub: "38 locations" },
     ],
     featured: { title: "Ethiopia Guji · Natural", meta: "Notes: peach, jasmine, cocoa" },
+    avatar: PORTRAITS.cafeOwner,
+    cover: COVERS.cafe,
   },
   {
     id: "agency",
@@ -148,6 +164,8 @@ const DEMOS: Demo[] = [
       { label: "See recent work", sub: "12 case studies" },
     ],
     featured: { title: "Currently booking Q1 ’27", meta: "2 slots remaining" },
+    avatar: PORTRAITS.architect,
+    cover: COVERS.agency,
   },
   {
     id: "law",
@@ -163,6 +181,8 @@ const DEMOS: Demo[] = [
       { label: "Latest advisories", sub: "Compliance briefs" },
     ],
     featured: { title: "Union Budget ’26 note", meta: "Impact on start-ups · PDF" },
+    avatar: PORTRAITS.mehtaLawyer,
+    cover: COVERS.law,
   },
   {
     id: "creator",
@@ -178,6 +198,8 @@ const DEMOS: Demo[] = [
       { label: "Design system pack", sub: "₹1,999 · lifetime" },
     ],
     featured: { title: "New drop · Bento kit v3", meta: "780 sold this week" },
+    avatar: PORTRAITS.priyaKapoor,
+    cover: COVERS.creator,
   },
   {
     id: "construction",
@@ -193,6 +215,8 @@ const DEMOS: Demo[] = [
       { label: "Ongoing projects", sub: "17 across India" },
     ],
     featured: { title: "Case study — Godrej HQ", meta: "42 mo · LEED Platinum" },
+    avatar: PORTRAITS.rehan,
+    cover: COVERS.construction,
   },
 ];
 
@@ -264,7 +288,7 @@ function useMagnet<T extends HTMLElement>(strength = 14) {
 /* ────────────────────────────────────────────────────────── phone mock */
 
 function PhoneMock({ demo }: { demo: Demo }) {
-  const Icon = demo.icon;
+
   return (
     <div className="relative h-full w-full overflow-hidden" style={{ background: demo.gradient }}>
       {/* Grain */}
@@ -285,16 +309,34 @@ function PhoneMock({ demo }: { demo: Demo }) {
           </span>
         </div>
 
+        {/* Cover */}
+        <div className="mb-3 h-24 w-full overflow-hidden rounded-2xl border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,.15)]">
+          <img
+            src={demo.cover}
+            alt=""
+            className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
         {/* Avatar */}
         <div className="mb-3 flex items-center gap-3">
-          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,.35)] backdrop-blur">
-            <Icon className="h-6 w-6" />
+          <div className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,.35)]">
+            <img
+              src={demo.avatar}
+              alt={demo.name}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
           <div className="min-w-0">
             <div className="truncate text-[15px] font-semibold leading-tight">{demo.name}</div>
             <div className="truncate text-[11px] text-white/70">{demo.tagline}</div>
           </div>
         </div>
+
 
         {/* Chips */}
         <div className="mb-3 flex flex-wrap gap-1.5">

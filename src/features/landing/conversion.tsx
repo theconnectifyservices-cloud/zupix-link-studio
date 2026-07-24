@@ -66,6 +66,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import { PORTRAITS, COVERS } from "./demo-media";
 
 // ============================================================================
 // Shared primitives
@@ -265,6 +266,8 @@ type Story = {
   before: { views: number; wa: number; revenue: number };
   after: { views: number; wa: number; revenue: number };
   revenueGrowthPct: number;
+  photo: string;
+  coverKey: keyof typeof COVERS;
 };
 
 const STORIES: Story[] = [
@@ -281,6 +284,8 @@ const STORIES: Story[] = [
     before: { views: 1240, wa: 46, revenue: 385000 },
     after: { views: 28960, wa: 812, revenue: 2470000 },
     revenueGrowthPct: 541,
+     photo: PORTRAITS.jewellerOwner,
+    coverKey: "jewellery",
   },
   {
     id: "canteen",
@@ -295,6 +300,8 @@ const STORIES: Story[] = [
     before: { views: 3400, wa: 120, revenue: 640000 },
     after: { views: 61200, wa: 1980, revenue: 3860000 },
     revenueGrowthPct: 503,
+     photo: PORTRAITS.chefRestaurant,
+    coverKey: "restaurant",
   },
   {
     id: "north",
@@ -309,6 +316,8 @@ const STORIES: Story[] = [
     before: { views: 890, wa: 22, revenue: 720000 },
     after: { views: 17300, wa: 340, revenue: 4180000 },
     revenueGrowthPct: 481,
+     photo: PORTRAITS.karan,
+    coverKey: "agency",
   },
   {
     id: "vaidya",
@@ -323,6 +332,8 @@ const STORIES: Story[] = [
     before: { views: 2100, wa: 88, revenue: 1120000 },
     after: { views: 38400, wa: 1420, revenue: 5210000 },
     revenueGrowthPct: 365,
+     photo: PORTRAITS.drAnanya,
+    coverKey: "doctor",
   },
   {
     id: "iit",
@@ -337,6 +348,8 @@ const STORIES: Story[] = [
     before: { views: 1560, wa: 60, revenue: 480000 },
     after: { views: 42100, wa: 1240, revenue: 3050000 },
     revenueGrowthPct: 535,
+     photo: PORTRAITS.rajesh,
+    coverKey: "coaching",
   },
   {
     id: "iron",
@@ -351,6 +364,8 @@ const STORIES: Story[] = [
     before: { views: 720, wa: 34, revenue: 210000 },
     after: { views: 19800, wa: 610, revenue: 1580000 },
     revenueGrowthPct: 652,
+     photo: PORTRAITS.gymTrainer,
+    coverKey: "gym",
   },
   {
     id: "casa",
@@ -365,6 +380,8 @@ const STORIES: Story[] = [
     before: { views: 980, wa: 41, revenue: 340000 },
     after: { views: 24600, wa: 720, revenue: 2260000 },
     revenueGrowthPct: 565,
+     photo: PORTRAITS.priya,
+    coverKey: "furniture",
   },
 ];
 
@@ -379,9 +396,20 @@ function LogoMark({ initials, colors }: { initials: string; colors: [string, str
   );
 }
 
-function AvatarMonogram({ name, colors }: { name: string; colors: [string, string] }) {
+function AvatarMonogram({ name, colors, photo }: { name: string; colors: [string, string]; photo?: string }) {
   const parts = name.split(" ").filter(Boolean);
   const initials = ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase();
+  if (photo) {
+    return (
+      <img
+        src={photo}
+        alt={name}
+        loading="lazy"
+        decoding="async"
+        className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-background"
+      />
+    );
+  }
   return (
     <div
       className="grid h-12 w-12 shrink-0 place-items-center rounded-full text-sm font-semibold text-white ring-2 ring-background"
@@ -391,6 +419,7 @@ function AvatarMonogram({ name, colors }: { name: string; colors: [string, strin
     </div>
   );
 }
+
 
 function GrowthBar({ before, after, label, format }: {
   before: number;
@@ -455,7 +484,7 @@ function StoryCard({ s, index }: { s: Story; index: number }) {
       </blockquote>
 
       <div className="mt-5 flex items-center gap-3">
-        <AvatarMonogram name={s.owner} colors={s.logo} />
+        <AvatarMonogram name={s.owner} colors={s.logo} photo={s.photo} />
         <div>
           <div className="text-sm font-medium">{s.owner}</div>
           <div className="text-xs text-foreground/60">Founder</div>
@@ -529,17 +558,19 @@ type VideoTestimonial = {
   duration: string;
   colors: [string, string];
   quote: string;
+  photo: string;
+  coverKey: keyof typeof COVERS;
 };
 
 const VIDEOS: VideoTestimonial[] = [
-  { id: "v1", name: "Meera Iyer", business: "Meera Silks", industry: "Textiles", duration: "1:24", colors: ["#c44569", "#6c5ce7"], quote: "Sold out our Kanjivaram festive drop in 6 days." },
-  { id: "v2", name: "Arjun Reddy", business: "Blue Tokai Coffee HQ", industry: "F&B", duration: "2:03", colors: ["#6b3a2a", "#e8b84a"], quote: "Subscription sign-ups from IG bio doubled." },
-  { id: "v3", name: "Dr. Nisha Menon", business: "Bloom Dental", industry: "Healthcare", duration: "1:47", colors: ["#2dd4a8", "#0d7a5f"], quote: "80% of new patient calls now start on the profile." },
-  { id: "v4", name: "Farhan Qureshi", business: "Qureshi Kababs", industry: "Restaurant", duration: "1:11", colors: ["#e85d3a", "#0d0d0d"], quote: "Weekend covers up 3× since we added the menu block." },
-  { id: "v5", name: "Anaya Kapoor", business: "Anaya Studio", industry: "Photography", duration: "2:22", colors: ["#4f46e5", "#22d3ee"], quote: "Wedding inquiries went from 4/mo to 40/mo." },
-  { id: "v6", name: "Vikram Joshi", business: "Joshi Motors", industry: "Automotive", duration: "1:38", colors: ["#0f1b3d", "#3b6fa0"], quote: "Test-drive bookings straight from QR at the showroom." },
-  { id: "v7", name: "Kavya Nair", business: "Kavya Yoga Kerala", industry: "Wellness", duration: "1:56", colors: ["#87a878", "#4a6741"], quote: "Retreat waitlist filled in 48 hours." },
-  { id: "v8", name: "Aditya Bose", business: "Bose Legal", industry: "Legal", duration: "2:10", colors: ["#0f1b3d", "#c9a84c"], quote: "Professional page that finally matches our reputation." },
+  { id: "v1", name: "Meera Iyer", business: "Meera Silks", industry: "Textiles", duration: "1:24", colors: ["#c44569", "#6c5ce7"], quote: "Sold out our Kanjivaram festive drop in 6 days.", photo: PORTRAITS.meera, coverKey: "fashion" },
+  { id: "v2", name: "Arjun Reddy", business: "Blue Tokai Coffee HQ", industry: "F&B", duration: "2:03", colors: ["#6b3a2a", "#e8b84a"], quote: "Subscription sign-ups from IG bio doubled.", photo: PORTRAITS.cafeOwner, coverKey: "coffee" },
+  { id: "v3", name: "Dr. Nisha Menon", business: "Bloom Dental", industry: "Healthcare", duration: "1:47", colors: ["#2dd4a8", "#0d7a5f"], quote: "80% of new patient calls now start on the profile.", photo: PORTRAITS.nisha, coverKey: "doctor" },
+  { id: "v4", name: "Farhan Qureshi", business: "Qureshi Kababs", industry: "Restaurant", duration: "1:11", colors: ["#e85d3a", "#0d0d0d"], quote: "Weekend covers up 3× since we added the menu block.", photo: PORTRAITS.farhan, coverKey: "restaurant" },
+  { id: "v5", name: "Anaya Kapoor", business: "Anaya Studio", industry: "Photography", duration: "2:22", colors: ["#4f46e5", "#22d3ee"], quote: "Wedding inquiries went from 4/mo to 40/mo.", photo: PORTRAITS.anaya, coverKey: "creator" },
+  { id: "v6", name: "Vikram Joshi", business: "Joshi Motors", industry: "Automotive", duration: "1:38", colors: ["#0f1b3d", "#3b6fa0"], quote: "Test-drive bookings straight from QR at the showroom.", photo: PORTRAITS.vikram, coverKey: "electronics" },
+  { id: "v7", name: "Kavya Nair", business: "Kavya Yoga Kerala", industry: "Wellness", duration: "1:56", colors: ["#87a878", "#4a6741"], quote: "Retreat waitlist filled in 48 hours.", photo: PORTRAITS.kavya, coverKey: "gym" },
+  { id: "v8", name: "Aditya Bose", business: "Bose Legal", industry: "Legal", duration: "2:10", colors: ["#0f1b3d", "#c9a84c"], quote: "Professional page that finally matches our reputation.", photo: PORTRAITS.aditya, coverKey: "law" },
 ];
 
 function VideoCard({ v, onOpen }: { v: VideoTestimonial; onOpen: () => void }) {
@@ -550,17 +581,19 @@ function VideoCard({ v, onOpen }: { v: VideoTestimonial; onOpen: () => void }) {
       onClick={onOpen}
       className="group relative w-[320px] shrink-0 overflow-hidden rounded-3xl border border-foreground/10 bg-background/60 text-left backdrop-blur-md"
     >
-      <div
-        className="relative aspect-[4/5] w-full overflow-hidden"
-        style={{
-          background: `linear-gradient(140deg, ${v.colors[0]}, ${v.colors[1]})`,
-        }}
-      >
-        <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{
-          backgroundImage:
-            "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.6), transparent 40%), radial-gradient(circle at 80% 90%, rgba(0,0,0,0.5), transparent 40%)",
-        }} />
-        <AvatarMonogram name={v.name} colors={v.colors} />
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-black">
+        <img
+          src={COVERS[v.coverKey]}
+          alt={v.business}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
+        <div className="absolute left-4 top-4">
+          <AvatarMonogram name={v.name} colors={v.colors} photo={v.photo} />
+        </div>
+
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-4">
           <div className="text-white">
             <div className="flex items-center gap-1.5 text-xs font-medium">
@@ -654,21 +687,25 @@ function SectionVideoTestimonials() {
               >
                 <X className="h-4 w-4" />
               </button>
-              <div
-                className="grid aspect-video w-full place-items-center"
-                style={{
-                  background: `linear-gradient(140deg, ${open.colors[0]}, ${open.colors[1]})`,
-                }}
-              >
-                <div className="text-center">
-                  <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-white/95 text-[#e84393] shadow-2xl">
-                    <Play className="ml-1 h-8 w-8 fill-current" />
+              <div className="relative aspect-video w-full overflow-hidden bg-black">
+                <img
+                  src={COVERS[open.coverKey]}
+                  alt={open.business}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/45" />
+                <div className="relative grid h-full w-full place-items-center text-center">
+                  <div>
+                    <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-white/95 text-[#e84393] shadow-2xl">
+                      <Play className="ml-1 h-8 w-8 fill-current" />
+                    </div>
+                    <p className="mt-4 text-sm opacity-90">Preview available on request</p>
                   </div>
-                  <p className="mt-4 text-sm opacity-80">Preview available on request</p>
                 </div>
               </div>
+
               <div className="flex items-start gap-4 p-6">
-                <AvatarMonogram name={open.name} colors={open.colors} />
+                <AvatarMonogram name={open.name} colors={open.colors} photo={open.photo} />
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-semibold">{open.name}</h3>
