@@ -1124,6 +1124,10 @@ export function LandingHero() {
           inset 0 1px 0 rgba(255,255,255,.35); } }
         @keyframes zx-screen-in { from { opacity: 0; transform: scale(1.04); filter: blur(14px); }
           to { opacity: 1; transform: scale(1); filter: blur(0); } }
+        @keyframes zx-toast-in { from { opacity: 0; transform: translate3d(0,-14px,0) scale(.96); }
+          to { opacity: 1; transform: translate3d(0,0,0) scale(1); } }
+        @keyframes zx-feed-scroll { 0%,10% { transform: translateY(0); }
+          55%,70% { transform: translateY(-42%); } 100% { transform: translateY(0); } }
         .zx-word { display: inline-block; opacity: 0; }
         .zx-word.on { animation: zx-word .8s cubic-bezier(.2,.8,.2,1) forwards; }
         .zx-cta-primary { animation: zx-glow 4s ease-in-out infinite; }
