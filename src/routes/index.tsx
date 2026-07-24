@@ -31,6 +31,7 @@ function Index() {
       <LandingHero />
       <LandingShowcase />
       <LandingConversion />
+      <LandingExperience />
     </PublicLayout>
   );
 }
