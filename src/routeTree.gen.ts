@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
@@ -19,6 +21,8 @@ import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as AdminProfilesRouteImport } from './routes/admin.profiles'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.app'
 import { Route as SlugPageRouteImport } from './routes/$slug.$page'
@@ -26,6 +30,7 @@ import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticat
 import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
 import { Route as ApiAiGenerateRouteImport } from './routes/api/ai.generate'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai.chat'
+import { Route as AdminBuilderIdRouteImport } from './routes/admin.builder.$id'
 import { Route as AuthenticatedBuilderIdRouteImport } from './routes/_authenticated.builder.$id'
 import { Route as AuthenticatedAppWhiteLabelRouteImport } from './routes/_authenticated.app.white-label'
 import { Route as AuthenticatedAppTrackingRouteImport } from './routes/_authenticated.app.tracking'
@@ -78,9 +83,19 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -122,6 +137,16 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProfilesRoute = AdminProfilesRouteImport.update({
+  id: '/admin/profiles',
+  path: '/admin/profiles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/admin/dashboard',
+  path: '/admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -155,6 +180,11 @@ const ApiAiGenerateRoute = ApiAiGenerateRouteImport.update({
 const ApiAiChatRoute = ApiAiChatRouteImport.update({
   id: '/api/ai/chat',
   path: '/api/ai/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBuilderIdRoute = AdminBuilderIdRouteImport.update({
+  id: '/admin/builder/$id',
+  path: '/admin/builder/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedBuilderIdRoute = AuthenticatedBuilderIdRouteImport.update({
@@ -425,11 +455,15 @@ const AuthenticatedAppAiConversationIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
+  '/login': typeof LoginRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$slug/$page': typeof SlugPageRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/profiles': typeof AdminProfilesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
@@ -465,6 +499,7 @@ export interface FileRoutesByFullPath {
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/app/white-label': typeof AuthenticatedAppWhiteLabelRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
+  '/admin/builder/$id': typeof AdminBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
   '/api/public/track': typeof ApiPublicTrackRoute
@@ -489,10 +524,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
+  '/login': typeof LoginRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$slug/$page': typeof SlugPageRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/profiles': typeof AdminProfilesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
@@ -527,6 +566,7 @@ export interface FileRoutesByTo {
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/app/white-label': typeof AuthenticatedAppWhiteLabelRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
+  '/admin/builder/$id': typeof AdminBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
   '/api/public/track': typeof ApiPublicTrackRoute
@@ -553,11 +593,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/login': typeof LoginRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$slug/$page': typeof SlugPageRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/profiles': typeof AdminProfilesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
@@ -593,6 +637,7 @@ export interface FileRoutesById {
   '/_authenticated/app/tracking': typeof AuthenticatedAppTrackingRoute
   '/_authenticated/app/white-label': typeof AuthenticatedAppWhiteLabelRoute
   '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
+  '/admin/builder/$id': typeof AdminBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
   '/api/public/track': typeof ApiPublicTrackRoute
@@ -619,11 +664,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$slug'
+    | '/login'
     | '/robots.txt'
+    | '/signup'
     | '/sitemap.xml'
     | '/$slug/$page'
     | '/app'
     | '/onboarding'
+    | '/admin/dashboard'
+    | '/admin/profiles'
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
@@ -659,6 +708,7 @@ export interface FileRouteTypes {
     | '/app/tracking'
     | '/app/white-label'
     | '/builder/$id'
+    | '/admin/builder/$id'
     | '/api/ai/chat'
     | '/api/ai/generate'
     | '/api/public/track'
@@ -683,10 +733,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
+    | '/login'
     | '/robots.txt'
+    | '/signup'
     | '/sitemap.xml'
     | '/$slug/$page'
     | '/onboarding'
+    | '/admin/dashboard'
+    | '/admin/profiles'
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
@@ -721,6 +775,7 @@ export interface FileRouteTypes {
     | '/app/tracking'
     | '/app/white-label'
     | '/builder/$id'
+    | '/admin/builder/$id'
     | '/api/ai/chat'
     | '/api/ai/generate'
     | '/api/public/track'
@@ -746,11 +801,15 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/_authenticated'
+    | '/login'
     | '/robots.txt'
+    | '/signup'
     | '/sitemap.xml'
     | '/$slug/$page'
     | '/_authenticated/app'
     | '/_authenticated/onboarding'
+    | '/admin/dashboard'
+    | '/admin/profiles'
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
@@ -786,6 +845,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/tracking'
     | '/_authenticated/app/white-label'
     | '/_authenticated/builder/$id'
+    | '/admin/builder/$id'
     | '/api/ai/chat'
     | '/api/ai/generate'
     | '/api/public/track'
@@ -812,13 +872,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRouteWithChildren
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  LoginRoute: typeof LoginRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminProfilesRoute: typeof AdminProfilesRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   InviteTokenRoute: typeof InviteTokenRoute
   AuthIndexRoute: typeof AuthIndexRoute
+  AdminBuilderIdRoute: typeof AdminBuilderIdRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAiGenerateRoute: typeof ApiAiGenerateRoute
   ApiPublicTrackRoute: typeof ApiPublicTrackRoute
@@ -834,11 +899,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/robots.txt': {
       id: '/robots.txt'
       path: '/robots.txt'
       fullPath: '/robots.txt'
       preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -897,6 +976,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/profiles': {
+      id: '/admin/profiles'
+      path: '/admin/profiles'
+      fullPath: '/admin/profiles'
+      preLoaderRoute: typeof AdminProfilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
       path: '/onboarding'
@@ -944,6 +1037,13 @@ declare module '@tanstack/react-router' {
       path: '/api/ai/chat'
       fullPath: '/api/ai/chat'
       preLoaderRoute: typeof ApiAiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/builder/$id': {
+      id: '/admin/builder/$id'
+      path: '/admin/builder/$id'
+      fullPath: '/admin/builder/$id'
+      preLoaderRoute: typeof AdminBuilderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/builder/$id': {
@@ -1427,13 +1527,18 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRouteWithChildren,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  LoginRoute: LoginRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminProfilesRoute: AdminProfilesRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   InviteTokenRoute: InviteTokenRoute,
   AuthIndexRoute: AuthIndexRoute,
+  AdminBuilderIdRoute: AdminBuilderIdRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAiGenerateRoute: ApiAiGenerateRoute,
   ApiPublicTrackRoute: ApiPublicTrackRoute,
