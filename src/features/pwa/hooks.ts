@@ -9,15 +9,27 @@ interface BIPEvent extends Event {
 }
 
 const DISMISS_KEY = "zupix:pwa:install-dismissed";
+const SNOOZE_KEY = "zupix:pwa:install-snooze";
+const SNOOZE_MS = 1000 * 60 * 60 * 24 * 3; // 3 days
+
+function isIOS() {
+  if (typeof navigator === "undefined") return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
+}
 
 export function useInstallPrompt() {
   const [deferred, setDeferred] = useState<BIPEvent | null>(null);
   const [installed, setInstalled] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const [snoozed, setSnoozed] = useState(false);
+  const [ios, setIos] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     setDismissed(window.localStorage.getItem(DISMISS_KEY) === "1");
+    const snoozeUntil = Number(window.localStorage.getItem(SNOOZE_KEY) ?? 0);
+    setSnoozed(snoozeUntil > Date.now());
+    setIos(isIOS());
     const standalone =
       window.matchMedia?.("(display-mode: standalone)").matches ||
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,20 +65,35 @@ export function useInstallPrompt() {
     setDismissed(true);
   }, []);
 
-  const reset = useCallback(() => {
-    window.localStorage.removeItem(DISMISS_KEY);
-    setDismissed(false);
+  const snooze = useCallback(() => {
+    window.localStorage.setItem(SNOOZE_KEY, String(Date.now() + SNOOZE_MS));
+    setSnoozed(true);
   }, []);
 
+  const reset = useCallback(() => {
+    window.localStorage.removeItem(DISMISS_KEY);
+    window.localStorage.removeItem(SNOOZE_KEY);
+    setDismissed(false);
+    setSnoozed(false);
+  }, []);
+
+  const canInstall =
+    (Boolean(deferred) || ios) && !installed && !dismissed && !snoozed;
+
   return {
-    canInstall: Boolean(deferred) && !installed && !dismissed,
+    canInstall,
     installed,
     dismissed,
+    snoozed,
+    isIOS: ios,
+    hasNativePrompt: Boolean(deferred),
     promptInstall,
     dismiss,
+    snooze,
     reset,
   };
 }
+
 
 export function useServiceWorker() {
   const [wb, setWb] = useState<Workbox | null>(null);
