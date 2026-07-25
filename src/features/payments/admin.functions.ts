@@ -33,7 +33,7 @@ export const listGatewaysAdmin = createServerFn({ method: "GET" })
       ? await q.eq("workspace_id", data.workspaceId)
       : await q.is("workspace_id", null);
     if (error) throw error;
-    return (rows ?? []).map((r: PaymentGatewayPrivate) => redactGateway(r));
+    return (rows ?? []).map((r) => redactGateway(r as Record<string, unknown>));
   });
 
 export const upsertGateway = createServerFn({ method: "POST" })
@@ -74,7 +74,7 @@ export const upsertGateway = createServerFn({ method: "POST" })
       : context.supabase.from("payment_gateways").insert(patch).select("*").single();
     const { data: row, error } = await q;
     if (error) throw error;
-    return redactGateway(row as PaymentGatewayPrivate);
+    return redactGateway(row as unknown as Record<string, unknown>);
   });
 
 export const deleteGateway = createServerFn({ method: "POST" })

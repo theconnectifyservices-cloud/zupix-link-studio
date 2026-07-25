@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { JsonValue } from "./types";
 
 export interface PaymentHistoryRow {
   id: string;
@@ -10,7 +11,7 @@ export interface PaymentHistoryRow {
   provider: string;
   provider_order_id: string | null;
   plan_id: string | null;
-  meta: Record<string, unknown>;
+  meta: Record<string, JsonValue>;
 }
 
 export const listPaymentHistory = createServerFn({ method: "GET" })
@@ -24,5 +25,9 @@ export const listPaymentHistory = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw error;
-    return (rows ?? []) as PaymentHistoryRow[];
+    return (rows ?? []).map((r) => ({
+      ...r,
+      meta: (r.meta as Record<string, JsonValue>) ?? {},
+    })) as PaymentHistoryRow[];
   });
+

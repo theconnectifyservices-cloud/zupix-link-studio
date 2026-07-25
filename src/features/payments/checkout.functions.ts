@@ -27,13 +27,13 @@ export const listAvailableGateways = createServerFn({ method: "GET" })
     const seen = new Set<string>();
     const out: PaymentGatewayPublic[] = [];
     for (const r of rows ?? []) {
-      const priv = r as PaymentGatewayPrivate;
+      const priv = r as unknown as PaymentGatewayPrivate;
       const key = priv.provider;
       if (seen.has(key)) continue;
-      // Skip unhealthy gateways (allow unknown for first-run)
       if (priv.health_status === "down") continue;
       seen.add(key);
-      out.push(redactGateway(priv));
+      out.push(redactGateway(r as Record<string, unknown>));
+
     }
     return out;
   });
@@ -75,11 +75,12 @@ export const createCheckoutOrder = createServerFn({ method: "POST" })
         currency: data.currency,
         idempotency_key: idempotencyKey,
         status: "created",
-        meta: { cycle: data.cycle, customer: data.customer },
+        meta: { cycle: data.cycle, customer: data.customer } as any,
       })
       .select("*")
       .single();
-    if (oErr) throw oErr;
+    if (oErr || !order) throw oErr ?? new Error("Order not created");
+
 
     const adapter = getAdapter(gw.provider as PaymentProvider);
     const input: CreateOrderInput = {
@@ -95,12 +96,14 @@ export const createCheckoutOrder = createServerFn({ method: "POST" })
     try {
       result = await adapter.createOrder(gw as PaymentGatewayPrivate, input, order.id);
     } catch (e) {
+      const prevMeta = (order.meta as Record<string, unknown> | null) ?? {};
       await supabaseAdmin
         .from("payment_orders")
-        .update({ status: "failed", meta: { ...order.meta, error: (e as Error).message } })
+        .update({ status: "failed", meta: { ...prevMeta, error: (e as Error).message } })
         .eq("id", order.id);
       throw e;
     }
+
 
     // Store provider order id for reconciliation
     const providerOrderId =
