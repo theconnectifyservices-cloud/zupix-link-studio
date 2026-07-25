@@ -40,6 +40,8 @@ import {
   MessageCircle,
   Code2,
 } from "lucide-react";
+import { mediaForCategory } from "./demo-media";
+
 
 // ============================================================================
 // Data — 20 real theme mini-previews with authentic Indian business content
@@ -453,16 +455,25 @@ function BioPreview({ theme, density = "card" }: { theme: ThemeCard; density?: "
   const isFull = density === "full";
   const pad = isFull ? 20 : 12;
   const nameSize = isFull ? 18 : 13;
+  const media = mediaForCategory(theme.category);
   return (
     <div
       className="relative flex h-full w-full flex-col overflow-hidden"
       style={{ background: p.bg, color: p.text }}
     >
-      {/* Cover */}
-      <div className="relative shrink-0" style={{ height: isFull ? 120 : 72, background: theme.cover }}>
-        {/* logo puck */}
+      {/* Cover — real photography with palette overlay */}
+      <div className="relative shrink-0 overflow-hidden" style={{ height: isFull ? 120 : 72 }}>
+        <img
+          src={media.cover}
+          alt={`${theme.business.name} cover`}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0" style={{ background: theme.cover, mixBlendMode: "multiply", opacity: 0.55 }} />
+        {/* owner puck */}
         <div
-          className="absolute -bottom-6 left-4 grid place-items-center rounded-2xl font-bold shadow-lg"
+          className="absolute -bottom-6 left-4 grid place-items-center overflow-hidden rounded-2xl font-bold shadow-lg"
           style={{
             width: isFull ? 56 : 42,
             height: isFull ? 56 : 42,
@@ -472,7 +483,13 @@ function BioPreview({ theme, density = "card" }: { theme: ThemeCard; density?: "
             border: `2px solid ${p.bg}`,
           }}
         >
-          {theme.business.initial}
+          <img
+            src={media.owner}
+            alt={`${theme.business.name} owner`}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
         </div>
         {/* verified pill */}
         <div
@@ -513,38 +530,55 @@ function BioPreview({ theme, density = "card" }: { theme: ThemeCard; density?: "
           ))}
         </div>
 
-        {/* Products grid */}
+        {/* Products grid — real product photography */}
         <div className="grid grid-cols-3 gap-1.5">
           {theme.products.map((prod, i) => (
             <div
               key={i}
-              className="rounded-lg p-1.5"
+              className="overflow-hidden rounded-lg p-1.5"
               style={{ background: p.surface }}
             >
               <div
-                className="mb-1 rounded"
-                style={{ height: isFull ? 40 : 26, background: `linear-gradient(135deg, ${prod.hue}, ${prod.hue}55)` }}
-              />
+                className="mb-1 overflow-hidden rounded"
+                style={{ height: isFull ? 40 : 26 }}
+              >
+                <img
+                  src={media.products[i % media.products.length]}
+                  alt={prod.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </div>
               <div className="truncate font-semibold" style={{ fontSize: isFull ? 10 : 8 }}>{prod.name}</div>
               <div style={{ color: p.subtext, fontSize: isFull ? 9 : 7 }}>{prod.price}</div>
             </div>
           ))}
         </div>
 
-        {/* Gallery strip */}
+        {/* Gallery strip — real category photography */}
         <div className="grid grid-cols-3 gap-1.5">
-          {theme.gallery.map((bg, i) => (
+          {theme.gallery.map((_bg, i) => (
             <div
               key={i}
-              className="rounded-lg"
-              style={{ height: isFull ? 44 : 26, background: bg }}
-            />
+              className="overflow-hidden rounded-lg"
+              style={{ height: isFull ? 44 : 26 }}
+            >
+              <img
+                src={media.gallery[i % media.gallery.length]}
+                alt={`${theme.business.name} gallery ${i + 1}`}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
+            </div>
           ))}
         </div>
       </div>
     </div>
   );
 }
+
 
 // ============================================================================
 // SECTION 1 — Theme Gallery with tilt + modal

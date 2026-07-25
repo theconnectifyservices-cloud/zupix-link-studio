@@ -68,6 +68,8 @@ import {
   Wand2,
   Zap,
 } from "lucide-react";
+import { mediaForCategory } from "./demo-media";
+
 
 /* ============================================================
  * Premium primitives — magnetic button, glass card, section
@@ -505,6 +507,7 @@ const BUSINESSES: Business[] = [
 
 function PhoneFrame({ business, className = "" }: { business: Business; className?: string }) {
   const p = business.palette;
+  const media = mediaForCategory(business.category);
   return (
     <div
       className={`relative mx-auto aspect-[9/19] w-full max-w-[280px] rounded-[42px] p-[10px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.55)] ring-1 ring-black/40 ${className}`}
@@ -523,16 +526,38 @@ function PhoneFrame({ business, className = "" }: { business: Business; classNam
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="h-full overflow-y-auto pt-10"
+            className="h-full overflow-y-auto"
             style={{ scrollbarWidth: "none" }}
           >
-            {/* Avatar */}
-            <div className="flex flex-col items-center px-5 pt-4">
+            {/* Cover banner */}
+            <div className="relative h-24 w-full overflow-hidden">
+              <img
+                src={media.cover}
+                alt={`${business.name} cover`}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0" style={{ background: business.bg, opacity: 0.55 }} />
+            </div>
+
+            {/* Avatar — real portrait */}
+            <div className="-mt-8 flex flex-col items-center px-5">
               <div
-                className="grid h-20 w-20 place-items-center rounded-2xl text-4xl shadow-lg"
-                style={{ background: p.surface, boxShadow: `0 12px 40px -12px ${p.accent}55` }}
+                className="grid h-20 w-20 place-items-center overflow-hidden rounded-2xl text-4xl shadow-lg ring-2"
+                style={{
+                  background: p.surface,
+                  boxShadow: `0 12px 40px -12px ${p.accent}55`,
+                  ["--tw-ring-color" as string]: p.bg,
+                }}
               >
-                {business.logo}
+                <img
+                  src={media.owner}
+                  alt={`${business.name} owner`}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold" style={{ color: p.ink }}>
                 {business.name}
@@ -580,20 +605,28 @@ function PhoneFrame({ business, className = "" }: { business: Business; classNam
               ))}
             </div>
 
-            {/* Products */}
+            {/* Products — real photography */}
             <div className="mt-4 px-4">
               <div className="mb-1.5 text-[10px] uppercase tracking-wider" style={{ color: p.muted }}>
                 Featured
               </div>
               <div className="grid grid-cols-3 gap-1.5">
-                {business.products.map((prod) => (
+                {business.products.map((prod, i) => (
                   <div
                     key={prod.name}
-                    className="rounded-lg p-2 text-center"
+                    className="overflow-hidden rounded-lg p-1.5 text-center"
                     style={{ background: p.surface, border: `1px solid ${p.accent}18` }}
                   >
-                    <div className="text-xl">{prod.img}</div>
-                    <div className="mt-1 truncate text-[9px]" style={{ color: p.ink }}>
+                    <div className="mb-1 aspect-square overflow-hidden rounded">
+                      <img
+                        src={media.products[i % media.products.length]}
+                        alt={prod.name}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="truncate text-[9px]" style={{ color: p.ink }}>
                       {prod.name}
                     </div>
                     <div className="text-[9px] font-semibold" style={{ color: p.accent }}>
@@ -604,15 +637,21 @@ function PhoneFrame({ business, className = "" }: { business: Business; classNam
               </div>
             </div>
 
-            {/* Gallery */}
+            {/* Gallery — real photography */}
             <div className="mt-3 grid grid-cols-4 gap-1 px-4 pb-6">
-              {business.gallery.map((g, i) => (
+              {business.gallery.map((_g, i) => (
                 <div
                   key={i}
-                  className="grid aspect-square place-items-center rounded-md text-lg"
+                  className="aspect-square overflow-hidden rounded-md"
                   style={{ background: p.surface }}
                 >
-                  {g}
+                  <img
+                    src={media.gallery[i % media.gallery.length]}
+                    alt={`${business.name} gallery ${i + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               ))}
             </div>
@@ -622,6 +661,7 @@ function PhoneFrame({ business, className = "" }: { business: Business; classNam
     </div>
   );
 }
+
 
 /* ============================================================
  * SECTION 1 — Live Builder Experience

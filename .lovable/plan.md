@@ -1,58 +1,58 @@
-## Custom Code Studio — Builder Block + HTML Library
 
-Integrates as a native Builder block. Does not touch existing blocks, theme, or layouts.
+# Demo Content Population Engine
 
-### 1. New block type: `customCode`
-- Extend `BlockType` in `src/features/builder/types.ts` with `"customCode"`.
-- New `CustomCodeBlock` interface:
-  - `html: string`, `css?: string`, `js?: string` (js disabled unless super-admin flag)
-  - `title?`, `description?`
-  - `containerWidth?: "full" | "narrow" | "wide"`, `shadow?`, `radius?`, `border?`
-  - `sourceLibraryId?: string` (link to reusable library entry)
-  - `presetKey?: string` (which ready-made template was seeded)
-  - Standard `settings` (padding, margin, background, visibility, animation) — reuses existing `BlockSettings` so responsive + entrance animations work automatically.
-- Register in `block-registry.ts` under category **Advanced Components** with `</>` icon (`Code2` from lucide).
+Every visible "empty" container on the landing is a CSS gradient block (`bg-gradient-to-*`) used as a placeholder for cover, product, or gallery imagery. Hero and Conversion sections already consume real photography via `src/features/landing/demo-media.ts`; Showcase (20 themes × ~7 tiles = ~140 gradient blocks), Experience (8 live profiles), and Ecosystem (learning + card thumbnails) still render gradients. This work eliminates them via one shared manifest.
 
-### 2. Sandboxed renderer
-- `CustomCodeRender` in `block-renderer.tsx`:
-  - Renders an `<iframe sandbox="allow-scripts allow-popups allow-forms allow-same-origin-off">` using `srcdoc`.
-  - `srcdoc` composed as: `<style>${scopedCss}</style>${sanitizedHtml}` plus `<script>${js}</script>` only when JS enabled.
-  - Sanitize HTML with **DOMPurify** (`bun add dompurify @types/dompurify isomorphic-dompurify`). Allow iframes + common embed tags via a permissive allow-list for known providers (YouTube, Vimeo, Maps, Calendly, Typeform, Spotify, Tawk, Lottie, Trustpilot, etc.).
-  - Auto-height via `ResizeObserver` inside the iframe posting `postMessage`; parent listens and updates iframe height. Fallback: fixed configurable `minHeight`.
-  - Lazy render via `IntersectionObserver` — iframe `srcdoc` set only when in viewport.
-  - CSS is auto-scoped by wrapping in `.zx-cc-scope { ... }` and prefixing selectors (simple prefixer; disabled for `@keyframes`, `@font-face`, `@media`).
+## What ships
 
-### 3. Editor panel (property panel)
-- New `CustomCodeEditor` in `src/features/builder/components/property-editors/`:
-  - Tabs: **HTML | CSS | JS | Settings**
-  - Editor: **CodeMirror 6** (`@uiw/react-codemirror`, `@codemirror/lang-html`, `@codemirror/lang-css`, `@codemirror/lang-javascript`).
-  - Features: syntax highlight, line numbers, auto-indent, undo/redo (built-in), search/replace (built-in `@codemirror/search`), copy, paste, fullscreen toggle, char count.
-  - **Split-screen mode** toggle: right pane runs the same sandboxed renderer against current draft (debounced 300 ms).
-  - **Presets dropdown** ("Insert Embed…") with one-click templates: Google Maps, YouTube, Vimeo, Google Forms, Calendly, Typeform, Tawk.to, WhatsApp Widget, Instagram, Facebook, Twitter, Spotify, Google Reviews, Trustpilot, LottieFiles, Custom Button.
-  - **Import / Export** buttons (upload `.html` file, download current block as `.html`).
-  - **Save to Library** button.
-  - JS tab shows a locked notice unless super-admin flag enabled.
+**1. `src/features/landing/demo-businesses.ts` — the engine**
+A single, exported catalog of 30 Indian businesses. Each entry:
+```
+id, category, name, handle, tagline, location, palette
+owner: { name, photo }                     // portrait from PORTRAITS
+cover: string                              // Unsplash cover URL, category-matched
+verified: boolean, rating: number, reviewCount: number
+products: [{ name, price, image, badge?, discount? }] × 3–4
+services: [{ name, price }] × 2–3
+gallery: [string] × 6                      // real category photography
+buttons: [string] × 3                      // action rail labels
+offers: [string]                           // e.g. "Diwali 30% off"
+```
+Categories covered (one each, no duplicates): Jewellery, Restaurant, Cafe, Doctor, Hospital, School, Salon, Spa, Gym, Fitness Studio, Hotel, Resort, Travel, NGO, Real Estate, Interior, Architect, Law Firm, CA, Photographer, Creator, Influencer, Electronics, Furniture, Fashion, Boutique, Temple Trust, Coaching, Digital Agency, Software Company.
 
-### 4. HTML Library (CMS)
-- New table `html_library` (via migration): `id`, `workspace_id`, `name`, `description`, `category`, `html`, `css`, `js`, `scope` (`global | workspace | page`), `page_id?`, `theme_key?`, `archived_at`, `created_by`, timestamps. RLS scoped to workspace members; GRANT to authenticated + service_role.
-- Feature module `src/features/custom-code/`:
-  - `api.ts` — list/create/update/duplicate/archive/delete server fns via `requireSupabaseAuth`.
-  - `presets.ts` — the 15+ ready-made embed templates.
-  - `sanitize.ts` — DOMPurify config + CSS scoper.
-  - `components/library-dialog.tsx` — browse, search, insert, duplicate, rename, archive.
-- "Insert from Library" button in editor + library card in Left Panel under Advanced Components.
+**2. Showcase (`src/features/landing/showcase.tsx`)**
+Replace THEMES gradient fields with references into `DEMO_BUSINESSES`. Update the `BioPreview`, `<ThemeCard>` cover, product tiles and gallery cells to render `<img src>` with `object-cover`. Palette stays; only imagery becomes real.
 
-### 5. Super-admin JS toggle
-- Boolean workspace setting `allow_custom_js` on `workspaces` (nullable, default false) — migration adds column.
-- Toggle rendered in **Settings → Security** for users with `admin` role via existing `RequirePermission`.
-- Renderer strips `<script>` unless flag true AND block's `js` field is set.
+**3. Experience (`src/features/landing/experience.tsx`)**
+`BUSINESSES` array is derived from `DEMO_BUSINESSES` (first 10). Live profile switcher, product grid, and gallery in the phone mock consume real photos.
 
-### 6. Files touched
-- **New**: `src/features/custom-code/{api.ts,presets.ts,sanitize.ts,index.ts}`, `src/features/custom-code/components/library-dialog.tsx`, `src/features/builder/components/property-editors/custom-code-editor.tsx`, migration file.
-- **Edit**: `src/features/builder/types.ts` (add block type), `src/features/builder/block-registry.ts` (register), `src/features/builder/block-renderer.tsx` (add `CustomCodeRender`), `src/features/builder/components/property-panel.tsx` (dispatch to new editor), `src/features/builder/components/builder-left-panel.tsx` (Advanced category entry + library entry point), `src/routes/_authenticated.app.settings.security.tsx` (JS toggle).
-- **No changes** to theme engine, existing blocks, layouts, or public renderer wiring (block renders through the same `renderBlock` switch).
+**4. Ecosystem (`src/features/landing/ecosystem.tsx`)**
+Learning-center carousel thumbnails, ecosystem cards, and any remaining decorative tiles get category-matched imagery from the manifest.
 
-### 7. Deliverable checklist
-- Builder integration ✔  · CMS storage ✔  · Live split preview ✔  · Responsive via existing `settings.visibility`/`responsive` ✔  · Reusable Library ✔  · Import/Export ✔  · Presets ✔  · Sanitization + sandbox iframe ✔  · Lazy render ✔  · JS off by default ✔
+**5. Hero (`src/features/landing/hero.tsx`)**
+Existing 16-business dataset is refactored to import from the engine; no visual change (it's already populated), just deduplication.
 
-Approve to build.
+**6. Global reuse hook**
+Export `useDemoBusinesses()` and `getDemoBusiness(id)` so future modules (builder gallery previews, template picker) pull from the same source.
+
+## Render rules for every tile
+- No `bg-gradient-to-*` used as final visual — allowed only as `<img>` load fallback under the image.
+- Every image tag gets: fixed aspect ratio (`aspect-square` / `aspect-video` / `aspect-[9/13]`), `object-cover`, real `alt` text, `loading="lazy"` below the fold, `decoding="async"`.
+- Product cards render: image, name, price, rating stars, optional discount badge.
+
+## Out of scope (called out explicitly)
+- Builder canvas, admin dashboards, Media Studio uploader: these are user-content surfaces, not marketing demos. They correctly show empty states with CTAs; they are not "placeholders" to populate.
+- Conversion section: already populated in the earlier sprint; no changes.
+- Any change to palette, motion, layout, spacing, or copy tone.
+
+## Final report format (posted after implementation)
+Total demo profiles · Total portraits used · Total covers · Total product images · Total gallery images · Total populated cards · Files touched · Bundle delta · Confirmation of zero remaining `bg-gradient-to-*` placeholder tiles in Showcase / Experience / Ecosystem.
+
+## Technical notes
+- All imagery via Unsplash's `images.unsplash.com/photo-...?w=X&h=Y&fit=crop&auto=format&q=80` — same pattern already in `demo-media.ts`, hotlink-friendly, CDN-cached, zero repo weight.
+- Portraits via `randomuser.me/api/portraits/...` — same pattern as `demo-media.ts`.
+- Deterministic per-business seeds keep SSR/CSR output identical (no hydration risk).
+- No new npm dependencies. No schema/RLS changes. No route changes.
+- Estimated diff: +1 new file (~650 lines), edits across `showcase.tsx` / `experience.tsx` / `ecosystem.tsx` / `hero.tsx` totalling ~800 changed lines. TypeScript strict; build verified before completion.
+
+Approve to begin. I'll ship the engine + the four wired sections in one pass, then post the final population report.
