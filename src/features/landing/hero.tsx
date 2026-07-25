@@ -734,16 +734,19 @@ function useMagnet<T extends HTMLElement>(strength = 14) {
 
 function PhoneMock({ demo }: { demo: Demo }) {
   // rotating in-screen live activity toast
-  const toasts = useMemo(
-    () => [
-      { icon: IndianRupee, tone: "#22c55e", title: `UPI ₹${(Math.floor(Math.random() * 40) + 4) * 100} received`, sub: demo.upi },
+  const toasts = useMemo(() => {
+    // Deterministic UPI amount per demo — must match on SSR and client to avoid hydration mismatch.
+    const seed = demo.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+    const upiAmount = ((seed % 40) + 4) * 100;
+    return [
+      { icon: IndianRupee, tone: "#22c55e", title: `UPI ₹${upiAmount} received`, sub: demo.upi },
       { icon: MessageCircle, tone: "#22d3ee", title: "New WhatsApp order", sub: `${demo.name} · 2 items` },
       { icon: Eye, tone: "#a78bfa", title: "+128 profile views", sub: "last 5 minutes" },
       { icon: BellRing, tone: "#f59e0b", title: "New booking", sub: demo.actions[0]?.sub ?? "Today" },
       { icon: Heart, tone: "#e84393", title: "New follower", sub: demo.handle },
-    ],
-    [demo],
-  );
+    ];
+  }, [demo]);
+
   const [tIdx, setTIdx] = useState(0);
   useEffect(() => {
     const t = window.setInterval(() => setTIdx((i) => (i + 1) % toasts.length), 2200);
