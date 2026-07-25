@@ -1,58 +1,102 @@
+# Enterprise Payment Gateway Hub
 
-# Demo Content Population Engine
+Build a pluggable multi-gateway payment layer on top of the existing `src/features/billing/` foundation. Everything below is configurable from Super Admin — no hardcoded keys or payment links.
 
-Every visible "empty" container on the landing is a CSS gradient block (`bg-gradient-to-*`) used as a placeholder for cover, product, or gallery imagery. Hero and Conversion sections already consume real photography via `src/features/landing/demo-media.ts`; Showcase (20 themes × ~7 tiles = ~140 gradient blocks), Experience (8 live profiles), and Ecosystem (learning + card thumbnails) still render gradients. This work eliminates them via one shared manifest.
+## Architecture
 
-## What ships
-
-**1. `src/features/landing/demo-businesses.ts` — the engine**
-A single, exported catalog of 30 Indian businesses. Each entry:
+```text
+src/features/payments/
+  gateways/
+    types.ts              // GatewayAdapter interface (createOrder, verify, refund, health)
+    razorpay.adapter.ts
+    payu.adapter.ts
+    cashfree.adapter.ts
+    manual-upi.adapter.ts
+    registry.ts           // id -> adapter; loads dynamically; no hardcoded switch statements
+  server/
+    checkout.functions.ts // createOrder, listGateways (smart selector)
+    verify.functions.ts   // signature verification per adapter
+    admin.functions.ts    // super-admin CRUD, test-connection, health-check
+    upi.functions.ts      // upload proof, approve/reject
+  components/
+    checkout-modal.tsx    // premium modal: summary, gateway picker, success/failure
+    gateway-picker.tsx
+    upi-qr-flow.tsx
+    payment-history.tsx
+    admin/
+      gateway-manager.tsx
+      gateway-form.tsx
+      upi-verification-queue.tsx
 ```
-id, category, name, handle, tagline, location, palette
-owner: { name, photo }                     // portrait from PORTRAITS
-cover: string                              // Unsplash cover URL, category-matched
-verified: boolean, rating: number, reviewCount: number
-products: [{ name, price, image, badge?, discount? }] × 3–4
-services: [{ name, price }] × 2–3
-gallery: [string] × 6                      // real category photography
-buttons: [string] × 3                      // action rail labels
-offers: [string]                           // e.g. "Diwali 30% off"
-```
-Categories covered (one each, no duplicates): Jewellery, Restaurant, Cafe, Doctor, Hospital, School, Salon, Spa, Gym, Fitness Studio, Hotel, Resort, Travel, NGO, Real Estate, Interior, Architect, Law Firm, CA, Photographer, Creator, Influencer, Electronics, Furniture, Fashion, Boutique, Temple Trust, Coaching, Digital Agency, Software Company.
 
-**2. Showcase (`src/features/landing/showcase.tsx`)**
-Replace THEMES gradient fields with references into `DEMO_BUSINESSES`. Update the `BioPreview`, `<ThemeCard>` cover, product tiles and gallery cells to render `<img src>` with `object-cover`. Palette stays; only imagery becomes real.
+New TanStack public API route: `src/routes/api/public/webhooks/{razorpay,payu,cashfree}.ts` — signature-verified, idempotent by provider event id.
 
-**3. Experience (`src/features/landing/experience.tsx`)**
-`BUSINESSES` array is derived from `DEMO_BUSINESSES` (first 10). Live profile switcher, product grid, and gallery in the phone mock consume real photos.
+## Database (single migration)
 
-**4. Ecosystem (`src/features/landing/ecosystem.tsx`)**
-Learning-center carousel thumbnails, ecosystem cards, and any remaining decorative tiles get category-matched imagery from the manifest.
+- `payment_gateways` — id, workspace-nullable (null = global default), provider (`razorpay|payu|cashfree|manual_upi`), enabled, mode (`sandbox|live`), priority, credentials JSONB (encrypted at rest via Supabase Vault-style column obfuscation; secret keys never returned to client), webhook_secret, health_status, health_checked_at, config JSONB (UPI id, QR url, instructions for manual).
+- `payment_orders` — id, workspace_id, plan_id, gateway_id, provider_order_id, amount, currency, status (`created|pending|paid|failed|refunded|manual_review`), idempotency_key, meta JSONB.
+- `payment_webhook_events` — provider, event_id UNIQUE, order_id, payload, processed_at (idempotency table).
+- `manual_upi_submissions` — order_id, screenshot_url, txn_ref, submitted_by, reviewed_by, status, notes.
+- Extend `billing_payments` with `gateway_id`, `provider_ref`, `receipt_url`.
+- RLS: workspace members read own orders/submissions; only `admin` role writes to `payment_gateways`; webhook table is service-role only. All new tables get GRANT + policies.
 
-**5. Hero (`src/features/landing/hero.tsx`)**
-Existing 16-business dataset is refactored to import from the engine; no visual change (it's already populated), just deduplication.
+## Super Admin — Gateway Manager
 
-**6. Global reuse hook**
-Export `useDemoBusinesses()` and `getDemoBusiness(id)` so future modules (builder gallery previews, template picker) pull from the same source.
+Route: `/admin/payments` (existing admin layout).
+- List cards per gateway with logo, enable toggle, sandbox/live switch, priority arrows, health badge (green/amber/red), Test Connection button (calls adapter `health()`), Edit credentials (drawer).
+- Manual UPI form: upload QR image (existing media bucket), UPI ID, account name, instructions, review queue with Approve / Reject / Mark Paid actions triggering plan activation.
+- Credentials stored via `admin.functions.ts` using `supabaseAdmin` after role check; response omits secret fields.
 
-## Render rules for every tile
-- No `bg-gradient-to-*` used as final visual — allowed only as `<img>` load fallback under the image.
-- Every image tag gets: fixed aspect ratio (`aspect-square` / `aspect-video` / `aspect-[9/13]`), `object-cover`, real `alt` text, `loading="lazy"` below the fold, `decoding="async"`.
-- Product cards render: image, name, price, rating stars, optional discount badge.
+## Smart Gateway Selector + Checkout
 
-## Out of scope (called out explicitly)
-- Builder canvas, admin dashboards, Media Studio uploader: these are user-content surfaces, not marketing demos. They correctly show empty states with CTAs; they are not "placeholders" to populate.
-- Conversion section: already populated in the earlier sprint; no changes.
-- Any change to palette, motion, layout, spacing, or copy tone.
+- Pricing page cards ("Start Free Trial", "Buy Now", "Upgrade", "Renew") open the shared `CheckoutModal` with the plan.
+- Modal calls `listGateways({ workspaceId })` — returns only enabled gateways whose most-recent health check passed, sorted by priority.
+- User picks a gateway → `createOrder` returns adapter-specific launch payload (Razorpay checkout options, PayU form fields, Cashfree session id, or UPI QR + instructions).
+- Client script for each adapter is lazy-loaded only when selected.
+- On failure, "Retry" re-runs order creation on the next healthy gateway.
+- Success animation + failure screen + placeholders (disabled inputs) for GST and coupon fields.
 
-## Final report format (posted after implementation)
-Total demo profiles · Total portraits used · Total covers · Total product images · Total gallery images · Total populated cards · Files touched · Bundle delta · Confirmation of zero remaining `bg-gradient-to-*` placeholder tiles in Showcase / Experience / Ecosystem.
+## Webhooks
 
-## Technical notes
-- All imagery via Unsplash's `images.unsplash.com/photo-...?w=X&h=Y&fit=crop&auto=format&q=80` — same pattern already in `demo-media.ts`, hotlink-friendly, CDN-cached, zero repo weight.
-- Portraits via `randomuser.me/api/portraits/...` — same pattern as `demo-media.ts`.
-- Deterministic per-business seeds keep SSR/CSR output identical (no hydration risk).
-- No new npm dependencies. No schema/RLS changes. No route changes.
-- Estimated diff: +1 new file (~650 lines), edits across `showcase.tsx` / `experience.tsx` / `ecosystem.tsx` / `hero.tsx` totalling ~800 changed lines. TypeScript strict; build verified before completion.
+- Each provider route verifies HMAC signature over raw body, inserts into `payment_webhook_events` (unique on `event_id` for dedupe), then transitions the order and creates a `billing_payments` + `billing_invoices` row.
+- Handles: success, failure, pending, refund, cancellation.
+- Manual UPI has no webhook — admin approval triggers the same transition path.
 
-Approve to begin. I'll ship the engine + the four wired sections in one pass, then post the final population report.
+## Emails
+
+Reuse existing `@lovable.dev/email-js` scaffolding: on `payment.succeeded` transition, send Invoice + Receipt + Welcome (first payment only) via the send helper. React Email templates in `src/emails/payments/`.
+
+## Payment History
+
+`/app/billing` gains a "History" tab: table of orders with plan, amount, gateway logo, status pill, provider ref, "Download Receipt" (PDF endpoint using `@react-pdf/renderer` in a server route).
+
+## Security
+
+- Secret keys never leave the server; API responses redact `credentials.*_secret`.
+- Signature verification is mandatory before any state change.
+- Idempotency via `payment_webhook_events.event_id` unique constraint AND `payment_orders.idempotency_key`.
+- All webhooks live under `/api/public/*` and verify signatures — no auth bypass abuse.
+- Admin routes gated by `has_role(uid, 'admin')`.
+
+## Secrets requested (per gateway, sandbox + live)
+
+Only after user confirms this plan I'll request via `add_secret`:
+`RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `PAYU_MERCHANT_KEY`, `PAYU_MERCHANT_SALT`, `CASHFREE_APP_ID`, `CASHFREE_SECRET_KEY`, `CASHFREE_WEBHOOK_SECRET`. (Or, if you prefer, credentials are entered only through the Super Admin UI and stored per-gateway row — no env secrets. **Please confirm which model you want.**)
+
+## Delivery order
+
+1. Migration (tables + RLS + GRANT).
+2. Adapter interface + 4 adapters (server-only).
+3. Super Admin Gateway Manager UI.
+4. Checkout modal + smart selector wired into pricing cards.
+5. Webhook routes + idempotency + email dispatch.
+6. Payment history + receipt PDF.
+7. QA sweep: sandbox order per gateway, forced-failure retry, webhook replay dedupe, UPI approve/reject, offline-gateway failover.
+
+## Open questions before I start
+
+1. **Credentials source of truth** — Super Admin UI only (stored encrypted in DB), or also env-based secrets as fallback? I recommend UI-only for true multi-tenant configurability.
+2. **Currency scope** — INR only (given UPI/Razorpay/PayU/Cashfree), or multi-currency needed now?
+3. **Receipt PDF** — server-generated PDF (adds `@react-pdf/renderer`), or HTML receipt page + browser print for v1?
+
+Reply with answers (or "go with your recommendations") and I'll ship it end-to-end in the order above.

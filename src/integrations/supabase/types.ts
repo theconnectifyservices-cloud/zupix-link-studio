@@ -1194,6 +1194,9 @@ export type Database = {
           invoice_id: string | null
           metadata: Json
           method: string | null
+          payment_gateway_id: string | null
+          payment_order_id: string | null
+          receipt_url: string | null
           refund_amount_minor: number
           status: Database["public"]["Enums"]["payment_status"]
           subscription_id: string | null
@@ -1214,6 +1217,9 @@ export type Database = {
           invoice_id?: string | null
           metadata?: Json
           method?: string | null
+          payment_gateway_id?: string | null
+          payment_order_id?: string | null
+          receipt_url?: string | null
           refund_amount_minor?: number
           status?: Database["public"]["Enums"]["payment_status"]
           subscription_id?: string | null
@@ -1234,6 +1240,9 @@ export type Database = {
           invoice_id?: string | null
           metadata?: Json
           method?: string | null
+          payment_gateway_id?: string | null
+          payment_order_id?: string | null
+          receipt_url?: string | null
           refund_amount_minor?: number
           status?: Database["public"]["Enums"]["payment_status"]
           subscription_id?: string | null
@@ -1246,6 +1255,20 @@ export type Database = {
             columns: ["invoice_id"]
             isOneToOne: false
             referencedRelation: "billing_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_payments_payment_gateway_id_fkey"
+            columns: ["payment_gateway_id"]
+            isOneToOne: false
+            referencedRelation: "payment_gateways"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_payments_payment_order_id_fkey"
+            columns: ["payment_order_id"]
+            isOneToOne: false
+            referencedRelation: "payment_orders"
             referencedColumns: ["id"]
           },
           {
@@ -3024,6 +3047,69 @@ export type Database = {
         }
         Relationships: []
       }
+      manual_upi_submissions: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          order_id: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          screenshot_url: string | null
+          status: Database["public"]["Enums"]["manual_upi_status"]
+          submitted_by: string
+          txn_ref: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_id: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          screenshot_url?: string | null
+          status?: Database["public"]["Enums"]["manual_upi_status"]
+          submitted_by: string
+          txn_ref?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_id?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          screenshot_url?: string | null
+          status?: Database["public"]["Enums"]["manual_upi_status"]
+          submitted_by?: string
+          txn_ref?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manual_upi_submissions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "payment_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manual_upi_submissions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       marketplace_asset_versions: {
         Row: {
           asset: Json
@@ -4211,6 +4297,182 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_gateways: {
+        Row: {
+          config: Json
+          created_at: string
+          credentials: Json
+          display_name: string
+          enabled: boolean
+          health_checked_at: string | null
+          health_message: string | null
+          health_status: string
+          id: string
+          mode: Database["public"]["Enums"]["payment_mode"]
+          priority: number
+          provider: Database["public"]["Enums"]["payment_provider"]
+          updated_at: string
+          webhook_secret: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          credentials?: Json
+          display_name: string
+          enabled?: boolean
+          health_checked_at?: string | null
+          health_message?: string | null
+          health_status?: string
+          id?: string
+          mode?: Database["public"]["Enums"]["payment_mode"]
+          priority?: number
+          provider: Database["public"]["Enums"]["payment_provider"]
+          updated_at?: string
+          webhook_secret?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          credentials?: Json
+          display_name?: string
+          enabled?: boolean
+          health_checked_at?: string | null
+          health_message?: string | null
+          health_status?: string
+          id?: string
+          mode?: Database["public"]["Enums"]["payment_mode"]
+          priority?: number
+          provider?: Database["public"]["Enums"]["payment_provider"]
+          updated_at?: string
+          webhook_secret?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_gateways_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_orders: {
+        Row: {
+          amount_paise: number
+          created_at: string
+          currency: string
+          gateway_id: string | null
+          id: string
+          idempotency_key: string
+          meta: Json
+          plan_id: string | null
+          provider: Database["public"]["Enums"]["payment_provider"]
+          provider_order_id: string | null
+          status: Database["public"]["Enums"]["payment_order_status"]
+          updated_at: string
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          amount_paise: number
+          created_at?: string
+          currency?: string
+          gateway_id?: string | null
+          id?: string
+          idempotency_key: string
+          meta?: Json
+          plan_id?: string | null
+          provider: Database["public"]["Enums"]["payment_provider"]
+          provider_order_id?: string | null
+          status?: Database["public"]["Enums"]["payment_order_status"]
+          updated_at?: string
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          amount_paise?: number
+          created_at?: string
+          currency?: string
+          gateway_id?: string | null
+          id?: string
+          idempotency_key?: string
+          meta?: Json
+          plan_id?: string | null
+          provider?: Database["public"]["Enums"]["payment_provider"]
+          provider_order_id?: string | null
+          status?: Database["public"]["Enums"]["payment_order_status"]
+          updated_at?: string
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_orders_gateway_id_fkey"
+            columns: ["gateway_id"]
+            isOneToOne: false
+            referencedRelation: "payment_gateways"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_orders_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "billing_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_orders_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_webhook_events: {
+        Row: {
+          created_at: string
+          event_id: string
+          event_type: string | null
+          id: string
+          order_id: string | null
+          payload: Json
+          processed_at: string | null
+          provider: Database["public"]["Enums"]["payment_provider"]
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          event_type?: string | null
+          id?: string
+          order_id?: string | null
+          payload: Json
+          processed_at?: string | null
+          provider: Database["public"]["Enums"]["payment_provider"]
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          event_type?: string | null
+          id?: string
+          order_id?: string | null
+          payload?: Json
+          processed_at?: string | null
+          provider?: Database["public"]["Enums"]["payment_provider"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_webhook_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "payment_orders"
             referencedColumns: ["id"]
           },
         ]
@@ -6108,6 +6370,7 @@ export type Database = {
         | "void"
         | "uncollectible"
         | "refunded"
+      manual_upi_status: "pending" | "approved" | "rejected"
       marketplace_asset_kind:
         | "template"
         | "theme"
@@ -6154,6 +6417,16 @@ export type Database = {
         | "cancelled"
         | "expired"
       payment_gateway: "razorpay" | "stripe" | "paypal" | "paddle" | "manual"
+      payment_mode: "sandbox" | "live"
+      payment_order_status:
+        | "created"
+        | "pending"
+        | "paid"
+        | "failed"
+        | "refunded"
+        | "cancelled"
+        | "manual_review"
+      payment_provider: "razorpay" | "payu" | "cashfree" | "manual_upi"
       payment_status:
         | "pending"
         | "succeeded"
@@ -6430,6 +6703,7 @@ export const Constants = {
         "uncollectible",
         "refunded",
       ],
+      manual_upi_status: ["pending", "approved", "rejected"],
       marketplace_asset_kind: [
         "template",
         "theme",
@@ -6482,6 +6756,17 @@ export const Constants = {
         "expired",
       ],
       payment_gateway: ["razorpay", "stripe", "paypal", "paddle", "manual"],
+      payment_mode: ["sandbox", "live"],
+      payment_order_status: [
+        "created",
+        "pending",
+        "paid",
+        "failed",
+        "refunded",
+        "cancelled",
+        "manual_review",
+      ],
+      payment_provider: ["razorpay", "payu", "cashfree", "manual_upi"],
       payment_status: [
         "pending",
         "succeeded",

@@ -61,8 +61,11 @@ import { Route as AuthenticatedAppAutomationRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated.app.analytics'
 import { Route as AuthenticatedAppAiRouteImport } from './routes/_authenticated.app.ai'
 import { Route as AuthenticatedAppAgencyRouteImport } from './routes/_authenticated.app.agency'
+import { Route as AuthenticatedAdminPaymentGatewaysRouteImport } from './routes/_authenticated/admin/payment-gateways'
 import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authenticated.app.ai.index'
 import { Route as ApiPublicWebhooksRazorpayRouteImport } from './routes/api/public/webhooks/razorpay'
+import { Route as ApiPublicWebhooksPayuRouteImport } from './routes/api/public/webhooks/payu'
+import { Route as ApiPublicWebhooksCashfreeRouteImport } from './routes/api/public/webhooks/cashfree'
 import { Route as AuthenticatedAppSettingsSessionsRouteImport } from './routes/_authenticated.app.settings.sessions'
 import { Route as AuthenticatedAppSettingsSecurityRouteImport } from './routes/_authenticated.app.settings.security'
 import { Route as AuthenticatedAppSettingsPwaRouteImport } from './routes/_authenticated.app.settings.pwa'
@@ -356,6 +359,12 @@ const AuthenticatedAppAgencyRoute = AuthenticatedAppAgencyRouteImport.update({
   path: '/agency',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAdminPaymentGatewaysRoute =
+  AuthenticatedAdminPaymentGatewaysRouteImport.update({
+    id: '/admin/payment-gateways',
+    path: '/admin/payment-gateways',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAppAiIndexRoute = AuthenticatedAppAiIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -365,6 +374,17 @@ const ApiPublicWebhooksRazorpayRoute =
   ApiPublicWebhooksRazorpayRouteImport.update({
     id: '/api/public/webhooks/razorpay',
     path: '/api/public/webhooks/razorpay',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksPayuRoute = ApiPublicWebhooksPayuRouteImport.update({
+  id: '/api/public/webhooks/payu',
+  path: '/api/public/webhooks/payu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksCashfreeRoute =
+  ApiPublicWebhooksCashfreeRouteImport.update({
+    id: '/api/public/webhooks/cashfree',
+    path: '/api/public/webhooks/cashfree',
     getParentRoute: () => rootRouteImport,
   } as any)
 const AuthenticatedAppSettingsSessionsRoute =
@@ -469,6 +489,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
@@ -518,6 +539,8 @@ export interface FileRoutesByFullPath {
   '/app/settings/pwa': typeof AuthenticatedAppSettingsPwaRoute
   '/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
+  '/api/public/webhooks/cashfree': typeof ApiPublicWebhooksCashfreeRoute
+  '/api/public/webhooks/payu': typeof ApiPublicWebhooksPayuRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
   '/app/ai/': typeof AuthenticatedAppAiIndexRoute
 }
@@ -537,6 +560,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth': typeof AuthIndexRoute
+  '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
@@ -585,6 +609,8 @@ export interface FileRoutesByTo {
   '/app/settings/pwa': typeof AuthenticatedAppSettingsPwaRoute
   '/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
+  '/api/public/webhooks/cashfree': typeof ApiPublicWebhooksCashfreeRoute
+  '/api/public/webhooks/payu': typeof ApiPublicWebhooksPayuRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
   '/app/ai': typeof AuthenticatedAppAiIndexRoute
 }
@@ -607,6 +633,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/_authenticated/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/_authenticated/app/agency': typeof AuthenticatedAppAgencyRoute
   '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
@@ -656,6 +683,8 @@ export interface FileRoutesById {
   '/_authenticated/app/settings/pwa': typeof AuthenticatedAppSettingsPwaRoute
   '/_authenticated/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/_authenticated/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
+  '/api/public/webhooks/cashfree': typeof ApiPublicWebhooksCashfreeRoute
+  '/api/public/webhooks/payu': typeof ApiPublicWebhooksPayuRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
   '/_authenticated/app/ai/': typeof AuthenticatedAppAiIndexRoute
 }
@@ -678,6 +707,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/admin/payment-gateways'
     | '/app/agency'
     | '/app/ai'
     | '/app/analytics'
@@ -727,6 +757,8 @@ export interface FileRouteTypes {
     | '/app/settings/pwa'
     | '/app/settings/security'
     | '/app/settings/sessions'
+    | '/api/public/webhooks/cashfree'
+    | '/api/public/webhooks/payu'
     | '/api/public/webhooks/razorpay'
     | '/app/ai/'
   fileRoutesByTo: FileRoutesByTo
@@ -746,6 +778,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth'
+    | '/admin/payment-gateways'
     | '/app/agency'
     | '/app/analytics'
     | '/app/automation'
@@ -794,6 +827,8 @@ export interface FileRouteTypes {
     | '/app/settings/pwa'
     | '/app/settings/security'
     | '/app/settings/sessions'
+    | '/api/public/webhooks/cashfree'
+    | '/api/public/webhooks/payu'
     | '/api/public/webhooks/razorpay'
     | '/app/ai'
   id:
@@ -815,6 +850,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/_authenticated/admin/payment-gateways'
     | '/_authenticated/app/agency'
     | '/_authenticated/app/ai'
     | '/_authenticated/app/analytics'
@@ -864,6 +900,8 @@ export interface FileRouteTypes {
     | '/_authenticated/app/settings/pwa'
     | '/_authenticated/app/settings/security'
     | '/_authenticated/app/settings/sessions'
+    | '/api/public/webhooks/cashfree'
+    | '/api/public/webhooks/payu'
     | '/api/public/webhooks/razorpay'
     | '/_authenticated/app/ai/'
   fileRoutesById: FileRoutesById
@@ -887,6 +925,8 @@ export interface RootRouteChildren {
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAiGenerateRoute: typeof ApiAiGenerateRoute
   ApiPublicTrackRoute: typeof ApiPublicTrackRoute
+  ApiPublicWebhooksCashfreeRoute: typeof ApiPublicWebhooksCashfreeRoute
+  ApiPublicWebhooksPayuRoute: typeof ApiPublicWebhooksPayuRoute
   ApiPublicWebhooksRazorpayRoute: typeof ApiPublicWebhooksRazorpayRoute
 }
 
@@ -1256,6 +1296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAgencyRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/admin/payment-gateways': {
+      id: '/_authenticated/admin/payment-gateways'
+      path: '/admin/payment-gateways'
+      fullPath: '/admin/payment-gateways'
+      preLoaderRoute: typeof AuthenticatedAdminPaymentGatewaysRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/app/ai/': {
       id: '/_authenticated/app/ai/'
       path: '/'
@@ -1268,6 +1315,20 @@ declare module '@tanstack/react-router' {
       path: '/api/public/webhooks/razorpay'
       fullPath: '/api/public/webhooks/razorpay'
       preLoaderRoute: typeof ApiPublicWebhooksRazorpayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/payu': {
+      id: '/api/public/webhooks/payu'
+      path: '/api/public/webhooks/payu'
+      fullPath: '/api/public/webhooks/payu'
+      preLoaderRoute: typeof ApiPublicWebhooksPayuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/cashfree': {
+      id: '/api/public/webhooks/cashfree'
+      path: '/api/public/webhooks/cashfree'
+      fullPath: '/api/public/webhooks/cashfree'
+      preLoaderRoute: typeof ApiPublicWebhooksCashfreeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/app/settings/sessions': {
@@ -1510,12 +1571,15 @@ const AuthenticatedAppRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedAdminPaymentGatewaysRoute: typeof AuthenticatedAdminPaymentGatewaysRoute
   AuthenticatedBuilderIdRoute: typeof AuthenticatedBuilderIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedAdminPaymentGatewaysRoute:
+    AuthenticatedAdminPaymentGatewaysRoute,
   AuthenticatedBuilderIdRoute: AuthenticatedBuilderIdRoute,
 }
 
@@ -1542,6 +1606,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAiGenerateRoute: ApiAiGenerateRoute,
   ApiPublicTrackRoute: ApiPublicTrackRoute,
+  ApiPublicWebhooksCashfreeRoute: ApiPublicWebhooksCashfreeRoute,
+  ApiPublicWebhooksPayuRoute: ApiPublicWebhooksPayuRoute,
   ApiPublicWebhooksRazorpayRoute: ApiPublicWebhooksRazorpayRoute,
 }
 export const routeTree = rootRouteImport
