@@ -15,8 +15,16 @@ export type PaymentOrderStatus =
   | "manual_review";
 export type HealthStatus = "unknown" | "healthy" | "degraded" | "down";
 
-/** Safe (client-facing) gateway shape — never includes raw secrets. */
-export interface PaymentGatewayPublic {
+/** JSON-serializable scalar tree. */
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [k: string]: JsonValue };
+
+interface PaymentGatewayBase {
   id: string;
   workspace_id: string | null;
   provider: PaymentProvider;
@@ -24,15 +32,25 @@ export interface PaymentGatewayPublic {
   enabled: boolean;
   mode: PaymentMode;
   priority: number;
-  has_credentials: boolean;
-  has_webhook_secret: boolean;
   health_status: HealthStatus;
   health_message: string | null;
   health_checked_at: string | null;
   /** Non-secret config: UPI id, QR image url, instructions, supported_methods. */
-  config: Record<string, unknown>;
+  config: Record<string, JsonValue>;
   created_at: string;
   updated_at: string;
+}
+
+/** Safe (client-facing) gateway shape — never includes raw secrets. */
+export interface PaymentGatewayPublic extends PaymentGatewayBase {
+  has_credentials: boolean;
+  has_webhook_secret: boolean;
+}
+
+/** Server-only shape — includes credentials. Never returned to client. */
+export interface PaymentGatewayPrivate extends PaymentGatewayBase {
+  credentials: Record<string, string>;
+  webhook_secret: string | null;
 }
 
 export interface CreateOrderInput {
@@ -45,27 +63,24 @@ export interface CreateOrderInput {
   returnUrl: string;
 }
 
+export type LaunchPayload =
+  | { kind: "razorpay"; keyId: string; orderId: string; amount: number; currency: string }
+  | { kind: "payu"; endpoint: string; fields: Record<string, string> }
+  | { kind: "cashfree"; sessionId: string; mode: PaymentMode }
+  | {
+      kind: "manual_upi";
+      upiId: string;
+      accountName: string;
+      qrImageUrl: string | null;
+      amountPaise: number;
+      instructions: string;
+      orderRef: string;
+    };
+
 export interface CreateOrderResult {
   orderId: string; // internal payment_orders.id
   provider: PaymentProvider;
-  /** Adapter-specific payload the client uses to launch checkout. */
-  launch:
-    | { kind: "razorpay"; keyId: string; orderId: string; amount: number; currency: string }
-    | {
-        kind: "payu";
-        endpoint: string;
-        fields: Record<string, string>;
-      }
-    | { kind: "cashfree"; sessionId: string; mode: PaymentMode }
-    | {
-        kind: "manual_upi";
-        upiId: string;
-        accountName: string;
-        qrImageUrl: string | null;
-        amountPaise: number;
-        instructions: string;
-        orderRef: string;
-      };
+  launch: LaunchPayload;
 }
 
 export interface HealthResult {
@@ -75,34 +90,38 @@ export interface HealthResult {
 
 export interface GatewayAdapter {
   provider: PaymentProvider;
-  supportedMethods: string[]; // e.g. ["upi","card","netbanking","wallet","emi"]
-  /** Called from server; must not touch DOM. */
+  supportedMethods: string[];
   createOrder(
     gateway: PaymentGatewayPrivate,
     input: CreateOrderInput,
     orderId: string,
   ): Promise<CreateOrderResult>;
-  /** Verify signature of a returned payment/webhook payload. */
   verifySignature(
     gateway: PaymentGatewayPrivate,
     rawBody: string,
     signature: string,
   ): boolean;
-  /** Lightweight health probe (no live charge). */
   health(gateway: PaymentGatewayPrivate): Promise<HealthResult>;
 }
 
-/** Server-only shape — includes credentials. Never returned to client. */
-export interface PaymentGatewayPrivate extends PaymentGatewayPublic {
-  credentials: Record<string, string>;
-  webhook_secret: string | null;
-}
-
-export function redactGateway(g: PaymentGatewayPrivate): PaymentGatewayPublic {
-  const { credentials, webhook_secret, ...rest } = g;
+/** Server -> client redactor. */
+export function redactGateway(g: Record<string, unknown>): PaymentGatewayPublic {
+  const creds = (g.credentials as Record<string, string> | null) ?? {};
   return {
-    ...rest,
-    has_credentials: Object.keys(credentials ?? {}).length > 0,
-    has_webhook_secret: Boolean(webhook_secret),
+    id: String(g.id),
+    workspace_id: (g.workspace_id as string | null) ?? null,
+    provider: g.provider as PaymentProvider,
+    display_name: String(g.display_name ?? ""),
+    enabled: Boolean(g.enabled),
+    mode: (g.mode as PaymentMode) ?? "sandbox",
+    priority: Number(g.priority ?? 100),
+    health_status: (g.health_status as HealthStatus) ?? "unknown",
+    health_message: (g.health_message as string | null) ?? null,
+    health_checked_at: (g.health_checked_at as string | null) ?? null,
+    config: ((g.config as Record<string, JsonValue>) ?? {}),
+    created_at: String(g.created_at),
+    updated_at: String(g.updated_at),
+    has_credentials: Object.keys(creds).length > 0,
+    has_webhook_secret: Boolean(g.webhook_secret),
   };
 }
