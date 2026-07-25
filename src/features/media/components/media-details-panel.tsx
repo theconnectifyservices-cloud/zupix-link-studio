@@ -129,21 +129,20 @@ export function MediaDetailsPanel({ asset, userId, onClose }: Props) {
           <Button size="sm" variant="outline" onClick={openInTab}>
             <ExternalLink className="mr-1.5 h-3.5 w-3.5" /> Open
           </Button>
-          <Button size="sm" variant="outline" asChild>
-            <a
-              href="#"
-              onClick={async (e) => {
-                e.preventDefault();
-                const url = await signedUrl(asset.path);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = asset.file_name ?? "download";
-                a.click();
-              }}
-            >
-              <Download className="mr-1.5 h-3.5 w-3.5" /> Download
-            </a>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={async () => {
+              const url = await signedUrl(asset.path);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = asset.file_name ?? "download";
+              a.click();
+            }}
+          >
+            <Download className="mr-1.5 h-3.5 w-3.5" /> Download
           </Button>
+
           <Button size="sm" variant="destructive" className="ml-auto" onClick={handleDelete}>
             <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Delete
           </Button>
