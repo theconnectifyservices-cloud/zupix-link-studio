@@ -22,7 +22,7 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
-import { listGateways, upsertGateway, deleteGateway, runHealthCheck } from "../../admin.functions";
+import { listGatewaysAdmin, upsertGateway, deleteGateway, testGatewayConnection } from "../../admin.functions";
 import { REGISTRY_META } from "../../gateways/registry";
 import type { PaymentGatewayPublic, PaymentProvider, PaymentMode } from "../../types";
 
@@ -56,14 +56,16 @@ const CREDENTIAL_FIELDS: Record<PaymentProvider, { key: string; label: string; t
 
 export function GatewayManager({ workspaceId = null }: Props) {
   const qc = useQueryClient();
-  const listFn = useServerFn(listGateways);
-  const healthFn = useServerFn(runHealthCheck);
+  const listFn = useServerFn(listGatewaysAdmin);
+  const healthFn = useServerFn(testGatewayConnection);
   const deleteFn = useServerFn(deleteGateway);
+
 
   const gwQ = useQuery({
     queryKey: ["admin-gateways", workspaceId],
     queryFn: () => listFn({ data: { workspaceId } }),
   });
+
 
   const [editing, setEditing] = useState<PaymentGatewayPublic | null>(null);
   const [creating, setCreating] = useState<PaymentProvider | null>(null);
@@ -248,7 +250,7 @@ function GatewayEditor(props: {
           : {};
       const payload = {
         id: gateway?.id,
-        workspace_id: workspaceId,
+        workspaceId: workspaceId,
         provider,
         display_name: displayName,
         enabled,
@@ -259,6 +261,7 @@ function GatewayEditor(props: {
         webhook_secret: webhookSecret || undefined,
       };
       return upsertFn({ data: payload });
+
     },
     onSuccess: () => {
       toast.success("Saved");
