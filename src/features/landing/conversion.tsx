@@ -1437,9 +1437,10 @@ function SectionFinalCta() {
               <MagneticButton href="/auth" variant="outline" icon={<CalendarCheck className="h-4 w-4" />}>
                 Book a Demo
               </MagneticButton>
-              <MagneticButton href="#" variant="ghost" icon={<Wand2 className="h-4 w-4" />}>
+              <MagneticButton href="/auth" variant="ghost" icon={<Wand2 className="h-4 w-4" />}>
                 View Templates
               </MagneticButton>
+
             </div>
 
             <div className="mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">

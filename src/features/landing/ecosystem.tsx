@@ -1043,15 +1043,17 @@ function TrustFooter() {
             </div>
             <div className="mt-6 flex gap-2">
               {[
-                { icon: Twitter, label: "Twitter" },
-                { icon: Instagram, label: "Instagram" },
-                { icon: Linkedin, label: "LinkedIn" },
-                { icon: Youtube, label: "YouTube" },
-                { icon: Facebook, label: "Facebook" },
+                { icon: Twitter, label: "Twitter", href: "https://twitter.com/zupix" },
+                { icon: Instagram, label: "Instagram", href: "https://instagram.com/zupix" },
+                { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/company/zupix" },
+                { icon: Youtube, label: "YouTube", href: "https://youtube.com/@zupix" },
+                { icon: Facebook, label: "Facebook", href: "https://facebook.com/zupix" },
               ].map((s) => (
                 <a
                   key={s.label}
-                  href="#"
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={s.label}
                   className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
                 >
@@ -1059,6 +1061,7 @@ function TrustFooter() {
                 </a>
               ))}
             </div>
+
           </div>
 
           {FOOTER_COLS.map((col) => (
@@ -1070,7 +1073,7 @@ function TrustFooter() {
                 {col.links.map((l) => (
                   <li key={l}>
                     <a
-                      href="#"
+                      href="/"
                       className="group inline-flex items-center gap-1 text-sm text-white/60 transition hover:text-white"
                     >
                       <span className="border-b border-transparent transition group-hover:border-white/60">
@@ -1079,6 +1082,7 @@ function TrustFooter() {
                     </a>
                   </li>
                 ))}
+
               </ul>
             </div>
           ))}
