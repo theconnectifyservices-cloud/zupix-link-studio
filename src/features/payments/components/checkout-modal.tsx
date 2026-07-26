@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { listAvailableGateways, createCheckoutOrder } from "../checkout.functions";
 import { submitUpiProof } from "../upi.functions";
+import { MediaField } from "@/shared/ui/media-field";
 import { REGISTRY_META } from "../gateways/registry";
 import type { LaunchPayload, PaymentGatewayPublic, PaymentProvider } from "../types";
 import { CouponInput } from "@/features/trial/components/coupon-input";
