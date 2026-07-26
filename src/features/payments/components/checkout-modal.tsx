@@ -292,8 +292,10 @@ export function CheckoutModal(props: Props) {
 
           {/* Body */}
           <div className="relative flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-6 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            {step !== "success" && step !== "failed" && <TrustBadges />}
 
             <AnimatePresence mode="wait">
+
               {step === "summary" && (
                 <StepMotion key="summary">
                   <SummaryStep
