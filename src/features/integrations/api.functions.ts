@@ -57,7 +57,7 @@ export const upsertIntegration = createServerFn({ method: "POST" })
       displayName: string;
       enabled: boolean;
       environment: "sandbox" | "production";
-      config: Record<string, unknown>;
+      config: Record<string, string>;
       /** Only present when user typed new values. Undefined = keep existing. */
       credentials?: Record<string, string>;
     }) => d,
