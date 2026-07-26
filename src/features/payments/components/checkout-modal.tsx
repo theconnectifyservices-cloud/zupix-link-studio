@@ -244,9 +244,9 @@ export function CheckoutModal(props: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-2xl overflow-hidden border-none bg-transparent p-0 shadow-2xl"
+        className="w-[calc(100vw-1rem)] max-w-[720px] sm:max-w-[720px] max-h-[95dvh] sm:max-h-[90vh] overflow-hidden border-none bg-transparent p-0 shadow-2xl"
       >
-        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-background/85 backdrop-blur-2xl">
+        <div className="relative flex max-h-[95dvh] sm:max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-white/10 bg-background/85 backdrop-blur-2xl">
           {/* Ambient glow */}
           <div aria-hidden className="pointer-events-none absolute inset-0 opacity-60">
             <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/30 blur-3xl" />
@@ -254,7 +254,7 @@ export function CheckoutModal(props: Props) {
           </div>
 
           {/* Header */}
-          <div className="relative border-b border-border/50 px-6 py-4">
+          <div className="relative shrink-0 border-b border-border/50 px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <ShieldCheck className="h-4 w-4 text-primary" />
@@ -279,7 +279,8 @@ export function CheckoutModal(props: Props) {
           </div>
 
           {/* Body */}
-          <div className="relative min-h-[380px] px-6 py-6">
+          <div className="relative flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-6 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+
             <AnimatePresence mode="wait">
               {step === "summary" && (
                 <StepMotion key="summary">
@@ -296,7 +297,7 @@ export function CheckoutModal(props: Props) {
                     onCoupon={setCoupon}
                     trialDays={trial?.days ?? null}
                   />
-                  <div className="mt-6 flex justify-end">
+                  <div className="sticky bottom-0 -mx-6 -mb-6 mt-6 flex justify-end border-t border-border/50 bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70">
                     <Button
                       onClick={() => setStep("gateway")}
                       className="gap-1.5 bg-gradient-to-r from-primary to-purple-600"
@@ -315,7 +316,7 @@ export function CheckoutModal(props: Props) {
                     selected={selected}
                     onSelect={setSelected}
                   />
-                  <div className="mt-6 flex items-center justify-between">
+                  <div className="sticky bottom-0 -mx-6 -mb-6 mt-6 flex items-center justify-between border-t border-border/50 bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70">
                     <Button variant="ghost" size="sm" onClick={() => setStep("summary")} className="gap-1.5">
                       <ArrowLeft className="h-4 w-4" /> Back
                     </Button>
@@ -694,10 +695,13 @@ function ManualUpiStep({
           label="Upload screenshot"
         />
       </div>
-      <Button className="w-full" onClick={() => onSubmit(screenshotUrl || undefined)} disabled={!txnRef.trim() || pending}>
-        {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
-        Submit Payment Proof
-      </Button>
+      <div className="sticky bottom-0 -mx-6 -mb-6 mt-6 flex flex-col gap-2 border-t border-border/50 bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70 sm:flex-row sm:justify-end">
+        <Button className="w-full sm:w-auto" onClick={() => onSubmit(screenshotUrl || undefined)} disabled={!txnRef.trim() || pending}>
+          {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
+          Submit Payment Proof
+        </Button>
+      </div>
+
     </div>
   );
 }
