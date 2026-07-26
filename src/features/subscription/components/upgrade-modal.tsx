@@ -21,6 +21,8 @@ import { usePlan } from "../hooks";
 import { WaitlistForm } from "./waitlist-form";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
 import { SubscriptionCheckoutLauncher } from "@/features/billing/components/subscription-checkout-launcher";
+import { CouponInput } from "@/features/trial/components/coupon-input";
+import { TrialCountdown } from "@/features/trial";
 
 export function UpgradeModal() {
   const { upgradeOpen, upgradeContext, closeUpgrade } = useSubscriptionUI();
@@ -93,6 +95,13 @@ export function UpgradeModal() {
                   onUpgrade={() => setCheckout({ planCode: code })}
                 />
               ))}
+            </div>
+
+            <div className="mx-auto mt-6 max-w-md">
+              <TrialCountdown variant="card" />
+              <div className="mt-3">
+                <CouponInput planCode="tejas" cycle={cycle} amountMinor={cycle === "yearly" ? PLANS.tejas.priceYearlyMinor : PLANS.tejas.priceMonthlyMinor} />
+              </div>
             </div>
 
             <p className="mt-6 text-center text-xs text-muted-foreground">
