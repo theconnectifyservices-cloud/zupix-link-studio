@@ -615,23 +615,60 @@ function ManualUpiStep({
   setTxnRef: (v: string) => void;
   pending: boolean; onSubmit: () => void;
 }) {
+  const [screenshotUrl, setScreenshotUrl] = useState<string>("");
+  const amountRupees = (launch.amountPaise / 100).toFixed(2);
+  const upiDeepLink = `upi://pay?pa=${encodeURIComponent(launch.upiId)}&pn=${encodeURIComponent(launch.accountName)}&am=${amountRupees}&cu=INR&tn=${encodeURIComponent(launch.orderRef)}`;
+
+  const copyUpi = async () => {
+    try {
+      await navigator.clipboard.writeText(launch.upiId);
+      toast.success("UPI ID copied");
+    } catch {
+      toast.error("Copy failed");
+    }
+  };
+  const downloadQr = () => {
+    if (!launch.qrImageUrl) return;
+    const a = document.createElement("a");
+    a.href = launch.qrImageUrl;
+    a.download = `zupix-upi-qr-${launch.orderRef}.png`;
+    a.target = "_blank";
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
   return (
     <div className="space-y-4">
       <div className="rounded-xl border bg-muted/30 p-4">
         <div className="flex items-center gap-2 text-sm font-medium">
           <QrCode className="h-4 w-4" /> Pay {amountLabel} via UPI
         </div>
-        {launch.qrImageUrl && (
+        {launch.qrImageUrl ? (
           <img
             src={launch.qrImageUrl}
             alt="UPI QR code"
             className="mx-auto mt-3 h-52 w-52 rounded-lg border bg-white object-contain p-2"
           />
+        ) : (
+          <div className="mx-auto mt-3 grid h-52 w-52 place-items-center rounded-lg border bg-white/60 text-xs text-muted-foreground">
+            QR unavailable — use UPI ID below
+          </div>
         )}
         <div className="mt-3 text-center">
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">UPI ID</div>
           <div className="font-mono text-base font-semibold">{launch.upiId}</div>
           <div className="text-xs text-muted-foreground">{launch.accountName}</div>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+          <Button size="sm" variant="outline" onClick={copyUpi}>Copy UPI ID</Button>
+          {launch.qrImageUrl && (
+            <Button size="sm" variant="outline" onClick={downloadQr}>Download QR</Button>
+          )}
+          <Button size="sm" asChild>
+            <a href={upiDeepLink}>Open UPI App</a>
+          </Button>
         </div>
         <p className="mt-3 whitespace-pre-line text-center text-xs text-muted-foreground">
           {launch.instructions}
@@ -647,6 +684,14 @@ function ManualUpiStep({
         <p className="text-xs text-muted-foreground">
           Enter the 12-digit UTR from your UPI app after paying.
         </p>
+      </div>
+      <div className="space-y-2">
+        <Label>Payment Screenshot (optional)</Label>
+        <MediaField
+          value={screenshotUrl}
+          onChange={(v) => setScreenshotUrl(v ?? "")}
+          label="Upload screenshot"
+        />
       </div>
       <Button className="w-full" onClick={onSubmit} disabled={!txnRef.trim() || pending}>
         {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
