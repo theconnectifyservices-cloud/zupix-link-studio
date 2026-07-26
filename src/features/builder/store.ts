@@ -465,7 +465,8 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { history, content } = get();
     if (history.past.length === 0) return;
     const past = [...history.past];
-    const prev = past.pop()!;
+    const prev = past.pop();
+    if (!prev) return;
     set({
       content: prev,
       history: { past, future: [content, ...history.future] },
@@ -577,12 +578,11 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   patchThemeButtons: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
-    const base = current.buttons ?? DEFAULT_THEME.buttons!;
     set({
       history: pushHistory(history, content),
       content: {
         ...content,
-        theme: { ...current, buttons: { ...base, ...patch }, preset: "custom" },
+        theme: { ...current, buttons: { ...current.buttons, ...patch }, preset: "custom" },
       },
       saveStatus: "dirty",
     });
@@ -590,12 +590,11 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   patchThemeBackground: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
-    const base = current.background ?? DEFAULT_THEME.background!;
     set({
       history: pushHistory(history, content),
       content: {
         ...content,
-        theme: { ...current, background: { ...base, ...patch }, preset: "custom" },
+        theme: { ...current, background: { ...current.background, ...patch }, preset: "custom" },
       },
       saveStatus: "dirty",
     });
@@ -603,12 +602,11 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   patchThemeProfile: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
-    const base = current.profile ?? DEFAULT_THEME.profile!;
     set({
       history: pushHistory(history, content),
       content: {
         ...content,
-        theme: { ...current, profile: { ...base, ...patch }, preset: "custom" },
+        theme: { ...current, profile: { ...current.profile, ...patch }, preset: "custom" },
       },
       saveStatus: "dirty",
     });
@@ -616,12 +614,11 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   patchThemeMotion: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
-    const base = current.motion ?? DEFAULT_THEME.motion!;
     set({
       history: pushHistory(history, content),
       content: {
         ...content,
-        theme: { ...current, motion: { ...base, ...patch }, preset: "custom" },
+        theme: { ...current, motion: { ...current.motion, ...patch }, preset: "custom" },
       },
       saveStatus: "dirty",
     });
