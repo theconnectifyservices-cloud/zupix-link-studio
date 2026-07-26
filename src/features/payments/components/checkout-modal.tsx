@@ -244,9 +244,9 @@ export function CheckoutModal(props: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-2xl overflow-hidden border-none bg-transparent p-0 shadow-2xl"
+        className="w-[calc(100vw-1rem)] max-w-[720px] sm:max-w-[720px] max-h-[95dvh] sm:max-h-[90vh] overflow-hidden border-none bg-transparent p-0 shadow-2xl"
       >
-        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-background/85 backdrop-blur-2xl">
+        <div className="relative flex max-h-[95dvh] sm:max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-white/10 bg-background/85 backdrop-blur-2xl">
           {/* Ambient glow */}
           <div aria-hidden className="pointer-events-none absolute inset-0 opacity-60">
             <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/30 blur-3xl" />
@@ -254,7 +254,7 @@ export function CheckoutModal(props: Props) {
           </div>
 
           {/* Header */}
-          <div className="relative border-b border-border/50 px-6 py-4">
+          <div className="relative shrink-0 border-b border-border/50 px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <ShieldCheck className="h-4 w-4 text-primary" />
@@ -279,7 +279,8 @@ export function CheckoutModal(props: Props) {
           </div>
 
           {/* Body */}
-          <div className="relative min-h-[380px] px-6 py-6">
+          <div className="relative flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-6 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+
             <AnimatePresence mode="wait">
               {step === "summary" && (
                 <StepMotion key="summary">
