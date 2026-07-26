@@ -696,7 +696,42 @@ export function resetMotion(current: PageTheme): PageTheme {
   return { ...current, motion: { ...DEFAULT_MOTION }, preset: "custom" };
 }
 
-// ── Google Fonts loader ─────────────────────────────────────────────────
+// ── Theme normalization (crash-proof hydration) ─────────────────────────
+/**
+ * Returns a fully-populated PageTheme, resolving any preset reference and
+ * deep-merging DEFAULT_THEME into missing sub-objects. This is the single
+ * safety net that guarantees the renderer never sees an undefined
+ * `theme.colors`, `theme.typography`, etc. — regardless of how old or
+ * partial the persisted `content.theme` is.
+ */
+export function normalizeTheme(input?: Partial<PageTheme> | null): PageTheme {
+  const raw = (input ?? {}) as Partial<PageTheme>;
+  // If the persisted theme is just a preset reference (e.g. { preset: "neon" }),
+  // hydrate from the preset first, then let explicit fields override.
+  let base: PageTheme = DEFAULT_THEME;
+  if (raw.preset && raw.preset !== "custom") {
+    const p = getPreset(raw.preset as ThemePresetId);
+    if (p) base = { ...p.theme, preset: p.id } as PageTheme;
+  }
+  const darkDefaults = (raw.mode ?? base.mode) === "dark" ? DEFAULT_COLORS_DARK : DEFAULT_COLORS_LIGHT;
+  return {
+    ...base,
+    ...raw,
+    mode: raw.mode ?? base.mode ?? "light",
+    preset: raw.preset ?? base.preset ?? "minimal",
+    colors: { ...darkDefaults, ...(base.colors ?? {}), ...(raw.colors ?? {}) },
+    typography: { ...DEFAULT_TYPOGRAPHY, ...(base.typography ?? {}), ...(raw.typography ?? {}) },
+    spacing: { ...DEFAULT_SPACING, ...(base.spacing ?? {}), ...(raw.spacing ?? {}) },
+    card: { ...DEFAULT_CARD, ...(base.card ?? {}), ...(raw.card ?? {}) },
+    buttons: { ...DEFAULT_BUTTONS, ...(base.buttons ?? {}), ...(raw.buttons ?? {}) },
+    background: { ...DEFAULT_BACKGROUND, ...(base.background ?? {}), ...(raw.background ?? {}) },
+    profile: { ...DEFAULT_PROFILE, ...(base.profile ?? {}), ...(raw.profile ?? {}) },
+    motion: { ...DEFAULT_MOTION, ...(base.motion ?? {}), ...(raw.motion ?? {}) },
+    brandColors: raw.brandColors ?? base.brandColors ?? [],
+    googleFonts: raw.googleFonts ?? base.googleFonts ?? [],
+  };
+}
+
 
 const LOADED_FONTS = new Set<string>();
 
