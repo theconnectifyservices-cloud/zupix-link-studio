@@ -359,11 +359,13 @@ function SeoBody({
                   placeholder={effective.description}
                 />
               </Field>
-              <Field label="Image URL">
-                <Input
-                  value={seo.twitterImage ?? ""}
-                  onChange={(e) => setSeo({ ...seo, twitterImage: e.target.value })}
-                  placeholder={seo.ogImage ?? "https://…/cover.jpg"}
+              <Field label="Image">
+                <MediaField
+                  label=""
+                  value={seo.twitterImage ?? undefined}
+                  onChange={(url) => setSeo({ ...seo, twitterImage: url ?? undefined })}
+                  pickerTitle="Choose or upload Twitter card image"
+                  previewAspect="1200 / 630"
                 />
               </Field>
               <div className="grid grid-cols-2 gap-3">
@@ -473,18 +475,22 @@ function SeoBody({
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Favicon URL">
-                  <Input
-                    value={faviconUrl}
-                    onChange={(e) => setFavicon(e.target.value)}
-                    placeholder="https://…/favicon.png"
+                <Field label="Favicon">
+                  <MediaField
+                    label=""
+                    value={faviconUrl || undefined}
+                    onChange={(url) => setFavicon(url ?? "")}
+                    pickerTitle="Choose or upload favicon"
+                    previewAspect="1 / 1"
                   />
                 </Field>
-                <Field label="Apple touch icon URL (180×180)">
-                  <Input
-                    value={appleUrl}
-                    onChange={(e) => setApple(e.target.value)}
-                    placeholder="https://…/apple-touch-icon.png"
+                <Field label="Apple touch icon (180×180)">
+                  <MediaField
+                    label=""
+                    value={appleUrl || undefined}
+                    onChange={(url) => setApple(url ?? "")}
+                    pickerTitle="Choose or upload Apple touch icon"
+                    previewAspect="1 / 1"
                   />
                 </Field>
               </div>
