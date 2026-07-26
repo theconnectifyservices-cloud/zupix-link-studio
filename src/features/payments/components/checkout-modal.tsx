@@ -256,15 +256,26 @@ export function CheckoutModal(props: Props) {
 
           {/* Header */}
           <div className="relative shrink-0 border-b border-border/50 px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <ShieldCheck className="h-4 w-4 text-primary" />
-                Secure Checkout
-                <Badge variant="outline" className="ml-1 border-emerald-500/40 text-[10px] text-emerald-600">
-                  <Lock className="mr-1 h-2.5 w-2.5" /> 256-bit
-                </Badge>
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary via-purple-600 to-pink-500 text-white shadow-md">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 text-sm font-semibold truncate">
+                    ZUPIX Link Studio
+                    <Badge variant="outline" className="border-emerald-500/40 text-[10px] text-emerald-600">
+                      <BadgeCheck className="mr-1 h-2.5 w-2.5" /> Verified
+                    </Badge>
+                  </div>
+                  <div className="text-[11px] text-muted-foreground truncate">
+                    Powered by ZUPIX with The Connectify · Trusted digital platform
+                  </div>
+                </div>
               </div>
-              <div className="text-xs text-muted-foreground">{planLabel}</div>
+              <div className="hidden shrink-0 items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/5 px-2 py-1 text-[10px] font-medium text-emerald-600 sm:flex">
+                <Lock className="h-3 w-3" /> 256-bit SSL
+              </div>
             </div>
 
             {/* Progress bar */}
