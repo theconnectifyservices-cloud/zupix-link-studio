@@ -297,7 +297,7 @@ export function CheckoutModal(props: Props) {
                     onCoupon={setCoupon}
                     trialDays={trial?.days ?? null}
                   />
-                  <div className="mt-6 flex justify-end">
+                  <div className="sticky bottom-0 -mx-6 -mb-6 mt-6 flex justify-end border-t border-border/50 bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70">
                     <Button
                       onClick={() => setStep("gateway")}
                       className="gap-1.5 bg-gradient-to-r from-primary to-purple-600"
