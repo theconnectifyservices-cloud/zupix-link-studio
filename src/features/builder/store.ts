@@ -15,6 +15,10 @@ import type {
 } from "./theme";
 import {
   DEFAULT_THEME,
+  DEFAULT_BUTTONS,
+  DEFAULT_BACKGROUND,
+  DEFAULT_PROFILE,
+  DEFAULT_MOTION,
   applyPresetTheme,
   normalizeTheme,
   resetColors as resetColorsFn,
@@ -578,11 +582,12 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   patchThemeButtons: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
+    const base = current.buttons ?? DEFAULT_BUTTONS;
     set({
       history: pushHistory(history, content),
       content: {
         ...content,
-        theme: { ...current, buttons: { ...current.buttons, ...patch }, preset: "custom" },
+        theme: { ...current, buttons: { ...base, ...patch }, preset: "custom" },
       },
       saveStatus: "dirty",
     });
@@ -590,11 +595,12 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   patchThemeBackground: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
+    const base = current.background ?? DEFAULT_BACKGROUND;
     set({
       history: pushHistory(history, content),
       content: {
         ...content,
-        theme: { ...current, background: { ...current.background, ...patch }, preset: "custom" },
+        theme: { ...current, background: { ...base, ...patch }, preset: "custom" },
       },
       saveStatus: "dirty",
     });
@@ -602,11 +608,12 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   patchThemeProfile: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
+    const base = current.profile ?? DEFAULT_PROFILE;
     set({
       history: pushHistory(history, content),
       content: {
         ...content,
-        theme: { ...current, profile: { ...current.profile, ...patch }, preset: "custom" },
+        theme: { ...current, profile: { ...base, ...patch }, preset: "custom" },
       },
       saveStatus: "dirty",
     });
@@ -614,11 +621,12 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   patchThemeMotion: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
+    const base = current.motion ?? DEFAULT_MOTION;
     set({
       history: pushHistory(history, content),
       content: {
         ...content,
-        theme: { ...current, motion: { ...current.motion, ...patch }, preset: "custom" },
+        theme: { ...current, motion: { ...base, ...patch }, preset: "custom" },
       },
       saveStatus: "dirty",
     });
