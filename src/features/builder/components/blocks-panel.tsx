@@ -1,9 +1,13 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import { Lock } from "lucide-react";
 import { BLOCK_DEFS, type BlockDef } from "../block-registry";
 import { useBuilderStore } from "../store";
 import { paletteDragId } from "./dnd-context";
 import { cn } from "@/lib/utils";
+import { useBlockAccess } from "@/features/subscription/hooks";
+import { PlanBadge } from "@/features/subscription/components/plan-badge";
+import { requiredPlanForBlock } from "@/features/subscription/plans";
 
 /** Add-blocks palette. Click to append, or drag onto the canvas. */
 export function BlocksPanel() {
@@ -38,9 +42,15 @@ export function BlocksPanel() {
 
 function PaletteTile({ def }: { def: BlockDef }) {
   const addBlock = useBuilderStore((s) => s.addBlock);
+  const access = useBlockAccess(def.type);
+  const requiredPlan = requiredPlanForBlock(def.type);
+  const isComingSoon = !def.available;
+  const isLocked = def.available && !access.enabled;
+  const draggable = def.available && access.enabled;
+
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: paletteDragId(def.type),
-    disabled: !def.available,
+    disabled: !draggable,
   });
   const style = { transform: CSS.Translate.toString(transform) };
   const Icon = def.icon;
@@ -50,24 +60,43 @@ function PaletteTile({ def }: { def: BlockDef }) {
       ref={setNodeRef}
       style={style}
       type="button"
-      disabled={!def.available}
-      onClick={() => def.available && addBlock(def.create())}
-      {...attributes}
-      {...listeners}
+      onClick={() => {
+        if (isComingSoon) return;
+        if (isLocked) {
+          access.requestUpgrade();
+          return;
+        }
+        addBlock(def.create());
+      }}
+      {...(draggable ? attributes : {})}
+      {...(draggable ? listeners : {})}
       className={cn(
-        "group flex touch-none flex-col items-start gap-2 rounded-lg border bg-card p-3 text-left transition-all",
-        def.available
-          ? "cursor-grab hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-sm active:cursor-grabbing"
-          : "cursor-not-allowed opacity-50",
+        "group relative flex touch-none flex-col items-start gap-2 rounded-lg border bg-card p-3 text-left transition-all",
+        draggable && "cursor-grab hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-sm active:cursor-grabbing",
+        isLocked && "cursor-pointer hover:border-primary/40 hover:shadow-sm",
+        isComingSoon && "cursor-not-allowed opacity-50",
         isDragging && "opacity-40",
       )}
     >
-      <div className="grid h-8 w-8 place-items-center rounded-md bg-primary/10 text-primary">
-        <Icon className="h-4 w-4" />
+      <div className="flex w-full items-start justify-between gap-2">
+        <div
+          className={cn(
+            "grid h-8 w-8 place-items-center rounded-md",
+            isLocked ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary",
+          )}
+        >
+          {isLocked ? <Lock className="h-3.5 w-3.5" /> : <Icon className="h-4 w-4" />}
+        </div>
+        {requiredPlan && requiredPlan !== "udaan" && !isComingSoon && (
+          <PlanBadge plan={requiredPlan} />
+        )}
+        {isComingSoon && <PlanBadge plan="shikhar" />}
       </div>
       <div className="min-w-0">
         <div className="truncate text-sm font-medium">{def.label}</div>
-        <div className="truncate text-[11px] text-muted-foreground">{def.description}</div>
+        <div className="truncate text-[11px] text-muted-foreground">
+          {isComingSoon ? "Coming soon" : def.description}
+        </div>
       </div>
     </button>
   );
