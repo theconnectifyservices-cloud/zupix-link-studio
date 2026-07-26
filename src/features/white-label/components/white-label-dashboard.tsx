@@ -20,6 +20,7 @@ import {
   Save,
 } from "lucide-react";
 import { toast } from "sonner";
+import { MediaField } from "@/shared/ui/media-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -356,23 +357,31 @@ function TenantEditor({
                     onChange={(e) => setForm({ ...form, company_name: e.target.value })}
                   />
                 </Field>
-                <Field label="Logo URL">
-                  <Input
-                    value={form.logo_url ?? ""}
-                    onChange={(e) => setForm({ ...form, logo_url: e.target.value })}
-                    placeholder="https://…/logo.svg"
+                <Field label="Logo">
+                  <MediaField
+                    label=""
+                    value={form.logo_url ?? undefined}
+                    onChange={(url) => setForm({ ...form, logo_url: url ?? "" })}
+                    pickerTitle="Choose or upload logo"
+                    previewAspect="1 / 1"
                   />
                 </Field>
-                <Field label="Dark logo URL">
-                  <Input
-                    value={form.logo_dark_url ?? ""}
-                    onChange={(e) => setForm({ ...form, logo_dark_url: e.target.value })}
+                <Field label="Dark logo">
+                  <MediaField
+                    label=""
+                    value={form.logo_dark_url ?? undefined}
+                    onChange={(url) => setForm({ ...form, logo_dark_url: url ?? "" })}
+                    pickerTitle="Choose or upload dark logo"
+                    previewAspect="1 / 1"
                   />
                 </Field>
-                <Field label="Favicon URL">
-                  <Input
-                    value={form.favicon_url ?? ""}
-                    onChange={(e) => setForm({ ...form, favicon_url: e.target.value })}
+                <Field label="Favicon">
+                  <MediaField
+                    label=""
+                    value={form.favicon_url ?? undefined}
+                    onChange={(url) => setForm({ ...form, favicon_url: url ?? "" })}
+                    pickerTitle="Choose or upload favicon"
+                    previewAspect="1 / 1"
                   />
                 </Field>
                 <Field label="Primary color">
