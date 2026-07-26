@@ -61,6 +61,7 @@ import { Route as AuthenticatedAppAutomationRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated.app.analytics'
 import { Route as AuthenticatedAppAiRouteImport } from './routes/_authenticated.app.ai'
 import { Route as AuthenticatedAppAgencyRouteImport } from './routes/_authenticated.app.agency'
+import { Route as AuthenticatedAdminSubscriptionsRouteImport } from './routes/_authenticated/admin/subscriptions'
 import { Route as AuthenticatedAdminPaymentGatewaysRouteImport } from './routes/_authenticated/admin/payment-gateways'
 import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authenticated.app.ai.index'
 import { Route as ApiPublicWebhooksRazorpayRouteImport } from './routes/api/public/webhooks/razorpay'
@@ -359,6 +360,12 @@ const AuthenticatedAppAgencyRoute = AuthenticatedAppAgencyRouteImport.update({
   path: '/agency',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAdminSubscriptionsRoute =
+  AuthenticatedAdminSubscriptionsRouteImport.update({
+    id: '/admin/subscriptions',
+    path: '/admin/subscriptions',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminPaymentGatewaysRoute =
   AuthenticatedAdminPaymentGatewaysRouteImport.update({
     id: '/admin/payment-gateways',
@@ -490,6 +497,7 @@ export interface FileRoutesByFullPath {
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
+  '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
@@ -561,6 +569,7 @@ export interface FileRoutesByTo {
   '/invite/$token': typeof InviteTokenRoute
   '/auth': typeof AuthIndexRoute
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
+  '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
@@ -634,6 +643,7 @@ export interface FileRoutesById {
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
   '/_authenticated/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
+  '/_authenticated/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/_authenticated/app/agency': typeof AuthenticatedAppAgencyRoute
   '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
@@ -708,6 +718,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/auth/'
     | '/admin/payment-gateways'
+    | '/admin/subscriptions'
     | '/app/agency'
     | '/app/ai'
     | '/app/analytics'
@@ -779,6 +790,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/auth'
     | '/admin/payment-gateways'
+    | '/admin/subscriptions'
     | '/app/agency'
     | '/app/analytics'
     | '/app/automation'
@@ -851,6 +863,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/auth/'
     | '/_authenticated/admin/payment-gateways'
+    | '/_authenticated/admin/subscriptions'
     | '/_authenticated/app/agency'
     | '/_authenticated/app/ai'
     | '/_authenticated/app/analytics'
@@ -1296,6 +1309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAgencyRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/admin/subscriptions': {
+      id: '/_authenticated/admin/subscriptions'
+      path: '/admin/subscriptions'
+      fullPath: '/admin/subscriptions'
+      preLoaderRoute: typeof AuthenticatedAdminSubscriptionsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/payment-gateways': {
       id: '/_authenticated/admin/payment-gateways'
       path: '/admin/payment-gateways'
@@ -1572,6 +1592,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedAdminPaymentGatewaysRoute: typeof AuthenticatedAdminPaymentGatewaysRoute
+  AuthenticatedAdminSubscriptionsRoute: typeof AuthenticatedAdminSubscriptionsRoute
   AuthenticatedBuilderIdRoute: typeof AuthenticatedBuilderIdRoute
 }
 
@@ -1580,6 +1601,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedAdminPaymentGatewaysRoute:
     AuthenticatedAdminPaymentGatewaysRoute,
+  AuthenticatedAdminSubscriptionsRoute: AuthenticatedAdminSubscriptionsRoute,
   AuthenticatedBuilderIdRoute: AuthenticatedBuilderIdRoute,
 }
 
@@ -1613,13 +1635,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

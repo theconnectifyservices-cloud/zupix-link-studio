@@ -1,102 +1,86 @@
-# Enterprise Payment Gateway Hub
+# LS-14.0 — Enterprise Subscription & Plan Engine
 
-Build a pluggable multi-gateway payment layer on top of the existing `src/features/billing/` foundation. Everything below is configurable from Super Admin — no hardcoded keys or payment links.
+Build the monetization foundation. Three plans (Udaan / Tejas / Shikhar), platform-wide feature gating, admin CMS, upgrade modal. No payment gateway yet (LS-15).
 
-## Architecture
+Existing project already has `billing_plans`, `billing_subscriptions`, `plan_features`, `plan_limits`, `feature_flags`, `workspace_has_feature()`, `workspace_get_limit()`, and a `MonetizationCenter` admin. This phase adopts and extends that foundation instead of rebuilding it — the new work is the **ZUPIX plan definitions, builder-level gating, hooks, waitlist, upgrade modal**, and a dedicated **Subscription Manager** super-admin surface.
 
-```text
-src/features/payments/
-  gateways/
-    types.ts              // GatewayAdapter interface (createOrder, verify, refund, health)
-    razorpay.adapter.ts
-    payu.adapter.ts
-    cashfree.adapter.ts
-    manual-upi.adapter.ts
-    registry.ts           // id -> adapter; loads dynamically; no hardcoded switch statements
-  server/
-    checkout.functions.ts // createOrder, listGateways (smart selector)
-    verify.functions.ts   // signature verification per adapter
-    admin.functions.ts    // super-admin CRUD, test-connection, health-check
-    upi.functions.ts      // upload proof, approve/reject
-  components/
-    checkout-modal.tsx    // premium modal: summary, gateway picker, success/failure
-    gateway-picker.tsx
-    upi-qr-flow.tsx
-    payment-history.tsx
-    admin/
-      gateway-manager.tsx
-      gateway-form.tsx
-      upi-verification-queue.tsx
-```
+## 1. Database (single migration)
 
-New TanStack public API route: `src/routes/api/public/webhooks/{razorpay,payu,cashfree}.ts` — signature-verified, idempotent by provider event id.
+**Reuse existing tables** (`billing_plans`, `plan_features`, `plan_limits`, `billing_subscriptions`). Seed with ZUPIX plans:
 
-## Database (single migration)
+- `udaan` — tier `free`, price 0, `is_public=true`
+- `tejas` — tier `pro`, monthly ₹299 (29900 minor), yearly ₹259900, `is_public=true`
+- `shikhar` — tier `business`, monthly ₹499, yearly ₹399900, `is_public=true`, `metadata.coming_soon=true`
 
-- `payment_gateways` — id, workspace-nullable (null = global default), provider (`razorpay|payu|cashfree|manual_upi`), enabled, mode (`sandbox|live`), priority, credentials JSONB (encrypted at rest via Supabase Vault-style column obfuscation; secret keys never returned to client), webhook_secret, health_status, health_checked_at, config JSONB (UPI id, QR url, instructions for manual).
-- `payment_orders` — id, workspace_id, plan_id, gateway_id, provider_order_id, amount, currency, status (`created|pending|paid|failed|refunded|manual_review`), idempotency_key, meta JSONB.
-- `payment_webhook_events` — provider, event_id UNIQUE, order_id, payload, processed_at (idempotency table).
-- `manual_upi_submissions` — order_id, screenshot_url, txn_ref, submitted_by, reviewed_by, status, notes.
-- Extend `billing_payments` with `gateway_id`, `provider_ref`, `receipt_url`.
-- RLS: workspace members read own orders/submissions; only `admin` role writes to `payment_gateways`; webhook table is service-role only. All new tables get GRANT + policies.
+Seed `plan_features` for each builder block key + platform feature (`custom_domain`, `remove_branding`, `store`, `bookings`, etc.).
+Seed `plan_limits` for `bio_pages` (1 / 20 / unlimited), `custom_domains` (0 / 1 / unlimited).
 
-## Super Admin — Gateway Manager
+**New tables:**
+- `plan_waitlist` — `workspace_id`, `plan_code`, `email`, `user_id`, `created_at`. RLS: authenticated insert own; admin select all.
+- `subscription_history` — `workspace_id`, `from_plan`, `to_plan`, `changed_by`, `reason`, `created_at`. (billing_events already covers this — skip if redundant; use billing_events instead.)
 
-Route: `/admin/payments` (existing admin layout).
-- List cards per gateway with logo, enable toggle, sandbox/live switch, priority arrows, health badge (green/amber/red), Test Connection button (calls adapter `health()`), Edit credentials (drawer).
-- Manual UPI form: upload QR image (existing media bucket), UPI ID, account name, instructions, review queue with Approve / Reject / Mark Paid actions triggering plan activation.
-- Credentials stored via `admin.functions.ts` using `supabaseAdmin` after role check; response omits secret fields.
+Add `active_plan_code` view or use existing `billing_subscriptions.plan_id` join.
 
-## Smart Gateway Selector + Checkout
+All new tables: GRANT + RLS + policies.
 
-- Pricing page cards ("Start Free Trial", "Buy Now", "Upgrade", "Renew") open the shared `CheckoutModal` with the plan.
-- Modal calls `listGateways({ workspaceId })` — returns only enabled gateways whose most-recent health check passed, sorted by priority.
-- User picks a gateway → `createOrder` returns adapter-specific launch payload (Razorpay checkout options, PayU form fields, Cashfree session id, or UPI QR + instructions).
-- Client script for each adapter is lazy-loaded only when selected.
-- On failure, "Retry" re-runs order creation on the next healthy gateway.
-- Success animation + failure screen + placeholders (disabled inputs) for GST and coupon fields.
+## 2. Plan registry (client)
 
-## Webhooks
+`src/features/subscription/plans.ts` — static registry mapping each ZUPIX plan to blocks/features/limits with UI metadata (name, emoji, tagline, color, badge). Single source of truth used by builder, pricing page, upgrade modal.
 
-- Each provider route verifies HMAC signature over raw body, inserts into `payment_webhook_events` (unique on `event_id` for dedupe), then transitions the order and creates a `billing_payments` + `billing_invoices` row.
-- Handles: success, failure, pending, refund, cancellation.
-- Manual UPI has no webhook — admin approval triggers the same transition path.
+Block → plan map:
+- **udaan**: profile, heading, text, button, button-group, divider, spacer, social, image, gallery, video, social-feed, contact-card
+- **tejas**: + testimonials, faq, countdown, map, file-download, embed, custom-code, form, remove_branding, custom_domain
+- **shikhar** (coming_soon): store, bookings, digital-products, membership, subscriptions, donations, payments
 
-## Emails
+## 3. Hooks (`src/features/subscription/hooks.ts`)
+- `usePlan()` → current workspace plan (code, tier, meta)
+- `useFeature(key)` → `{ enabled, requiredPlan, upgrade() }`
+- `useSubscription()` → subscription row + status
+- `usePlanLimit(metric)` → `{ used, limit, isUnlimited, remaining, exceeded }`
+- `useUpgradeModal()` → open modal with prefilled context
 
-Reuse existing `@lovable.dev/email-js` scaffolding: on `payment.succeeded` transition, send Invoice + Receipt + Welcome (first payment only) via the send helper. React Email templates in `src/emails/payments/`.
+Wraps existing `workspace_has_feature` / `workspace_get_limit` RPCs.
 
-## Payment History
+## 4. Builder integration
+- Extend block registry entries with `requiredPlan` (already can be inferred from plans.ts).
+- Component Library palette: show badge (FREE / TEJAS / COMING SOON) on each card.
+- On drop of locked block: insert placeholder block rendered by `<LockedBlock />` — premium lock overlay, plan badge, upgrade CTA, feature description. Editing disabled.
+- Public renderer: skip locked blocks silently.
 
-`/app/billing` gains a "History" tab: table of orders with plan, amount, gateway logo, status pill, provider ref, "Download Receipt" (PDF endpoint using `@react-pdf/renderer` in a server route).
+## 5. Upgrade modal (`src/features/subscription/components/upgrade-modal.tsx`)
+Glassmorphism, monthly/yearly toggle with "Save X%" badge, 3 plan cards, feature comparison table, animated CTAs. Shikhar shows "Coming Soon" + Waitlist form.
 
-## Security
+## 6. Pricing route
+`src/routes/pricing.tsx` — public marketing page reusing the modal's plan cards.
 
-- Secret keys never leave the server; API responses redact `credentials.*_secret`.
-- Signature verification is mandatory before any state change.
-- Idempotency via `payment_webhook_events.event_id` unique constraint AND `payment_orders.idempotency_key`.
-- All webhooks live under `/api/public/*` and verify signatures — no auth bypass abuse.
-- Admin routes gated by `has_role(uid, 'admin')`.
+## 7. Subscription Manager (super admin)
+`src/routes/_authenticated/admin/subscriptions.tsx`
+- Plan CRUD (name, price monthly/yearly, currency, visibility, coming_soon toggle, waitlist toggle)
+- Feature toggle grid (plan × feature)
+- Limit editor (plan × metric)
+- Yearly discount calc helper
+- Waitlist viewer with export
 
-## Secrets requested (per gateway, sandbox + live)
+Guarded by `super_admin` role via existing `has_role`.
 
-Only after user confirms this plan I'll request via `add_secret`:
-`RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `PAYU_MERCHANT_KEY`, `PAYU_MERCHANT_SALT`, `CASHFREE_APP_ID`, `CASHFREE_SECRET_KEY`, `CASHFREE_WEBHOOK_SECRET`. (Or, if you prefer, credentials are entered only through the Super Admin UI and stored per-gateway row — no env secrets. **Please confirm which model you want.**)
+## 8. Waitlist API
+`src/features/subscription/waitlist.functions.ts` — `joinWaitlist({ planCode, email })`, `listWaitlist({ planCode })` (admin).
 
-## Delivery order
+## 9. Sidebar/nav
+Add "Subscription" link under super-admin section pointing to `/admin/subscriptions`. Add "Upgrade" pill in main topbar when plan = udaan.
 
-1. Migration (tables + RLS + GRANT).
-2. Adapter interface + 4 adapters (server-only).
-3. Super Admin Gateway Manager UI.
-4. Checkout modal + smart selector wired into pricing cards.
-5. Webhook routes + idempotency + email dispatch.
-6. Payment history + receipt PDF.
-7. QA sweep: sandbox order per gateway, forced-failure retry, webhook replay dedupe, UPI approve/reject, offline-gateway failover.
+## Technical notes
+- All new server work via `createServerFn` + `requireSupabaseAuth`. Admin ops verify `has_role(uid,'super_admin')`.
+- No payment integration. Upgrade CTA on paid plans opens modal → "Payments arrive in LS-15" toast + waitlist option.
+- Money in minor units (existing convention).
+- All UI uses design tokens (no hardcoded colors); framer-motion for micro-interactions; existing `MediaField`, `PageHeader`, shadcn primitives.
 
-## Open questions before I start
+## Deliverables
+1. Migration: seed plans/features/limits + `plan_waitlist` table
+2. `src/features/subscription/` — plans registry, hooks, api, components (UpgradeModal, PlanCard, LockedBlock, WaitlistForm, PlanBadge)
+3. Builder registry + palette + canvas updates for locked blocks
+4. `/pricing` public route
+5. `/admin/subscriptions` super-admin route
+6. Topbar "Upgrade" CTA + sidebar entry
 
-1. **Credentials source of truth** — Super Admin UI only (stored encrypted in DB), or also env-based secrets as fallback? I recommend UI-only for true multi-tenant configurability.
-2. **Currency scope** — INR only (given UPI/Razorpay/PayU/Cashfree), or multi-currency needed now?
-3. **Receipt PDF** — server-generated PDF (adds `@react-pdf/renderer`), or HTML receipt page + browser print for v1?
-
-Reply with answers (or "go with your recommendations") and I'll ship it end-to-end in the order above.
+Wait for approval before implementation.

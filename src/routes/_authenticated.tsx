@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/auth/hooks/use-profile";
 import { PageLoader } from "@/shared/ui/page-loader";
+import { UpgradeModal } from "@/features/subscription";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -47,5 +48,10 @@ function AuthenticatedLayout() {
     return <PageLoader />;
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <UpgradeModal />
+    </>
+  );
 }
