@@ -16,6 +16,7 @@ import type { BioContent } from "@/features/builder/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { initTracker } from "@/features/analytics/tracker";
 import { fetchPublicTracking, injectTracking, removeTracking } from "@/features/tracking";
+import { BrandingLayer } from "@/features/growth";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
