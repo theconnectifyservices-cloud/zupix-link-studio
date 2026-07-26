@@ -634,12 +634,20 @@ function ManualUpiStep({
   pending: boolean; onSubmit: (screenshotUrl?: string) => void;
 }) {
   const [screenshotUrl, setScreenshotUrl] = useState<string>("");
+  // LS-PAY-23: Default merchant identity for Manual UPI when the gateway
+  // config does not override it.
+  const DEFAULT_UPI_ID = "8004021255@ptyes";
+  const DEFAULT_ACCOUNT_NAME = "Sadhana";
+  const upiId = launch.upiId?.trim() ? launch.upiId : DEFAULT_UPI_ID;
+  const accountName = launch.accountName?.trim() && launch.accountName !== "Merchant"
+    ? launch.accountName
+    : DEFAULT_ACCOUNT_NAME;
   const amountRupees = (launch.amountPaise / 100).toFixed(2);
-  const upiDeepLink = `upi://pay?pa=${encodeURIComponent(launch.upiId)}&pn=${encodeURIComponent(launch.accountName)}&am=${amountRupees}&cu=INR&tn=${encodeURIComponent(launch.orderRef)}`;
+  const upiDeepLink = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(accountName)}&am=${amountRupees}&cu=INR&tn=${encodeURIComponent(launch.orderRef)}`;
 
   const copyUpi = async () => {
     try {
-      await navigator.clipboard.writeText(launch.upiId);
+      await navigator.clipboard.writeText(upiId);
       toast.success("UPI ID copied");
     } catch {
       toast.error("Copy failed");
@@ -659,15 +667,15 @@ function ManualUpiStep({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border bg-muted/30 p-4">
+      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-background/80 to-muted/30 p-4 shadow-sm backdrop-blur">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <QrCode className="h-4 w-4" /> Pay {amountLabel} via UPI
+          <QrCode className="h-4 w-4 text-primary" /> Pay {amountLabel} via UPI
         </div>
         {launch.qrImageUrl ? (
           <img
             src={launch.qrImageUrl}
             alt="UPI QR code"
-            className="mx-auto mt-3 h-52 w-52 rounded-lg border bg-white object-contain p-2"
+            className="mx-auto mt-3 h-52 w-52 rounded-lg border bg-white object-contain p-2 shadow-md"
           />
         ) : (
           <div className="mx-auto mt-3 grid h-52 w-52 place-items-center rounded-lg border bg-white/60 text-xs text-muted-foreground">
@@ -676,8 +684,8 @@ function ManualUpiStep({
         )}
         <div className="mt-3 text-center">
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">UPI ID</div>
-          <div className="font-mono text-base font-semibold">{launch.upiId}</div>
-          <div className="text-xs text-muted-foreground">{launch.accountName}</div>
+          <div className="font-mono text-base font-semibold">{upiId}</div>
+          <div className="text-xs text-muted-foreground">{accountName}</div>
         </div>
         <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
           <Button size="sm" variant="outline" onClick={copyUpi}>Copy UPI ID</Button>
@@ -688,10 +696,11 @@ function ManualUpiStep({
             <a href={upiDeepLink}>Open UPI App</a>
           </Button>
         </div>
-        <p className="mt-3 whitespace-pre-line text-center text-xs text-muted-foreground">
-          {launch.instructions}
-        </p>
       </div>
+
+      <TrustInfoBox />
+      <MerchantCard accountName={accountName} />
+
       <div className="space-y-2">
         <Label htmlFor="txnRef">UPI Transaction Reference (UTR)</Label>
         <Input
@@ -711,8 +720,12 @@ function ManualUpiStep({
           label="Upload screenshot"
         />
       </div>
+
+      <CustomerAssurance />
+      <SupportLinks />
+
       <div className="sticky bottom-0 -mx-6 -mb-6 mt-6 flex flex-col gap-2 border-t border-border/50 bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70 sm:flex-row sm:justify-end">
-        <Button className="w-full sm:w-auto" onClick={() => onSubmit(screenshotUrl || undefined)} disabled={!txnRef.trim() || pending}>
+        <Button className="w-full sm:w-auto bg-gradient-to-r from-primary to-purple-600" onClick={() => onSubmit(screenshotUrl || undefined)} disabled={!txnRef.trim() || pending}>
           {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
           Submit Payment Proof
         </Button>
@@ -721,6 +734,7 @@ function ManualUpiStep({
     </div>
   );
 }
+
 
 function PayingSpinner({ label, hint }: { label: string; hint?: string }) {
   return (
