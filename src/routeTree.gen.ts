@@ -81,6 +81,7 @@ import { Route as AuthenticatedAppAiStudioRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppAiGrowthRouteImport } from './routes/_authenticated.app.ai.growth'
 import { Route as AuthenticatedAppAiDesignRouteImport } from './routes/_authenticated.app.ai.design'
 import { Route as AuthenticatedAppAiConversationIdRouteImport } from './routes/_authenticated.app.ai.$conversationId'
+import { Route as AuthenticatedAppBillingInvoicesIdPrintRouteImport } from './routes/_authenticated.app.billing.invoices.$id.print'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -478,6 +479,12 @@ const AuthenticatedAppAiConversationIdRoute =
     path: '/$conversationId',
     getParentRoute: () => AuthenticatedAppAiRoute,
   } as any)
+const AuthenticatedAppBillingInvoicesIdPrintRoute =
+  AuthenticatedAppBillingInvoicesIdPrintRouteImport.update({
+    id: '/invoices/$id/print',
+    path: '/invoices/$id/print',
+    getParentRoute: () => AuthenticatedAppBillingRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -502,7 +509,7 @@ export interface FileRoutesByFullPath {
   '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
-  '/app/billing': typeof AuthenticatedAppBillingRoute
+  '/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
@@ -551,6 +558,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/payu': typeof ApiPublicWebhooksPayuRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
   '/app/ai/': typeof AuthenticatedAppAiIndexRoute
+  '/app/billing/invoices/$id/print': typeof AuthenticatedAppBillingInvoicesIdPrintRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -573,7 +581,7 @@ export interface FileRoutesByTo {
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
-  '/app/billing': typeof AuthenticatedAppBillingRoute
+  '/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
@@ -622,6 +630,7 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/payu': typeof ApiPublicWebhooksPayuRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
   '/app/ai': typeof AuthenticatedAppAiIndexRoute
+  '/app/billing/invoices/$id/print': typeof AuthenticatedAppBillingInvoicesIdPrintRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -648,7 +657,7 @@ export interface FileRoutesById {
   '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/_authenticated/app/automation': typeof AuthenticatedAppAutomationRoute
-  '/_authenticated/app/billing': typeof AuthenticatedAppBillingRoute
+  '/_authenticated/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/_authenticated/app/conversions': typeof AuthenticatedAppConversionsRoute
@@ -697,6 +706,7 @@ export interface FileRoutesById {
   '/api/public/webhooks/payu': typeof ApiPublicWebhooksPayuRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
   '/_authenticated/app/ai/': typeof AuthenticatedAppAiIndexRoute
+  '/_authenticated/app/billing/invoices/$id/print': typeof AuthenticatedAppBillingInvoicesIdPrintRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -772,6 +782,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/payu'
     | '/api/public/webhooks/razorpay'
     | '/app/ai/'
+    | '/app/billing/invoices/$id/print'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -843,6 +854,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/payu'
     | '/api/public/webhooks/razorpay'
     | '/app/ai'
+    | '/app/billing/invoices/$id/print'
   id:
     | '__root__'
     | '/'
@@ -917,6 +929,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/payu'
     | '/api/public/webhooks/razorpay'
     | '/_authenticated/app/ai/'
+    | '/_authenticated/app/billing/invoices/$id/print'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1449,6 +1462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAiConversationIdRouteImport
       parentRoute: typeof AuthenticatedAppAiRoute
     }
+    '/_authenticated/app/billing/invoices/$id/print': {
+      id: '/_authenticated/app/billing/invoices/$id/print'
+      path: '/invoices/$id/print'
+      fullPath: '/app/billing/invoices/$id/print'
+      preLoaderRoute: typeof AuthenticatedAppBillingInvoicesIdPrintRouteImport
+      parentRoute: typeof AuthenticatedAppBillingRoute
+    }
   }
 }
 
@@ -1482,6 +1502,21 @@ const AuthenticatedAppAiRouteChildren: AuthenticatedAppAiRouteChildren = {
 
 const AuthenticatedAppAiRouteWithChildren =
   AuthenticatedAppAiRoute._addFileChildren(AuthenticatedAppAiRouteChildren)
+
+interface AuthenticatedAppBillingRouteChildren {
+  AuthenticatedAppBillingInvoicesIdPrintRoute: typeof AuthenticatedAppBillingInvoicesIdPrintRoute
+}
+
+const AuthenticatedAppBillingRouteChildren: AuthenticatedAppBillingRouteChildren =
+  {
+    AuthenticatedAppBillingInvoicesIdPrintRoute:
+      AuthenticatedAppBillingInvoicesIdPrintRoute,
+  }
+
+const AuthenticatedAppBillingRouteWithChildren =
+  AuthenticatedAppBillingRoute._addFileChildren(
+    AuthenticatedAppBillingRouteChildren,
+  )
 
 interface AuthenticatedAppSettingsRouteChildren {
   AuthenticatedAppSettingsIdentityRoute: typeof AuthenticatedAppSettingsIdentityRoute
@@ -1524,7 +1559,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAiRoute: typeof AuthenticatedAppAiRouteWithChildren
   AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
   AuthenticatedAppAutomationRoute: typeof AuthenticatedAppAutomationRoute
-  AuthenticatedAppBillingRoute: typeof AuthenticatedAppBillingRoute
+  AuthenticatedAppBillingRoute: typeof AuthenticatedAppBillingRouteWithChildren
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppCommunicationsRoute: typeof AuthenticatedAppCommunicationsRoute
   AuthenticatedAppConversionsRoute: typeof AuthenticatedAppConversionsRoute
@@ -1557,7 +1592,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAiRoute: AuthenticatedAppAiRouteWithChildren,
   AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
   AuthenticatedAppAutomationRoute: AuthenticatedAppAutomationRoute,
-  AuthenticatedAppBillingRoute: AuthenticatedAppBillingRoute,
+  AuthenticatedAppBillingRoute: AuthenticatedAppBillingRouteWithChildren,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppCommunicationsRoute: AuthenticatedAppCommunicationsRoute,
   AuthenticatedAppConversionsRoute: AuthenticatedAppConversionsRoute,
