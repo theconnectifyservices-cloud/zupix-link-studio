@@ -70,6 +70,8 @@ function Overview() {
       />
 
       <TrialCountdown variant="card" className="mb-6" />
+      <StarterUpgradeSlot />
+
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-3">
