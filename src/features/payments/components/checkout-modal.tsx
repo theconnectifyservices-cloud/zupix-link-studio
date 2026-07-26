@@ -695,10 +695,13 @@ function ManualUpiStep({
           label="Upload screenshot"
         />
       </div>
-      <Button className="w-full" onClick={() => onSubmit(screenshotUrl || undefined)} disabled={!txnRef.trim() || pending}>
-        {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
-        Submit Payment Proof
-      </Button>
+      <div className="sticky bottom-0 -mx-6 -mb-6 mt-6 flex flex-col gap-2 border-t border-border/50 bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70 sm:flex-row sm:justify-end">
+        <Button className="w-full sm:w-auto" onClick={() => onSubmit(screenshotUrl || undefined)} disabled={!txnRef.trim() || pending}>
+          {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
+          Submit Payment Proof
+        </Button>
+      </div>
+
     </div>
   );
 }
