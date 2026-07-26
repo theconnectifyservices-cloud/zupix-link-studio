@@ -31,11 +31,15 @@ export function PublicBioRenderer({
   pageId,
   slug,
   workspaceId,
+  pageName,
+  pageDescription,
 }: {
   content: BioContent;
   pageId?: string;
   slug?: string;
   workspaceId?: string;
+  pageName?: string;
+  pageDescription?: string | null;
 }) {
   const theme = content.theme ?? DEFAULT_THEME;
   const motion = theme.motion ?? DEFAULT_MOTION;
