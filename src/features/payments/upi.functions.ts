@@ -81,5 +81,18 @@ export const reviewUpiSubmission = createServerFn({ method: "POST" })
       .update({ status: data.approve ? "paid" : "failed" })
       .eq("id", sub.order_id);
 
+    if (data.approve) {
+      const { activateFromPaidOrder } = await import("@/features/billing/lifecycle.server");
+      await activateFromPaidOrder({
+        orderId: sub.order_id,
+        gatewayPaymentId: (sub.txn_ref as string | null) ?? null,
+        method: "upi",
+        actorUserId: context.userId,
+      });
+    } else {
+      const { recordFailedPayment } = await import("@/features/billing/lifecycle.server");
+      await recordFailedPayment({ orderId: sub.order_id, reason: data.notes ?? "Manual UPI rejected" });
+    }
+
     return { ok: true };
   });

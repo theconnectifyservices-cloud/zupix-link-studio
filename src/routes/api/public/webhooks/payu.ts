@@ -42,6 +42,22 @@ export const Route = createFileRoute("/api/public/webhooks/payu")({
 
         if (orderRef) {
           await supabaseAdmin.from("payment_orders").update({ status }).eq("id", orderRef);
+          if (status === "paid") {
+            try {
+              const p = payload as Record<string, string>;
+              const { activateFromPaidOrder } = await import("@/features/billing/lifecycle.server");
+              await activateFromPaidOrder({
+                orderId: orderRef,
+                gatewayPaymentId: p?.mihpayid ?? p?.txnid ?? null,
+                method: p?.mode ?? null,
+              });
+            } catch (e) {
+              console.error("[payu webhook] lifecycle failed", e);
+            }
+          } else if (status === "failed") {
+            const { recordFailedPayment } = await import("@/features/billing/lifecycle.server");
+            await recordFailedPayment({ orderId: orderRef });
+          }
           await supabaseAdmin
             .from("payment_webhook_events")
             .update({ order_id: orderRef, processed_at: new Date().toISOString() })

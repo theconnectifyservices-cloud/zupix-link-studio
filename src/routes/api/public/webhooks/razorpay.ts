@@ -65,6 +65,23 @@ async function handleWebhook(provider: PaymentProvider, request: Request) {
       .update({ status })
       .eq("id", orderRef);
 
+    if (status === "paid") {
+      try {
+        const p = (payload as { payload?: { payment?: { entity?: { id?: string; method?: string } } } })?.payload?.payment?.entity;
+        const { activateFromPaidOrder } = await import("@/features/billing/lifecycle.server");
+        await activateFromPaidOrder({
+          orderId: orderRef,
+          gatewayPaymentId: p?.id ?? null,
+          method: p?.method ?? null,
+        });
+      } catch (e) {
+        console.error("[razorpay webhook] lifecycle failed", e);
+      }
+    } else if (status === "failed") {
+      const { recordFailedPayment } = await import("@/features/billing/lifecycle.server");
+      await recordFailedPayment({ orderId: orderRef });
+    }
+
     await supabaseAdmin
       .from("payment_webhook_events")
       .update({ order_id: orderRef, processed_at: new Date().toISOString() })

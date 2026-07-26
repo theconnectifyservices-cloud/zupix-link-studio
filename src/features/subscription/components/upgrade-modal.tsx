@@ -19,11 +19,15 @@ import {
 import { useSubscriptionUI } from "../store";
 import { usePlan } from "../hooks";
 import { WaitlistForm } from "./waitlist-form";
+import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
+import { SubscriptionCheckoutLauncher } from "@/features/billing/components/subscription-checkout-launcher";
 
 export function UpgradeModal() {
   const { upgradeOpen, upgradeContext, closeUpgrade } = useSubscriptionUI();
   const { code: currentPlan } = usePlan();
+  const { workspace } = useCurrentWorkspace();
   const [cycle, setCycle] = useState<"monthly" | "yearly">("yearly");
+  const [checkout, setCheckout] = useState<{ planCode: PlanCode } | null>(null);
 
   return (
     <Dialog open={upgradeOpen} onOpenChange={(o) => !o && closeUpgrade()}>
@@ -86,6 +90,7 @@ export function UpgradeModal() {
                   cycle={cycle}
                   currentPlan={currentPlan}
                   suggested={upgradeContext.suggestedPlan}
+                  onUpgrade={() => setCheckout({ planCode: code })}
                 />
               ))}
             </div>
@@ -96,6 +101,17 @@ export function UpgradeModal() {
           </div>
         </div>
       </DialogContent>
+
+      {checkout && workspace ? (
+        <SubscriptionCheckoutLauncher
+          open={!!checkout}
+          onOpenChange={(v) => { if (!v) { setCheckout(null); closeUpgrade(); } }}
+          workspaceId={workspace.id}
+          workspaceName={workspace.name}
+          planCode={checkout.planCode}
+          cycle={cycle}
+        />
+      ) : null}
     </Dialog>
   );
 }
@@ -105,11 +121,13 @@ function PlanCard({
   cycle,
   currentPlan,
   suggested,
+  onUpgrade,
 }: {
   code: PlanCode;
   cycle: "monthly" | "yearly";
   currentPlan: PlanCode;
   suggested?: PlanCode;
+  onUpgrade?: () => void;
 }) {
   const plan = PLANS[code];
   const isCurrent = currentPlan === code;
@@ -204,6 +222,7 @@ function PlanCard({
         ) : (
           <motion.div key="up" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <Button
+              onClick={onUpgrade}
               className={cn(
                 "w-full gap-1.5",
                 isSuggested && `bg-gradient-to-r ${plan.gradient} text-white hover:opacity-90`,
