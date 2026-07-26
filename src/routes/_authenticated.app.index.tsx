@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { PageHeader } from "@/shared/navigation/page-header";
 import { formatDistanceToNow } from "date-fns";
+import { TrialCountdown } from "@/features/trial";
 
 export const Route = createFileRoute("/_authenticated/app/")({
   component: Overview,
@@ -65,6 +66,8 @@ function Overview() {
           </Button>
         }
       />
+
+      <TrialCountdown variant="card" className="mb-6" />
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-3">

@@ -8,6 +8,7 @@ import {
   ClipboardHistory,
   ProductivityModeMenu,
 } from "@/features/desktop";
+import { TrialCountdown } from "@/features/trial";
 
 interface TopbarProps {
   variant?: "app" | "admin";
@@ -22,6 +23,7 @@ export function Topbar({ variant = "app" }: TopbarProps) {
         <GlobalSearch />
       </div>
       <div className="ml-auto flex items-center gap-1 sm:gap-2">
+        <TrialCountdown variant="chip" />
         <QuickActionsMenu />
         <div className="hidden lg:flex items-center gap-1">
           <ClipboardHistory />
