@@ -90,6 +90,7 @@ export function UpgradeModal() {
                   cycle={cycle}
                   currentPlan={currentPlan}
                   suggested={upgradeContext.suggestedPlan}
+                  onUpgrade={() => setCheckout({ planCode: code })}
                 />
               ))}
             </div>
@@ -100,6 +101,17 @@ export function UpgradeModal() {
           </div>
         </div>
       </DialogContent>
+
+      {checkout && workspace ? (
+        <SubscriptionCheckoutLauncher
+          open={!!checkout}
+          onOpenChange={(v) => { if (!v) { setCheckout(null); closeUpgrade(); } }}
+          workspaceId={workspace.id}
+          workspaceName={workspace.name}
+          planCode={checkout.planCode}
+          cycle={cycle}
+        />
+      ) : null}
     </Dialog>
   );
 }
