@@ -11,30 +11,56 @@ import type {
 import { redactGateway } from "./types";
 
 /** Smart selector: returns only enabled gateways, sorted by priority. */
+const PROVIDER_PRIORITY: Record<PaymentProvider, number> = {
+  razorpay: 1,
+  payu: 2,
+  cashfree: 3,
+  manual_upi: 4,
+};
+
 export const listAvailableGateways = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { workspaceId: string }) => d)
-  .handler(async ({ data, context }): Promise<PaymentGatewayPublic[]> => {
-    // Prefer workspace-scoped, fall back to global (workspace_id IS NULL)
-    const { data: rows, error } = await context.supabase
+  .handler(async ({ data }): Promise<PaymentGatewayPublic[]> => {
+    // Read via admin client: RLS on payment_gateways restricts global
+    // (workspace_id IS NULL) rows to platform admins, but every workspace
+    // member paying through the checkout needs to see which enabled
+    // gateways exist. Credentials/webhook_secret are stripped by
+    // redactGateway before the payload leaves the server.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: rows, error } = await supabaseAdmin
       .from("payment_gateways")
       .select("*")
       .eq("enabled", true)
-      .or(`workspace_id.eq.${data.workspaceId},workspace_id.is.null`)
-      .order("priority", { ascending: true });
-    if (error) throw error;
-    // Dedupe: workspace override wins over global for same provider
-    const seen = new Set<string>();
-    const out: PaymentGatewayPublic[] = [];
+      .or(`workspace_id.eq.${data.workspaceId},workspace_id.is.null`);
+    if (error) {
+      console.error("[checkout] gateway resolution failed", error);
+      throw error;
+    }
+    console.log(`[checkout] gateway resolution ws=${data.workspaceId} candidates=${rows?.length ?? 0}`);
+
+    // Workspace override wins over global; skip unhealthy ("down") gateways.
+    const byProvider = new Map<string, PaymentGatewayPrivate>();
     for (const r of rows ?? []) {
       const priv = r as unknown as PaymentGatewayPrivate;
-      const key = priv.provider;
-      if (seen.has(key)) continue;
-      if (priv.health_status === "down") continue;
-      seen.add(key);
-      out.push(redactGateway(r as Record<string, unknown>));
-
+      if (priv.health_status === "down") {
+        console.log(`[checkout] skip ${priv.provider} id=${priv.id} reason=health_down`);
+        continue;
+      }
+      const existing = byProvider.get(priv.provider);
+      if (!existing || (existing.workspace_id === null && priv.workspace_id !== null)) {
+        byProvider.set(priv.provider, priv);
+      }
     }
+    const out = [...byProvider.values()]
+      .sort((a, b) => {
+        const pa = PROVIDER_PRIORITY[a.provider] ?? 99;
+        const pb = PROVIDER_PRIORITY[b.provider] ?? 99;
+        if (pa !== pb) return pa - pb;
+        return (a.priority ?? 100) - (b.priority ?? 100);
+      })
+      .map((r) => redactGateway(r as unknown as Record<string, unknown>));
+    console.log(`[checkout] gateway selected order=${out.map((g) => g.provider).join(",")}`);
     return out;
   });
 
