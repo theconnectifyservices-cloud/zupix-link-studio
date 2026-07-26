@@ -3,13 +3,16 @@ import type {
   Block,
   ButtonBlock,
   ButtonGroupBlock,
+  ButtonGroupItem,
   ButtonStyle,
   FaqBlock,
+  FaqItem,
   GalleryBlock,
   GalleryImage,
   MapBlock,
   SocialBlock,
   SocialLink,
+  SocialPlatform,
   Testimonial,
   TestimonialsBlock,
 } from "./types";
@@ -67,7 +70,7 @@ export function normalizeBioContent(input?: Partial<BioContent> | null): BioCont
     .map((block, index) => normalizeBlock(block, index))
     .filter((block): block is Block => Boolean(block));
 
-  return normalized as BioContent;
+  return normalized as unknown as BioContent;
 }
 
 function normalizeBlock(block: unknown, index: number): Block | null {
@@ -99,20 +102,19 @@ function normalizeBlock(block: unknown, index: number): Block | null {
 
 function normalizeGalleryBlock(raw: JsonObject, id: string): GalleryBlock {
   const source = asArray(raw.images).length > 0 ? asArray(raw.images) : asArray(raw.items);
-  const images: GalleryImage[] = source
-    .map((item, index) => {
-      if (!isObject(item)) return null;
+  const images = source.reduce<GalleryImage[]>((acc, item, index) => {
+      if (!isObject(item)) return acc;
       const row = item as JsonObject;
       const url = stringValue(row.url);
-      if (!url) return null;
-      return {
+      if (!url) return acc;
+      acc.push({
         id: stringValue(row.id) || `${id}-image-${index + 1}`,
         url,
         alt: stringValue(row.alt) || stringValue(row.caption) || "",
         link: stringValue(row.link) || undefined,
-      };
-    })
-    .filter((image): image is GalleryImage => Boolean(image));
+      });
+      return acc;
+    }, []);
 
   return {
     ...raw,
@@ -127,58 +129,55 @@ function normalizeGalleryBlock(raw: JsonObject, id: string): GalleryBlock {
 
 function normalizeSocialBlock(raw: JsonObject, id: string): SocialBlock {
   const source = asArray(raw.links).length > 0 ? asArray(raw.links) : asArray(raw.items);
-  const links: SocialLink[] = source
-    .map((item, index) => {
-      if (!isObject(item)) return null;
+  const links = source.reduce<SocialLink[]>((acc, item, index) => {
+      if (!isObject(item)) return acc;
       const row = item as JsonObject;
       const platform = stringValue(row.platform) || "custom";
       const url = stringValue(row.url);
-      if (!url) return null;
-      return {
+      if (!url) return acc;
+      acc.push({
         id: stringValue(row.id) || `${id}-social-${index + 1}`,
-        platform: platform as SocialLink["platform"],
+        platform: platform as SocialPlatform,
         url,
         label: stringValue(row.label) || undefined,
-      };
-    })
-    .filter((link): link is SocialLink => Boolean(link));
+      });
+      return acc;
+    }, []);
 
   return { ...raw, type: "social", links } as SocialBlock;
 }
 
 function normalizeTestimonialsBlock(raw: JsonObject, id: string): TestimonialsBlock {
-  const items: Testimonial[] = asArray(raw.items)
-    .map((item, index) => {
-      if (!isObject(item)) return null;
+  const items = asArray(raw.items).reduce<Testimonial[]>((acc, item, index) => {
+      if (!isObject(item)) return acc;
       const row = item as JsonObject;
-      return {
+      acc.push({
         id: stringValue(row.id) || `${id}-testimonial-${index + 1}`,
         name: stringValue(row.name) || "Customer",
         role: stringValue(row.role) || undefined,
         avatarUrl: stringValue(row.avatarUrl) || undefined,
         rating: typeof row.rating === "number" ? row.rating : undefined,
         review: stringValue(row.review) || stringValue(row.quote) || "",
-      };
-    })
-    .filter((item): item is Testimonial => Boolean(item));
+      });
+      return acc;
+    }, []);
 
-  return { ...raw, type: "testimonials", title: stringValue(raw.title) || undefined, items };
+  return { ...raw, type: "testimonials", title: stringValue(raw.title) || undefined, items } as TestimonialsBlock;
 }
 
 function normalizeFaqBlock(raw: JsonObject, id: string): FaqBlock {
-  const items = asArray(raw.items)
-    .map((item, index) => {
-      if (!isObject(item)) return null;
+  const items = asArray(raw.items).reduce<FaqItem[]>((acc, item, index) => {
+      if (!isObject(item)) return acc;
       const row = item as JsonObject;
-      return {
+      acc.push({
         id: stringValue(row.id) || `${id}-faq-${index + 1}`,
         question: stringValue(row.question) || "Question",
         answer: stringValue(row.answer) || "",
-      };
-    })
-    .filter((item): item is FaqBlock["items"][number] => Boolean(item));
+      });
+      return acc;
+    }, []);
 
-  return { ...raw, type: "faq", title: stringValue(raw.title) || undefined, items };
+  return { ...raw, type: "faq", title: stringValue(raw.title) || undefined, items } as FaqBlock;
 }
 
 function normalizeButtonBlock(raw: JsonObject): ButtonBlock {
@@ -195,11 +194,10 @@ function normalizeButtonBlock(raw: JsonObject): ButtonBlock {
 }
 
 function normalizeButtonGroupBlock(raw: JsonObject, id: string): ButtonGroupBlock {
-  const buttons = asArray(raw.buttons)
-    .map((item, index) => {
-      if (!isObject(item)) return null;
+  const buttons = asArray(raw.buttons).reduce<ButtonGroupItem[]>((acc, item, index) => {
+      if (!isObject(item)) return acc;
       const row = item as JsonObject;
-      return {
+      acc.push({
         ...row,
         id: stringValue(row.id) || `${id}-button-${index + 1}`,
         label: stringValue(row.label) || "Button",
@@ -207,9 +205,9 @@ function normalizeButtonGroupBlock(raw: JsonObject, id: string): ButtonGroupBloc
         style: VALID_BUTTON_STYLES.has(stringValue(row.style) as ButtonStyle)
           ? (stringValue(row.style) as ButtonStyle)
           : "filled",
-      };
-    })
-    .filter((button): button is ButtonGroupBlock["buttons"][number] => Boolean(button));
+      } as ButtonGroupItem);
+      return acc;
+    }, []);
 
   return {
     ...raw,

@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { Block, BioContent } from "./types";
-import { EMPTY_CONTENT } from "./types";
 import { createEmptyBioContent, normalizeBioContent } from "./content-normalizer";
 import type {
   PageTheme,
