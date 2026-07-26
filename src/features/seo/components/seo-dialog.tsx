@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { MediaField } from "@/shared/ui/media-field";
 import { cn } from "@/lib/utils";
 import { fetchSeo, updateSeo, isSlugAvailable, updateSlug } from "../api";
 import { DEFAULT_SEO, type SeoSettings } from "../types";
@@ -282,11 +283,13 @@ function SeoBody({
                   placeholder={effective.description}
                 />
               </Field>
-              <Field label="OG image URL (recommended 1200×630)">
-                <Input
-                  value={seo.ogImage ?? ""}
-                  onChange={(e) => setSeo({ ...seo, ogImage: e.target.value })}
-                  placeholder="https://…/cover.jpg"
+              <Field label="OG image (recommended 1200×630)">
+                <MediaField
+                  label=""
+                  value={seo.ogImage ?? undefined}
+                  onChange={(url) => setSeo({ ...seo, ogImage: url ?? undefined })}
+                  pickerTitle="Choose or upload social share image"
+                  previewAspect="1200 / 630"
                 />
               </Field>
               <div className="grid grid-cols-2 gap-3">
@@ -356,11 +359,13 @@ function SeoBody({
                   placeholder={effective.description}
                 />
               </Field>
-              <Field label="Image URL">
-                <Input
-                  value={seo.twitterImage ?? ""}
-                  onChange={(e) => setSeo({ ...seo, twitterImage: e.target.value })}
-                  placeholder={seo.ogImage ?? "https://…/cover.jpg"}
+              <Field label="Image">
+                <MediaField
+                  label=""
+                  value={seo.twitterImage ?? undefined}
+                  onChange={(url) => setSeo({ ...seo, twitterImage: url ?? undefined })}
+                  pickerTitle="Choose or upload Twitter card image"
+                  previewAspect="1200 / 630"
                 />
               </Field>
               <div className="grid grid-cols-2 gap-3">
@@ -470,18 +475,22 @@ function SeoBody({
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Favicon URL">
-                  <Input
-                    value={faviconUrl}
-                    onChange={(e) => setFavicon(e.target.value)}
-                    placeholder="https://…/favicon.png"
+                <Field label="Favicon">
+                  <MediaField
+                    label=""
+                    value={faviconUrl || undefined}
+                    onChange={(url) => setFavicon(url ?? "")}
+                    pickerTitle="Choose or upload favicon"
+                    previewAspect="1 / 1"
                   />
                 </Field>
-                <Field label="Apple touch icon URL (180×180)">
-                  <Input
-                    value={appleUrl}
-                    onChange={(e) => setApple(e.target.value)}
-                    placeholder="https://…/apple-touch-icon.png"
+                <Field label="Apple touch icon (180×180)">
+                  <MediaField
+                    label=""
+                    value={appleUrl || undefined}
+                    onChange={(url) => setApple(url ?? "")}
+                    pickerTitle="Choose or upload Apple touch icon"
+                    previewAspect="1 / 1"
                   />
                 </Field>
               </div>

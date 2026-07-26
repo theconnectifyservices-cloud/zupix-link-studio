@@ -16,6 +16,7 @@ import {
   Save,
 } from "lucide-react";
 import { toast } from "sonner";
+import { MediaField } from "@/shared/ui/media-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -385,8 +386,13 @@ function EmailTab({ tenantId }: { tenantId: string }) {
             <Input value={replyTo} onChange={(e) => setReplyTo(e.target.value)} />
           </div>
           <div>
-            <Label>Logo URL</Label>
-            <Input value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} />
+            <MediaField
+              label="Logo"
+              value={logoUrl || undefined}
+              onChange={(url) => setLogoUrl(url ?? "")}
+              pickerTitle="Choose or upload email logo"
+              previewAspect="1 / 1"
+            />
           </div>
           <div className="md:col-span-2 flex items-center justify-between rounded-md border p-2">
             <div>

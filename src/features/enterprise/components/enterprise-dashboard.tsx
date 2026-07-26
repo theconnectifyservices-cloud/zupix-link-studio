@@ -18,6 +18,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MediaField } from "@/shared/ui/media-field";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -321,10 +322,13 @@ function OrgSettingsPanel({ org }: { org: Organization }) {
           <Label>Description</Label>
           <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} rows={2} />
         </div>
-        <div>
-          <Label>Logo URL</Label>
-          <Input value={logo} onChange={(e) => setLogo(e.target.value)} placeholder="https://…" />
-        </div>
+        <MediaField
+          label="Logo"
+          value={logo || undefined}
+          onChange={(url) => setLogo(url ?? "")}
+          pickerTitle="Choose or upload organization logo"
+          previewAspect="1 / 1"
+        />
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => save.mutate()} disabled={save.isPending}>Save</Button>
           <Button variant="outline" onClick={() => archive.mutate()}>

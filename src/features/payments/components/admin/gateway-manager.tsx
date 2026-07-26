@@ -25,6 +25,7 @@ import {
 import { listGatewaysAdmin, upsertGateway, deleteGateway, testGatewayConnection } from "../../admin.functions";
 import { REGISTRY_META } from "../../gateways/registry";
 import type { PaymentGatewayPublic, PaymentProvider, PaymentMode } from "../../types";
+import { MediaField } from "@/shared/ui/media-field";
 
 interface Props {
   /** Null = global (super admin) gateways. */
@@ -320,10 +321,13 @@ function GatewayEditor(props: {
                 <Label>Account Holder Name</Label>
                 <Input value={accountName} onChange={(e) => setAccountName(e.target.value)} />
               </div>
-              <div>
-                <Label>QR Image URL</Label>
-                <Input value={qrUrl} onChange={(e) => setQrUrl(e.target.value)} placeholder="https://…" />
-              </div>
+              <MediaField
+                label="QR Image"
+                value={qrUrl || undefined}
+                onChange={(url) => setQrUrl(url ?? "")}
+                pickerTitle="Choose or upload UPI QR image"
+                previewAspect="1 / 1"
+              />
               <div>
                 <Label>Payment Instructions</Label>
                 <Textarea rows={4} value={instructions} onChange={(e) => setInstructions(e.target.value)} />
