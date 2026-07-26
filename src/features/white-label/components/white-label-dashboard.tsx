@@ -448,10 +448,13 @@ function TenantEditor({
 
             <TabsContent value="login" className="space-y-4 pt-4">
               <div className="grid gap-4 md:grid-cols-2">
-                <Field label="Login background URL">
-                  <Input
-                    value={form.login_background_url ?? ""}
-                    onChange={(e) => setForm({ ...form, login_background_url: e.target.value })}
+                <Field label="Login background">
+                  <MediaField
+                    label=""
+                    value={form.login_background_url ?? undefined}
+                    onChange={(url) => setForm({ ...form, login_background_url: url ?? "" })}
+                    pickerTitle="Choose or upload login background"
+                    previewAspect="16 / 9"
                   />
                 </Field>
                 <Field label="Login headline">
@@ -512,10 +515,13 @@ function TenantEditor({
                     onChange={(e) => setForm({ ...form, email_reply_to: e.target.value })}
                   />
                 </Field>
-                <Field label="Email logo URL">
-                  <Input
-                    value={form.email_logo_url ?? ""}
-                    onChange={(e) => setForm({ ...form, email_logo_url: e.target.value })}
+                <Field label="Email logo">
+                  <MediaField
+                    label=""
+                    value={form.email_logo_url ?? undefined}
+                    onChange={(url) => setForm({ ...form, email_logo_url: url ?? "" })}
+                    pickerTitle="Choose or upload email logo"
+                    previewAspect="1 / 1"
                   />
                 </Field>
                 <Field label="Email footer HTML" className="md:col-span-2">
