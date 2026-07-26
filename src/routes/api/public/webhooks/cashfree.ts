@@ -38,6 +38,22 @@ export const Route = createFileRoute("/api/public/webhooks/cashfree")({
 
         if (orderRef) {
           await supabaseAdmin.from("payment_orders").update({ status }).eq("id", orderRef);
+          if (status === "paid") {
+            try {
+              const d = ((payload as { data?: { payment?: { cf_payment_id?: string; payment_method?: string } } })?.data)?.payment;
+              const { activateFromPaidOrder } = await import("@/features/billing/lifecycle.server");
+              await activateFromPaidOrder({
+                orderId: orderRef,
+                gatewayPaymentId: d?.cf_payment_id ?? null,
+                method: d?.payment_method ?? null,
+              });
+            } catch (e) {
+              console.error("[cashfree webhook] lifecycle failed", e);
+            }
+          } else if (status === "failed") {
+            const { recordFailedPayment } = await import("@/features/billing/lifecycle.server");
+            await recordFailedPayment({ orderId: orderRef });
+          }
           await supabaseAdmin
             .from("payment_webhook_events")
             .update({ order_id: orderRef, processed_at: new Date().toISOString() })
