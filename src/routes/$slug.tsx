@@ -44,7 +44,7 @@ function PublicBioPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(bioQuery(slug));
   if (!data) throw notFound();
-  return <PublicBioRenderer content={data.content} pageId={data.id} slug={slug} workspaceId={data.workspaceId} />;
+  return <PublicBioRenderer content={data.content} pageId={data.id} slug={slug} workspaceId={data.workspaceId} pageName={data.name} pageDescription={data.description} />;
 }
 
 function buildHead(page: PublicBioPage, slug: string) {
