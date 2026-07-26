@@ -940,6 +940,8 @@ export type Database = {
           amount_off_minor: number | null
           applies_to_cycles: Database["public"]["Enums"]["billing_cycle"][]
           applies_to_plans: string[]
+          archived_at: string | null
+          category: string | null
           code: string
           created_at: string
           currency: string | null
@@ -951,6 +953,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["coupon_kind"]
           max_redemptions: number | null
           metadata: Json
+          minimum_purchase_minor: number | null
           name: string | null
           percent_off: number | null
           redeemed_count: number
@@ -961,6 +964,8 @@ export type Database = {
           amount_off_minor?: number | null
           applies_to_cycles?: Database["public"]["Enums"]["billing_cycle"][]
           applies_to_plans?: string[]
+          archived_at?: string | null
+          category?: string | null
           code: string
           created_at?: string
           currency?: string | null
@@ -972,6 +977,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["coupon_kind"]
           max_redemptions?: number | null
           metadata?: Json
+          minimum_purchase_minor?: number | null
           name?: string | null
           percent_off?: number | null
           redeemed_count?: number
@@ -982,6 +988,8 @@ export type Database = {
           amount_off_minor?: number | null
           applies_to_cycles?: Database["public"]["Enums"]["billing_cycle"][]
           applies_to_plans?: string[]
+          archived_at?: string | null
+          category?: string | null
           code?: string
           created_at?: string
           currency?: string | null
@@ -993,6 +1001,7 @@ export type Database = {
           kind?: Database["public"]["Enums"]["coupon_kind"]
           max_redemptions?: number | null
           metadata?: Json
+          minimum_purchase_minor?: number | null
           name?: string | null
           percent_off?: number | null
           redeemed_count?: number
@@ -5537,6 +5546,48 @@ export type Database = {
         }
         Relationships: []
       }
+      trial_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json
+          subscription_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json
+          subscription_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json
+          subscription_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trial_events_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "billing_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trial_events_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trial_extensions: {
         Row: {
           created_at: string
@@ -5578,6 +5629,88 @@ export type Database = {
           },
           {
             foreignKeyName: "trial_extensions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trial_fingerprints: {
+        Row: {
+          created_at: string
+          fingerprint: string
+          id: string
+          kind: string
+          user_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          fingerprint: string
+          id?: string
+          kind: string
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          fingerprint?: string
+          id?: string
+          kind?: string
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trial_fingerprints_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      upgrade_events: {
+        Row: {
+          amount_minor: number | null
+          coupon_code: string | null
+          created_at: string
+          from_plan: string | null
+          id: string
+          metadata: Json
+          source: string | null
+          to_plan: string
+          user_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          amount_minor?: number | null
+          coupon_code?: string | null
+          created_at?: string
+          from_plan?: string | null
+          id?: string
+          metadata?: Json
+          source?: string | null
+          to_plan: string
+          user_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          amount_minor?: number | null
+          coupon_code?: string | null
+          created_at?: string
+          from_plan?: string | null
+          id?: string
+          metadata?: Json
+          source?: string | null
+          to_plan?: string
+          user_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "upgrade_events_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -6299,6 +6432,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      expire_stale_trials: { Args: never; Returns: number }
       get_public_tracking: { Args: { _workspace_id: string }; Returns: Json }
       has_pending_workspace_invitation: {
         Args: {
@@ -6357,6 +6491,21 @@ export type Database = {
       user_owns_workspace: {
         Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
+      }
+      validate_coupon: {
+        Args: {
+          _amount_minor: number
+          _code: string
+          _cycle: string
+          _plan_code: string
+          _workspace_id: string
+        }
+        Returns: {
+          coupon_id: string
+          discount_minor: number
+          reason: string
+          valid: boolean
+        }[]
       }
       workspace_get_limit: {
         Args: { _metric_key: string; _workspace_id: string }
