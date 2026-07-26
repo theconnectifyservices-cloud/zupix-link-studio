@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { MediaField } from "@/shared/ui/media-field";
 import { cn } from "@/lib/utils";
 import { fetchSeo, updateSeo, isSlugAvailable, updateSlug } from "../api";
 import { DEFAULT_SEO, type SeoSettings } from "../types";
@@ -282,11 +283,13 @@ function SeoBody({
                   placeholder={effective.description}
                 />
               </Field>
-              <Field label="OG image URL (recommended 1200×630)">
-                <Input
-                  value={seo.ogImage ?? ""}
-                  onChange={(e) => setSeo({ ...seo, ogImage: e.target.value })}
-                  placeholder="https://…/cover.jpg"
+              <Field label="OG image (recommended 1200×630)">
+                <MediaField
+                  label=""
+                  value={seo.ogImage ?? undefined}
+                  onChange={(url) => setSeo({ ...seo, ogImage: url ?? undefined })}
+                  pickerTitle="Choose or upload social share image"
+                  previewAspect="1200 / 630"
                 />
               </Field>
               <div className="grid grid-cols-2 gap-3">
