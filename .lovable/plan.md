@@ -1,86 +1,96 @@
-# LS-14.0 — Enterprise Subscription & Plan Engine
+# LS-15.0 — Enterprise Billing & Subscription Lifecycle Engine
 
-Build the monetization foundation. Three plans (Udaan / Tejas / Shikhar), platform-wide feature gating, admin CMS, upgrade modal. No payment gateway yet (LS-15).
+## Current state
 
-Existing project already has `billing_plans`, `billing_subscriptions`, `plan_features`, `plan_limits`, `feature_flags`, `workspace_has_feature()`, `workspace_get_limit()`, and a `MonetizationCenter` admin. This phase adopts and extends that foundation instead of rebuilding it — the new work is the **ZUPIX plan definitions, builder-level gating, hooks, waitlist, upgrade modal**, and a dedicated **Subscription Manager** super-admin surface.
+Two parallel systems exist and need to be joined:
 
-## 1. Database (single migration)
+- `src/features/billing/*` — subscription/invoice/coupon/tax logic wired to a single Razorpay checkout.
+- `src/features/payments/*` — multi-gateway (Razorpay, PayU, Cashfree, Manual UPI) order engine with adapters, webhooks, admin manager.
+- `src/features/subscription/*` — Udaan/Tejas/Shikhar plan registry + gating hooks + upgrade modal (LS-14.0).
 
-**Reuse existing tables** (`billing_plans`, `plan_features`, `plan_limits`, `billing_subscriptions`). Seed with ZUPIX plans:
+DB tables already cover the surface: `billing_plans`, `billing_subscriptions`, `billing_invoices`, `billing_payments`, `billing_events`, `payment_orders`, `payment_gateways`, `payment_webhook_events`, `manual_upi_submissions`, `billing_coupons`, `billing_tax_settings`.
 
-- `udaan` — tier `free`, price 0, `is_public=true`
-- `tejas` — tier `pro`, monthly ₹299 (29900 minor), yearly ₹259900, `is_public=true`
-- `shikhar` — tier `business`, monthly ₹499, yearly ₹399900, `is_public=true`, `metadata.coming_soon=true`
+Gap: no shared lifecycle glue. Payments engine creates `payment_orders` but never activates a subscription, creates an invoice, or emits an event.
 
-Seed `plan_features` for each builder block key + platform feature (`custom_domain`, `remove_branding`, `store`, `bookings`, etc.).
-Seed `plan_limits` for `bio_pages` (1 / 20 / unlimited), `custom_domains` (0 / 1 / unlimited).
+## What this phase builds
 
-**New tables:**
-- `plan_waitlist` — `workspace_id`, `plan_code`, `email`, `user_id`, `created_at`. RLS: authenticated insert own; admin select all.
-- `subscription_history` — `workspace_id`, `from_plan`, `to_plan`, `changed_by`, `reason`, `created_at`. (billing_events already covers this — skip if redundant; use billing_events instead.)
+Backend + admin + user-facing subscription management. No pricing-page redesign, no new gateway code.
 
-Add `active_plan_code` view or use existing `billing_subscriptions.plan_id` join.
+### 1. Lifecycle orchestrator (`src/features/billing/lifecycle.server.ts`)
+Single server-only module used by both webhook routes and manual-approval flows:
+- `activateSubscription({ workspaceId, planCode, cycle, gateway, paymentOrderId })`
+  - Upserts `billing_subscriptions` (workspace_id UNIQUE) with `current_period_start/end` from cycle.
+  - Recomputes plan features/limits via existing `has_role` / `workspace_has_feature`.
+  - Emits `billing_events` (`subscription.activated`, `subscription.upgraded`, `subscription.downgraded`, `subscription.renewed`).
+  - Sends notification via existing `notifications` insert.
+- `cancelSubscription(subId, atPeriodEnd)`, `reactivateSubscription(subId)`, `expireSubscription(subId)`.
+- `generateInvoice({ workspaceId, subscriptionId, paymentId, planCode, cycle, taxSettings })` — uses `next_invoice_number()`, computes GST split (CGST/SGST vs IGST from place_of_supply), inserts `billing_invoices` + line items, marks paid.
+- Idempotent: guarded by `payment_orders.id` + `billing_payments.gateway_payment_id` uniqueness check before write.
 
-All new tables: GRANT + RLS + policies.
+### 2. Wire webhooks → lifecycle
+Update the three existing routes (`src/routes/api/public/webhooks/{razorpay,payu,cashfree}.ts`) to, on verified success, call `lifecycle.activateSubscription` + `lifecycle.generateInvoice` and record `billing_payments`. Update `src/features/payments/upi.functions.ts` admin-approval path to do the same. Prevent duplicates by checking existing `billing_payments.gateway_payment_id`.
 
-## 2. Plan registry (client)
+### 3. Multi-gateway checkout on user side
+- New `src/features/billing/subscription-checkout.functions.ts`:
+  - `startSubscriptionCheckout({ workspaceId, planCode, cycle, gatewayId })` — resolves plan price from `billing_plans`, calls existing `createCheckoutOrder` (payments), returns launch payload.
+- New `src/features/billing/components/checkout-drawer.tsx` — gateway picker (from `listAvailableGateways`) + launches provider using existing `CheckoutModal` from `src/features/payments/components/checkout-modal.tsx`.
+- Update `UpgradeModal` "Upgrade" CTA to open this drawer (previously stub).
 
-`src/features/subscription/plans.ts` — static registry mapping each ZUPIX plan to blocks/features/limits with UI metadata (name, emoji, tagline, color, badge). Single source of truth used by builder, pricing page, upgrade modal.
+### 4. My Subscription (user)
+Extend `BillingDashboard` (no redesign — same layout/tabs):
+- Replace single-gateway checkout with the new drawer.
+- Add "Change plan" (upgrade/downgrade → same drawer, prorated note shown, actual proration deferred to gateway).
+- Add "Renew now" button when `current_period_end < 14 days` or `status = past_due`.
+- Add "Reactivate" when `cancel_at_period_end = true`.
+- Invoice list: add "Download PDF" button — server fn that renders HTML → returns printable invoice HTML (browser prints to PDF). Fully client-driven PDF via `window.print()` on a dedicated route `/app/billing/invoices/$id/print`.
 
-Block → plan map:
-- **udaan**: profile, heading, text, button, button-group, divider, spacer, social, image, gallery, video, social-feed, contact-card
-- **tejas**: + testimonials, faq, countdown, map, file-download, embed, custom-code, form, remove_branding, custom_domain
-- **shikhar** (coming_soon): store, bookings, digital-products, membership, subscriptions, donations, payments
+### 5. Admin Subscription Manager
+Extend existing `/admin/subscriptions`:
+- Tabs: Overview (MRR/ARR/active/trial/expired counts + gateway usage), Subscribers, Invoices, Payments, Manual UPI queue, Failed payments.
+- Actions: Manual activate, manual cancel, retry failed payment, mark invoice paid, refund flag.
+- All queries use existing tables via authenticated Supabase (RLS uses `has_role`).
 
-## 3. Hooks (`src/features/subscription/hooks.ts`)
-- `usePlan()` → current workspace plan (code, tier, meta)
-- `useFeature(key)` → `{ enabled, requiredPlan, upgrade() }`
-- `useSubscription()` → subscription row + status
-- `usePlanLimit(metric)` → `{ used, limit, isUnlimited, remaining, exceeded }`
-- `useUpgradeModal()` → open modal with prefilled context
+### 6. Notifications
+Emit rows into existing `notifications` table on: activated, payment success/failed, renewal reminder (via a `pg_cron`-free server-fn stub `sendRenewalReminders` that admin can trigger; scheduled runs are out of scope), plan expiring, expired, invoice generated. UI already surfaces `notifications` in the topbar.
 
-Wraps existing `workspace_has_feature` / `workspace_get_limit` RPCs.
+### 7. React hooks
+- `useBilling(workspaceId)` — subscription + plan + limits.
+- `usePayments(workspaceId)` — history.
+- `useInvoices(workspaceId)` — list + get.
+- `useSubscriptionLifecycle(workspaceId)` — mutations: startCheckout, changePlan, cancel, reactivate, renew.
 
-## 4. Builder integration
-- Extend block registry entries with `requiredPlan` (already can be inferred from plans.ts).
-- Component Library palette: show badge (FREE / TEJAS / COMING SOON) on each card.
-- On drop of locked block: insert placeholder block rendered by `<LockedBlock />` — premium lock overlay, plan badge, upgrade CTA, feature description. Editing disabled.
-- Public renderer: skip locked blocks silently.
+All in `src/features/billing/hooks.ts`, thin wrappers over server fns + `useQuery`/`useMutation`.
 
-## 5. Upgrade modal (`src/features/subscription/components/upgrade-modal.tsx`)
-Glassmorphism, monthly/yearly toggle with "Save X%" badge, 3 plan cards, feature comparison table, animated CTAs. Shikhar shows "Coming Soon" + Waitlist form.
+## Database migration
 
-## 6. Pricing route
-`src/routes/pricing.tsx` — public marketing page reusing the modal's plan cards.
+Small additive changes only:
+- Add missing columns if absent: `billing_subscriptions.previous_plan_id uuid`, `billing_events.actor_user_id uuid`.
+- Unique index `billing_payments (gateway, gateway_payment_id) WHERE gateway_payment_id IS NOT NULL` for dedupe.
+- Unique index `billing_invoices (subscription_id, issued_at)` NOT added — invoice_number is already unique.
+- Ensure `pg_admin_all` policies allow `super_admin` on `billing_invoices`, `billing_payments`, `billing_events` (audit + patch if missing).
 
-## 7. Subscription Manager (super admin)
-`src/routes/_authenticated/admin/subscriptions.tsx`
-- Plan CRUD (name, price monthly/yearly, currency, visibility, coming_soon toggle, waitlist toggle)
-- Feature toggle grid (plan × feature)
-- Limit editor (plan × metric)
-- Yearly discount calc helper
-- Waitlist viewer with export
+## Files to add
+- `src/features/billing/lifecycle.server.ts`
+- `src/features/billing/subscription-checkout.functions.ts`
+- `src/features/billing/invoices.functions.ts` (list/get/generate PDF-print)
+- `src/features/billing/hooks.ts`
+- `src/features/billing/components/checkout-drawer.tsx`
+- `src/features/billing/components/invoice-print.tsx`
+- `src/routes/_authenticated.app.billing.invoices.$id.print.tsx`
 
-Guarded by `super_admin` role via existing `has_role`.
+## Files to modify
+- `src/routes/api/public/webhooks/{razorpay,payu,cashfree}.ts` — call lifecycle on success.
+- `src/features/payments/upi.functions.ts` — call lifecycle on admin-approve.
+- `src/features/billing/billing-dashboard.tsx` — swap checkout to drawer, add lifecycle actions.
+- `src/features/subscription/components/upgrade-modal.tsx` — open checkout drawer.
+- `src/routes/_authenticated/admin/subscriptions.tsx` — add Overview/Failed/Manual UPI tabs and actions.
 
-## 8. Waitlist API
-`src/features/subscription/waitlist.functions.ts` — `joinWaitlist({ planCode, email })`, `listWaitlist({ planCode })` (admin).
+## Out of scope (explicit)
+- Pricing page redesign.
+- New payment gateways.
+- Cron/scheduler for renewal reminders (function shipped, scheduling deferred).
+- Actual PDF byte generation server-side (uses print-to-PDF).
+- Real proration math (upgrade credit) — displayed as "will be prorated by gateway".
 
-## 9. Sidebar/nav
-Add "Subscription" link under super-admin section pointing to `/admin/subscriptions`. Add "Upgrade" pill in main topbar when plan = udaan.
-
-## Technical notes
-- All new server work via `createServerFn` + `requireSupabaseAuth`. Admin ops verify `has_role(uid,'super_admin')`.
-- No payment integration. Upgrade CTA on paid plans opens modal → "Payments arrive in LS-15" toast + waitlist option.
-- Money in minor units (existing convention).
-- All UI uses design tokens (no hardcoded colors); framer-motion for micro-interactions; existing `MediaField`, `PageHeader`, shadcn primitives.
-
-## Deliverables
-1. Migration: seed plans/features/limits + `plan_waitlist` table
-2. `src/features/subscription/` — plans registry, hooks, api, components (UpgradeModal, PlanCard, LockedBlock, WaitlistForm, PlanBadge)
-3. Builder registry + palette + canvas updates for locked blocks
-4. `/pricing` public route
-5. `/admin/subscriptions` super-admin route
-6. Topbar "Upgrade" CTA + sidebar entry
-
-Wait for approval before implementation.
+## Verification
+`tsgo` typecheck, manual walk-through: pick plan → gateway drawer → mock verify (existing demo path) → subscription active + invoice generated + notification created + admin sees row.
