@@ -1,96 +1,55 @@
-# LS-15.0 — Enterprise Billing & Subscription Lifecycle Engine
+## LS-DEMO-01 · Phase 1 — Enterprise Demo Workspace & Showcase Profiles
 
-## Current state
+Scope confirmed by you: **only** profiles, themes, content, and placeholder removal. Analytics, payments, forms, bookings, reset engine, demo login gating, landing wiring → later phases.
 
-Two parallel systems exist and need to be joined:
+### 1. Demo workspace & owner
+- Seed a fixed workspace `ZUPIX Showcase` (slug `zupix-showcase`, deterministic UUID) owned by `theconnectifyservices@gmail.com` (existing super-admin). No new auth user this phase — `demo@zupix.in` provisioning moves to Phase 3 with the read-only role gate.
+- Apply a "Modern Glass" theme preset as the workspace default theme.
 
-- `src/features/billing/*` — subscription/invoice/coupon/tax logic wired to a single Razorpay checkout.
-- `src/features/payments/*` — multi-gateway (Razorpay, PayU, Cashfree, Manual UPI) order engine with adapters, webhooks, admin manager.
-- `src/features/subscription/*` — Udaan/Tejas/Shikhar plan registry + gating hooks + upgrade modal (LS-14.0).
+### 2. Twelve business showcase bio pages
+One published `bio_pages` row per business, each with a unique slug and a distinct premium theme so the theme gallery is covered:
 
-DB tables already cover the surface: `billing_plans`, `billing_subscriptions`, `billing_invoices`, `billing_payments`, `billing_events`, `payment_orders`, `payment_gateways`, `payment_webhook_events`, `manual_upi_submissions`, `billing_coupons`, `billing_tax_settings`.
+```text
+1  Ratan Jewellers (Jaipur)          — jewellery
+2  Spice Route Kitchen (Mumbai)      — restaurant
+3  Brew & Bloom Café (Bengaluru)     — cafe
+4  Dr. Anjali Sharma Clinic (Delhi)  — doctor
+5  Ashirwad Multispeciality (Pune)   — hospital
+6  Glow Studio Salon (Hyderabad)     — salon
+7  IronCore Fitness (Gurugram)       — gym
+8  Vidya Public School (Lucknow)     — school
+9  Wanderlust Trails (Goa)           — travel
+10 Casa Verde Homes (Noida)          — real estate
+11 Pixel Forge Digital (Ahmedabad)   — digital agency
+12 Meher & Associates (Chennai)      — law firm
+```
 
-Gap: no shared lifecycle glue. Payments engine creates `payment_orders` but never activates a subscription, creates an invoice, or emits an event.
+Every page ships fully populated blocks: profile (logo + cover + owner photo + verified badge + description), contact strip (WhatsApp / call / email / address / hours), 4–6 custom CTAs, product OR service catalogue (6 items), gallery (6 images), 3 testimonials, 4 FAQs, social icons, embedded map, downloadable PDF, one HTML widget, SEO metadata (title/description/OG image), and a sample custom-domain string in metadata.
 
-## What this phase builds
+### 3. Media — Lovable Assets CDN
+Curated pack, not the 300+ from the original spec (Phase 2 expands the library):
+- 12 business logos, 12 cover banners, 12 owner portraits (Indian faces), 72 product/service photos, 72 gallery photos, 12 brochure PDFs, 12 branded QR PNGs → ~204 assets.
+- Generated with `imagegen` (premium tier for logos/covers, fast tier for gallery/product) + `lovable-assets create` for each. Written to `src/demo/assets/<business>/…asset.json`.
+- All references in seed data use the CDN `url` from the pointer JSON.
 
-Backend + admin + user-facing subscription management. No pricing-page redesign, no new gateway code.
+### 4. Theme presets
+Register 12 premium theme JSON presets under `src/features/templates/catalog.ts` (Modern Glass, Neon Noir, Sunrise Gradient, Terracotta, Ocean Fade, Royal Emerald, Midnight Mono, Peach Soft, Editorial Serif, Studio Dark, Botanic, Aurora). Each demo bio page uses a different preset. Remaining 8 of the "20 premium themes" come in Phase 2.
 
-### 1. Lifecycle orchestrator (`src/features/billing/lifecycle.server.ts`)
-Single server-only module used by both webhook routes and manual-approval flows:
-- `activateSubscription({ workspaceId, planCode, cycle, gateway, paymentOrderId })`
-  - Upserts `billing_subscriptions` (workspace_id UNIQUE) with `current_period_start/end` from cycle.
-  - Recomputes plan features/limits via existing `has_role` / `workspace_has_feature`.
-  - Emits `billing_events` (`subscription.activated`, `subscription.upgraded`, `subscription.downgraded`, `subscription.renewed`).
-  - Sends notification via existing `notifications` insert.
-- `cancelSubscription(subId, atPeriodEnd)`, `reactivateSubscription(subId)`, `expireSubscription(subId)`.
-- `generateInvoice({ workspaceId, subscriptionId, paymentId, planCode, cycle, taxSettings })` — uses `next_invoice_number()`, computes GST split (CGST/SGST vs IGST from place_of_supply), inserts `billing_invoices` + line items, marks paid.
-- Idempotent: guarded by `payment_orders.id` + `billing_payments.gateway_payment_id` uniqueness check before write.
+### 5. Placeholder audit
+Grep the app for empty-state fallbacks that render on the demo workspace surfaces (dashboard cards, template gallery, media library, bio dashboard, profile). Where the demo workspace is active and rows exist in the seed, the UI must show them; where a surface would still be empty in Phase 1 (analytics, payments, forms), leave the empty state untouched — Phase 2/3 seed fills it. No component code changes beyond wiring seed data through existing renderers.
 
-### 2. Wire webhooks → lifecycle
-Update the three existing routes (`src/routes/api/public/webhooks/{razorpay,payu,cashfree}.ts`) to, on verified success, call `lifecycle.activateSubscription` + `lifecycle.generateInvoice` and record `billing_payments`. Update `src/features/payments/upi.functions.ts` admin-approval path to do the same. Prevent duplicates by checking existing `billing_payments.gateway_payment_id`.
+### 6. Delivery mechanism
+- One SQL migration `seed_demo_workspace_phase1.sql` inserting the workspace, membership, theme, and 12 `bio_pages` (JSONB content referencing CDN URLs). Idempotent via `ON CONFLICT (id) DO UPDATE`.
+- Asset generation + upload driven from the sandbox (not shipped in code) — pointer JSONs committed under `src/demo/assets/`.
+- A tiny `src/demo/manifest.ts` exports the fixed workspace + page IDs so later phases (analytics/payments seed, reset engine) can target them.
 
-### 3. Multi-gateway checkout on user side
-- New `src/features/billing/subscription-checkout.functions.ts`:
-  - `startSubscriptionCheckout({ workspaceId, planCode, cycle, gatewayId })` — resolves plan price from `billing_plans`, calls existing `createCheckoutOrder` (payments), returns launch payload.
-- New `src/features/billing/components/checkout-drawer.tsx` — gateway picker (from `listAvailableGateways`) + launches provider using existing `CheckoutModal` from `src/features/payments/components/checkout-modal.tsx`.
-- Update `UpgradeModal` "Upgrade" CTA to open this drawer (previously stub).
+### 7. Out of scope this phase (queued for later)
+Analytics events, payments/invoices, forms/bookings, downloads center, testimonials manager rows, AI Studio prompt library, landing-page rewrites to point at demo, `demo@zupix.in` read-only account, reset SQL function + admin button, 300+ media / 50+ videos expansion, remaining 8 themes.
 
-### 4. My Subscription (user)
-Extend `BillingDashboard` (no redesign — same layout/tabs):
-- Replace single-gateway checkout with the new drawer.
-- Add "Change plan" (upgrade/downgrade → same drawer, prorated note shown, actual proration deferred to gateway).
-- Add "Renew now" button when `current_period_end < 14 days` or `status = past_due`.
-- Add "Reactivate" when `cancel_at_period_end = true`.
-- Invoice list: add "Download PDF" button — server fn that renders HTML → returns printable invoice HTML (browser prints to PDF). Fully client-driven PDF via `window.print()` on a dedicated route `/app/billing/invoices/$id/print`.
+### Technical notes
+- Workspace/page UUIDs pinned as constants so Phase 2 seed can reference them.
+- Migration only touches `workspaces`, `workspace_members`, `profiles.active_workspace_id` (no-op), and `bio_pages`. No schema changes.
+- Image generation is the slow step (~204 calls). If a subset fails, seed still runs and re-uploads can be retried without rewriting the migration.
 
-### 5. Admin Subscription Manager
-Extend existing `/admin/subscriptions`:
-- Tabs: Overview (MRR/ARR/active/trial/expired counts + gateway usage), Subscribers, Invoices, Payments, Manual UPI queue, Failed payments.
-- Actions: Manual activate, manual cancel, retry failed payment, mark invoice paid, refund flag.
-- All queries use existing tables via authenticated Supabase (RLS uses `has_role`).
-
-### 6. Notifications
-Emit rows into existing `notifications` table on: activated, payment success/failed, renewal reminder (via a `pg_cron`-free server-fn stub `sendRenewalReminders` that admin can trigger; scheduled runs are out of scope), plan expiring, expired, invoice generated. UI already surfaces `notifications` in the topbar.
-
-### 7. React hooks
-- `useBilling(workspaceId)` — subscription + plan + limits.
-- `usePayments(workspaceId)` — history.
-- `useInvoices(workspaceId)` — list + get.
-- `useSubscriptionLifecycle(workspaceId)` — mutations: startCheckout, changePlan, cancel, reactivate, renew.
-
-All in `src/features/billing/hooks.ts`, thin wrappers over server fns + `useQuery`/`useMutation`.
-
-## Database migration
-
-Small additive changes only:
-- Add missing columns if absent: `billing_subscriptions.previous_plan_id uuid`, `billing_events.actor_user_id uuid`.
-- Unique index `billing_payments (gateway, gateway_payment_id) WHERE gateway_payment_id IS NOT NULL` for dedupe.
-- Unique index `billing_invoices (subscription_id, issued_at)` NOT added — invoice_number is already unique.
-- Ensure `pg_admin_all` policies allow `super_admin` on `billing_invoices`, `billing_payments`, `billing_events` (audit + patch if missing).
-
-## Files to add
-- `src/features/billing/lifecycle.server.ts`
-- `src/features/billing/subscription-checkout.functions.ts`
-- `src/features/billing/invoices.functions.ts` (list/get/generate PDF-print)
-- `src/features/billing/hooks.ts`
-- `src/features/billing/components/checkout-drawer.tsx`
-- `src/features/billing/components/invoice-print.tsx`
-- `src/routes/_authenticated.app.billing.invoices.$id.print.tsx`
-
-## Files to modify
-- `src/routes/api/public/webhooks/{razorpay,payu,cashfree}.ts` — call lifecycle on success.
-- `src/features/payments/upi.functions.ts` — call lifecycle on admin-approve.
-- `src/features/billing/billing-dashboard.tsx` — swap checkout to drawer, add lifecycle actions.
-- `src/features/subscription/components/upgrade-modal.tsx` — open checkout drawer.
-- `src/routes/_authenticated/admin/subscriptions.tsx` — add Overview/Failed/Manual UPI tabs and actions.
-
-## Out of scope (explicit)
-- Pricing page redesign.
-- New payment gateways.
-- Cron/scheduler for renewal reminders (function shipped, scheduling deferred).
-- Actual PDF byte generation server-side (uses print-to-PDF).
-- Real proration math (upgrade credit) — displayed as "will be prorated by gateway".
-
-## Verification
-`tsgo` typecheck, manual walk-through: pick plan → gateway drawer → mock verify (existing demo path) → subscription active + invoice generated + notification created + admin sees row.
+### Approval checkpoint
+This plan is Phase 1 only. On completion I stop and wait for your go-ahead before Phase 2 (media library expansion + analytics/payments/forms seed + landing wiring) and Phase 3 (demo login + reset engine).
