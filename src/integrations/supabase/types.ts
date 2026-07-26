@@ -6516,7 +6516,15 @@ export type Database = {
         | "past_due"
         | "cancelled"
         | "expired"
-      payment_gateway: "razorpay" | "stripe" | "paypal" | "paddle" | "manual"
+      payment_gateway:
+        | "razorpay"
+        | "stripe"
+        | "paypal"
+        | "paddle"
+        | "manual"
+        | "payu"
+        | "cashfree"
+        | "manual_upi"
       payment_mode: "sandbox" | "live"
       payment_order_status:
         | "created"
@@ -6855,7 +6863,16 @@ export const Constants = {
         "cancelled",
         "expired",
       ],
-      payment_gateway: ["razorpay", "stripe", "paypal", "paddle", "manual"],
+      payment_gateway: [
+        "razorpay",
+        "stripe",
+        "paypal",
+        "paddle",
+        "manual",
+        "payu",
+        "cashfree",
+        "manual_upi",
+      ],
       payment_mode: ["sandbox", "live"],
       payment_order_status: [
         "created",
