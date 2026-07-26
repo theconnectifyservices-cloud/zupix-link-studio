@@ -222,6 +222,7 @@ function PlanCard({
         ) : (
           <motion.div key="up" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <Button
+              onClick={onUpgrade}
               className={cn(
                 "w-full gap-1.5",
                 isSuggested && `bg-gradient-to-r ${plan.gradient} text-white hover:opacity-90`,
