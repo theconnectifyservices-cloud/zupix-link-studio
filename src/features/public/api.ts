@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { BioContent } from "@/features/builder/types";
+import { normalizeBioContent } from "@/features/builder/content-normalizer";
 import type { SeoSettings } from "@/features/seo/types";
 
 export interface PublicBioPage {
@@ -57,7 +58,7 @@ export async function fetchPublicBioPage(slug: string): Promise<PublicBioPage | 
     updated_at: row.updated_at,
     published_at: row.published_at,
     visibility: row.visibility,
-    content: row.published_content,
+    content: normalizeBioContent(row.published_content),
     seo: row.seo ?? {},
     faviconUrl: row.favicon_url,
     appleTouchIconUrl: row.apple_touch_icon_url,

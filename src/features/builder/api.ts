@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { BioContent } from "./types";
-import { EMPTY_CONTENT } from "./types";
+import { createEmptyBioContent, normalizeBioContent } from "./content-normalizer";
 
 const TBL = "bio_pages" as never;
 
@@ -23,14 +23,15 @@ export async function fetchBuilderPage(id: string): Promise<BuilderPage> {
     .single();
   if (error) throw error;
   const row = data as unknown as BuilderPage;
-  return { ...row, content: row.content ?? EMPTY_CONTENT };
+  return { ...row, content: normalizeBioContent(row.content) };
 }
 
 export async function saveBuilderContent(id: string, content: BioContent): Promise<string> {
   const nowIso = new Date().toISOString();
+  const safeContent = normalizeBioContent(content ?? createEmptyBioContent());
   const { error } = await supabase
     .from(TBL)
-    .update({ content, last_saved_at: nowIso } as never)
+    .update({ content: safeContent, last_saved_at: nowIso } as never)
     .eq("id", id);
   if (error) throw error;
   return nowIso;

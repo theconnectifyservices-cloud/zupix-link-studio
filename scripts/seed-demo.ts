@@ -11,6 +11,7 @@
  */
 import { DEMO_BUSINESSES, DEMO_WORKSPACE, type DemoBusiness } from "../src/demo/businesses";
 import { DEMO_COVER_URLS, absCoverUrl } from "../src/demo/media";
+import { normalizeBioContent } from "../src/features/builder/content-normalizer";
 
 let bid = 0;
 const blockId = (bizId: string) => `${bizId.slice(0, 8)}-b${(++bid).toString(36).padStart(3, "0")}`;
@@ -180,7 +181,7 @@ function buildBlocks(biz: DemoBusiness) {
     blocks.push({ id: blockId(bizId), type: "social", items: social });
   }
 
-  return { blocks, theme: { preset: biz.themePreset } };
+  return normalizeBioContent({ blocks, theme: { preset: biz.themePreset } });
 }
 
 function seoJson(biz: DemoBusiness) {

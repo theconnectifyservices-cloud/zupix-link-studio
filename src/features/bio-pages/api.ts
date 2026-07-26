@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { createEmptyBioContent } from "@/features/builder/content-normalizer";
 
 export type BioPageStatus = "draft" | "published" | "scheduled" | "archived" | "unpublished";
 export type BioPageVisibility = "public" | "private" | "unlisted" | "password";
@@ -53,6 +54,7 @@ export interface CreateBioPageInput {
 }
 
 export async function createBioPage(input: CreateBioPageInput): Promise<BioPageRow> {
+  const content = createEmptyBioContent();
   const { data, error } = await supabase
     .from(TBL)
     .insert({
@@ -62,6 +64,8 @@ export async function createBioPage(input: CreateBioPageInput): Promise<BioPageR
       slug: input.slug.toLowerCase(),
       category: input.category ?? null,
       description: input.description ?? null,
+      content,
+      seo: content.seo ?? {},
     } as never)
     .select("*")
     .single();

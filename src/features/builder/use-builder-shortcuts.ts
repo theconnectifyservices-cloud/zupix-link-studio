@@ -70,7 +70,7 @@ export function useBuilderShortcuts(enabled = true) {
         return;
       }
       if (mod && key === "a") {
-        if (state.content.blocks.length === 0) return;
+        if ((state.content.blocks ?? []).length === 0) return;
         e.preventDefault();
         state.selectAll();
         return;
