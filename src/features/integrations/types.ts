@@ -53,7 +53,7 @@ export interface WorkspaceIntegrationRow {
   display_name: string;
   enabled: boolean;
   environment: "sandbox" | "production";
-  config: Record<string, unknown>;
+  config: Record<string, string>;
   /** Client-safe: booleans only. */
   has_credentials: boolean;
   masked_credentials: Record<string, string>;
