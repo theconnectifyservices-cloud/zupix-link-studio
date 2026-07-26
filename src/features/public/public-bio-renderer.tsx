@@ -16,6 +16,7 @@ import type { BioContent } from "@/features/builder/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { initTracker } from "@/features/analytics/tracker";
 import { fetchPublicTracking, injectTracking, removeTracking } from "@/features/tracking";
+import { BrandingLayer } from "@/features/growth";
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -30,11 +31,15 @@ export function PublicBioRenderer({
   pageId,
   slug,
   workspaceId,
+  pageName,
+  pageDescription,
 }: {
   content: BioContent;
   pageId?: string;
   slug?: string;
   workspaceId?: string;
+  pageName?: string;
+  pageDescription?: string | null;
 }) {
   const theme = content.theme ?? DEFAULT_THEME;
   const motion = theme.motion ?? DEFAULT_MOTION;
@@ -119,6 +124,11 @@ export function PublicBioRenderer({
             ))}
           </RendererModeProvider>
         )}
+        <BrandingLayer
+          workspaceId={workspaceId}
+          pageName={pageName}
+          pageDescription={pageDescription}
+        />
       </div>
     </div>
   );
