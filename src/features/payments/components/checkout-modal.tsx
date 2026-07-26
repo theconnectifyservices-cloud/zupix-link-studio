@@ -14,7 +14,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2, CreditCard, Loader2, Lock, QrCode, RefreshCcw,
   ShieldCheck, Sparkles, XCircle, Zap, ArrowRight, ArrowLeft, Tag,
-  ReceiptText, Wallet, ChevronRight,
+  ReceiptText, Wallet, ChevronRight, BadgeCheck, MapPin, MessageCircle,
+  LifeBuoy, Mail, FileCheck2, ShieldAlert, KeyRound, Globe2,
 } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -255,15 +256,26 @@ export function CheckoutModal(props: Props) {
 
           {/* Header */}
           <div className="relative shrink-0 border-b border-border/50 px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <ShieldCheck className="h-4 w-4 text-primary" />
-                Secure Checkout
-                <Badge variant="outline" className="ml-1 border-emerald-500/40 text-[10px] text-emerald-600">
-                  <Lock className="mr-1 h-2.5 w-2.5" /> 256-bit
-                </Badge>
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary via-purple-600 to-pink-500 text-white shadow-md">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 text-sm font-semibold truncate">
+                    ZUPIX Link Studio
+                    <Badge variant="outline" className="border-emerald-500/40 text-[10px] text-emerald-600">
+                      <BadgeCheck className="mr-1 h-2.5 w-2.5" /> Verified
+                    </Badge>
+                  </div>
+                  <div className="text-[11px] text-muted-foreground truncate">
+                    Powered by ZUPIX with The Connectify · Trusted digital platform
+                  </div>
+                </div>
               </div>
-              <div className="text-xs text-muted-foreground">{planLabel}</div>
+              <div className="hidden shrink-0 items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/5 px-2 py-1 text-[10px] font-medium text-emerald-600 sm:flex">
+                <Lock className="h-3 w-3" /> 256-bit SSL
+              </div>
             </div>
 
             {/* Progress bar */}
@@ -280,8 +292,10 @@ export function CheckoutModal(props: Props) {
 
           {/* Body */}
           <div className="relative flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-6 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            {step !== "success" && step !== "failed" && <TrustBadges />}
 
             <AnimatePresence mode="wait">
+
               {step === "summary" && (
                 <StepMotion key="summary">
                   <SummaryStep
@@ -394,7 +408,9 @@ export function CheckoutModal(props: Props) {
               )}
             </AnimatePresence>
           </div>
+          <SecurityFooter />
         </div>
+
       </DialogContent>
     </Dialog>
   );
@@ -618,12 +634,20 @@ function ManualUpiStep({
   pending: boolean; onSubmit: (screenshotUrl?: string) => void;
 }) {
   const [screenshotUrl, setScreenshotUrl] = useState<string>("");
+  // LS-PAY-23: Default merchant identity for Manual UPI when the gateway
+  // config does not override it.
+  const DEFAULT_UPI_ID = "8004021255@ptyes";
+  const DEFAULT_ACCOUNT_NAME = "Sadhana";
+  const upiId = launch.upiId?.trim() ? launch.upiId : DEFAULT_UPI_ID;
+  const accountName = launch.accountName?.trim() && launch.accountName !== "Merchant"
+    ? launch.accountName
+    : DEFAULT_ACCOUNT_NAME;
   const amountRupees = (launch.amountPaise / 100).toFixed(2);
-  const upiDeepLink = `upi://pay?pa=${encodeURIComponent(launch.upiId)}&pn=${encodeURIComponent(launch.accountName)}&am=${amountRupees}&cu=INR&tn=${encodeURIComponent(launch.orderRef)}`;
+  const upiDeepLink = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(accountName)}&am=${amountRupees}&cu=INR&tn=${encodeURIComponent(launch.orderRef)}`;
 
   const copyUpi = async () => {
     try {
-      await navigator.clipboard.writeText(launch.upiId);
+      await navigator.clipboard.writeText(upiId);
       toast.success("UPI ID copied");
     } catch {
       toast.error("Copy failed");
@@ -643,15 +667,15 @@ function ManualUpiStep({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border bg-muted/30 p-4">
+      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-background/80 to-muted/30 p-4 shadow-sm backdrop-blur">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <QrCode className="h-4 w-4" /> Pay {amountLabel} via UPI
+          <QrCode className="h-4 w-4 text-primary" /> Pay {amountLabel} via UPI
         </div>
         {launch.qrImageUrl ? (
           <img
             src={launch.qrImageUrl}
             alt="UPI QR code"
-            className="mx-auto mt-3 h-52 w-52 rounded-lg border bg-white object-contain p-2"
+            className="mx-auto mt-3 h-52 w-52 rounded-lg border bg-white object-contain p-2 shadow-md"
           />
         ) : (
           <div className="mx-auto mt-3 grid h-52 w-52 place-items-center rounded-lg border bg-white/60 text-xs text-muted-foreground">
@@ -660,8 +684,8 @@ function ManualUpiStep({
         )}
         <div className="mt-3 text-center">
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">UPI ID</div>
-          <div className="font-mono text-base font-semibold">{launch.upiId}</div>
-          <div className="text-xs text-muted-foreground">{launch.accountName}</div>
+          <div className="font-mono text-base font-semibold">{upiId}</div>
+          <div className="text-xs text-muted-foreground">{accountName}</div>
         </div>
         <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
           <Button size="sm" variant="outline" onClick={copyUpi}>Copy UPI ID</Button>
@@ -672,10 +696,11 @@ function ManualUpiStep({
             <a href={upiDeepLink}>Open UPI App</a>
           </Button>
         </div>
-        <p className="mt-3 whitespace-pre-line text-center text-xs text-muted-foreground">
-          {launch.instructions}
-        </p>
       </div>
+
+      <TrustInfoBox />
+      <MerchantCard accountName={accountName} />
+
       <div className="space-y-2">
         <Label htmlFor="txnRef">UPI Transaction Reference (UTR)</Label>
         <Input
@@ -695,8 +720,12 @@ function ManualUpiStep({
           label="Upload screenshot"
         />
       </div>
+
+      <CustomerAssurance />
+      <SupportLinks />
+
       <div className="sticky bottom-0 -mx-6 -mb-6 mt-6 flex flex-col gap-2 border-t border-border/50 bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70 sm:flex-row sm:justify-end">
-        <Button className="w-full sm:w-auto" onClick={() => onSubmit(screenshotUrl || undefined)} disabled={!txnRef.trim() || pending}>
+        <Button className="w-full sm:w-auto bg-gradient-to-r from-primary to-purple-600" onClick={() => onSubmit(screenshotUrl || undefined)} disabled={!txnRef.trim() || pending}>
           {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
           Submit Payment Proof
         </Button>
@@ -705,6 +734,7 @@ function ManualUpiStep({
     </div>
   );
 }
+
 
 function PayingSpinner({ label, hint }: { label: string; hint?: string }) {
   return (
@@ -796,3 +826,164 @@ function fmt(minor: number, currency: string) {
     return `${currency} ${(minor / 100).toFixed(2)}`;
   }
 }
+
+/* -------- LS-PAY-23: Trust & branding blocks -------- */
+
+const TRUST_CHIPS: { icon: React.ReactNode; label: string }[] = [
+  { icon: <Lock className="h-3 w-3" />, label: "256-bit SSL" },
+  { icon: <ShieldCheck className="h-3 w-3" />, label: "Secure Checkout" },
+  { icon: <BadgeCheck className="h-3 w-3" />, label: "Verified Merchant" },
+  { icon: <Globe2 className="h-3 w-3" />, label: "Made in India" },
+  { icon: <CreditCard className="h-3 w-3" />, label: "Trusted Payments" },
+  { icon: <Zap className="h-3 w-3" />, label: "Instant Activation" },
+  { icon: <KeyRound className="h-3 w-3" />, label: "Privacy Protected" },
+  { icon: <ShieldAlert className="h-3 w-3" />, label: "No Card Data Stored" },
+];
+
+function TrustBadges() {
+  return (
+    <div className="mb-5 -mx-1 flex flex-wrap gap-1.5">
+      {TRUST_CHIPS.map((c, i) => (
+        <motion.div
+          key={c.label}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.04, duration: 0.3 }}
+          className="flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-400"
+        >
+          <span className="text-emerald-500">{c.icon}</span>
+          {c.label}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function TrustInfoBox() {
+  const items = [
+    "Payments are securely verified.",
+    "Your payment proof is reviewed safely.",
+    "Subscription activates immediately after approval.",
+    "No sensitive banking data is stored.",
+  ];
+  return (
+    <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
+      <ul className="space-y-1.5 text-xs">
+        {items.map((t) => (
+          <li key={t} className="flex items-start gap-2 text-emerald-800 dark:text-emerald-300">
+            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function MerchantCard({ accountName }: { accountName: string }) {
+  const rows: { label: string; value: React.ReactNode }[] = [
+    { label: "Merchant", value: "ZUPIX Link Studio" },
+    { label: "Company", value: "ZUPIX with The Connectify" },
+    { label: "Account Holder", value: accountName },
+    { label: "Country", value: <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" /> India</span> },
+    {
+      label: "Verification",
+      value: (
+        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-600">
+          <BadgeCheck className="h-3 w-3" /> Verified Merchant
+        </span>
+      ),
+    },
+  ];
+  return (
+    <div className="rounded-xl border bg-card/60 p-4 backdrop-blur">
+      <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Merchant Verification
+      </div>
+      <div className="divide-y divide-border/60 text-sm">
+        {rows.map((r) => (
+          <div key={r.label} className="flex items-center justify-between py-1.5">
+            <span className="text-muted-foreground">{r.label}</span>
+            <span className="font-medium">{r.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CustomerAssurance() {
+  const items = [
+    "Refund policy available",
+    "Support response within 24 hours",
+    "Manual UPI verification available",
+    "Payment receipt generated",
+    "Secure invoice issued",
+  ];
+  return (
+    <div className="rounded-xl border bg-card/40 p-3">
+      <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <FileCheck2 className="h-3.5 w-3.5 text-primary" /> Customer Assurance
+      </div>
+      <ul className="grid gap-1.5 text-xs sm:grid-cols-2">
+        {items.map((t) => (
+          <li key={t} className="flex items-start gap-1.5">
+            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function SupportLinks() {
+  return (
+    <div className="rounded-xl border border-dashed p-3 text-xs">
+      <div className="mb-1.5 flex items-center gap-1.5 font-semibold">
+        <LifeBuoy className="h-3.5 w-3.5 text-primary" /> Need help?
+      </div>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-muted-foreground">
+        <a href="mailto:support@zupix.in" className="inline-flex items-center gap-1 hover:text-foreground">
+          <Mail className="h-3 w-3" /> support@zupix.in
+        </a>
+        <a
+          href="https://wa.me/918004021255"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 hover:text-foreground"
+        >
+          <MessageCircle className="h-3 w-3" /> WhatsApp Support
+        </a>
+        <a href="mailto:support@zupix.in?subject=Live%20Chat" className="inline-flex items-center gap-1 hover:text-foreground">
+          <MessageCircle className="h-3 w-3" /> Live Chat
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function SecurityFooter() {
+  const items = [
+    { icon: <Lock className="h-3 w-3" />, label: "SSL Encryption" },
+    { icon: <ShieldCheck className="h-3 w-3" />, label: "Enterprise Security" },
+    { icon: <CreditCard className="h-3 w-3" />, label: "PCI-inspired Practices" },
+    { icon: <KeyRound className="h-3 w-3" />, label: "Privacy Protected" },
+    { icon: <Tag className="h-3 w-3" />, label: "No Hidden Charges" },
+    { icon: <LifeBuoy className="h-3 w-3" />, label: "Customer Support" },
+  ];
+  return (
+    <div className="relative shrink-0 border-t border-border/50 bg-background/70 px-6 py-2.5 backdrop-blur">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
+        <span className="font-semibold text-foreground/80">Protected by</span>
+        {items.map((i) => (
+          <span key={i.label} className="inline-flex items-center gap-1">
+            <span className="text-primary">{i.icon}</span>
+            {i.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
