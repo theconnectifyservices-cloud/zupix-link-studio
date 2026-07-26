@@ -614,7 +614,7 @@ function ManualUpiStep({
   launch: Extract<LaunchPayload, { kind: "manual_upi" }>;
   amountLabel: string; txnRef: string;
   setTxnRef: (v: string) => void;
-  pending: boolean; onSubmit: () => void;
+  pending: boolean; onSubmit: (screenshotUrl?: string) => void;
 }) {
   const [screenshotUrl, setScreenshotUrl] = useState<string>("");
   const amountRupees = (launch.amountPaise / 100).toFixed(2);
