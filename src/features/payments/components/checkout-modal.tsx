@@ -346,7 +346,7 @@ export function CheckoutModal(props: Props) {
                       txnRef={txnRef}
                       setTxnRef={setTxnRef}
                       pending={upiMut.isPending}
-                      onSubmit={() => upiMut.mutate()}
+                      onSubmit={(url) => upiMut.mutate(url)}
                     />
                   ) : (
                     <PayingSpinner label="Opening secure payment window…" />
