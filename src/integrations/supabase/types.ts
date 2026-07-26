@@ -2788,6 +2788,72 @@ export type Database = {
           },
         ]
       }
+      growth_engine_settings: {
+        Row: {
+          accent_color: string
+          badge_subtext: string
+          badge_text: string
+          dynamic_industry_cta_enabled: boolean
+          floating_badge_enabled: boolean
+          footer_cta_enabled: boolean
+          footer_cta_label: string
+          footer_headline: string
+          footer_subtext: string
+          id: string
+          og_branding_enabled: boolean
+          qr_branding_enabled: boolean
+          redirect_url: string
+          referral_cta_enabled: boolean
+          referral_cta_label: string
+          referral_headline: string
+          referral_subtext: string
+          updated_at: string
+          upgrade_card_enabled: boolean
+        }
+        Insert: {
+          accent_color?: string
+          badge_subtext?: string
+          badge_text?: string
+          dynamic_industry_cta_enabled?: boolean
+          floating_badge_enabled?: boolean
+          footer_cta_enabled?: boolean
+          footer_cta_label?: string
+          footer_headline?: string
+          footer_subtext?: string
+          id?: string
+          og_branding_enabled?: boolean
+          qr_branding_enabled?: boolean
+          redirect_url?: string
+          referral_cta_enabled?: boolean
+          referral_cta_label?: string
+          referral_headline?: string
+          referral_subtext?: string
+          updated_at?: string
+          upgrade_card_enabled?: boolean
+        }
+        Update: {
+          accent_color?: string
+          badge_subtext?: string
+          badge_text?: string
+          dynamic_industry_cta_enabled?: boolean
+          floating_badge_enabled?: boolean
+          footer_cta_enabled?: boolean
+          footer_cta_label?: string
+          footer_headline?: string
+          footer_subtext?: string
+          id?: string
+          og_branding_enabled?: boolean
+          qr_branding_enabled?: boolean
+          redirect_url?: string
+          referral_cta_enabled?: boolean
+          referral_cta_label?: string
+          referral_headline?: string
+          referral_subtext?: string
+          updated_at?: string
+          upgrade_card_enabled?: boolean
+        }
+        Relationships: []
+      }
       html_library: {
         Row: {
           archived_at: string | null
@@ -6487,6 +6553,10 @@ export type Database = {
       org_role_of: {
         Args: { _org_id: string; _user_id: string }
         Returns: Database["public"]["Enums"]["org_role"]
+      }
+      public_workspace_plan: {
+        Args: { _workspace_id: string }
+        Returns: string
       }
       user_owns_workspace: {
         Args: { _user_id: string; _workspace_id: string }
