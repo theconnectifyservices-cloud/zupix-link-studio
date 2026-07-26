@@ -23,7 +23,7 @@ function redact(row: Record<string, unknown>): WorkspaceIntegrationRow {
     display_name: String(row.display_name ?? ""),
     enabled: Boolean(row.enabled),
     environment: (row.environment as "sandbox" | "production") ?? "production",
-    config: (row.config as Record<string, unknown>) ?? {},
+    config: ((row.config as Record<string, string>) ?? {}),
     has_credentials: Object.keys(creds).length > 0,
     masked_credentials: maskCreds(creds),
     health_status: (row.health_status as WorkspaceIntegrationRow["health_status"]) ?? "unknown",
