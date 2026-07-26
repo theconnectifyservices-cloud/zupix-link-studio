@@ -694,7 +694,7 @@ function ManualUpiStep({
           label="Upload screenshot"
         />
       </div>
-      <Button className="w-full" onClick={onSubmit} disabled={!txnRef.trim() || pending}>
+      <Button className="w-full" onClick={() => onSubmit(screenshotUrl || undefined)} disabled={!txnRef.trim() || pending}>
         {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
         Submit Payment Proof
       </Button>
