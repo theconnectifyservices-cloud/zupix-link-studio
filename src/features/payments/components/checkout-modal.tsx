@@ -316,7 +316,7 @@ export function CheckoutModal(props: Props) {
                     selected={selected}
                     onSelect={setSelected}
                   />
-                  <div className="mt-6 flex items-center justify-between">
+                  <div className="sticky bottom-0 -mx-6 -mb-6 mt-6 flex items-center justify-between border-t border-border/50 bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70">
                     <Button variant="ghost" size="sm" onClick={() => setStep("summary")} className="gap-1.5">
                       <ArrowLeft className="h-4 w-4" /> Back
                     </Button>
