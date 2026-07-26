@@ -25,7 +25,9 @@ import { SubscriptionCheckoutLauncher } from "@/features/billing/components/subs
 export function UpgradeModal() {
   const { upgradeOpen, upgradeContext, closeUpgrade } = useSubscriptionUI();
   const { code: currentPlan } = usePlan();
+  const { workspace } = useCurrentWorkspace();
   const [cycle, setCycle] = useState<"monthly" | "yearly">("yearly");
+  const [checkout, setCheckout] = useState<{ planCode: PlanCode } | null>(null);
 
   return (
     <Dialog open={upgradeOpen} onOpenChange={(o) => !o && closeUpgrade()}>
