@@ -826,3 +826,164 @@ function fmt(minor: number, currency: string) {
     return `${currency} ${(minor / 100).toFixed(2)}`;
   }
 }
+
+/* -------- LS-PAY-23: Trust & branding blocks -------- */
+
+const TRUST_CHIPS: { icon: React.ReactNode; label: string }[] = [
+  { icon: <Lock className="h-3 w-3" />, label: "256-bit SSL" },
+  { icon: <ShieldCheck className="h-3 w-3" />, label: "Secure Checkout" },
+  { icon: <BadgeCheck className="h-3 w-3" />, label: "Verified Merchant" },
+  { icon: <Globe2 className="h-3 w-3" />, label: "Made in India" },
+  { icon: <CreditCard className="h-3 w-3" />, label: "Trusted Payments" },
+  { icon: <Zap className="h-3 w-3" />, label: "Instant Activation" },
+  { icon: <KeyRound className="h-3 w-3" />, label: "Privacy Protected" },
+  { icon: <ShieldAlert className="h-3 w-3" />, label: "No Card Data Stored" },
+];
+
+function TrustBadges() {
+  return (
+    <div className="mb-5 -mx-1 flex flex-wrap gap-1.5">
+      {TRUST_CHIPS.map((c, i) => (
+        <motion.div
+          key={c.label}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.04, duration: 0.3 }}
+          className="flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-400"
+        >
+          <span className="text-emerald-500">{c.icon}</span>
+          {c.label}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function TrustInfoBox() {
+  const items = [
+    "Payments are securely verified.",
+    "Your payment proof is reviewed safely.",
+    "Subscription activates immediately after approval.",
+    "No sensitive banking data is stored.",
+  ];
+  return (
+    <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
+      <ul className="space-y-1.5 text-xs">
+        {items.map((t) => (
+          <li key={t} className="flex items-start gap-2 text-emerald-800 dark:text-emerald-300">
+            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function MerchantCard({ accountName }: { accountName: string }) {
+  const rows: { label: string; value: React.ReactNode }[] = [
+    { label: "Merchant", value: "ZUPIX Link Studio" },
+    { label: "Company", value: "ZUPIX with The Connectify" },
+    { label: "Account Holder", value: accountName },
+    { label: "Country", value: <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" /> India</span> },
+    {
+      label: "Verification",
+      value: (
+        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-600">
+          <BadgeCheck className="h-3 w-3" /> Verified Merchant
+        </span>
+      ),
+    },
+  ];
+  return (
+    <div className="rounded-xl border bg-card/60 p-4 backdrop-blur">
+      <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Merchant Verification
+      </div>
+      <div className="divide-y divide-border/60 text-sm">
+        {rows.map((r) => (
+          <div key={r.label} className="flex items-center justify-between py-1.5">
+            <span className="text-muted-foreground">{r.label}</span>
+            <span className="font-medium">{r.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CustomerAssurance() {
+  const items = [
+    "Refund policy available",
+    "Support response within 24 hours",
+    "Manual UPI verification available",
+    "Payment receipt generated",
+    "Secure invoice issued",
+  ];
+  return (
+    <div className="rounded-xl border bg-card/40 p-3">
+      <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <FileCheck2 className="h-3.5 w-3.5 text-primary" /> Customer Assurance
+      </div>
+      <ul className="grid gap-1.5 text-xs sm:grid-cols-2">
+        {items.map((t) => (
+          <li key={t} className="flex items-start gap-1.5">
+            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function SupportLinks() {
+  return (
+    <div className="rounded-xl border border-dashed p-3 text-xs">
+      <div className="mb-1.5 flex items-center gap-1.5 font-semibold">
+        <LifeBuoy className="h-3.5 w-3.5 text-primary" /> Need help?
+      </div>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-muted-foreground">
+        <a href="mailto:support@zupix.in" className="inline-flex items-center gap-1 hover:text-foreground">
+          <Mail className="h-3 w-3" /> support@zupix.in
+        </a>
+        <a
+          href="https://wa.me/918004021255"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 hover:text-foreground"
+        >
+          <MessageCircle className="h-3 w-3" /> WhatsApp Support
+        </a>
+        <a href="mailto:support@zupix.in?subject=Live%20Chat" className="inline-flex items-center gap-1 hover:text-foreground">
+          <MessageCircle className="h-3 w-3" /> Live Chat
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function SecurityFooter() {
+  const items = [
+    { icon: <Lock className="h-3 w-3" />, label: "SSL Encryption" },
+    { icon: <ShieldCheck className="h-3 w-3" />, label: "Enterprise Security" },
+    { icon: <CreditCard className="h-3 w-3" />, label: "PCI-inspired Practices" },
+    { icon: <KeyRound className="h-3 w-3" />, label: "Privacy Protected" },
+    { icon: <Tag className="h-3 w-3" />, label: "No Hidden Charges" },
+    { icon: <LifeBuoy className="h-3 w-3" />, label: "Customer Support" },
+  ];
+  return (
+    <div className="relative shrink-0 border-t border-border/50 bg-background/70 px-6 py-2.5 backdrop-blur">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
+        <span className="font-semibold text-foreground/80">Protected by</span>
+        {items.map((i) => (
+          <span key={i.label} className="inline-flex items-center gap-1">
+            <span className="text-primary">{i.icon}</span>
+            {i.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
