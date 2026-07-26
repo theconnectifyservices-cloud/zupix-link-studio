@@ -227,9 +227,9 @@ export function CheckoutModal(props: Props) {
   }, [step, orderId, qc]);
 
   const upiMut = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (screenshotUrl?: string) => {
       if (!orderId) throw new Error("No order");
-      return submitUpi({ data: { orderId, txnRef: txnRef.trim() } });
+      return submitUpi({ data: { orderId, txnRef: txnRef.trim(), screenshotUrl: screenshotUrl || undefined } });
     },
     onSuccess: () => {
       toast.success("Proof submitted — awaiting admin verification");
