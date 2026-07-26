@@ -8,8 +8,11 @@ import { redactGateway } from "./types";
 const ProviderEnum = z.enum(["razorpay", "payu", "cashfree", "manual_upi"]);
 
 async function assertAdmin(context: { supabase: any; userId: string }, workspaceId?: string | null) {
-  const { data } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
-  if (data) return true;
+  const [{ data: isSuper }, { data: isAdmin }] = await Promise.all([
+    context.supabase.rpc("has_role", { _user_id: context.userId, _role: "super_admin" }),
+    context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" }),
+  ]);
+  if (isSuper || isAdmin) return true;
   if (workspaceId) {
     const { data: isWs } = await context.supabase.rpc("is_workspace_admin", {
       _user_id: context.userId,
@@ -17,8 +20,9 @@ async function assertAdmin(context: { supabase: any; userId: string }, workspace
     });
     if (isWs) return true;
   }
-  throw new Error("Forbidden");
+  throw new Error("Admin role required to manage payment gateways");
 }
+
 
 export const listGatewaysAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
