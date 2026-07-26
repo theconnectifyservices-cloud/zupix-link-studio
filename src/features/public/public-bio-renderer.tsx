@@ -42,8 +42,9 @@ export function PublicBioRenderer({
   pageName?: string;
   pageDescription?: string | null;
 }) {
-  const theme = content.theme ?? DEFAULT_THEME;
+  const theme = useMemo(() => normalizeTheme(content.theme), [content.theme]);
   const motion = theme.motion ?? DEFAULT_MOTION;
+
 
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 640px)");
