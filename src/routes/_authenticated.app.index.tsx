@@ -12,6 +12,8 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { PageHeader } from "@/shared/navigation/page-header";
 import { formatDistanceToNow } from "date-fns";
 import { TrialCountdown } from "@/features/trial";
+import { UpgradeCard } from "@/features/growth";
+import { usePlan } from "@/features/subscription";
 
 export const Route = createFileRoute("/_authenticated/app/")({
   component: Overview,
