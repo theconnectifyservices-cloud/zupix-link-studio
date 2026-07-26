@@ -49,7 +49,7 @@ export function LandingHeader() {
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
           <a href="#showcase" className="hover:text-foreground">Showcase</a>
           <a href="#features" className="hover:text-foreground">Features</a>
-          <a href="#pricing" className="hover:text-foreground">Pricing</a>
+          <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
           <a href="#ecosystem" className="hover:text-foreground">Ecosystem</a>
         </nav>
 
