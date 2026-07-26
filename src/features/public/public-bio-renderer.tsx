@@ -5,13 +5,14 @@ import { BlockRenderer } from "@/features/builder/block-renderer";
 import { RendererModeProvider } from "@/features/builder/renderer-mode";
 import {
   DEFAULT_MOTION,
-  DEFAULT_THEME,
   bgEffectClasses,
   ensureGoogleFont,
+  normalizeTheme,
   pageTransitionClass,
   resolveMode,
   themeToCssVars,
 } from "@/features/builder/theme";
+
 import type { BioContent } from "@/features/builder/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { initTracker } from "@/features/analytics/tracker";
