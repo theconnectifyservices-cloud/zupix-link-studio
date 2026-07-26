@@ -131,7 +131,7 @@ export const grantManualSubscription = createServerFn({ method: "POST" })
       target_type: "subscription",
       target_id: result.subscriptionId,
       metadata: { plan_id: data.planId, cycle: data.cycle, reason: data.reason, note: data.note ?? null },
-    } as never).select().maybeSingle().then(() => null).catch(() => null);
+    } as never);
 
     return result;
   });
@@ -205,7 +205,7 @@ export const recordOfflinePayment = createServerFn({ method: "POST" })
         amount_rupees: data.amountRupees,
         reference_no: data.referenceNo ?? null,
       },
-    } as never).select().maybeSingle().then(() => null).catch(() => null);
+    } as never);
 
     return result;
   });
