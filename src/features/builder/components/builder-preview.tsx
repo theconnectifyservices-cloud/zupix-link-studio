@@ -50,7 +50,7 @@ const FRAME: Record<Viewport, string> = {
 
 /** Live phone-frame preview. Sortable canvas + drop target for palette items. */
 export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport }) {
-  const blocks = useBuilderStore((s) => s.content.blocks);
+  const blocks = useBuilderStore((s) => s.content.blocks ?? []);
   const theme = useBuilderStore((s) => s.content.theme) ?? DEFAULT_THEME;
   const clearSelection = useBuilderStore((s) => s.clearSelection);
   const items = blocks.map((b) => b.id);

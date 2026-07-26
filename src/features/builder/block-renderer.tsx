@@ -436,12 +436,13 @@ function renderInner(block: Block, reduceMotion: boolean) {
       return <div style={{ height: `${block.height ?? 24}px` }} aria-hidden />;
 
     case "social":
-      if (block.links.length === 0) {
+      const links = block.links ?? [];
+      if (links.length === 0) {
         return <div className="text-center text-xs text-muted-foreground">No social links yet</div>;
       }
       return (
         <div className="flex flex-wrap items-center justify-center gap-3">
-          {block.links.map((l) => {
+          {links.map((l) => {
             const Icon = SOCIAL_ICON[l.platform] ?? Globe;
             return (
               <span
@@ -911,7 +912,8 @@ function ButtonGroupRender({
   block: ButtonGroupBlock;
   reduceMotion?: boolean;
 }) {
-  if (block.buttons.length === 0) {
+  const buttons = block.buttons ?? [];
+  if (buttons.length === 0) {
     return (
       <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
         No buttons yet
@@ -941,7 +943,7 @@ function ButtonGroupRender({
 
   return (
     <div className={cls} style={{ gap: `${gap}px` }}>
-      {block.buttons.map((b) => (
+      {buttons.map((b) => (
         <GroupItemRender key={b.id} item={b} layout={block.layout} reduceMotion={reduceMotion} />
       ))}
     </div>
@@ -1064,6 +1066,7 @@ function VideoRender({ block }: { block: VideoBlock }) {
 // ── Gallery ──────────────────────────────────────────────────────────────
 function GalleryRender({ block }: { block: GalleryBlock }) {
   const [preview, setPreview] = useState<string | null>(null);
+  const images = block.images ?? [];
   const rounded =
     block.rounded === "lg"
       ? "rounded-xl"
@@ -1073,7 +1076,7 @@ function GalleryRender({ block }: { block: GalleryBlock }) {
           ? "rounded"
           : "rounded-none";
   const gap = block.gap === "lg" ? "gap-4" : block.gap === "sm" ? "gap-1" : "gap-2";
-  if (block.images.length === 0) {
+  if (images.length === 0) {
     return (
       <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">
         Add gallery images
@@ -1083,7 +1086,7 @@ function GalleryRender({ block }: { block: GalleryBlock }) {
   if (block.layout === "carousel") {
     return (
       <div className={cn("flex snap-x snap-mandatory overflow-x-auto", gap)}>
-        {block.images.map((img) => (
+        {images.map((img) => (
           <img
             key={img.id}
             src={img.url}
@@ -1100,7 +1103,7 @@ function GalleryRender({ block }: { block: GalleryBlock }) {
     const cols = block.columns ?? 2;
     return (
       <div className={cn("columns-2", cols === 3 && "columns-3", cols === 4 && "columns-4", gap)}>
-        {block.images.map((img) => (
+        {images.map((img) => (
           <img
             key={img.id}
             src={img.url}
@@ -1117,7 +1120,7 @@ function GalleryRender({ block }: { block: GalleryBlock }) {
   const gridCols = cols === 4 ? "grid-cols-4" : cols === 3 ? "grid-cols-3" : "grid-cols-2";
   return (
     <div className={cn("grid", gridCols, gap)}>
-      {block.images.map((img) => (
+      {images.map((img) => (
         <img
           key={img.id}
           src={img.url}
@@ -1162,15 +1165,16 @@ function SocialFeedRender({ block }: { block: SocialFeedBlock }) {
 
 // ── Testimonials ─────────────────────────────────────────────────────────
 function TestimonialsRender({ block }: { block: TestimonialsBlock }) {
+  const items = block.items ?? [];
   return (
     <div className="space-y-3">
       {block.title && <div className="text-center text-sm font-semibold">{block.title}</div>}
-      {block.items.length === 0 ? (
+      {items.length === 0 ? (
         <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
           No testimonials
         </div>
       ) : (
-        block.items.map((t) => (
+        items.map((t) => (
           <div key={t.id} className="rounded-xl border bg-card p-3">
             <div className="flex items-center gap-2">
               <div className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-muted text-xs font-semibold">
@@ -1212,16 +1216,17 @@ function TestimonialsRender({ block }: { block: TestimonialsBlock }) {
 
 // ── FAQ ──────────────────────────────────────────────────────────────────
 function FaqRender({ block }: { block: FaqBlock }) {
+  const items = block.items ?? [];
   return (
     <div className="space-y-2">
       {block.title && <div className="text-sm font-semibold">{block.title}</div>}
-      {block.items.length === 0 ? (
+      {items.length === 0 ? (
         <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
           No questions
         </div>
       ) : (
         <Accordion type="single" collapsible className="w-full">
-          {block.items.map((it) => (
+          {items.map((it) => (
             <AccordionItem key={it.id} value={it.id}>
               <AccordionTrigger className="text-left text-sm">
                 {it.question || "Question"}

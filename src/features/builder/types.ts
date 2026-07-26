@@ -653,6 +653,24 @@ export interface BioContent {
   /** Global theme controlling the entire page appearance. Optional for
    * backward compatibility — renderer falls back to DEFAULT_THEME. */
   theme?: PageTheme;
+  page?: Record<string, unknown>;
+  sections?: unknown[];
+  gallery?: unknown[];
+  buttons?: unknown[];
+  socialLinks?: unknown[];
+  images?: unknown[];
+  videos?: unknown[];
+  faq?: unknown[];
+  testimonials?: unknown[];
+  products?: unknown[];
+  services?: unknown[];
+  forms?: unknown[];
+  embeds?: unknown[];
+  files?: unknown[];
+  animations?: Record<string, unknown>;
+  seo?: Record<string, unknown>;
+  settings?: Record<string, unknown>;
+  analytics?: Record<string, unknown>;
 }
 
 export const EMPTY_CONTENT: BioContent = { blocks: [] };

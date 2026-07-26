@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { Block, BioContent } from "./types";
 import { EMPTY_CONTENT } from "./types";
+import { createEmptyBioContent, normalizeBioContent } from "./content-normalizer";
 import type {
   PageTheme,
   ThemeBackground,
@@ -16,6 +17,7 @@ import type {
 import {
   DEFAULT_THEME,
   applyPresetTheme,
+  normalizeTheme,
   resetColors as resetColorsFn,
   resetTypography as resetTypographyFn,
   resetSpacing as resetSpacingFn,
@@ -145,7 +147,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   pageId: null,
   pageName: "",
   pageSlug: "",
-  content: EMPTY_CONTENT,
+  content: createEmptyBioContent(),
   selectedId: null,
   selectedIds: [],
   clipboard: [],
@@ -159,7 +161,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       pageId,
       pageName,
       pageSlug: slug ?? "",
-      content: content ?? EMPTY_CONTENT,
+      content: normalizeBioContent(content),
       selectedId: null,
       selectedIds: [],
       history: { past: [], future: [] },
@@ -173,7 +175,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       pageId: null,
       pageName: "",
       pageSlug: "",
-      content: EMPTY_CONTENT,
+      content: createEmptyBioContent(),
       selectedId: null,
       selectedIds: [],
       clipboard: [],
@@ -195,17 +197,18 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   selectRange: (id) => {
     const { content, selectedId, selectedIds } = get();
     const anchor = selectedId ?? id;
-    const a = content.blocks.findIndex((b) => b.id === anchor);
-    const b = content.blocks.findIndex((x) => x.id === id);
+    const blocks = content.blocks ?? [];
+    const a = blocks.findIndex((b) => b.id === anchor);
+    const b = blocks.findIndex((x) => x.id === id);
     if (a === -1 || b === -1) return;
     const [lo, hi] = a < b ? [a, b] : [b, a];
-    const range = content.blocks.slice(lo, hi + 1).map((x) => x.id);
+    const range = blocks.slice(lo, hi + 1).map((x) => x.id);
     const merged = Array.from(new Set([...selectedIds, ...range]));
     set({ selectedIds: merged, selectedId: id });
   },
 
   selectAll: () => {
-    const ids = get().content.blocks.map((b) => b.id);
+    const ids = (get().content.blocks ?? []).map((b) => b.id);
     set({ selectedIds: ids, selectedId: ids[ids.length - 1] ?? null });
   },
 
@@ -213,9 +216,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
 
   addBlock: (block) => {
     const { content, history } = get();
+    const blocks = content.blocks ?? [];
     set({
       history: pushHistory(history, content),
-      content: { ...content, blocks: [...content.blocks, block] },
+      content: { ...content, blocks: [...blocks, block] },
       selectedId: block.id,
       selectedIds: [block.id],
       saveStatus: "dirty",
@@ -224,7 +228,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
 
   insertBlock: (block, index) => {
     const { content, history } = get();
-    const blocks = [...content.blocks];
+    const blocks = [...(content.blocks ?? [])];
     const i = Math.max(0, Math.min(index, blocks.length));
     blocks.splice(i, 0, block);
     set({
@@ -239,10 +243,11 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   reorderBlocks: (fromIndex, toIndex) => {
     const { content, history } = get();
     if (fromIndex === toIndex) return;
-    if (fromIndex < 0 || fromIndex >= content.blocks.length) return;
-    const src = content.blocks[fromIndex];
+    const currentBlocks = content.blocks ?? [];
+    if (fromIndex < 0 || fromIndex >= currentBlocks.length) return;
+    const src = currentBlocks[fromIndex];
     if (src.locked) return;
-    const blocks = [...content.blocks];
+    const blocks = [...currentBlocks];
     const [item] = blocks.splice(fromIndex, 1);
     const target = Math.max(0, Math.min(toIndex, blocks.length));
     blocks.splice(target, 0, item);
@@ -255,13 +260,14 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
 
   updateBlock: (id, patch) => {
     const { content, history } = get();
-    const target = content.blocks.find((b) => b.id === id);
+    const blocks = content.blocks ?? [];
+    const target = blocks.find((b) => b.id === id);
     if (!target || (target.locked && !("locked" in patch))) return;
     set({
       history: pushHistory(history, content),
       content: {
         ...content,
-        blocks: content.blocks.map((b) => (b.id === id ? ({ ...b, ...patch } as Block) : b)),
+        blocks: blocks.map((b) => (b.id === id ? ({ ...b, ...patch } as Block) : b)),
       },
       saveStatus: "dirty",
     });
@@ -269,12 +275,13 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
 
   removeBlock: (id) => {
     const { content, history, selectedIds } = get();
-    const target = content.blocks.find((b) => b.id === id);
+    const blocks = content.blocks ?? [];
+    const target = blocks.find((b) => b.id === id);
     if (!target || target.locked) return;
     const nextIds = selectedIds.filter((x) => x !== id);
     set({
       history: pushHistory(history, content),
-      content: { ...content, blocks: content.blocks.filter((b) => b.id !== id) },
+      content: { ...content, blocks: blocks.filter((b) => b.id !== id) },
       selectedId: nextIds[nextIds.length - 1] ?? null,
       selectedIds: nextIds,
       saveStatus: "dirty",
@@ -284,12 +291,12 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   removeMany: (ids) => {
     const { content, history } = get();
     const removable = new Set(
-      content.blocks.filter((b) => ids.includes(b.id) && !b.locked).map((b) => b.id),
+      (content.blocks ?? []).filter((b) => ids.includes(b.id) && !b.locked).map((b) => b.id),
     );
     if (removable.size === 0) return;
     set({
       history: pushHistory(history, content),
-      content: { ...content, blocks: content.blocks.filter((b) => !removable.has(b.id)) },
+      content: { ...content, blocks: (content.blocks ?? []).filter((b) => !removable.has(b.id)) },
       selectedId: null,
       selectedIds: [],
       saveStatus: "dirty",
@@ -298,15 +305,16 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
 
   duplicateBlock: (id) => {
     const { content, history } = get();
-    const src = content.blocks.find((b) => b.id === id);
+    const blocks = content.blocks ?? [];
+    const src = blocks.find((b) => b.id === id);
     if (!src) return;
     const copy = cloneBlock(src);
-    const idx = content.blocks.findIndex((b) => b.id === id);
-    const blocks = [...content.blocks];
-    blocks.splice(idx + 1, 0, copy);
+    const idx = blocks.findIndex((b) => b.id === id);
+    const nextBlocks = [...blocks];
+    nextBlocks.splice(idx + 1, 0, copy);
     set({
       history: pushHistory(history, content),
-      content: { ...content, blocks },
+      content: { ...content, blocks: nextBlocks },
       selectedId: copy.id,
       selectedIds: [copy.id],
       saveStatus: "dirty",
@@ -316,19 +324,20 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   duplicateMany: (ids) => {
     const { content, history } = get();
     if (ids.length === 0) return;
-    const orderedIds = content.blocks.filter((b) => ids.includes(b.id)).map((b) => b.id);
+    const blocks = content.blocks ?? [];
+    const orderedIds = blocks.filter((b) => ids.includes(b.id)).map((b) => b.id);
     if (orderedIds.length === 0) return;
-    const lastIdx = content.blocks.findIndex((b) => b.id === orderedIds[orderedIds.length - 1]);
+    const lastIdx = blocks.findIndex((b) => b.id === orderedIds[orderedIds.length - 1]);
     const copies = orderedIds.map((id) => {
-      const src = content.blocks.find((b) => b.id === id)!;
-      return cloneBlock(src);
-    });
-    const blocks = [...content.blocks];
-    blocks.splice(lastIdx + 1, 0, ...copies);
+      const src = blocks.find((b) => b.id === id);
+      return src ? cloneBlock(src) : null;
+    }).filter((copy): copy is Block => Boolean(copy));
+    const nextBlocks = [...blocks];
+    nextBlocks.splice(lastIdx + 1, 0, ...copies);
     const newIds = copies.map((c) => c.id);
     set({
       history: pushHistory(history, content),
-      content: { ...content, blocks },
+      content: { ...content, blocks: nextBlocks },
       selectedIds: newIds,
       selectedId: newIds[newIds.length - 1] ?? null,
       saveStatus: "dirty",
@@ -337,16 +346,19 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
 
   moveBlock: (id, dir) => {
     const { content, history } = get();
-    const idx = content.blocks.findIndex((b) => b.id === id);
+    const blocks = content.blocks ?? [];
+    const idx = blocks.findIndex((b) => b.id === id);
     const target = idx + dir;
-    if (idx < 0 || target < 0 || target >= content.blocks.length) return;
-    if (content.blocks[idx].locked) return;
-    const blocks = [...content.blocks];
-    const [item] = blocks.splice(idx, 1);
-    blocks.splice(target, 0, item);
+    if (idx < 0 || target < 0 || target >= blocks.length) return;
+    const current = blocks[idx];
+    if (!current || current.locked) return;
+    const nextBlocks = [...blocks];
+    const [item] = nextBlocks.splice(idx, 1);
+    if (!item) return;
+    nextBlocks.splice(target, 0, item);
     set({
       history: pushHistory(history, content),
-      content: { ...content, blocks },
+      content: { ...content, blocks: nextBlocks },
       saveStatus: "dirty",
     });
   },
@@ -357,7 +369,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       history: pushHistory(history, content),
       content: {
         ...content,
-        blocks: content.blocks.map((b) =>
+        blocks: (content.blocks ?? []).map((b) =>
           b.id === id ? ({ ...b, hidden: !b.hidden } as Block) : b,
         ),
       },
@@ -372,7 +384,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       history: pushHistory(history, content),
       content: {
         ...content,
-        blocks: content.blocks.map((b) => (ids.includes(b.id) ? ({ ...b, hidden } as Block) : b)),
+        blocks: (content.blocks ?? []).map((b) => (ids.includes(b.id) ? ({ ...b, hidden } as Block) : b)),
       },
       saveStatus: "dirty",
     });
@@ -384,7 +396,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       history: pushHistory(history, content),
       content: {
         ...content,
-        blocks: content.blocks.map((b) =>
+        blocks: (content.blocks ?? []).map((b) =>
           b.id === id ? ({ ...b, locked: !b.locked } as Block) : b,
         ),
       },
@@ -398,7 +410,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       history: pushHistory(history, content),
       content: {
         ...content,
-        blocks: content.blocks.map((b) =>
+        blocks: (content.blocks ?? []).map((b) =>
           b.id === id ? ({ ...b, name: name.trim() || undefined } as Block) : b,
         ),
       },
@@ -409,20 +421,20 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   copySelection: () => {
     const { content, selectedIds } = get();
     if (selectedIds.length === 0) return;
-    const items = content.blocks.filter((b) => selectedIds.includes(b.id));
+    const items = (content.blocks ?? []).filter((b) => selectedIds.includes(b.id));
     set({ clipboard: items.map((b) => structuredClone(b)) });
   },
 
   cutSelection: () => {
     const { content, selectedIds, history } = get();
     if (selectedIds.length === 0) return;
-    const cuts = content.blocks.filter((b) => selectedIds.includes(b.id) && !b.locked);
+    const cuts = (content.blocks ?? []).filter((b) => selectedIds.includes(b.id) && !b.locked);
     if (cuts.length === 0) return;
     const cutIds = new Set(cuts.map((b) => b.id));
     set({
       clipboard: cuts.map((b) => structuredClone(b)),
       history: pushHistory(history, content),
-      content: { ...content, blocks: content.blocks.filter((b) => !cutIds.has(b.id)) },
+      content: { ...content, blocks: (content.blocks ?? []).filter((b) => !cutIds.has(b.id)) },
       selectedId: null,
       selectedIds: [],
       saveStatus: "dirty",
@@ -433,16 +445,17 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, clipboard, history, selectedId } = get();
     if (clipboard.length === 0) return;
     const copies = clipboard.map((b) => cloneBlock(b));
+    const blocks = content.blocks ?? [];
     const anchorIdx = selectedId
-      ? content.blocks.findIndex((b) => b.id === selectedId)
-      : content.blocks.length - 1;
-    const insertAt = anchorIdx === -1 ? content.blocks.length : anchorIdx + 1;
-    const blocks = [...content.blocks];
-    blocks.splice(insertAt, 0, ...copies);
+      ? blocks.findIndex((b) => b.id === selectedId)
+      : blocks.length - 1;
+    const insertAt = anchorIdx === -1 ? blocks.length : anchorIdx + 1;
+    const nextBlocks = [...blocks];
+    nextBlocks.splice(insertAt, 0, ...copies);
     const newIds = copies.map((c) => c.id);
     set({
       history: pushHistory(history, content),
-      content: { ...content, blocks },
+      content: { ...content, blocks: nextBlocks },
       selectedIds: newIds,
       selectedId: newIds[newIds.length - 1] ?? null,
       saveStatus: "dirty",
@@ -507,7 +520,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
 
   patchTheme: (patch) => {
     const { content, history } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     set({
       history: pushHistory(history, content),
       content: { ...content, theme: { ...current, ...patch } },
@@ -516,7 +529,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   patchThemeColors: (patch) => {
     const { content, history } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     set({
       history: pushHistory(history, content),
       content: {
@@ -528,7 +541,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   patchThemeTypography: (patch) => {
     const { content, history } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     set({
       history: pushHistory(history, content),
       content: {
@@ -540,7 +553,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   patchThemeSpacing: (patch) => {
     const { content, history } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     set({
       history: pushHistory(history, content),
       content: {
@@ -552,7 +565,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   patchThemeCard: (patch) => {
     const { content, history } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     set({
       history: pushHistory(history, content),
       content: {
@@ -564,7 +577,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   patchThemeButtons: (patch) => {
     const { content, history } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     const base = current.buttons ?? DEFAULT_THEME.buttons!;
     set({
       history: pushHistory(history, content),
@@ -577,7 +590,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   patchThemeBackground: (patch) => {
     const { content, history } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     const base = current.background ?? DEFAULT_THEME.background!;
     set({
       history: pushHistory(history, content),
@@ -590,7 +603,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   patchThemeProfile: (patch) => {
     const { content, history } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     const base = current.profile ?? DEFAULT_THEME.profile!;
     set({
       history: pushHistory(history, content),
@@ -603,7 +616,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   patchThemeMotion: (patch) => {
     const { content, history } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     const base = current.motion ?? DEFAULT_THEME.motion!;
     set({
       history: pushHistory(history, content),
@@ -616,7 +629,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   addBrandColor: (hex) => {
     const { content } = get();
-    const current = content.theme ?? DEFAULT_THEME;
+    const current = normalizeTheme(content.theme);
     const list = current.brandColors ?? [];
     if (list.includes(hex)) return;
     set({
@@ -645,7 +658,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: resetColorsFn(content.theme ?? DEFAULT_THEME) },
+      content: { ...content, theme: resetColorsFn(normalizeTheme(content.theme)) },
       saveStatus: "dirty",
     });
   },
@@ -653,7 +666,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: resetTypographyFn(content.theme ?? DEFAULT_THEME) },
+      content: { ...content, theme: resetTypographyFn(normalizeTheme(content.theme)) },
       saveStatus: "dirty",
     });
   },
@@ -661,7 +674,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: resetSpacingFn(content.theme ?? DEFAULT_THEME) },
+      content: { ...content, theme: resetSpacingFn(normalizeTheme(content.theme)) },
       saveStatus: "dirty",
     });
   },
@@ -669,7 +682,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: resetCardFn(content.theme ?? DEFAULT_THEME) },
+      content: { ...content, theme: resetCardFn(normalizeTheme(content.theme)) },
       saveStatus: "dirty",
     });
   },
@@ -677,7 +690,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: resetButtonsFn(content.theme ?? DEFAULT_THEME) },
+      content: { ...content, theme: resetButtonsFn(normalizeTheme(content.theme)) },
       saveStatus: "dirty",
     });
   },
@@ -685,7 +698,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: resetBackgroundFn(content.theme ?? DEFAULT_THEME) },
+      content: { ...content, theme: resetBackgroundFn(normalizeTheme(content.theme)) },
       saveStatus: "dirty",
     });
   },
@@ -693,7 +706,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: resetProfileFn(content.theme ?? DEFAULT_THEME) },
+      content: { ...content, theme: resetProfileFn(normalizeTheme(content.theme)) },
       saveStatus: "dirty",
     });
   },
@@ -701,7 +714,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: resetMotionFn(content.theme ?? DEFAULT_THEME) },
+      content: { ...content, theme: resetMotionFn(normalizeTheme(content.theme)) },
       saveStatus: "dirty",
     });
   },
@@ -709,7 +722,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     set({
       history: pushHistory(history, content),
-      content: { ...content, theme: { ...DEFAULT_THEME } },
+      content: { ...content, theme: normalizeTheme(DEFAULT_THEME) },
       saveStatus: "dirty",
     });
   },
@@ -717,10 +730,10 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     const { content, history } = get();
     const blocks = opts?.replaceContent
       ? (opts.blocks ?? []).map((b) => structuredClone(b))
-      : content.blocks;
+      : (content.blocks ?? []);
     set({
       history: pushHistory(history, content),
-      content: { ...content, blocks, theme: { ...theme } },
+      content: normalizeBioContent({ ...content, blocks, theme: { ...theme } }),
       selectedId: null,
       selectedIds: [],
       saveStatus: "dirty",
@@ -734,7 +747,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
 
 export function selectedBlock(state: BuilderState): Block | null {
   if (!state.selectedId) return null;
-  return state.content.blocks.find((b) => b.id === state.selectedId) ?? null;
+  return (state.content.blocks ?? []).find((b) => b.id === state.selectedId) ?? null;
 }
 
 // ---- version persistence ----

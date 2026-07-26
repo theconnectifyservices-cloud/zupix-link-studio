@@ -1,6 +1,7 @@
 export * from "./types";
 export * from "./store";
 export * from "./api";
+export * from "./content-normalizer";
 export * from "./block-registry";
 export * from "./use-autosave";
 export * from "./use-builder-shortcuts";
