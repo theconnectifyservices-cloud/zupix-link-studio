@@ -295,9 +295,9 @@ export const reviewUpiSubmission = createServerFn({ method: "POST" })
       action: `manual_upi.${data.action}`,
       entity_type: "manual_upi_submission",
       entity_id: sub.id,
-      metadata: {
-        previous_status: previousStatus,
-        new_status: nextStatus,
+      before: { status: previousStatus },
+      after: {
+        status: nextStatus,
         reason_category: data.reasonCategory ?? null,
         notes: data.notes ?? null,
         order_id: sub.order_id,
