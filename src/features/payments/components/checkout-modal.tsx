@@ -14,7 +14,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2, CreditCard, Loader2, Lock, QrCode, RefreshCcw,
   ShieldCheck, Sparkles, XCircle, Zap, ArrowRight, ArrowLeft, Tag,
-  ReceiptText, Wallet, ChevronRight,
+  ReceiptText, Wallet, ChevronRight, BadgeCheck, MapPin, MessageCircle,
+  LifeBuoy, Mail, FileCheck2, ShieldAlert, KeyRound, Globe2,
 } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
