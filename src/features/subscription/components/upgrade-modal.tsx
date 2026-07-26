@@ -19,6 +19,8 @@ import {
 import { useSubscriptionUI } from "../store";
 import { usePlan } from "../hooks";
 import { WaitlistForm } from "./waitlist-form";
+import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
+import { SubscriptionCheckoutLauncher } from "@/features/billing/components/subscription-checkout-launcher";
 
 export function UpgradeModal() {
   const { upgradeOpen, upgradeContext, closeUpgrade } = useSubscriptionUI();
