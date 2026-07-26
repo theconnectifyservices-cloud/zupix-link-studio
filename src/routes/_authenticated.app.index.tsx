@@ -192,6 +192,12 @@ function Overview() {
   );
 }
 
+function StarterUpgradeSlot() {
+  const { code } = usePlan();
+  if (code !== "udaan") return null;
+  return <UpgradeCard className="mb-6" />;
+}
+
 function StatCard({
   label,
   value,
