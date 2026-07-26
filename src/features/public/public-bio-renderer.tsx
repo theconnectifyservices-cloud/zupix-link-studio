@@ -5,13 +5,14 @@ import { BlockRenderer } from "@/features/builder/block-renderer";
 import { RendererModeProvider } from "@/features/builder/renderer-mode";
 import {
   DEFAULT_MOTION,
-  DEFAULT_THEME,
   bgEffectClasses,
   ensureGoogleFont,
+  normalizeTheme,
   pageTransitionClass,
   resolveMode,
   themeToCssVars,
 } from "@/features/builder/theme";
+
 import type { BioContent } from "@/features/builder/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { initTracker } from "@/features/analytics/tracker";
@@ -41,8 +42,9 @@ export function PublicBioRenderer({
   pageName?: string;
   pageDescription?: string | null;
 }) {
-  const theme = content.theme ?? DEFAULT_THEME;
+  const theme = useMemo(() => normalizeTheme(content.theme), [content.theme]);
   const motion = theme.motion ?? DEFAULT_MOTION;
+
 
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 640px)");
