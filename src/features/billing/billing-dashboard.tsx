@@ -550,6 +550,7 @@ function InvoiceTable({ rows, loading }: { rows: Awaited<ReturnType<typeof listI
             <TableHead>Date</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Total</TableHead>
+            <TableHead className="w-24 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -559,6 +560,16 @@ function InvoiceTable({ rows, loading }: { rows: Awaited<ReturnType<typeof listI
               <TableCell>{r.issued_at ? new Date(r.issued_at).toLocaleDateString() : "—"}</TableCell>
               <TableCell><Badge variant="outline" className="capitalize">{r.status}</Badge></TableCell>
               <TableCell className="text-right">{formatMoney(r.total_minor, r.currency)}</TableCell>
+              <TableCell className="text-right">
+                <a
+                  href={`/app/billing/invoices/${r.id}/print`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  Download
+                </a>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
