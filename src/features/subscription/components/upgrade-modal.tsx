@@ -121,11 +121,13 @@ function PlanCard({
   cycle,
   currentPlan,
   suggested,
+  onUpgrade,
 }: {
   code: PlanCode;
   cycle: "monthly" | "yearly";
   currentPlan: PlanCode;
   suggested?: PlanCode;
+  onUpgrade?: () => void;
 }) {
   const plan = PLANS[code];
   const isCurrent = currentPlan === code;
