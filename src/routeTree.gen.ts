@@ -63,6 +63,7 @@ import { Route as AuthenticatedAppAiRouteImport } from './routes/_authenticated.
 import { Route as AuthenticatedAppAgencyRouteImport } from './routes/_authenticated.app.agency'
 import { Route as AuthenticatedAdminSubscriptionsRouteImport } from './routes/_authenticated/admin/subscriptions'
 import { Route as AuthenticatedAdminPaymentGatewaysRouteImport } from './routes/_authenticated/admin/payment-gateways'
+import { Route as AuthenticatedAdminCouponsRouteImport } from './routes/_authenticated/admin/coupons'
 import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authenticated.app.ai.index'
 import { Route as ApiPublicWebhooksRazorpayRouteImport } from './routes/api/public/webhooks/razorpay'
 import { Route as ApiPublicWebhooksPayuRouteImport } from './routes/api/public/webhooks/payu'
@@ -373,6 +374,12 @@ const AuthenticatedAdminPaymentGatewaysRoute =
     path: '/admin/payment-gateways',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminCouponsRoute =
+  AuthenticatedAdminCouponsRouteImport.update({
+    id: '/admin/coupons',
+    path: '/admin/coupons',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAppAiIndexRoute = AuthenticatedAppAiIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -503,6 +510,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
@@ -576,6 +584,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth': typeof AuthIndexRoute
+  '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
@@ -651,6 +660,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/_authenticated/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/_authenticated/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/_authenticated/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/_authenticated/app/agency': typeof AuthenticatedAppAgencyRoute
@@ -727,6 +737,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/admin/coupons'
     | '/admin/payment-gateways'
     | '/admin/subscriptions'
     | '/app/agency'
@@ -800,6 +811,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth'
+    | '/admin/coupons'
     | '/admin/payment-gateways'
     | '/admin/subscriptions'
     | '/app/agency'
@@ -874,6 +886,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/_authenticated/admin/coupons'
     | '/_authenticated/admin/payment-gateways'
     | '/_authenticated/admin/subscriptions'
     | '/_authenticated/app/agency'
@@ -1336,6 +1349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPaymentGatewaysRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/coupons': {
+      id: '/_authenticated/admin/coupons'
+      path: '/admin/coupons'
+      fullPath: '/admin/coupons'
+      preLoaderRoute: typeof AuthenticatedAdminCouponsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/app/ai/': {
       id: '/_authenticated/app/ai/'
       path: '/'
@@ -1626,6 +1646,7 @@ const AuthenticatedAppRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedAdminCouponsRoute: typeof AuthenticatedAdminCouponsRoute
   AuthenticatedAdminPaymentGatewaysRoute: typeof AuthenticatedAdminPaymentGatewaysRoute
   AuthenticatedAdminSubscriptionsRoute: typeof AuthenticatedAdminSubscriptionsRoute
   AuthenticatedBuilderIdRoute: typeof AuthenticatedBuilderIdRoute
@@ -1634,6 +1655,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedAdminCouponsRoute: AuthenticatedAdminCouponsRoute,
   AuthenticatedAdminPaymentGatewaysRoute:
     AuthenticatedAdminPaymentGatewaysRoute,
   AuthenticatedAdminSubscriptionsRoute: AuthenticatedAdminSubscriptionsRoute,
