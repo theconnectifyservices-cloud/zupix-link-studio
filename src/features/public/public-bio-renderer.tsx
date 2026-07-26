@@ -124,6 +124,11 @@ export function PublicBioRenderer({
             ))}
           </RendererModeProvider>
         )}
+        <BrandingLayer
+          workspaceId={workspaceId}
+          pageName={pageName}
+          pageDescription={pageDescription}
+        />
       </div>
     </div>
   );
