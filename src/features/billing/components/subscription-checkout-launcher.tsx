@@ -76,6 +76,7 @@ export function SubscriptionCheckoutLauncher({
       amountPaise={resolved.amountPaise}
       currency={resolved.currency}
       customer={customer}
+      planCode={planCode}
     />
   );
 }
