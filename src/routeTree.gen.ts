@@ -64,6 +64,7 @@ import { Route as AuthenticatedAppAiRouteImport } from './routes/_authenticated.
 import { Route as AuthenticatedAppAgencyRouteImport } from './routes/_authenticated.app.agency'
 import { Route as AuthenticatedAdminSubscriptionsRouteImport } from './routes/_authenticated/admin/subscriptions'
 import { Route as AuthenticatedAdminPaymentGatewaysRouteImport } from './routes/_authenticated/admin/payment-gateways'
+import { Route as AuthenticatedAdminGrowthEngineRouteImport } from './routes/_authenticated/admin/growth-engine'
 import { Route as AuthenticatedAdminCouponsRouteImport } from './routes/_authenticated/admin/coupons'
 import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authenticated.app.ai.index'
 import { Route as ApiPublicWebhooksRazorpayRouteImport } from './routes/api/public/webhooks/razorpay'
@@ -380,6 +381,12 @@ const AuthenticatedAdminPaymentGatewaysRoute =
     path: '/admin/payment-gateways',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminGrowthEngineRoute =
+  AuthenticatedAdminGrowthEngineRouteImport.update({
+    id: '/admin/growth-engine',
+    path: '/admin/growth-engine',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminCouponsRoute =
   AuthenticatedAdminCouponsRouteImport.update({
     id: '/admin/coupons',
@@ -518,6 +525,7 @@ export interface FileRoutesByFullPath {
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
   '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
+  '/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
@@ -593,6 +601,7 @@ export interface FileRoutesByTo {
   '/invite/$token': typeof InviteTokenRoute
   '/auth': typeof AuthIndexRoute
   '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
+  '/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
@@ -670,6 +679,7 @@ export interface FileRoutesById {
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
   '/_authenticated/admin/coupons': typeof AuthenticatedAdminCouponsRoute
+  '/_authenticated/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/_authenticated/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/_authenticated/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/_authenticated/app/agency': typeof AuthenticatedAppAgencyRoute
@@ -748,6 +758,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/auth/'
     | '/admin/coupons'
+    | '/admin/growth-engine'
     | '/admin/payment-gateways'
     | '/admin/subscriptions'
     | '/app/agency'
@@ -823,6 +834,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/auth'
     | '/admin/coupons'
+    | '/admin/growth-engine'
     | '/admin/payment-gateways'
     | '/admin/subscriptions'
     | '/app/agency'
@@ -899,6 +911,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/auth/'
     | '/_authenticated/admin/coupons'
+    | '/_authenticated/admin/growth-engine'
     | '/_authenticated/admin/payment-gateways'
     | '/_authenticated/admin/subscriptions'
     | '/_authenticated/app/agency'
@@ -1369,6 +1382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPaymentGatewaysRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/growth-engine': {
+      id: '/_authenticated/admin/growth-engine'
+      path: '/admin/growth-engine'
+      fullPath: '/admin/growth-engine'
+      preLoaderRoute: typeof AuthenticatedAdminGrowthEngineRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/coupons': {
       id: '/_authenticated/admin/coupons'
       path: '/admin/coupons'
@@ -1667,6 +1687,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedAdminCouponsRoute: typeof AuthenticatedAdminCouponsRoute
+  AuthenticatedAdminGrowthEngineRoute: typeof AuthenticatedAdminGrowthEngineRoute
   AuthenticatedAdminPaymentGatewaysRoute: typeof AuthenticatedAdminPaymentGatewaysRoute
   AuthenticatedAdminSubscriptionsRoute: typeof AuthenticatedAdminSubscriptionsRoute
   AuthenticatedBuilderIdRoute: typeof AuthenticatedBuilderIdRoute
@@ -1676,6 +1697,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedAdminCouponsRoute: AuthenticatedAdminCouponsRoute,
+  AuthenticatedAdminGrowthEngineRoute: AuthenticatedAdminGrowthEngineRoute,
   AuthenticatedAdminPaymentGatewaysRoute:
     AuthenticatedAdminPaymentGatewaysRoute,
   AuthenticatedAdminSubscriptionsRoute: AuthenticatedAdminSubscriptionsRoute,
