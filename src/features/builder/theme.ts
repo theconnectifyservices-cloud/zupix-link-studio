@@ -868,10 +868,11 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
   const t = safe.typography;
   const s = safe.spacing;
   const card = safe.card;
-  const bg = safe.background;
-  const btn = safe.buttons;
-  const prof = safe.profile;
+  const bg = safe.background ?? DEFAULT_BACKGROUND;
+  const btn = safe.buttons ?? DEFAULT_BUTTONS;
+  const prof = safe.profile ?? DEFAULT_PROFILE;
   const btnCss = buttonVariantCss(safe);
+
 
 
   // Per-viewport font scale + page padding
