@@ -860,14 +860,19 @@ export function pageTransitionClass(theme: PageTheme): string | null {
  * `viewport` (LS-07C) picks per-viewport typography scale and page padding.
  */
 export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"): CSSProperties {
-  const c = theme.colors;
-  const t = theme.typography;
-  const s = theme.spacing;
-  const card = theme.card;
-  const bg = theme.background ?? DEFAULT_BACKGROUND;
-  const btn = theme.buttons ?? DEFAULT_BUTTONS;
-  const prof = theme.profile ?? DEFAULT_PROFILE;
-  const btnCss = buttonVariantCss(theme);
+  // Defensive: normalize partial / preset-only themes so missing sub-objects
+  // (colors, typography, …) never crash the renderer with "reading 'primary'
+  // of undefined".
+  const safe = normalizeTheme(theme as Partial<PageTheme>);
+  const c = safe.colors;
+  const t = safe.typography;
+  const s = safe.spacing;
+  const card = safe.card;
+  const bg = safe.background;
+  const btn = safe.buttons;
+  const prof = safe.profile;
+  const btnCss = buttonVariantCss(safe);
+
 
   // Per-viewport font scale + page padding
   const fontScale =
