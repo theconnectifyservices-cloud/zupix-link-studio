@@ -81,8 +81,16 @@ export function CreateProjectModal({ open, onOpenChange, workspaceId, ownerId }:
       form.reset();
       setSlugState("idle");
       onOpenChange(false);
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to create project");
+    } catch (e: unknown) {
+      const err = e as { message?: string; code?: string; details?: string; hint?: string };
+      const msg =
+        err?.code === "23505"
+          ? "This slug is already taken"
+          : err?.code === "42501"
+            ? "Permission denied — please sign out and back in"
+            : err?.message || "Failed to create project";
+      console.error("[createBioPage] failed", err);
+      toast.error(msg, { description: err?.details || err?.hint });
     }
   }
 
