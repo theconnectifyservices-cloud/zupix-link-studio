@@ -408,7 +408,9 @@ export function CheckoutModal(props: Props) {
               )}
             </AnimatePresence>
           </div>
+          <SecurityFooter />
         </div>
+
       </DialogContent>
     </Dialog>
   );
