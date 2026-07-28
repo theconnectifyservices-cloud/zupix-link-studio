@@ -2,10 +2,12 @@ import { Suspense, lazy, useEffect, useRef, useState, type ComponentType } from 
 
 /** Mount a heavy section only when it's near the viewport. Preserves layout via min-height. */
 export function LazySection({
+  id,
   loader,
   minHeight = 600,
   rootMargin = "800px 0px",
 }: {
+  id?: string;
   loader: () => Promise<{ default: ComponentType }>;
   minHeight?: number;
   rootMargin?: string;
@@ -49,9 +51,22 @@ export function LazySection({
     };
   }, [visible, Comp, loader]);
 
+  // If the page is opened/navigated directly to this section's hash, mount immediately.
+  useEffect(() => {
+    if (!id || visible || typeof window === "undefined") return;
+    const check = () => {
+      if (window.location.hash.slice(1) === id) setVisible(true);
+    };
+    check();
+    window.addEventListener("hashchange", check);
+    return () => window.removeEventListener("hashchange", check);
+  }, [id, visible]);
+
   return (
     <div
+      id={id}
       ref={ref}
+      className={id ? "scroll-mt-20" : undefined}
       style={{
         minHeight: Comp ? undefined : minHeight,
         contentVisibility: "auto",

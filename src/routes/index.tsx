@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PublicLayout } from "@/shared/layouts";
 import { LandingHero } from "@/features/landing/hero";
 import { LazySection } from "@/features/landing/lazy-section";
+import { useHashScroll } from "@/features/landing/use-hash-scroll";
 
 const TITLE = "ZUPIX Link Studio — Build Beautiful Bio Links That Actually Convert";
 const DESCRIPTION =
@@ -24,10 +25,12 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  useHashScroll();
   return (
     <PublicLayout>
       <LandingHero />
       <LazySection
+        id="showcase"
         minHeight={900}
         loader={() =>
           import("@/features/landing/showcase").then((m) => ({ default: m.LandingShowcase }))
@@ -40,12 +43,14 @@ function Index() {
         }
       />
       <LazySection
+        id="features"
         minHeight={900}
         loader={() =>
           import("@/features/landing/experience").then((m) => ({ default: m.LandingExperience }))
         }
       />
       <LazySection
+        id="ecosystem"
         minHeight={900}
         loader={() =>
           import("@/features/landing/ecosystem").then((m) => ({ default: m.LandingEcosystem }))

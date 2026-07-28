@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, LayoutDashboard, User, Settings, Building2 } from "lucide-react";
+import { LogOut, LayoutDashboard, User, Settings, Building2, Menu } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,12 @@ import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/auth/hooks/use-profile";
 import { signOut } from "@/features/auth/api";
 import zupixLogo from "@/assets/zupix-logo.png.asset.json";
+
+const SECTION_LINKS = [
+  { label: "Showcase", hash: "showcase" },
+  { label: "Features", hash: "features" },
+  { label: "Ecosystem", hash: "ecosystem" },
+] as const;
 
 export function LandingHeader() {
   const session = useSession();
@@ -58,11 +64,34 @@ export function LandingHeader() {
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-          <a href="#showcase" className="hover:text-foreground">Showcase</a>
-          <a href="#features" className="hover:text-foreground">Features</a>
+          {SECTION_LINKS.map((item) => (
+            <Link key={item.hash} to="/" hash={item.hash} className="hover:text-foreground">
+              {item.label}
+            </Link>
+          ))}
           <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
-          <a href="#ecosystem" className="hover:text-foreground">Ecosystem</a>
         </nav>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              aria-label="Open navigation menu"
+              className="ml-auto rounded-md p-2 text-muted-foreground hover:text-foreground md:hidden"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44">
+            {SECTION_LINKS.map((item) => (
+              <DropdownMenuItem key={item.hash} asChild>
+                <Link to="/" hash={item.hash}>{item.label}</Link>
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuItem asChild>
+              <Link to="/pricing">Pricing</Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <div className="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2">
           {session.status === "loading" ? (
