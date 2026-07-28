@@ -692,14 +692,31 @@ function formatCount(n: number, suffix?: string) {
   return `${n}${suffix ?? ""}`;
 }
 
-function Stat({ label, target, suffix }: { label: string; target: number; suffix?: string }) {
+function Stat({
+  label,
+  target,
+  suffix,
+  icon: Icon,
+}: {
+  label: string;
+  target: number;
+  suffix?: string;
+  icon?: typeof BadgeCheck;
+}) {
   const v = useCountUp(target);
   return (
-    <div className="flex flex-col">
-      <span className="text-3xl font-medium tracking-tight text-white sm:text-4xl">
+    <div className="group flex min-h-[clamp(104px,24vw,142px)] min-w-0 flex-col items-center justify-center rounded-3xl border border-white/10 bg-white/[0.045] p-[clamp(0.875rem,3vw,1.5rem)] text-center backdrop-blur transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.07]">
+      {Icon ? (
+        <span className="mb-[clamp(0.375rem,1.5vw,0.625rem)] grid size-[clamp(1.75rem,5vw,2.25rem)] shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.06] text-[#ff6b35] transition-transform duration-300 group-hover:scale-105">
+          <Icon className="size-[clamp(0.875rem,2.8vw,1.125rem)]" />
+        </span>
+      ) : null}
+      <span className="block max-w-full whitespace-nowrap text-[clamp(1.375rem,4.5vw,2.625rem)] font-semibold leading-none text-white tabular-nums tracking-normal">
         {formatCount(v, suffix)}
       </span>
-      <span className="mt-1 text-[11px] uppercase tracking-[0.18em] text-white/40">{label}</span>
+      <span className="mt-[clamp(0.375rem,1.4vw,0.625rem)] block max-w-full whitespace-normal text-balance break-words text-[clamp(0.625rem,2.2vw,0.72rem)] font-medium uppercase leading-tight tracking-[0.08em] text-white/45 sm:tracking-[0.14em]">
+        {label}
+      </span>
     </div>
   );
 }
@@ -1446,21 +1463,23 @@ export function LandingHero() {
           </div>
 
           {/* Stats */}
-          <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-md md:col-span-8 md:row-span-2">
-            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-              <Stat label="Profiles created" target={54200} suffix="+" />
-              <Stat label="Premium themes" target={20} />
-              <Stat label="Monthly page views" target={2400000} suffix="+" />
-              <Stat label="Indian businesses" target={8900} suffix="+" />
+          <div className="relative min-w-0 overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-[clamp(1rem,3.5vw,1.5rem)] backdrop-blur-md md:col-span-8 md:row-span-3 xl:row-span-2">
+            <div className="grid min-w-0 grid-cols-2 gap-[clamp(0.625rem,2.6vw,1rem)] min-[1200px]:grid-cols-4">
+              <Stat icon={BadgeCheck} label="Profiles created" target={54200} suffix="+" />
+              <Stat icon={Palette} label="Premium themes" target={20} />
+              <Stat icon={Eye} label="Monthly page views" target={2400000} suffix="+" />
+              <Stat icon={Globe2} label="Indian businesses" target={8900} suffix="+" />
             </div>
             {/* Demo indicator strip */}
-            <div className="mt-5 flex items-center gap-3">
-              <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/40">
+            <div className="mt-[clamp(0.875rem,3vw,1.25rem)] grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 sm:flex sm:flex-wrap">
+              <span className="min-w-0 text-[clamp(0.58rem,1.9vw,0.625rem)] font-medium uppercase tracking-[0.18em] text-white/40 sm:shrink-0">
                 Now showing
               </span>
-              <span className="text-[12px] font-medium text-white/80">{demo.name}</span>
-              <span className="text-[11px] text-white/40">· {demo.tagline}</span>
-              <div className="ml-auto flex items-center gap-1.5">
+              <div className="order-3 col-span-2 min-w-0 sm:order-none sm:col-span-1">
+                <span className="block truncate text-[clamp(0.7rem,2.2vw,0.75rem)] font-medium text-white/80 sm:inline">{demo.name}</span>
+                <span className="mt-0.5 block truncate text-[clamp(0.65rem,2vw,0.6875rem)] text-white/40 sm:ml-2 sm:inline sm:before:content-['·_']">{demo.tagline}</span>
+              </div>
+              <div className="ml-auto flex shrink-0 items-center gap-1.5">
                 {DEMOS.map((d, i) => (
                   <span
                     key={d.id}
