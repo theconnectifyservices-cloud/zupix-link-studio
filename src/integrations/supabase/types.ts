@@ -6635,6 +6635,14 @@ export type Database = {
           valid: boolean
         }[]
       }
+      workspace_bio_link_addons: {
+        Args: { _workspace_id: string }
+        Returns: number
+      }
+      workspace_bio_link_limit: {
+        Args: { _workspace_id: string }
+        Returns: number
+      }
       workspace_get_limit: {
         Args: { _metric_key: string; _workspace_id: string }
         Returns: {

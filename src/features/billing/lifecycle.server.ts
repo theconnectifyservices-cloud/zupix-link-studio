@@ -20,6 +20,7 @@ export interface LifecycleResult {
   paymentId: string;
   duplicate?: boolean;
   action: "activated" | "renewed" | "upgraded" | "downgraded";
+  addon?: { ok: true; quantity: number; total: number };
 }
 
 function periodEnd(cycle: Cycle, from = new Date()): Date | null {
@@ -62,12 +63,36 @@ export async function activateFromPaidOrder(input: {
 
   const workspaceId = order.workspace_id as string;
   const planId = order.plan_id as string | null;
-  if (!planId) throw new Error("Order has no plan_id");
 
   const meta = (order.meta as Record<string, unknown> | null) ?? {};
+
+  // Bio Link add-on purchases credit extra Bio Links instead of a plan change.
+  if (meta.kind === "bio_link_addon") {
+    const { creditBioLinkAddonFromOrder } = await import("@/features/subscription/addons.server");
+    const credited = await creditBioLinkAddonFromOrder({
+      id: order.id as string,
+      workspace_id: workspaceId,
+      provider: order.provider as string | null,
+      meta,
+    });
+    await supabaseAdmin
+      .from("payment_orders")
+      .update({ status: "paid" })
+      .eq("id", order.id);
+    return {
+      ok: true,
+      subscriptionId: "",
+      invoiceId: "",
+      paymentId: input.gatewayPaymentId ?? "",
+      action: "activated",
+      addon: credited,
+    } as LifecycleResult;
+  }
+
   const cycle = ((meta.cycle as string) ?? "monthly") as Cycle;
   const provider = order.provider as PaymentProviderEnum;
   const gatewayEnumValue: PaymentGatewayEnum = provider; // enum now includes these
+  if (!planId) throw new Error("Order has no plan_id");
 
   const { data: plan, error: pErr } = await supabaseAdmin
     .from("billing_plans")

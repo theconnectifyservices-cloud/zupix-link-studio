@@ -5,3 +5,6 @@ export { UpgradeModal } from "./components/upgrade-modal";
 export { PlanBadge } from "./components/plan-badge";
 export { LockedBlock } from "./components/locked-block";
 export { WaitlistForm } from "./components/waitlist-form";
+export * from "./use-bio-link-allowance";
+export { BioLinkLimitBanner } from "./components/bio-link-limit-banner";
+export { BuyBioLinksDialog } from "./components/buy-bio-links-dialog";
