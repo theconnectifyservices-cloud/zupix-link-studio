@@ -10,7 +10,7 @@ import { ArrowRight, CircleCheck, Sparkles, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  PLANS, PLAN_ORDER, formatPlanPrice, yearlySavingsPct, type PlanCode,
+  PLANS, PLAN_ORDER, formatPlanPrice, yearlySavingsPct, BIO_LINK_ADDON_NOTE, type PlanCode,
 } from "@/features/subscription/plans";
 import { WaitlistForm } from "@/features/subscription/components/waitlist-form";
 import { useSession } from "@/features/auth/hooks/use-session";
@@ -204,6 +204,12 @@ export function PricingCard({
           </li>
         ))}
       </ul>
+
+      {!isShikhar && (
+        <p className="mt-5 rounded-xl border border-dashed bg-muted/40 p-3 text-xs text-muted-foreground">
+          {BIO_LINK_ADDON_NOTE}
+        </p>
+      )}
 
       <div className="mt-6 pt-2">
         {isShikhar ? (

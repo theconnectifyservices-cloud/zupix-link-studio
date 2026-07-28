@@ -26,6 +26,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { PageHeader } from "@/shared/navigation/page-header";
 import { useDebounce } from "@/hooks/use-debounce";
+import { BioLinkLimitBanner } from "@/features/subscription/components/bio-link-limit-banner";
+import { useBioLinkAllowance } from "@/features/subscription/use-bio-link-allowance";
 
 const searchSchema = z.object({
   new: z.string().optional(),
@@ -71,6 +73,7 @@ function ProjectsPage() {
   const [sort, setSort] = useState<SortKey>("updated");
   const [status, setStatus] = useState<StatusFilter>("all");
   const debounced = useDebounce(query, 250);
+  const { allowance } = useBioLinkAllowance();
 
   const openCreate = () => {
     if (!userId) {
@@ -84,6 +87,12 @@ function ProjectsPage() {
     if (!workspace) {
       toast.error("No workspace available. Please refresh the page.");
       console.error("[create bio page] missing workspace for user", userId);
+      return;
+    }
+    if (allowance?.exceeded) {
+      toast.error("You have reached your Bio Link limit.", {
+        description: "Purchase additional Bio Links for \u20b979 each to keep creating.",
+      });
       return;
     }
     setCreateOpen(true);
@@ -141,6 +150,8 @@ function ProjectsPage() {
           </Button>
         }
       />
+
+      <BioLinkLimitBanner />
 
       {/* Toolbar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
