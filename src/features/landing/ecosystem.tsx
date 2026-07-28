@@ -234,10 +234,10 @@ const ECOSYSTEM_CARDS = [
   },
   {
     title: "Community",
-    desc: "50,000+ creators on WhatsApp, Discord and monthly meetups.",
+    desc: "1,500+ creators on WhatsApp, Discord and monthly meetups.",
     icon: Users,
     grad: "from-lime-500 to-emerald-600",
-    tag: "50k+ members",
+    tag: "1.5k+ members",
   },
   {
     title: "Partner Program",
@@ -282,7 +282,7 @@ function EcosystemGrid() {
             transition={{ duration: 0.5, delay: (i % 4) * 0.05 }}
             whileHover={{ y: -6, rotateX: 2, rotateY: -2 }}
             style={{ transformStyle: "preserve-3d" }}
-            className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-left backdrop-blur-xl transition-shadow duration-300 hover:shadow-[0_20px_60px_-20px_rgba(251,146,60,0.35)]"
+            className="group relative flex h-auto min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-left backdrop-blur-xl transition-shadow duration-300 hover:shadow-[0_20px_60px_-20px_rgba(251,146,60,0.35)]"
           >
             {/* Glow border on hover */}
             <span
@@ -291,19 +291,19 @@ function EcosystemGrid() {
             />
             <span className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent" />
 
-            <div className="relative">
+            <div className="relative flex min-w-0 flex-1 flex-col">
               <div
-                className={`inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${c.grad} text-white shadow-lg`}
+                className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${c.grad} text-white shadow-lg`}
               >
                 <c.icon className="h-5 w-5" />
               </div>
-              <h3 className="mt-4 text-base font-semibold text-white">{c.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-white/60">{c.desc}</p>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white/70">
+              <h3 className="mt-4 text-balance break-words text-base font-semibold text-white">{c.title}</h3>
+              <p className="mt-1.5 break-words text-sm leading-relaxed text-white/60">{c.desc}</p>
+              <div className="mt-4 flex flex-1 items-end justify-between gap-3">
+                <span className="min-w-0 break-words rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white/70">
                   {c.tag}
                 </span>
-                <ArrowRight className="h-4 w-4 text-white/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white" />
+                <ArrowRight className="h-4 w-4 shrink-0 text-white/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white" />
               </div>
             </div>
           </motion.button>
@@ -572,7 +572,7 @@ function WhyBento() {
           <>
             Chosen by{" "}
             <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-300 bg-clip-text text-transparent">
-              50,000+
+              1,500+
             </span>{" "}
             Indian businesses
           </>
@@ -589,7 +589,7 @@ function WhyBento() {
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: (i % 4) * 0.05 }}
             whileHover={{ y: -4 }}
-            className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl ${w.span}`}
+            className={`group relative flex h-auto min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl sm:p-6 ${w.span}`}
           >
             <span
               aria-hidden
@@ -598,12 +598,12 @@ function WhyBento() {
             <motion.div
               whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }}
               transition={{ duration: 0.5 }}
-              className={`relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${w.grad} text-white shadow-lg`}
+              className={`relative inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${w.grad} text-white shadow-lg`}
             >
               <w.icon className="h-6 w-6" />
             </motion.div>
-            <h3 className="relative mt-5 text-lg font-semibold text-white">{w.title}</h3>
-            <p className="relative mt-1.5 text-sm leading-relaxed text-white/60">{w.desc}</p>
+            <h3 className="relative mt-5 text-balance break-words text-lg font-semibold text-white">{w.title}</h3>
+            <p className="relative mt-1.5 break-words text-sm leading-relaxed text-white/60">{w.desc}</p>
           </motion.div>
         ))}
       </div>
