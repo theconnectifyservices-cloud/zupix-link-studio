@@ -14,7 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
-import { PLANS, formatPlanPrice, BIO_LINK_ADDON_NOTE, BIO_LINK_ADDON_PRICE_MINOR, type PlanCode } from "../plans";
+import { PLANS, formatPlanPrice, type PlanCode } from "../plans";
 import { useBioLinkAllowance } from "../use-bio-link-allowance";
 import { BuyBioLinksDialog } from "./buy-bio-links-dialog";
 import { getMySubscription, listMyInvoices } from "../customer.functions";
@@ -39,9 +39,14 @@ export function MySubscriptionPage() {
     enabled: !!workspace?.id,
   });
 
-  const sub = subQ.data?.subscription;
-  const planCode = (sub?.plan_code as PlanCode) ?? "udaan";
-  const planMeta = PLANS[planCode] ?? PLANS.udaan;
+  const sub = subQ.data?.subscription as any;
+  const planCode = (sub?.plan_code as PlanCode) ?? null;
+  const planMeta = planCode ? PLANS[planCode] : undefined;
+  const planName = sub?.plan_name ?? planMeta?.name ?? "No active plan";
+  const currency = sub?.plan_currency ?? sub?.currency ?? "INR";
+  const isTrialing = sub?.status === "trialing";
+  /** Renewal price for the active cycle, straight from the plan catalog. */
+  const cyclePriceMinor: number | null = sub?.cycle_price_minor ?? null;
 
   const limitsMap = useMemo(() => {
     const m: Record<string, { limit_value: number; is_unlimited: boolean }> = {};
@@ -49,12 +54,20 @@ export function MySubscriptionPage() {
     return m;
   }, [subQ.data]);
 
+  const bioAddon = useMemo(
+    () => (subQ.data as any)?.addons?.find((a: any) => a.metric_key === "bio_pages") ?? null,
+    [subQ.data],
+  );
+  const addonPriceMinor: number | null =
+    bioAddon?.price_minor ?? allowance?.addonPriceMinor ?? null;
+
   const usage = subQ.data?.usage ?? { bio_pages: 0, custom_domains: 0 };
   const invoices = invQ.data ?? [];
   const latestInvoice = invoices.find((i: any) => i.status === "paid");
 
   const expiry = sub?.current_period_end ?? sub?.trial_end ?? null;
   const daysRemaining = expiry ? Math.max(0, Math.ceil((new Date(expiry).getTime() - Date.now()) / 86400000)) : null;
+
 
   if (subQ.isLoading) {
     return (
@@ -75,18 +88,18 @@ export function MySubscriptionPage() {
       </div>
 
       <Card className="overflow-hidden">
-        <CardHeader className={cn("bg-gradient-to-br text-white", planMeta.gradient)}>
+        <CardHeader className={cn("bg-gradient-to-br text-white", planMeta?.gradient ?? "from-slate-600 to-slate-800")}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <span className="text-3xl">{planMeta.emoji}</span>
+              {planMeta?.emoji && <span className="text-3xl">{planMeta.emoji}</span>}
               <div>
-                <CardTitle className="text-2xl">{planMeta.name}</CardTitle>
-                <p className="text-sm text-white/80">{planMeta.tagline}</p>
+                <CardTitle className="text-2xl">{planName}</CardTitle>
+                {planMeta?.tagline && <p className="text-sm text-white/80">{planMeta.tagline}</p>}
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <StatusBadge status={sub?.status ?? "none"} />
-              {planMeta.badge && <Badge variant="secondary" className="bg-white/20 text-white border-white/30">{planMeta.badge}</Badge>}
+              {planMeta?.badge && <Badge variant="secondary" className="bg-white/20 text-white border-white/30">{planMeta.badge}</Badge>}
             </div>
           </div>
         </CardHeader>
@@ -94,8 +107,14 @@ export function MySubscriptionPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <InfoBox
               icon={<Wallet className="h-4 w-4" />} label="Price"
-              value={sub ? formatPlanPrice(sub.unit_amount_minor ?? 0, sub.currency ?? "INR") : "Free"}
-              hint={sub?.cycle ? `per ${sub.cycle}` : ""}
+              value={cyclePriceMinor === null ? "—" : formatPlanPrice(cyclePriceMinor, currency)}
+              hint={
+                sub
+                  ? isTrialing
+                    ? `Free during trial · renews at ${cyclePriceMinor === null ? "—" : formatPlanPrice(cyclePriceMinor, currency)} per ${sub.cycle}`
+                    : `per ${sub.cycle}`
+                  : ""
+              }
             />
             <InfoBox icon={<CalendarClock className="h-4 w-4" />} label="Start" value={fmt(sub?.current_period_start ?? sub?.trial_start)} />
             <InfoBox icon={<CalendarClock className="h-4 w-4" />} label="Expiry" value={fmt(expiry)} />
@@ -145,15 +164,23 @@ export function MySubscriptionPage() {
                     {allowance?.effectiveLimit === null ? "Unlimited" : (allowance?.effectiveLimit ?? "—")}
                   </span>
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">{BIO_LINK_ADDON_NOTE}</p>
+                {addonPriceMinor !== null && (
+                  <div className="mt-2 rounded-lg border bg-background/60 px-3 py-2">
+                    <div className="text-xs font-semibold">{bioAddon?.name ?? "Additional Bio Link"}</div>
+                    <div className="text-sm font-semibold text-foreground">
+                      {formatPlanPrice(addonPriceMinor, bioAddon?.currency ?? currency)} / Bio Link
+                    </div>
+                  </div>
+                )}
               </div>
-              {workspace?.id && allowance?.effectiveLimit !== null && (
+              {workspace?.id && allowance?.effectiveLimit !== null && addonPriceMinor !== null && (
                 <Button variant="outline" className="shrink-0" onClick={() => setBuyOpen(true)}>
-                  Buy Additional Bio Links · {formatPlanPrice(BIO_LINK_ADDON_PRICE_MINOR)} each
+                  Buy Additional Bio Links · {formatPlanPrice(addonPriceMinor, bioAddon?.currency ?? currency)} each
                 </Button>
               )}
             </div>
           </div>
+
 
           {workspace?.id && (
             <BuyBioLinksDialog open={buyOpen} onOpenChange={setBuyOpen} workspaceId={workspace.id} />
@@ -166,7 +193,7 @@ export function MySubscriptionPage() {
               <ShieldCheck className="h-4 w-4" /> Plan features
             </div>
             <ul className="grid gap-1.5 text-sm sm:grid-cols-2">
-              {planMeta.highlights.map((h) => (
+              {(planMeta?.highlights ?? []).map((h) => (
                 <li key={h} className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                   {h}
@@ -266,6 +293,7 @@ function UsageBar({
   label, used, limit, suffix,
 }: { label: string; used: number; limit?: { limit_value: number; is_unlimited: boolean }; suffix?: string }) {
   const isUnlimited = limit?.is_unlimited ?? false;
+  const known = !!limit;
   const max = limit ? Number(limit.limit_value) : 0;
   const pct = isUnlimited ? 5 : max > 0 ? Math.min(100, Math.round((used / max) * 100)) : 0;
   return (
@@ -273,7 +301,7 @@ function UsageBar({
       <div className="flex items-center justify-between text-xs">
         <span className="text-muted-foreground">{label}</span>
         <span className="font-medium">
-          {used}{suffix ? suffix : ""} / {isUnlimited ? "∞" : `${max}${suffix ? suffix : ""}`}
+          {!known ? "Not included" : <>{used}{suffix ?? ""} / {isUnlimited ? "∞" : `${max}${suffix ?? ""}`}</>}
         </span>
       </div>
       <Progress value={pct} className="mt-2 h-2" />

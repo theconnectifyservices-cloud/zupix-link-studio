@@ -26,7 +26,7 @@ export const getBioLinkAllowance = createServerFn({ method: "GET" })
   })
   .handler(async ({ data, context }): Promise<BioLinkAllowance> => {
     const supabase = context.supabase as any;
-    const [{ data: effective }, { data: addonQty }, { count }] = await Promise.all([
+    const [{ data: effective }, { data: addonQty }, { count }, { data: addonRow }] = await Promise.all([
       supabase.rpc("workspace_bio_link_limit", { _workspace_id: data.workspaceId }),
       supabase.rpc("workspace_bio_link_addons", { _workspace_id: data.workspaceId }),
       supabase
@@ -34,6 +34,7 @@ export const getBioLinkAllowance = createServerFn({ method: "GET" })
         .select("id", { count: "exact", head: true })
         .eq("workspace_id", data.workspaceId)
         .is("deleted_at", null),
+      supabase.from("addons").select("price_minor").eq("metric_key", "bio_pages").eq("is_active", true).maybeSingle(),
     ]);
 
     const eff = Number(effective ?? 1);
@@ -48,7 +49,7 @@ export const getBioLinkAllowance = createServerFn({ method: "GET" })
       used,
       remaining: unlimited ? null : Math.max(0, eff - used),
       exceeded: !unlimited && used >= eff,
-      addonPriceMinor: BIO_LINK_ADDON_PRICE_MINOR,
+      addonPriceMinor: Number(addonRow?.price_minor ?? BIO_LINK_ADDON_PRICE_MINOR),
     };
   });
 
