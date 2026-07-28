@@ -3,7 +3,7 @@
  * Used by the landing page, /pricing, upgrade flows and any plan preview.
  * Pricing data always comes from `@/features/subscription/plans`.
  */
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CircleCheck, Sparkles, Zap } from "lucide-react";
@@ -13,9 +13,14 @@ import {
   PLANS, PLAN_ORDER, formatPlanPrice, yearlySavingsPct, type PlanCode,
 } from "@/features/subscription/plans";
 import { WaitlistForm } from "@/features/subscription/components/waitlist-form";
-import { SubscriptionCheckoutLauncher } from "@/features/billing/components/subscription-checkout-launcher";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
+
+const SubscriptionCheckoutLauncher = lazy(() =>
+  import("@/features/billing/components/subscription-checkout-launcher").then((m) => ({
+    default: m.SubscriptionCheckoutLauncher,
+  })),
+);
 
 export type BillingCycle = "monthly" | "yearly";
 
@@ -56,6 +61,7 @@ export function usePlanCta(cycle: BillingCycle) {
 
   const launcher =
     checkout && workspace ? (
+      <Suspense fallback={null}>
       <SubscriptionCheckoutLauncher
         open={!!checkout}
         onOpenChange={(v) => { if (!v) setCheckout(null); }}
@@ -64,6 +70,7 @@ export function usePlanCta(cycle: BillingCycle) {
         planCode={checkout.planCode}
         cycle={cycle}
       />
+      </Suspense>
     ) : null;
 
   return { handleCta, launcher };
