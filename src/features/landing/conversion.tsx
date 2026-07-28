@@ -580,7 +580,7 @@ function VideoCard({ v, onOpen }: { v: VideoTestimonial; onOpen: () => void }) {
       whileHover={{ y: -6, scale: 1.02 }}
       transition={{ type: "spring", stiffness: 250, damping: 20 }}
       onClick={onOpen}
-      className="group relative w-[320px] shrink-0 overflow-hidden rounded-3xl border border-foreground/10 bg-background/60 text-left backdrop-blur-md"
+      className="group relative w-[min(320px,calc(100vw-4rem))] shrink-0 overflow-hidden rounded-3xl border border-foreground/10 bg-background/60 text-left backdrop-blur-md"
     >
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-black">
         <img

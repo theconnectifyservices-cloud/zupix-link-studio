@@ -1468,7 +1468,7 @@ export function LandingHero() {
               <Stat icon={BadgeCheck} label="Profiles created" target={54200} suffix="+" />
               <Stat icon={Palette} label="Premium themes" target={20} />
               <Stat icon={Eye} label="Monthly page views" target={2400000} suffix="+" />
-              <Stat icon={Globe2} label="Indian businesses" target={8900} suffix="+" />
+              <Stat icon={Globe2} label="Indian businesses" target={1500} suffix="+" />
             </div>
             {/* Demo indicator strip */}
             <div className="mt-[clamp(0.875rem,3vw,1.25rem)] grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 sm:flex sm:flex-wrap">
