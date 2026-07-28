@@ -14,12 +14,17 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
-import { PLANS, formatPlanPrice, type PlanCode } from "../plans";
+import { PLANS, formatPlanPrice, BIO_LINK_ADDON_NOTE, BIO_LINK_ADDON_PRICE_MINOR, type PlanCode } from "../plans";
+import { useBioLinkAllowance } from "../use-bio-link-allowance";
+import { BuyBioLinksDialog } from "./buy-bio-links-dialog";
 import { getMySubscription, listMyInvoices } from "../customer.functions";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 export function MySubscriptionPage() {
   const { workspace } = useCurrentWorkspace();
+  const { allowance } = useBioLinkAllowance();
+  const [buyOpen, setBuyOpen] = useState(false);
   const getSub = useServerFn(getMySubscription);
   const listInv = useServerFn(listMyInvoices);
 
@@ -105,9 +110,13 @@ export function MySubscriptionPage() {
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <UsageBar
-              label="Mini websites"
-              used={usage.bio_pages}
-              limit={limitsMap.bio_pages}
+              label="Bio Links"
+              used={allowance?.used ?? usage.bio_pages}
+              limit={
+                allowance
+                  ? { limit_value: allowance.effectiveLimit ?? 0, is_unlimited: allowance.effectiveLimit === null }
+                  : limitsMap.bio_pages
+              }
             />
             <UsageBar
               label="Custom domains"
@@ -121,6 +130,34 @@ export function MySubscriptionPage() {
               suffix="GB"
             />
           </div>
+
+          <Separator />
+
+          <div className="rounded-xl border border-dashed bg-muted/30 p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-sm font-semibold">Bio Link allowance</div>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Plan: {allowance?.effectiveLimit === null ? "Unlimited" : (allowance?.planLimit ?? "—")} ·
+                  {" "}Purchased add-ons: {allowance?.addonQuantity ?? 0} ·
+                  {" "}Total allowed:{" "}
+                  <span className="font-medium text-foreground">
+                    {allowance?.effectiveLimit === null ? "Unlimited" : (allowance?.effectiveLimit ?? "—")}
+                  </span>
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{BIO_LINK_ADDON_NOTE}</p>
+              </div>
+              {workspace?.id && allowance?.effectiveLimit !== null && (
+                <Button variant="outline" className="shrink-0" onClick={() => setBuyOpen(true)}>
+                  Buy Additional Bio Links · {formatPlanPrice(BIO_LINK_ADDON_PRICE_MINOR)} each
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {workspace?.id && (
+            <BuyBioLinksDialog open={buyOpen} onOpenChange={setBuyOpen} workspaceId={workspace.id} />
+          )}
 
           <Separator />
 
