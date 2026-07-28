@@ -5237,6 +5237,63 @@ export type Database = {
           },
         ]
       }
+      subscription_change_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          from_plan_code: string | null
+          from_status: string | null
+          id: string
+          metadata: Json
+          subscription_id: string | null
+          to_plan_code: string | null
+          to_status: string | null
+          workspace_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          from_plan_code?: string | null
+          from_status?: string | null
+          id?: string
+          metadata?: Json
+          subscription_id?: string | null
+          to_plan_code?: string | null
+          to_status?: string | null
+          workspace_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          from_plan_code?: string | null
+          from_status?: string | null
+          id?: string
+          metadata?: Json
+          subscription_id?: string | null
+          to_plan_code?: string | null
+          to_status?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_change_logs_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "billing_subscriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscription_change_logs_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_domains: {
         Row: {
           created_at: string

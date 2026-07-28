@@ -46,6 +46,7 @@ import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppPerformanceRouteImport } from './routes/_authenticated.app.performance'
 import { Route as AuthenticatedAppPartnerCommerceRouteImport } from './routes/_authenticated.app.partner-commerce'
 import { Route as AuthenticatedAppOperationsRouteImport } from './routes/_authenticated.app.operations'
+import { Route as AuthenticatedAppMySubscriptionRouteImport } from './routes/_authenticated.app.my-subscription'
 import { Route as AuthenticatedAppMonetizationRouteImport } from './routes/_authenticated.app.monetization'
 import { Route as AuthenticatedAppMediaRouteImport } from './routes/_authenticated.app.media'
 import { Route as AuthenticatedAppLaunchRouteImport } from './routes/_authenticated.app.launch'
@@ -63,6 +64,7 @@ import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppAiRouteImport } from './routes/_authenticated.app.ai'
 import { Route as AuthenticatedAppAgencyRouteImport } from './routes/_authenticated.app.agency'
 import { Route as AuthenticatedAdminSubscriptionsRouteImport } from './routes/_authenticated/admin/subscriptions'
+import { Route as AuthenticatedAdminSubscriptionManagementRouteImport } from './routes/_authenticated/admin/subscription-management'
 import { Route as AuthenticatedAdminPaymentGatewaysRouteImport } from './routes/_authenticated/admin/payment-gateways'
 import { Route as AuthenticatedAdminGrowthEngineRouteImport } from './routes/_authenticated/admin/growth-engine'
 import { Route as AuthenticatedAdminCouponsRouteImport } from './routes/_authenticated/admin/coupons'
@@ -280,6 +282,12 @@ const AuthenticatedAppOperationsRoute =
     path: '/operations',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppMySubscriptionRoute =
+  AuthenticatedAppMySubscriptionRouteImport.update({
+    id: '/my-subscription',
+    path: '/my-subscription',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppMonetizationRoute =
   AuthenticatedAppMonetizationRouteImport.update({
     id: '/monetization',
@@ -373,6 +381,12 @@ const AuthenticatedAdminSubscriptionsRoute =
   AuthenticatedAdminSubscriptionsRouteImport.update({
     id: '/admin/subscriptions',
     path: '/admin/subscriptions',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminSubscriptionManagementRoute =
+  AuthenticatedAdminSubscriptionManagementRouteImport.update({
+    id: '/admin/subscription-management',
+    path: '/admin/subscription-management',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedAdminPaymentGatewaysRoute =
@@ -527,6 +541,7 @@ export interface FileRoutesByFullPath {
   '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
+  '/admin/subscription-management': typeof AuthenticatedAdminSubscriptionManagementRoute
   '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
@@ -544,6 +559,7 @@ export interface FileRoutesByFullPath {
   '/app/launch': typeof AuthenticatedAppLaunchRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
+  '/app/my-subscription': typeof AuthenticatedAppMySubscriptionRoute
   '/app/operations': typeof AuthenticatedAppOperationsRoute
   '/app/partner-commerce': typeof AuthenticatedAppPartnerCommerceRoute
   '/app/performance': typeof AuthenticatedAppPerformanceRoute
@@ -603,6 +619,7 @@ export interface FileRoutesByTo {
   '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
+  '/admin/subscription-management': typeof AuthenticatedAdminSubscriptionManagementRoute
   '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
@@ -619,6 +636,7 @@ export interface FileRoutesByTo {
   '/app/launch': typeof AuthenticatedAppLaunchRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
+  '/app/my-subscription': typeof AuthenticatedAppMySubscriptionRoute
   '/app/operations': typeof AuthenticatedAppOperationsRoute
   '/app/partner-commerce': typeof AuthenticatedAppPartnerCommerceRoute
   '/app/performance': typeof AuthenticatedAppPerformanceRoute
@@ -681,6 +699,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/_authenticated/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/_authenticated/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
+  '/_authenticated/admin/subscription-management': typeof AuthenticatedAdminSubscriptionManagementRoute
   '/_authenticated/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
   '/_authenticated/app/agency': typeof AuthenticatedAppAgencyRoute
   '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
@@ -698,6 +717,7 @@ export interface FileRoutesById {
   '/_authenticated/app/launch': typeof AuthenticatedAppLaunchRoute
   '/_authenticated/app/media': typeof AuthenticatedAppMediaRoute
   '/_authenticated/app/monetization': typeof AuthenticatedAppMonetizationRoute
+  '/_authenticated/app/my-subscription': typeof AuthenticatedAppMySubscriptionRoute
   '/_authenticated/app/operations': typeof AuthenticatedAppOperationsRoute
   '/_authenticated/app/partner-commerce': typeof AuthenticatedAppPartnerCommerceRoute
   '/_authenticated/app/performance': typeof AuthenticatedAppPerformanceRoute
@@ -760,6 +780,7 @@ export interface FileRouteTypes {
     | '/admin/coupons'
     | '/admin/growth-engine'
     | '/admin/payment-gateways'
+    | '/admin/subscription-management'
     | '/admin/subscriptions'
     | '/app/agency'
     | '/app/ai'
@@ -777,6 +798,7 @@ export interface FileRouteTypes {
     | '/app/launch'
     | '/app/media'
     | '/app/monetization'
+    | '/app/my-subscription'
     | '/app/operations'
     | '/app/partner-commerce'
     | '/app/performance'
@@ -836,6 +858,7 @@ export interface FileRouteTypes {
     | '/admin/coupons'
     | '/admin/growth-engine'
     | '/admin/payment-gateways'
+    | '/admin/subscription-management'
     | '/admin/subscriptions'
     | '/app/agency'
     | '/app/analytics'
@@ -852,6 +875,7 @@ export interface FileRouteTypes {
     | '/app/launch'
     | '/app/media'
     | '/app/monetization'
+    | '/app/my-subscription'
     | '/app/operations'
     | '/app/partner-commerce'
     | '/app/performance'
@@ -913,6 +937,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/coupons'
     | '/_authenticated/admin/growth-engine'
     | '/_authenticated/admin/payment-gateways'
+    | '/_authenticated/admin/subscription-management'
     | '/_authenticated/admin/subscriptions'
     | '/_authenticated/app/agency'
     | '/_authenticated/app/ai'
@@ -930,6 +955,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/launch'
     | '/_authenticated/app/media'
     | '/_authenticated/app/monetization'
+    | '/_authenticated/app/my-subscription'
     | '/_authenticated/app/operations'
     | '/_authenticated/app/partner-commerce'
     | '/_authenticated/app/performance'
@@ -1256,6 +1282,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppOperationsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/my-subscription': {
+      id: '/_authenticated/app/my-subscription'
+      path: '/my-subscription'
+      fullPath: '/app/my-subscription'
+      preLoaderRoute: typeof AuthenticatedAppMySubscriptionRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/monetization': {
       id: '/_authenticated/app/monetization'
       path: '/monetization'
@@ -1373,6 +1406,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/subscriptions'
       fullPath: '/admin/subscriptions'
       preLoaderRoute: typeof AuthenticatedAdminSubscriptionsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/subscription-management': {
+      id: '/_authenticated/admin/subscription-management'
+      path: '/admin/subscription-management'
+      fullPath: '/admin/subscription-management'
+      preLoaderRoute: typeof AuthenticatedAdminSubscriptionManagementRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/admin/payment-gateways': {
@@ -1631,6 +1671,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppLaunchRoute: typeof AuthenticatedAppLaunchRoute
   AuthenticatedAppMediaRoute: typeof AuthenticatedAppMediaRoute
   AuthenticatedAppMonetizationRoute: typeof AuthenticatedAppMonetizationRoute
+  AuthenticatedAppMySubscriptionRoute: typeof AuthenticatedAppMySubscriptionRoute
   AuthenticatedAppOperationsRoute: typeof AuthenticatedAppOperationsRoute
   AuthenticatedAppPartnerCommerceRoute: typeof AuthenticatedAppPartnerCommerceRoute
   AuthenticatedAppPerformanceRoute: typeof AuthenticatedAppPerformanceRoute
@@ -1664,6 +1705,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppLaunchRoute: AuthenticatedAppLaunchRoute,
   AuthenticatedAppMediaRoute: AuthenticatedAppMediaRoute,
   AuthenticatedAppMonetizationRoute: AuthenticatedAppMonetizationRoute,
+  AuthenticatedAppMySubscriptionRoute: AuthenticatedAppMySubscriptionRoute,
   AuthenticatedAppOperationsRoute: AuthenticatedAppOperationsRoute,
   AuthenticatedAppPartnerCommerceRoute: AuthenticatedAppPartnerCommerceRoute,
   AuthenticatedAppPerformanceRoute: AuthenticatedAppPerformanceRoute,
@@ -1689,6 +1731,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminCouponsRoute: typeof AuthenticatedAdminCouponsRoute
   AuthenticatedAdminGrowthEngineRoute: typeof AuthenticatedAdminGrowthEngineRoute
   AuthenticatedAdminPaymentGatewaysRoute: typeof AuthenticatedAdminPaymentGatewaysRoute
+  AuthenticatedAdminSubscriptionManagementRoute: typeof AuthenticatedAdminSubscriptionManagementRoute
   AuthenticatedAdminSubscriptionsRoute: typeof AuthenticatedAdminSubscriptionsRoute
   AuthenticatedBuilderIdRoute: typeof AuthenticatedBuilderIdRoute
 }
@@ -1700,6 +1743,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminGrowthEngineRoute: AuthenticatedAdminGrowthEngineRoute,
   AuthenticatedAdminPaymentGatewaysRoute:
     AuthenticatedAdminPaymentGatewaysRoute,
+  AuthenticatedAdminSubscriptionManagementRoute:
+    AuthenticatedAdminSubscriptionManagementRoute,
   AuthenticatedAdminSubscriptionsRoute: AuthenticatedAdminSubscriptionsRoute,
   AuthenticatedBuilderIdRoute: AuthenticatedBuilderIdRoute,
 }
@@ -1735,13 +1780,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
