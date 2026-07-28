@@ -1199,7 +1199,7 @@ function SectionFinalCta() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <MagneticButton href="#pricing" icon={<ArrowRight className="h-4 w-4" />}>
+              <MagneticButton href="/pricing" icon={<ArrowRight className="h-4 w-4" />}>
                 Start Building — Free
               </MagneticButton>
               <MagneticButton href="/auth" variant="outline" icon={<CalendarCheck className="h-4 w-4" />}>

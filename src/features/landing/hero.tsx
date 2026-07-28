@@ -1319,7 +1319,7 @@ export function LandingHero() {
             <div className="relative mt-8 flex flex-wrap items-center gap-3">
               <a
                 ref={primaryRef}
-                href="#pricing"
+                href="/pricing"
                 className="zx-cta-primary group relative inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-3.5 text-sm font-semibold text-[#0b0b12] transition-transform duration-200"
                 style={{
                   background: "linear-gradient(135deg,#ffb37a 0%,#ff6b35 45%,#e84393 100%)",
