@@ -15,6 +15,7 @@
  * no lorem ipsum, no placeholder avatars.
  */
 
+import { PricingSection } from "@/features/pricing";
 import {
   useEffect,
   useMemo,
@@ -1263,7 +1264,7 @@ export function LandingConversion() {
       <SectionVideoTestimonials />
       <SectionFeatures />
       <SectionCompare />
-      <SectionPricing />
+      <PricingSection id="pricing" />
       <SectionFaq />
       <SectionTrust />
       <SectionFinalCta />
