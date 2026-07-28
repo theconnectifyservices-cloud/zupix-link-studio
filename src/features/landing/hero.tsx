@@ -711,7 +711,7 @@ function Stat({
           <Icon className="size-[clamp(0.875rem,2.8vw,1.125rem)]" />
         </span>
       ) : null}
-      <span className="block max-w-full whitespace-nowrap text-[clamp(1.375rem,5vw,3rem)] font-semibold leading-none text-white tabular-nums tracking-normal">
+      <span className="block max-w-full whitespace-nowrap text-[clamp(1.375rem,4.5vw,2.625rem)] font-semibold leading-none text-white tabular-nums tracking-normal">
         {formatCount(v, suffix)}
       </span>
       <span className="mt-[clamp(0.375rem,1.4vw,0.625rem)] block max-w-full whitespace-normal text-balance break-words text-[clamp(0.625rem,2.2vw,0.72rem)] font-medium uppercase leading-tight tracking-[0.08em] text-white/45 sm:tracking-[0.14em]">
