@@ -45,7 +45,11 @@ export function usePlanCta(cycle: BillingCycle) {
     if (code === "shikhar") return;
     if (code === "udaan") {
       trackPricing("trial_start", { source: "pricing_udaan" });
-      navigate({ to: authed ? "/app" : "/auth" });
+      if (authed) {
+        navigate({ to: "/app" });
+      } else {
+        navigate({ to: "/signup", search: { plan: code } });
+      }
       return;
     }
     trackPricing("checkout_started", { plan: code, cycle });
@@ -53,7 +57,7 @@ export function usePlanCta(cycle: BillingCycle) {
       if (typeof window !== "undefined") {
         window.sessionStorage.setItem("zupix:auth_intent", "trial");
       }
-      navigate({ to: "/auth", search: { mode: "signup" } });
+      navigate({ to: "/signup", search: { plan: code } });
       return;
     }
     setCheckout({ planCode: code });

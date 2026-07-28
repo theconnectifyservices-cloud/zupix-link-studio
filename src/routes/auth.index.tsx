@@ -27,6 +27,7 @@ import { Separator } from "@/components/ui/separator";
 const searchSchema = z.object({
   redirect: z.string().optional().catch(undefined),
   mode: z.enum(["login", "signup"]).optional().catch(undefined),
+  plan: z.string().optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/auth/")({

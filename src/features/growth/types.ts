@@ -34,7 +34,7 @@ export const DEFAULT_GROWTH_SETTINGS: GrowthEngineSettings = {
   referral_headline: "Love this Bio Link?",
   referral_subtext: "Create Yours FREE",
   referral_cta_label: "Start Building",
-  redirect_url: "/signup",
+  redirect_url: "/pricing",
   accent_color: "#7c3aed",
 };
 
