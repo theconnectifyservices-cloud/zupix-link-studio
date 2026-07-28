@@ -122,7 +122,7 @@ export function LandingHeader() {
               <Button
                 size="sm"
                 className="whitespace-nowrap bg-gradient-to-r from-orange-500 to-pink-500 px-3 text-white hover:opacity-90 sm:px-4"
-                onClick={() => navigate({ to: "/signup" })}
+                onClick={() => navigate({ to: "/pricing" })}
               >
                 <span className="sm:hidden">Start</span>
                 <span className="hidden sm:inline">Start Building</span>

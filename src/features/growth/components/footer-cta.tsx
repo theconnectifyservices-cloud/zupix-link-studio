@@ -11,7 +11,7 @@ interface Props {
 
 /** Footer conversion CTA + optional referral CTA. Renders inline (no popup). */
 export function FooterCta({ settings, industry }: Props) {
-  const href = settings.redirect_url || "/signup";
+  const href = settings.redirect_url || "/pricing";
   const industryCopy = settings.dynamic_industry_cta_enabled ? industryCta(industry) : null;
 
   return (

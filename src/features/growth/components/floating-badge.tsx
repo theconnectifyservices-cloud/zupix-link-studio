@@ -9,7 +9,7 @@ interface Props {
 
 /** Bottom-right glass badge. Sticky, mobile responsive, tasteful. */
 export function FloatingBadge({ settings }: Props) {
-  const href = settings.redirect_url || "/signup";
+  const href = settings.redirect_url || "/pricing";
   return (
     <motion.a
       href={href}

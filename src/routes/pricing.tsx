@@ -77,7 +77,8 @@ function PricingPage() {
     if (code === "shikhar") return;
     if (code === "udaan") {
       track("trial_start", { source: "pricing_udaan" });
-      navigate({ to: authed ? "/app" : "/auth" });
+      if (authed) navigate({ to: "/app" });
+      else navigate({ to: "/signup", search: { plan: code } });
       return;
     }
     // tejas
@@ -86,7 +87,7 @@ function PricingPage() {
       if (typeof window !== "undefined") {
         window.sessionStorage.setItem("zupix:auth_intent", "trial");
       }
-      navigate({ to: "/auth", search: { mode: "signup" } });
+      navigate({ to: "/signup", search: { plan: code } });
       return;
     }
     setCheckout({ planCode: code });
