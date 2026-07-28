@@ -21,35 +21,43 @@ const RU = (gender: "men" | "women", n: number, size = 240) =>
 const UN = (id: string, w = 1200, h = 800) =>
   `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&auto=format&q=80`;
 
-/** 30 curated portraits — diverse ages, genders, professional feel. */
+/**
+ * Authentic Indian founder/business-owner portraits.
+ * The testimonial roster uses photorealistic Indian headshots hosted on
+ * the Lovable CDN, matched to each founder name and industry. Supporting
+ * portraits used only by category tiles fall back to randomuser.me.
+ */
 export const PORTRAITS = {
+  // ---- Testimonial roster (authentic Indian portraits, CDN-hosted) ----
+  jewellerOwner: "/__l5e/assets-v1/33746a26-4bfb-4601-a832-57369f0de333/portrait-jewellerOwner.jpg",
+  chefRestaurant: "/__l5e/assets-v1/f5ec19f1-f235-40d9-9236-0a83f51d5fb9/portrait-chefRestaurant.jpg",
+  karan: "/__l5e/assets-v1/a4017472-146c-4ba2-9f2b-f829ad98f4d6/portrait-karan.jpg",
+  drAnanya: "/__l5e/assets-v1/c62e7b6a-d14b-4a57-b933-95d8bb916188/portrait-drAnanya.jpg",
+  rajesh: "/__l5e/assets-v1/0a97d19d-cae6-4393-9571-dd7c47911155/portrait-rajesh.jpg",
+  gymTrainer: "/__l5e/assets-v1/a6013e15-d305-4678-98f7-c25da3f7ab45/portrait-gymTrainer.jpg",
+  priya: "/__l5e/assets-v1/2145a5d7-7954-4937-9c87-a65550ba534b/portrait-priya.jpg",
+  meera: "/__l5e/assets-v1/66f60457-bde4-4f40-9449-8a31dbda50e9/portrait-meera.jpg",
+  cafeOwner: "/__l5e/assets-v1/76af1886-6f7a-4498-aa57-b17226cfb489/portrait-cafeOwner.jpg",
+  nisha: "/__l5e/assets-v1/223b2090-58b9-4181-aa4e-3e92d1a12207/portrait-nisha.jpg",
+  farhan: "/__l5e/assets-v1/c755b3d7-193c-42c6-885d-d9222343f6c1/portrait-farhan.jpg",
+  anaya: "/__l5e/assets-v1/17df939c-720a-47c3-b27e-ef2f77f1c0b1/portrait-anaya.jpg",
+  vikram: "/__l5e/assets-v1/93270a7d-868b-4450-bad8-de83a7cbd87e/portrait-vikram.jpg",
+  kavya: "/__l5e/assets-v1/fccd5266-3e20-4c7d-8310-84878be57184/portrait-kavya.jpg",
+  aditya: "/__l5e/assets-v1/b7e78058-41d2-451c-8cc8-0b0742c804f8/portrait-aditya.jpg",
+
+  // ---- Supporting roster (category tiles only) ----
   rohan: RU("men", 32),
   ayesha: RU("women", 44),
-  karan: RU("men", 45),
   ananya: RU("women", 68),
-  rajesh: RU("men", 52),
   rehan: RU("men", 78),
-  priya: RU("women", 21),
-  meera: RU("women", 33),
   arjun: RU("men", 11),
-  nisha: RU("women", 12),
-  farhan: RU("men", 27),
-  anaya: RU("women", 55),
-  vikram: RU("men", 61),
-  kavya: RU("women", 47),
-  aditya: RU("men", 8),
   priyaKapoor: RU("women", 65),
-  drAnanya: RU("women", 26),
   mehtaLawyer: RU("men", 83),
-  chefRestaurant: RU("men", 40),
-  jewellerOwner: RU("men", 15),
   fashionDesigner: RU("women", 39),
   salonOwner: RU("women", 71),
-  gymTrainer: RU("men", 91),
   teacher: RU("women", 18),
   realEstate: RU("men", 74),
   travelAgent: RU("women", 30),
-  cafeOwner: RU("men", 22),
   ngoFounder: RU("women", 50),
   architect: RU("men", 36),
   contentCreator: RU("women", 9),
