@@ -1229,6 +1229,7 @@ export function LandingHero() {
 
       {/* HERO */}
       <div
+        ref={heroRef}
         className="relative mx-auto flex min-h-dvh max-w-7xl flex-col justify-center px-5 py-16 sm:px-8 lg:py-24"
         style={heroStyle}
       >
