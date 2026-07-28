@@ -143,7 +143,7 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
     features: UDAAN_FEATURES,
     limits: { bio_pages: 1, custom_domains: 0 },
     highlights: [
-      "1 Bio Page",
+      "1 Bio Link",
       "13 Essential Blocks",
       "ZUPIX Subdomain",
       "Basic Analytics",
@@ -167,9 +167,9 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
     accent: "primary",
     badge: "Most Popular",
     features: [...UDAAN_FEATURES, ...TEJAS_ADDITIONS],
-    limits: { bio_pages: 20, custom_domains: 1 },
+    limits: { bio_pages: 3, custom_domains: 1 },
     highlights: [
-      "20 Bio Pages",
+      "3 Bio Links",
       "All Blocks Unlocked",
       "50+ Premium Themes",
       "Custom Domain",
@@ -213,7 +213,7 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
     limits: { bio_pages: "unlimited", custom_domains: "unlimited" },
     highlights: [
       "Everything in Tejas +",
-      "Unlimited Bio Pages",
+      "Unlimited Bio Links",
       "Store & Digital Products",
       "Booking System",
       "Membership System",
@@ -231,6 +231,14 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
 };
 
 export const PLAN_ORDER: PlanCode[] = ["udaan", "tejas", "shikhar"];
+
+/** Price of one additional Bio Link add-on (in paise). */
+export const BIO_LINK_ADDON_PRICE_MINOR = 7900;
+/** Catalog code of the additional Bio Link add-on (`public.addons.code`). */
+export const BIO_LINK_ADDON_CODE = "extra_bio_link";
+/** Customer-facing add-on note shown on pricing cards and plan details. */
+export const BIO_LINK_ADDON_NOTE =
+  "Need more Bio Links? Purchase additional Bio Links anytime for just \u20b979 per Bio Link.";
 
 /** Returns the smallest plan that unlocks the given feature. */
 export function requiredPlanFor(feature: FeatureKey): PlanCode {
