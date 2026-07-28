@@ -39,9 +39,14 @@ export function MySubscriptionPage() {
     enabled: !!workspace?.id,
   });
 
-  const sub = subQ.data?.subscription;
-  const planCode = (sub?.plan_code as PlanCode) ?? "udaan";
-  const planMeta = PLANS[planCode] ?? PLANS.udaan;
+  const sub = subQ.data?.subscription as any;
+  const planCode = (sub?.plan_code as PlanCode) ?? null;
+  const planMeta = planCode ? PLANS[planCode] : undefined;
+  const planName = sub?.plan_name ?? planMeta?.name ?? "No active plan";
+  const currency = sub?.plan_currency ?? sub?.currency ?? "INR";
+  const isTrialing = sub?.status === "trialing";
+  /** Renewal price for the active cycle, straight from the plan catalog. */
+  const cyclePriceMinor: number | null = sub?.cycle_price_minor ?? null;
 
   const limitsMap = useMemo(() => {
     const m: Record<string, { limit_value: number; is_unlimited: boolean }> = {};
@@ -49,12 +54,20 @@ export function MySubscriptionPage() {
     return m;
   }, [subQ.data]);
 
+  const bioAddon = useMemo(
+    () => (subQ.data as any)?.addons?.find((a: any) => a.metric_key === "bio_pages") ?? null,
+    [subQ.data],
+  );
+  const addonPriceMinor: number | null =
+    bioAddon?.price_minor ?? allowance?.addonPriceMinor ?? null;
+
   const usage = subQ.data?.usage ?? { bio_pages: 0, custom_domains: 0 };
   const invoices = invQ.data ?? [];
   const latestInvoice = invoices.find((i: any) => i.status === "paid");
 
   const expiry = sub?.current_period_end ?? sub?.trial_end ?? null;
   const daysRemaining = expiry ? Math.max(0, Math.ceil((new Date(expiry).getTime() - Date.now()) / 86400000)) : null;
+
 
   if (subQ.isLoading) {
     return (
