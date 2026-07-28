@@ -145,9 +145,14 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
     highlights: [
       "1 Bio Page",
       "13 Essential Blocks",
-      "ZUPIX subdomain",
-      "Basic analytics",
-      "Community support",
+      "ZUPIX Subdomain",
+      "Basic Analytics",
+      "Community Support",
+      "Standard Themes",
+      "Basic SEO",
+      "QR Code",
+      "Social Links",
+      "Contact Buttons",
     ],
   },
   tejas: {
