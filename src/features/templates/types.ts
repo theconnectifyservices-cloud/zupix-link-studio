@@ -1,10 +1,9 @@
 /**
- * Template Library types (LS-07D).
+ * Template Library types.
  *
  * A template is a portable design bundle: a full theme, an optional
- * starter set of blocks, and enough metadata to browse/search it. The
- * shape is JSON-serializable so future phases can add import/export
- * and a marketplace without breaking older files.
+ * starter set of blocks, plus tier + layout metadata that drive the
+ * premium marketplace UI and access control.
  */
 
 import type { PageTheme } from "@/features/builder/theme";
@@ -41,7 +40,12 @@ export type TemplateCategoryId =
   | "startup"
   | "ecommerce"
   | "education"
-  | "travel";
+  | "travel"
+  | "gaming"
+  | "ai"
+  | "corporate"
+  | "personal"
+  | "doctor";
 
 export interface TemplateCategory {
   id: TemplateCategoryId;
@@ -49,6 +53,41 @@ export interface TemplateCategory {
 }
 
 export type TemplateStyle = "light" | "dark" | "gradient" | "glass" | "neon";
+
+/** Access tier controls who can apply a template. */
+export type TemplateTier = "free" | "premium" | "enterprise";
+
+/**
+ * Visual layout family the preview + apply-flow uses. Each layout id
+ * corresponds to a distinct hero + button + card composition, so themes
+ * that share a layoutId still differ by tokens, typography and spacing.
+ */
+export type TemplateLayoutId =
+  | "classic"
+  | "apple"
+  | "glass"
+  | "neumorph"
+  | "notion"
+  | "linear"
+  | "stripe"
+  | "framer"
+  | "portfolio"
+  | "luxury"
+  | "neon-cyber"
+  | "terminal"
+  | "magazine"
+  | "bento"
+  | "split-hero"
+  | "story-card"
+  | "editorial"
+  | "gaming"
+  | "corporate";
+
+export interface TemplateFlags {
+  isNew?: boolean;
+  isTrending?: boolean;
+  isFeatured?: boolean;
+}
 
 export interface Template {
   /** Stable id — kebab-case slug for built-ins, uuid-like for custom. */
@@ -60,13 +99,28 @@ export interface Template {
   category: TemplateCategoryId;
   tags?: string[];
   style?: TemplateStyle;
+  /** New tier field — supersedes `isPremium` for gating. */
+  tier?: TemplateTier;
+  /** Kept for backwards compatibility with older custom templates. */
   isPremium?: boolean;
   /** True when the template was saved by the user (vs. built-in). */
   isCustom?: boolean;
   createdAt?: number;
   updatedAt?: number;
+  /** Layout renderer id — drives the preview composition. */
+  layoutId?: TemplateLayoutId;
+  /** Marketplace flags. */
+  flags?: TemplateFlags;
+  /** Marketplace popularity, 0..100 — sort key. */
+  popularity?: number;
   /** The design bundle — required. */
   theme: PageTheme;
   /** Optional starter blocks (used by Import/Export & Apply-with-content). */
   blocks?: Block[];
+}
+
+/** Resolves the tier for a template, honoring legacy `isPremium`. */
+export function templateTier(t: Template): TemplateTier {
+  if (t.tier) return t.tier;
+  return t.isPremium ? "premium" : "free";
 }
