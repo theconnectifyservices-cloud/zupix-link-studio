@@ -441,7 +441,7 @@ function LearningCarousel() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: (i % 4) * 0.04 }}
               whileHover={{ y: -6 }}
-              className="group relative w-[320px] shrink-0 snap-start overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl sm:w-[360px]"
+              className="group relative w-[min(320px,calc(100vw-4rem))] shrink-0 snap-start overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl sm:w-[360px]"
             >
               <div
                 className={`relative aspect-[16/10] overflow-hidden bg-gradient-to-br ${l.grad}`}
@@ -474,13 +474,13 @@ function LearningCarousel() {
                 </div>
               </div>
               <div className="p-5">
-                <h3 className="text-base font-semibold text-white">{l.title}</h3>
-                <div className="mt-3 flex items-center justify-between text-xs text-white/60">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5" />
+                <h3 className="text-balance break-words text-base font-semibold text-white">{l.title}</h3>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs text-white/60">
+                  <span className="inline-flex shrink-0 items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5 shrink-0" />
                     {l.minutes} min read
                   </span>
-                  <span className="inline-flex items-center gap-1 text-white/80 transition-colors group-hover:text-amber-300">
+                  <span className="inline-flex shrink-0 items-center gap-1 text-white/80 transition-colors group-hover:text-amber-300">
                     Watch <ArrowRight className="h-3.5 w-3.5" />
                   </span>
                 </div>
