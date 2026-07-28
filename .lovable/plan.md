@@ -1,55 +1,117 @@
-## LS-DEMO-01 · Phase 1 — Enterprise Demo Workspace & Showcase Profiles
+# Subscription Management — Implementation Plan
 
-Scope confirmed by you: **only** profiles, themes, content, and placeholder removal. Analytics, payments, forms, bookings, reset engine, demo login gating, landing wiring → later phases.
+Extension of the existing billing engine (`billing_plans`, `billing_subscriptions`, `billing_invoices`, `billing_payments`, `plan_features`, `plan_limits`, `trial_events`, `notifications`). No redesign of existing pages. Reuses current shadcn UI, admin layout, sidebar, and RLS helpers.
 
-### 1. Demo workspace & owner
-- Seed a fixed workspace `ZUPIX Showcase` (slug `zupix-showcase`, deterministic UUID) owned by `theconnectifyservices@gmail.com` (existing super-admin). No new auth user this phase — `demo@zupix.in` provisioning moves to Phase 3 with the read-only role gate.
-- Apply a "Modern Glass" theme preset as the workspace default theme.
+## Part 1 — Admin Panel
 
-### 2. Twelve business showcase bio pages
-One published `bio_pages` row per business, each with a unique slug and a distinct premium theme so the theme gallery is covered:
+New route: `src/routes/_authenticated/admin/subscription-management.tsx`  
+Sidebar: **Customers → Subscription Management** (added under existing Admin section in `src/shared/navigation/sidebar.tsx`).
 
-```text
-1  Ratan Jewellers (Jaipur)          — jewellery
-2  Spice Route Kitchen (Mumbai)      — restaurant
-3  Brew & Bloom Café (Bengaluru)     — cafe
-4  Dr. Anjali Sharma Clinic (Delhi)  — doctor
-5  Ashirwad Multispeciality (Pune)   — hospital
-6  Glow Studio Salon (Hyderabad)     — salon
-7  IronCore Fitness (Gurugram)       — gym
-8  Vidya Public School (Lucknow)     — school
-9  Wanderlust Trails (Goa)           — travel
-10 Casa Verde Homes (Noida)          — real estate
-11 Pixel Forge Digital (Ahmedabad)   — digital agency
-12 Meher & Associates (Chennai)      — law firm
+Enterprise table (reuses existing `Table`, `Badge`, `DropdownMenu`, `Pagination` primitives):
+
+- Customer Name, Customer ID (short hash of `profiles.id`), Email, Mobile (from `auth.users.phone`), Current Plan, Plan Status, Start, Expiry, Days Remaining (computed), Auto Renewal, Account Status, Last Updated.
+- Toolbar: search (name/email), filters (plan, status), CSV + Excel export, pagination (25/50/100).
+- Row actions: View, Edit, Assign Plan, Extend, Upgrade, Downgrade, Suspend, Resume, Cancel, Delete (soft).
+
+**Assign Plan modal** (`assign-plan-dialog.tsx`):
+
+- Plan select (from `billing_plans` + "Custom Plan" option)
+- Billing cycle: monthly / quarterly / yearly / lifetime / custom (days)
+- Overridable fields: price, duration, storage limit, mini-websites, custom domains, subdomain, team members, themes, premium templates, analytics, verified badge, AI, priority support, API access, custom branding — each as toggle or numeric input.
+- Saves overrides to `billing_subscriptions.metadata.overrides` (JSONB) so no schema break; effective limits merge plan defaults + overrides.
+- Actions: Save (draft), Assign (activate), Cancel.
+
+Extend / Upgrade / Downgrade / Suspend / Resume / Cancel implemented via one server fn `adminUpdateSubscription` with action enum.
+
+## Part 2 — Customer Panel
+
+New route: `src/routes/_authenticated.app.my-subscription.tsx`  
+Sidebar item **My Subscription Plan** (under existing account section).
+
+Current Plan card + usage panel:
+
+- Plan name, badge, price, cycle, status, start, expiry, days remaining, renewal date.
+- Feature list from `plan_features` merged with subscription overrides.
+- Usage bars: storage (sum of `media_assets.size_bytes`), mini-websites (`bio_pages` count), domains (`domains` count) vs limits from `plan_limits` + overrides.
+- Verified badge status, support level.
+- Actions: Upgrade (→ `/pricing`), Renew (→ checkout), Download Invoice (latest paid `billing_invoices`), Billing History (list).
+
+## Part 3 — Plan Feature Engine
+
+Central helper `src/features/subscription/entitlements.ts`:
+
+```
+getEntitlements(workspaceId) → { limits, features }
 ```
 
-Every page ships fully populated blocks: profile (logo + cover + owner photo + verified badge + description), contact strip (WhatsApp / call / email / address / hours), 4–6 custom CTAs, product OR service catalogue (6 items), gallery (6 images), 3 testimonials, 4 FAQs, social icons, embedded map, downloadable PDF, one HTML widget, SEO metadata (title/description/OG image), and a sample custom-domain string in metadata.
+Merges `plan_limits` + `plan_features` + `billing_subscriptions.metadata.overrides`. Existing `useFeature` / `LockedBlock` hooks re-wired to consult this. When admin changes plan → server fn writes new sub + emits `plan_changed` event → `notifications` row + `activity_logs` entry → client `react-query` cache invalidates.
 
-### 3. Media — Lovable Assets CDN
-Curated pack, not the 300+ from the original spec (Phase 2 expands the library):
-- 12 business logos, 12 cover banners, 12 owner portraits (Indian faces), 72 product/service photos, 72 gallery photos, 12 brochure PDFs, 12 branded QR PNGs → ~204 assets.
-- Generated with `imagegen` (premium tier for logos/covers, fast tier for gallery/product) + `lovable-assets create` for each. Written to `src/demo/assets/<business>/…asset.json`.
-- All references in seed data use the CDN `url` from the pointer JSON.
+## Part 4 — Database (single migration)
 
-### 4. Theme presets
-Register 12 premium theme JSON presets under `src/features/templates/catalog.ts` (Modern Glass, Neon Noir, Sunrise Gradient, Terracotta, Ocean Fade, Royal Emerald, Midnight Mono, Peach Soft, Editorial Serif, Studio Dark, Botanic, Aurora). Each demo bio page uses a different preset. Remaining 8 of the "20 premium themes" come in Phase 2.
+Reuses existing tables. Adds only:
 
-### 5. Placeholder audit
-Grep the app for empty-state fallbacks that render on the demo workspace surfaces (dashboard cards, template gallery, media library, bio dashboard, profile). Where the demo workspace is active and rows exist in the seed, the UI must show them; where a surface would still be empty in Phase 1 (analytics, payments, forms), leave the empty state untouched — Phase 2/3 seed fills it. No component code changes beyond wiring seed data through existing renderers.
+- `subscription_change_logs` (workspace_id, subscription_id, actor_id, action, from_plan, to_plan, from_status, to_status, metadata, created_at) + GRANTs + RLS (admin read all, workspace members read own).
+- `renewal_history` view over `billing_payments` (no new table).
+- `billing_subscriptions.metadata.overrides` JSON convention (no schema change).
+- Small SQL fn `admin_update_subscription(...)` (SECURITY DEFINER) that validates `has_role(auth.uid(),'admin'|'super_admin')` and performs the state transition + log insert.
 
-### 6. Delivery mechanism
-- One SQL migration `seed_demo_workspace_phase1.sql` inserting the workspace, membership, theme, and 12 `bio_pages` (JSONB content referencing CDN URLs). Idempotent via `ON CONFLICT (id) DO UPDATE`.
-- Asset generation + upload driven from the sandbox (not shipped in code) — pointer JSONs committed under `src/demo/assets/`.
-- A tiny `src/demo/manifest.ts` exports the fixed workspace + page IDs so later phases (analytics/payments seed, reset engine) can target them.
+No destructive changes. All existing RLS untouched.
 
-### 7. Out of scope this phase (queued for later)
-Analytics events, payments/invoices, forms/bookings, downloads center, testimonials manager rows, AI Studio prompt library, landing-page rewrites to point at demo, `demo@zupix.in` read-only account, reset SQL function + admin button, 300+ media / 50+ videos expansion, remaining 8 themes.
+## Part 5 — Notifications
 
-### Technical notes
-- Workspace/page UUIDs pinned as constants so Phase 2 seed can reference them.
-- Migration only touches `workspaces`, `workspace_members`, `profiles.active_workspace_id` (no-op), and `bio_pages`. No schema changes.
-- Image generation is the slow step (~204 calls). If a subset fails, seed still runs and re-uploads can be retried without rewriting the migration.
+On any admin subscription action:
+1. Insert `notifications` row for workspace owner.
+2. Insert `activity_logs` row.
+3. Insert `subscription_change_logs` row.
+4. Insert `trial_events` row if trial-related.
 
-### Approval checkpoint
-This plan is Phase 1 only. On completion I stop and wait for your go-ahead before Phase 2 (media library expansion + analytics/payments/forms seed + landing wiring) and Phase 3 (demo login + reset engine).
+## Part 6 — Security
+
+- Admin route gated by existing `has_role(auth.uid(),'admin')` / `'super_admin'` check in `beforeLoad` (matches `/admin/payment-gateways` pattern).
+- All admin server fns use `requireSupabaseAuth` + verify role via `context.supabase.rpc('has_role', ...)` before touching `supabaseAdmin`.
+- Customer page uses authenticated fns; RLS on `billing_subscriptions` already scopes to workspace membership.
+- Zod validation on every input.
+
+## Part 7 — UI
+
+Uses existing tokens, cards, badges, skeletons, empty-state, `SearchInput`, `Pagination`. Animated status badges via existing motion primitives. CSV export inline; Excel via `xlsx` (already fine for Worker — pure JS). Dark mode inherited.
+
+## Part 8 — Final QA
+
+- `tsgo` clean, `bun run build:dev` clean.
+- Playwright smoke: admin sees table, opens Assign Plan, assigns to a test workspace, customer page reflects new plan and usage.
+- Verify RLS with non-admin session (must 403).
+- Verify mobile layout at 375px (stacked cards, horizontal scroll table with sticky first column).
+
+## Files (new)
+
+```
+src/features/subscription/
+  entitlements.ts
+  admin.functions.ts              # list, get, assign, extend, upgrade, suspend, resume, cancel, delete
+  customer.functions.ts           # my-subscription, usage, invoices
+  hooks/use-my-subscription.ts
+  hooks/use-admin-subscriptions.ts
+  components/
+    subscriptions-table.tsx
+    assign-plan-dialog.tsx
+    subscription-actions-menu.tsx
+    customer-plan-card.tsx
+    usage-panel.tsx
+    billing-history-table.tsx
+    export-menu.tsx
+src/routes/_authenticated/admin/subscription-management.tsx
+src/routes/_authenticated.app.my-subscription.tsx
+```
+
+## Files (edited, minimal)
+
+- `src/shared/navigation/sidebar.tsx` — add 2 menu items.
+- `src/features/subscription/index.ts` — export barrel.
+- Existing `useFeature` hook — read from new `entitlements.ts` (backward compatible).
+
+## Out of scope (unchanged)
+
+Pricing page, checkout modal, payment gateway hub, trial engine, growth engine — all continue to work as-is and integrate through the same subscription rows.
+
+Awaiting approval before implementation.
