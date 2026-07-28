@@ -108,7 +108,7 @@ export async function creditBioLinkAddonFromOrder(order: {
     await supabaseAdmin.from("billing_events").insert({
       workspace_id: order.workspace_id,
       event_type: "addon.bio_link.purchased",
-      payload: { order_id: order.id, quantity, total } as never,
+      metadata: { order_id: order.id, quantity, total } as never,
     } as never);
   } catch {
     /* non-fatal */
