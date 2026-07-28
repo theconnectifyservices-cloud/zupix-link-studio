@@ -14,6 +14,7 @@
  */
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { BUILTIN_TEMPLATES } from "@/features/templates/catalog";
 import { AnimatePresence, motion, useInView, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
@@ -165,13 +166,15 @@ function MotionButton({
 /* 1. ZUPIX Ecosystem                                                  */
 /* ------------------------------------------------------------------ */
 
+const TEMPLATE_COUNT = BUILTIN_TEMPLATES.length;
+
 const ECOSYSTEM_CARDS = [
   {
     title: "Template Marketplace",
-    desc: "300+ premium templates crafted for Indian creators & businesses.",
+    desc: `${TEMPLATE_COUNT}+ premium templates crafted for Indian creators & businesses.`,
     icon: LayoutTemplate,
     grad: "from-fuchsia-500 to-purple-600",
-    tag: "300+ templates",
+    tag: `${TEMPLATE_COUNT}+ templates`,
   },
   {
     title: "Theme Store",
