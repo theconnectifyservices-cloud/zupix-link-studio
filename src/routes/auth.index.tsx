@@ -160,8 +160,14 @@ function SignupForm({ onDone }: { onDone: () => void }) {
 
   async function onSubmit(values: SignupInput) {
     try {
-      await signUpWithPassword(values.email, values.password);
-      toast.success("Account created. Check your email to verify.");
+      const { data } = await signUpWithPassword(values.email, values.password);
+      // If email auto-confirm is on and a session exists, activate the trial now.
+      if (data?.session) {
+        try { await startTejasTrial({ data: {} }); } catch { /* non-fatal */ }
+        toast.success("Welcome! Your 3-day Tejas trial is active 🚀");
+      } else {
+        toast.success("Account created. Check your email to verify.");
+      }
       onDone();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Sign-up failed");
