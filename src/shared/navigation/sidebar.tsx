@@ -51,6 +51,8 @@ type Item = {
   exact?: boolean;
   /** Any of these permissions grants visibility. If omitted, always visible. */
   requires?: Permission[];
+  /** If set, only shown when the user has any of these platform roles. */
+  requiresRole?: Array<"admin" | "super_admin" | "moderator">;
 };
 
 const appItems: Item[] = [
@@ -80,6 +82,8 @@ const appItems: Item[] = [
   { icon: CloudCog, label: "Operations", href: "/app/operations", requires: ["can_manage_operations"] },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
   { icon: Award, label: "Launch Center", href: "/app/launch", requires: ["can_manage_launch"] },
+  { icon: Shield, label: "Subscription Management", href: "/admin/subscription-management", requiresRole: ["admin", "super_admin"] },
+  { icon: Shield, label: "Payment Hub", href: "/admin/payment-gateways", requiresRole: ["admin", "super_admin"] },
 ];
 
 const bottomItems: Item[] = [
@@ -94,12 +98,14 @@ export function Sidebar({ variant = "app", className }: SidebarProps) {
   const collapsed = !useUIStore((s) => s.sidebarOpen);
   const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { isLoading: rolesLoading, hasAny } = useUserRoles();
+  const { isLoading: rolesLoading, hasAny, roles } = useUserRoles();
 
   // While roles load, hide guarded items to prevent flash of unauthorized modules.
-  const items = rawItems.filter(
-    (i) => !i.requires || (!rolesLoading && hasAny(i.requires)),
-  );
+  const items = rawItems.filter((i) => {
+    if (i.requires && !(!rolesLoading && hasAny(i.requires))) return false;
+    if (i.requiresRole && !(!rolesLoading && i.requiresRole.some((r) => roles.includes(r as never)))) return false;
+    return true;
+  });
 
   const isActive = (item: Item) =>
     item.exact
