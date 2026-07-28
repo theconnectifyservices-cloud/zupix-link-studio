@@ -88,18 +88,18 @@ export function MySubscriptionPage() {
       </div>
 
       <Card className="overflow-hidden">
-        <CardHeader className={cn("bg-gradient-to-br text-white", planMeta.gradient)}>
+        <CardHeader className={cn("bg-gradient-to-br text-white", planMeta?.gradient ?? "from-slate-600 to-slate-800")}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <span className="text-3xl">{planMeta.emoji}</span>
+              {planMeta?.emoji && <span className="text-3xl">{planMeta.emoji}</span>}
               <div>
-                <CardTitle className="text-2xl">{planMeta.name}</CardTitle>
-                <p className="text-sm text-white/80">{planMeta.tagline}</p>
+                <CardTitle className="text-2xl">{planName}</CardTitle>
+                {planMeta?.tagline && <p className="text-sm text-white/80">{planMeta.tagline}</p>}
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <StatusBadge status={sub?.status ?? "none"} />
-              {planMeta.badge && <Badge variant="secondary" className="bg-white/20 text-white border-white/30">{planMeta.badge}</Badge>}
+              {planMeta?.badge && <Badge variant="secondary" className="bg-white/20 text-white border-white/30">{planMeta.badge}</Badge>}
             </div>
           </div>
         </CardHeader>
@@ -107,8 +107,14 @@ export function MySubscriptionPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <InfoBox
               icon={<Wallet className="h-4 w-4" />} label="Price"
-              value={sub ? formatPlanPrice(sub.unit_amount_minor ?? 0, sub.currency ?? "INR") : "Free"}
-              hint={sub?.cycle ? `per ${sub.cycle}` : ""}
+              value={cyclePriceMinor === null ? "—" : formatPlanPrice(cyclePriceMinor, currency)}
+              hint={
+                sub
+                  ? isTrialing
+                    ? `Free during trial · renews at ${cyclePriceMinor === null ? "—" : formatPlanPrice(cyclePriceMinor, currency)} per ${sub.cycle}`
+                    : `per ${sub.cycle}`
+                  : ""
+              }
             />
             <InfoBox icon={<CalendarClock className="h-4 w-4" />} label="Start" value={fmt(sub?.current_period_start ?? sub?.trial_start)} />
             <InfoBox icon={<CalendarClock className="h-4 w-4" />} label="Expiry" value={fmt(expiry)} />
@@ -158,15 +164,23 @@ export function MySubscriptionPage() {
                     {allowance?.effectiveLimit === null ? "Unlimited" : (allowance?.effectiveLimit ?? "—")}
                   </span>
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">{BIO_LINK_ADDON_NOTE}</p>
+                {addonPriceMinor !== null && (
+                  <div className="mt-2 rounded-lg border bg-background/60 px-3 py-2">
+                    <div className="text-xs font-semibold">{bioAddon?.name ?? "Additional Bio Link"}</div>
+                    <div className="text-sm font-semibold text-foreground">
+                      {formatPlanPrice(addonPriceMinor, bioAddon?.currency ?? currency)} / Bio Link
+                    </div>
+                  </div>
+                )}
               </div>
-              {workspace?.id && allowance?.effectiveLimit !== null && (
+              {workspace?.id && allowance?.effectiveLimit !== null && addonPriceMinor !== null && (
                 <Button variant="outline" className="shrink-0" onClick={() => setBuyOpen(true)}>
-                  Buy Additional Bio Links · {formatPlanPrice(BIO_LINK_ADDON_PRICE_MINOR)} each
+                  Buy Additional Bio Links · {formatPlanPrice(addonPriceMinor, bioAddon?.currency ?? currency)} each
                 </Button>
               )}
             </div>
           </div>
+
 
           {workspace?.id && (
             <BuyBioLinksDialog open={buyOpen} onOpenChange={setBuyOpen} workspaceId={workspace.id} />
