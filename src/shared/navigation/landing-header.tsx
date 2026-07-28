@@ -15,7 +15,7 @@ import {
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/auth/hooks/use-profile";
 import { signOut } from "@/features/auth/api";
-import { APP_CONFIG } from "@/config/app.config";
+import zupixLogo from "@/assets/zupix-logo.png.asset.json";
 
 export function LandingHeader() {
   const session = useSession();
