@@ -692,14 +692,31 @@ function formatCount(n: number, suffix?: string) {
   return `${n}${suffix ?? ""}`;
 }
 
-function Stat({ label, target, suffix }: { label: string; target: number; suffix?: string }) {
+function Stat({
+  label,
+  target,
+  suffix,
+  icon: Icon,
+}: {
+  label: string;
+  target: number;
+  suffix?: string;
+  icon?: typeof BadgeCheck;
+}) {
   const v = useCountUp(target);
   return (
-    <div className="flex flex-col">
-      <span className="text-3xl font-medium tracking-tight text-white sm:text-4xl">
+    <div className="group flex min-h-[clamp(104px,24vw,142px)] min-w-0 flex-col items-center justify-center rounded-3xl border border-white/10 bg-white/[0.045] p-[clamp(0.875rem,3vw,1.5rem)] text-center backdrop-blur transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.07]">
+      {Icon ? (
+        <span className="mb-[clamp(0.375rem,1.5vw,0.625rem)] grid size-[clamp(1.75rem,5vw,2.25rem)] shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.06] text-[#ff6b35] transition-transform duration-300 group-hover:scale-105">
+          <Icon className="size-[clamp(0.875rem,2.8vw,1.125rem)]" />
+        </span>
+      ) : null}
+      <span className="block max-w-full whitespace-nowrap text-[clamp(1.375rem,5vw,3rem)] font-semibold leading-none text-white tabular-nums tracking-normal">
         {formatCount(v, suffix)}
       </span>
-      <span className="mt-1 text-[11px] uppercase tracking-[0.18em] text-white/40">{label}</span>
+      <span className="mt-[clamp(0.375rem,1.4vw,0.625rem)] block max-w-full overflow-hidden text-ellipsis text-[clamp(0.625rem,2.2vw,0.72rem)] font-medium uppercase leading-tight tracking-[0.14em] text-white/45">
+        {label}
+      </span>
     </div>
   );
 }
