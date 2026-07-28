@@ -14,7 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
-import { PLANS, formatPlanPrice, BIO_LINK_ADDON_NOTE, BIO_LINK_ADDON_PRICE_MINOR, type PlanCode } from "../plans";
+import { PLANS, formatPlanPrice, type PlanCode } from "../plans";
 import { useBioLinkAllowance } from "../use-bio-link-allowance";
 import { BuyBioLinksDialog } from "./buy-bio-links-dialog";
 import { getMySubscription, listMyInvoices } from "../customer.functions";
@@ -293,6 +293,7 @@ function UsageBar({
   label, used, limit, suffix,
 }: { label: string; used: number; limit?: { limit_value: number; is_unlimited: boolean }; suffix?: string }) {
   const isUnlimited = limit?.is_unlimited ?? false;
+  const known = !!limit;
   const max = limit ? Number(limit.limit_value) : 0;
   const pct = isUnlimited ? 5 : max > 0 ? Math.min(100, Math.round((used / max) * 100)) : 0;
   return (
@@ -300,7 +301,7 @@ function UsageBar({
       <div className="flex items-center justify-between text-xs">
         <span className="text-muted-foreground">{label}</span>
         <span className="font-medium">
-          {used}{suffix ? suffix : ""} / {isUnlimited ? "∞" : `${max}${suffix ? suffix : ""}`}
+          {!known ? "Not included" : <>{used}{suffix ?? ""} / {isUnlimited ? "∞" : `${max}${suffix ?? ""}`}</>}
         </span>
       </div>
       <Progress value={pct} className="mt-2 h-2" />
