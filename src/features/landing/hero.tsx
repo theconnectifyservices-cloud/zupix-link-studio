@@ -1368,6 +1368,7 @@ export function LandingHero() {
               />
               <div className="relative mx-auto flex h-full items-center justify-center">
                 <div
+                  ref={phoneWrapRef}
                   className="relative h-[560px] w-[270px] rounded-[52px] border-[10px] border-[#1a1a22] bg-black shadow-[0_60px_120px_-30px_rgba(0,0,0,0.8),inset_0_0_0_1px_rgba(255,255,255,0.06)]"
                   style={phoneWrapStyle}
                 >
