@@ -38,12 +38,12 @@ export function LandingHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2 text-sm font-semibold tracking-tight">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-orange-500 to-pink-500 text-white">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6">
+        <Link to="/" className="flex min-w-0 shrink items-center gap-2 text-sm font-semibold tracking-tight">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-orange-500 to-pink-500 text-white">
             Z
           </span>
-          <span>{APP_CONFIG.shortName}</span>
+          <span className="truncate">{APP_CONFIG.shortName}</span>
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
@@ -53,9 +53,9 @@ export function LandingHeader() {
           <a href="#ecosystem" className="hover:text-foreground">Ecosystem</a>
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2">
           {session.status === "loading" ? (
-            <div className="h-9 w-40 animate-pulse rounded-md bg-muted" />
+            <div className="h-9 w-24 animate-pulse rounded-md bg-muted sm:w-40" />
           ) : isAuthed ? (
             <>
               <Button
@@ -68,12 +68,12 @@ export function LandingHeader() {
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1 pl-1 pr-3 text-sm hover:bg-white/10">
+                  <button className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1 pl-1 pr-2 text-sm hover:bg-white/10 sm:pr-3">
                     <Avatar className="h-7 w-7">
                       {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt="" />}
                       <AvatarFallback className="text-xs">{initials}</AvatarFallback>
                     </Avatar>
-                    <span className="max-w-[120px] truncate">{name}</span>
+                    <span className="hidden max-w-[120px] truncate sm:inline">{name}</span>
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
@@ -103,16 +103,18 @@ export function LandingHeader() {
               <Button
                 variant="ghost"
                 size="sm"
+                className="px-2 sm:px-3"
                 onClick={() => navigate({ to: "/login" })}
               >
                 Sign In
               </Button>
               <Button
                 size="sm"
-                className="bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:opacity-90"
+                className="whitespace-nowrap bg-gradient-to-r from-orange-500 to-pink-500 px-3 text-white hover:opacity-90 sm:px-4"
                 onClick={() => navigate({ to: "/signup" })}
               >
-                Start Building
+                <span className="sm:hidden">Start</span>
+                <span className="hidden sm:inline">Start Building</span>
               </Button>
             </>
           )}
