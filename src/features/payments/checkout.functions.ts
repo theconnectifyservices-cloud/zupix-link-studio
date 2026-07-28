@@ -76,6 +76,7 @@ export const createCheckoutOrder = createServerFn({ method: "POST" })
       currency: string;
       customer: { name: string; email: string; phone?: string };
       returnUrl: string;
+      meta?: Record<string, unknown>;
     }) => d,
   )
   .handler(async ({ data, context }): Promise<CreateOrderResult> => {
@@ -101,7 +102,7 @@ export const createCheckoutOrder = createServerFn({ method: "POST" })
         currency: data.currency,
         idempotency_key: idempotencyKey,
         status: "created",
-        meta: { cycle: data.cycle, customer: data.customer } as any,
+        meta: { cycle: data.cycle, customer: data.customer, ...(data.meta ?? {}) } as any,
       })
       .select("*")
       .single();

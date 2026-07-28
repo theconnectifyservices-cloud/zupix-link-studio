@@ -46,6 +46,8 @@ interface Props {
   currency?: string;
   customer: { name: string; email: string; phone?: string };
   planCode?: string;
+  /** Extra `payment_orders.meta` payload (e.g. add-on purchases). */
+  extraMeta?: Record<string, unknown>;
   onPending?: (orderId: string) => void;
 }
 
@@ -60,7 +62,7 @@ const PROVIDER_META: Record<PaymentProvider, { hint: string; badges: string[] }>
 export function CheckoutModal(props: Props) {
   const {
     open, onOpenChange, workspaceId, planId, planLabel, cycle,
-    amountPaise, currency = "INR", customer, planCode, onPending,
+    amountPaise, currency = "INR", customer, planCode, extraMeta, onPending,
   } = props;
 
   const qc = useQueryClient();
@@ -117,7 +119,7 @@ export function CheckoutModal(props: Props) {
       return createFn({
         data: {
           workspaceId, planId, gatewayId: selected, cycle,
-          amountPaise: total, currency, customer,
+          amountPaise: total, currency, customer, meta: extraMeta,
           returnUrl: `${window.location.origin}/app/billing?checkout=complete`,
         },
       });
