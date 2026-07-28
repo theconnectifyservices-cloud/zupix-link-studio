@@ -83,7 +83,10 @@ function PricingPage() {
     // tejas
     track("checkout_started", { plan: code, cycle });
     if (!authed) {
-      navigate({ to: "/auth" });
+      if (typeof window !== "undefined") {
+        window.sessionStorage.setItem("zupix:auth_intent", "trial");
+      }
+      navigate({ to: "/auth", search: { mode: "signup" } });
       return;
     }
     setCheckout({ planCode: code });

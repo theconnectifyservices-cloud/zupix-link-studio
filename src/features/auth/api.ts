@@ -38,12 +38,13 @@ export async function signInWithPassword(email: string, password: string) {
 }
 
 export async function signUpWithPassword(email: string, password: string) {
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
   });
   if (error) throw error;
+  return { data };
 }
 
 export async function signInWithGoogle() {

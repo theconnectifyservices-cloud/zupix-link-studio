@@ -6555,6 +6555,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      ensure_tejas_trial: { Args: { _workspace_id: string }; Returns: Json }
       expire_stale_trials: { Args: never; Returns: number }
       get_public_tracking: { Args: { _workspace_id: string }; Returns: Json }
       has_pending_workspace_invitation: {

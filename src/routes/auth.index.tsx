@@ -16,6 +16,7 @@ import {
   type SignupInput,
 } from "@/features/auth/schemas";
 import { signInWithPassword, signUpWithPassword } from "@/features/auth/api";
+import { startTejasTrial } from "@/features/trial/activation.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -98,7 +99,12 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
     try {
       await signInWithPassword(values.email, values.password);
       toast.success("Signed in");
-      navigate({ to: (redirectTo as "/app") ?? "/app" });
+      try { await startTejasTrial({ data: {} }); } catch { /* non-fatal */ }
+      const intent =
+        typeof window !== "undefined" ? window.sessionStorage.getItem("zupix:auth_intent") : null;
+      if (intent && typeof window !== "undefined") window.sessionStorage.removeItem("zupix:auth_intent");
+      const target = intent === "trial" ? "/app/my-subscription" : (redirectTo as "/app") ?? "/app";
+      navigate({ to: target });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Sign-in failed");
     }
@@ -154,8 +160,14 @@ function SignupForm({ onDone }: { onDone: () => void }) {
 
   async function onSubmit(values: SignupInput) {
     try {
-      await signUpWithPassword(values.email, values.password);
-      toast.success("Account created. Check your email to verify.");
+      const { data } = await signUpWithPassword(values.email, values.password);
+      // If email auto-confirm is on and a session exists, activate the trial now.
+      if (data?.session) {
+        try { await startTejasTrial({ data: {} }); } catch { /* non-fatal */ }
+        toast.success("Welcome! Your 3-day Tejas trial is active 🚀");
+      } else {
+        toast.success("Account created. Check your email to verify.");
+      }
       onDone();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Sign-up failed");
