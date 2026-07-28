@@ -1,10 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicLayout } from "@/shared/layouts";
 import { LandingHero } from "@/features/landing/hero";
-import { LandingShowcase } from "@/features/landing/showcase";
-import { LandingConversion } from "@/features/landing/conversion";
-import { LandingExperience } from "@/features/landing/experience";
-import { LandingEcosystem } from "@/features/landing/ecosystem";
+import { LazySection } from "@/features/landing/lazy-section";
 
 const TITLE = "ZUPIX Link Studio — Build Beautiful Bio Links That Actually Convert";
 const DESCRIPTION =
@@ -30,10 +27,30 @@ function Index() {
   return (
     <PublicLayout>
       <LandingHero />
-      <LandingShowcase />
-      <LandingConversion />
-      <LandingExperience />
-      <LandingEcosystem />
+      <LazySection
+        minHeight={900}
+        loader={() =>
+          import("@/features/landing/showcase").then((m) => ({ default: m.LandingShowcase }))
+        }
+      />
+      <LazySection
+        minHeight={900}
+        loader={() =>
+          import("@/features/landing/conversion").then((m) => ({ default: m.LandingConversion }))
+        }
+      />
+      <LazySection
+        minHeight={900}
+        loader={() =>
+          import("@/features/landing/experience").then((m) => ({ default: m.LandingExperience }))
+        }
+      />
+      <LazySection
+        minHeight={900}
+        loader={() =>
+          import("@/features/landing/ecosystem").then((m) => ({ default: m.LandingEcosystem }))
+        }
+      />
     </PublicLayout>
   );
 }
