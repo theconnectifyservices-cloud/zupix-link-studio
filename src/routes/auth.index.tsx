@@ -16,6 +16,7 @@ import {
   type SignupInput,
 } from "@/features/auth/schemas";
 import { signInWithPassword, signUpWithPassword } from "@/features/auth/api";
+import { startTejasTrial } from "@/features/trial/activation.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
