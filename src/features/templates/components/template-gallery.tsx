@@ -1,11 +1,14 @@
 /**
- * Template Gallery — the shared surface used by both the standalone
- * Templates route and the in-builder Templates dialog.
+ * Template Gallery — premium marketplace surface.
  *
  * Modes:
- *  - "browse"  → read-only browsing (used by the /app/templates route).
- *  - "apply"   → adds an Apply-to-current-page action (used inside
- *                the builder). Requires `onApply`.
+ *  - "browse"  → read-only browsing (used by /app/templates).
+ *  - "apply"   → renders the Apply CTA (used inside the builder).
+ *
+ * Access control: themes carry a `tier` (free / premium / enterprise).
+ * The workspace plan is fetched via `usePlan()`; templates the user
+ * cannot apply render a lock overlay and open the PremiumLockModal
+ * on interaction instead of applying.
  */
 
 import { useMemo, useRef, useState } from "react";
@@ -22,6 +25,9 @@ import {
   Copy,
   Eye,
   Pencil,
+  Lock,
+  Flame,
+  Zap,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -53,9 +59,13 @@ import {
   parseTemplate,
 } from "../hooks";
 import { upsertCustomTemplate, newTemplateId } from "../storage";
-import type { Template, TemplateCategoryId, TemplateStyle } from "../types";
+import type { Template, TemplateCategoryId, TemplateStyle, TemplateTier } from "../types";
+import { templateTier } from "../types";
 import { MiniPreview } from "./mini-preview";
 import { PreviewDialog } from "./preview-dialog";
+import { PremiumLockModal } from "./premium-lock-modal";
+import { usePlan } from "@/features/subscription/hooks";
+import { canAccessTemplate } from "../access";
 
 type Mode = "browse" | "apply";
 
@@ -65,27 +75,33 @@ interface Props {
   className?: string;
 }
 
-type Filter = "all" | "free" | "premium" | "favorites" | "recent" | "mine";
+type Filter = "all" | "free" | "premium" | "enterprise" | "favorites" | "recent" | "mine";
+type SortKey = "popular" | "new" | "trending" | "az";
 
 export function TemplateGallery({ mode = "browse", onApply, className }: Props) {
   const { all, remove, importTemplate, update } = useAllTemplates();
   const favs = useFavorites();
   const recent = useRecent();
+  const { code: planCode } = usePlan();
 
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<"all" | TemplateCategoryId>("all");
   const [style, setStyle] = useState<"all" | TemplateStyle>("all");
   const [filter, setFilter] = useState<Filter>("all");
+  const [sort, setSort] = useState<SortKey>("popular");
   const [previewId, setPreviewId] = useState<string | null>(null);
+  const [lockFor, setLockFor] = useState<{ name: string; tier: TemplateTier } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const previewTemplate = previewId ? (all.find((t) => t.id === previewId) ?? null) : null;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return all.filter((t) => {
-      if (filter === "premium" && !t.isPremium) return false;
-      if (filter === "free" && t.isPremium) return false;
+    const list = all.filter((t) => {
+      const tier = templateTier(t);
+      if (filter === "premium" && tier !== "premium") return false;
+      if (filter === "enterprise" && tier !== "enterprise") return false;
+      if (filter === "free" && tier !== "free") return false;
       if (filter === "favorites" && !favs.has(t.id)) return false;
       if (filter === "recent" && !recent.ids.includes(t.id)) return false;
       if (filter === "mine" && !t.isCustom) return false;
@@ -98,12 +114,40 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
       }
       return true;
     });
-  }, [all, filter, category, style, query, favs, recent.ids]);
+    const sorted = [...list];
+    switch (sort) {
+      case "popular":
+        sorted.sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0));
+        break;
+      case "new":
+        sorted.sort((a, b) => Number(!!b.flags?.isNew) - Number(!!a.flags?.isNew));
+        break;
+      case "trending":
+        sorted.sort((a, b) => Number(!!b.flags?.isTrending) - Number(!!a.flags?.isTrending));
+        break;
+      case "az":
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+    }
+    return sorted;
+  }, [all, filter, category, style, query, favs, recent.ids, sort]);
 
   function handleApply(t: Template, replaceContent: boolean) {
     if (!onApply) return;
+    if (!canAccessTemplate(planCode, t)) {
+      setLockFor({ name: t.name, tier: templateTier(t) });
+      return;
+    }
     onApply(t, { replaceContent });
     recent.record(t.id);
+  }
+
+  function handleCardClick(t: Template) {
+    if (!canAccessTemplate(planCode, t)) {
+      setLockFor({ name: t.name, tier: templateTier(t) });
+      return;
+    }
+    setPreviewId(t.id);
   }
 
   function handleImportClick() {
@@ -148,7 +192,7 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search templates, styles, tags…"
+              placeholder="Search themes, styles, tags…"
               className="h-9 pl-8"
             />
           </div>
@@ -178,6 +222,17 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
               <SelectItem value="neon">Neon</SelectItem>
             </SelectContent>
           </Select>
+          <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
+            <SelectTrigger className="h-9 w-[130px]">
+              <SelectValue placeholder="Sort" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="popular">Popular</SelectItem>
+              <SelectItem value="new">New</SelectItem>
+              <SelectItem value="trending">Trending</SelectItem>
+              <SelectItem value="az">A → Z</SelectItem>
+            </SelectContent>
+          </Select>
           <Button variant="outline" size="sm" onClick={handleImportClick} className="gap-1.5">
             <Upload className="h-3.5 w-3.5" /> Import
           </Button>
@@ -200,6 +255,7 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
               ["mine", "My templates"],
               ["free", "Free"],
               ["premium", "Premium"],
+              ["enterprise", "Enterprise"],
             ] as const
           ).map(([id, label]) => (
             <Button
@@ -212,6 +268,7 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
               {label}
             </Button>
           ))}
+          <span className="ml-auto text-xs text-muted-foreground">{filtered.length} themes</span>
         </div>
       </div>
 
@@ -220,18 +277,23 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
         {filtered.length === 0 ? (
           <EmptyState
             icon={<Sparkles className="h-8 w-8" />}
-            title="No templates match"
+            title="No themes match"
             description="Try adjusting your search, category or filter."
           />
         ) : (
-          <div className="grid grid-cols-2 gap-3 pb-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div
+            className="grid grid-cols-2 gap-3 pb-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+            style={{ contentVisibility: "auto", containIntrinsicSize: "1200px" }}
+          >
             {filtered.map((t) => (
               <TemplateCard
                 key={t.id}
                 template={t}
+                planCode={planCode}
                 favorite={favs.has(t.id)}
                 onToggleFavorite={() => favs.toggle(t.id)}
-                onPreview={() => setPreviewId(t.id)}
+                onOpen={() => handleCardClick(t)}
+                onLocked={() => setLockFor({ name: t.name, tier: templateTier(t) })}
                 onDelete={
                   t.isCustom
                     ? () => {
@@ -271,6 +333,13 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
           }
         />
       )}
+
+      <PremiumLockModal
+        open={!!lockFor}
+        onOpenChange={(v) => !v && setLockFor(null)}
+        templateName={lockFor?.name}
+        tier={lockFor?.tier ?? "premium"}
+      />
     </div>
   );
 }
@@ -279,9 +348,11 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
 
 interface CardProps {
   template: Template;
+  planCode: string;
   favorite: boolean;
   onToggleFavorite: () => void;
-  onPreview: () => void;
+  onOpen: () => void;
+  onLocked: () => void;
   onApply?: () => void;
   onDelete?: () => void;
   onRename?: (name: string) => void;
@@ -291,32 +362,59 @@ interface CardProps {
 
 function TemplateCard({
   template,
+  planCode,
   favorite,
   onToggleFavorite,
-  onPreview,
+  onOpen,
+  onLocked,
   onApply,
   onDelete,
   onRename,
   onDuplicate,
   onExport,
 }: CardProps) {
+  const tier = templateTier(template);
+  const locked = !canAccessTemplate(planCode as never, template);
+  const flags = template.flags ?? {};
+
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-xl border bg-card transition hover:shadow-md">
+    <div className="group relative flex flex-col overflow-hidden rounded-xl border bg-card transition hover:-translate-y-0.5 hover:shadow-lg">
       <button
         type="button"
-        onClick={onPreview}
+        onClick={onOpen}
         className="relative block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         aria-label={`Preview ${template.name}`}
       >
         <MiniPreview template={template} frame={false} />
-        <div className="pointer-events-none absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/40 via-transparent p-2 opacity-0 transition group-hover:opacity-100">
-          <span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-foreground shadow">
-            <Eye className="mr-1 inline h-3 w-3" /> Preview
-          </span>
-        </div>
+
+        {/* Lock overlay */}
+        {locked && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/30 backdrop-blur-sm transition group-hover:backdrop-blur-md">
+            <div className="flex flex-col items-center gap-1 rounded-xl bg-background/95 px-3 py-2 shadow-lg">
+              <Lock className="h-4 w-4 text-primary" />
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">
+                {tier === "enterprise" ? "Shikhar" : "Tejas"}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Hover preview hint */}
+        {!locked && (
+          <div className="pointer-events-none absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/40 via-transparent p-2 opacity-0 transition group-hover:opacity-100">
+            <span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-foreground shadow">
+              <Eye className="mr-1 inline h-3 w-3" /> Preview
+            </span>
+          </div>
+        )}
+
         {/* Badges */}
         <div className="absolute left-2 top-2 flex flex-wrap gap-1">
-          {template.isPremium ? (
+          {tier === "enterprise" ? (
+            <Badge className="gap-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+              <Crown className="h-3 w-3" /> Enterprise
+            </Badge>
+          ) : tier === "premium" ? (
             <Badge className="gap-1 bg-amber-500 text-white hover:bg-amber-500">
               <Crown className="h-3 w-3" /> Premium
             </Badge>
@@ -325,8 +423,20 @@ function TemplateCard({
               Free
             </Badge>
           )}
+          {flags.isNew && <Badge className="bg-blue-600 text-white">New</Badge>}
+          {flags.isTrending && (
+            <Badge className="gap-1 bg-pink-600 text-white">
+              <Flame className="h-3 w-3" /> Trending
+            </Badge>
+          )}
+          {flags.isFeatured && (
+            <Badge className="gap-1 bg-purple-600 text-white">
+              <Zap className="h-3 w-3" /> Featured
+            </Badge>
+          )}
           {template.isCustom && <Badge variant="secondary">Mine</Badge>}
         </div>
+
         <button
           type="button"
           aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
@@ -341,11 +451,20 @@ function TemplateCard({
       </button>
 
       <div className="flex items-start justify-between gap-2 p-3">
-        <div className="min-w-0">
-          <div className="truncate text-sm font-semibold">{template.name}</div>
-          <div className="truncate text-xs text-muted-foreground">
-            {TEMPLATE_CATEGORIES.find((c) => c.id === template.category)?.label ??
-              template.category}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <span className="truncate text-sm font-semibold">{template.name}</span>
+          </div>
+          <div className="flex items-center gap-2 truncate text-xs text-muted-foreground">
+            <span className="truncate">
+              {TEMPLATE_CATEGORIES.find((c) => c.id === template.category)?.label ??
+                template.category}
+            </span>
+            {typeof template.popularity === "number" && template.popularity > 0 && (
+              <span className="inline-flex items-center gap-0.5 text-[10px] tabular-nums">
+                ★ {template.popularity}
+              </span>
+            )}
           </div>
         </div>
         <DropdownMenu>
@@ -355,12 +474,20 @@ function TemplateCard({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuItem onClick={onPreview}>
+            <DropdownMenuItem onClick={onOpen}>
               <Eye className="mr-2 h-3.5 w-3.5" /> Preview
             </DropdownMenuItem>
             {onApply && (
-              <DropdownMenuItem onClick={onApply}>
-                <Check className="mr-2 h-3.5 w-3.5" /> Apply theme
+              <DropdownMenuItem onClick={locked ? onLocked : onApply}>
+                {locked ? (
+                  <>
+                    <Lock className="mr-2 h-3.5 w-3.5" /> Unlock theme
+                  </>
+                ) : (
+                  <>
+                    <Check className="mr-2 h-3.5 w-3.5" /> Apply theme
+                  </>
+                )}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem onClick={onDuplicate}>
@@ -398,8 +525,20 @@ function TemplateCard({
 
       {onApply && (
         <div className="border-t p-2">
-          <Button size="sm" className="w-full" onClick={onApply}>
-            Apply theme
+          <Button
+            size="sm"
+            variant={locked ? "outline" : "default"}
+            className="w-full gap-1.5"
+            onClick={locked ? onLocked : onApply}
+          >
+            {locked ? (
+              <>
+                <Lock className="h-3.5 w-3.5" />
+                Unlock theme
+              </>
+            ) : (
+              "Apply theme"
+            )}
           </Button>
         </div>
       )}
