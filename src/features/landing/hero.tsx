@@ -1080,22 +1080,40 @@ export function LandingHero() {
   const primaryRef = useMagnet<HTMLAnchorElement>(10);
   const secondaryRef = useMagnet<HTMLAnchorElement>(6);
 
-  // parallax on scroll
-  const [scrollY, setScrollY] = useState(0);
+  // parallax on scroll — write directly to refs via rAF to avoid React re-renders
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const phoneWrapRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
+    let raf = 0;
+    let ticking = false;
+    const apply = () => {
+      ticking = false;
+      const p = Math.min(1, window.scrollY / 600);
+      if (heroRef.current) {
+        heroRef.current.style.transform = `scale(${1 - p * 0.04})`;
+        heroRef.current.style.filter = `saturate(${1 - p * 0.15})`;
+      }
+      if (phoneWrapRef.current) {
+        phoneWrapRef.current.style.transform = `perspective(1200px) rotateY(${-6 + p * 8}deg) rotateX(${p * 3}deg) translateY(${p * -8}px)`;
+      }
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      raf = requestAnimationFrame(apply);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    apply();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
   }, []);
-  const p = Math.min(1, scrollY / 600);
   const heroStyle: CSSProperties = {
-    transform: `scale(${1 - p * 0.04})`,
-    filter: `saturate(${1 - p * 0.15})`,
     transformOrigin: "center top",
     willChange: "transform, filter",
   };
   const phoneWrapStyle: CSSProperties = {
-    transform: `perspective(1200px) rotateY(${-6 + p * 8}deg) rotateX(${p * 3}deg) translateY(${p * -8}px)`,
     transition: "transform .25s ease-out",
     willChange: "transform",
   };
@@ -1211,6 +1229,7 @@ export function LandingHero() {
 
       {/* HERO */}
       <div
+        ref={heroRef}
         className="relative mx-auto flex min-h-dvh max-w-7xl flex-col justify-center px-5 py-16 sm:px-8 lg:py-24"
         style={heroStyle}
       >
@@ -1349,6 +1368,7 @@ export function LandingHero() {
               />
               <div className="relative mx-auto flex h-full items-center justify-center">
                 <div
+                  ref={phoneWrapRef}
                   className="relative h-[560px] w-[270px] rounded-[52px] border-[10px] border-[#1a1a22] bg-black shadow-[0_60px_120px_-30px_rgba(0,0,0,0.8),inset_0_0_0_1px_rgba(255,255,255,0.06)]"
                   style={phoneWrapStyle}
                 >
