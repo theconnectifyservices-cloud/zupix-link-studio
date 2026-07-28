@@ -166,7 +166,7 @@ export const PREMIUM_THEMES: ThemeSpec[] = [
     typography: {
       fontFamily: '"Sora", sans-serif',
       headingFamily: '"Sora", sans-serif',
-      headingWeight: 300,
+      headingWeight: 400,
       letterSpacing: 0.1,
       textTransform: "uppercase",
     },
