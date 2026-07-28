@@ -99,7 +99,12 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
     try {
       await signInWithPassword(values.email, values.password);
       toast.success("Signed in");
-      navigate({ to: (redirectTo as "/app") ?? "/app" });
+      try { await startTejasTrial({ data: {} }); } catch { /* non-fatal */ }
+      const intent =
+        typeof window !== "undefined" ? window.sessionStorage.getItem("zupix:auth_intent") : null;
+      if (intent && typeof window !== "undefined") window.sessionStorage.removeItem("zupix:auth_intent");
+      const target = intent === "trial" ? "/app/my-subscription" : (redirectTo as "/app") ?? "/app";
+      navigate({ to: target });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Sign-in failed");
     }
