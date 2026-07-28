@@ -193,7 +193,7 @@ export function MySubscriptionPage() {
               <ShieldCheck className="h-4 w-4" /> Plan features
             </div>
             <ul className="grid gap-1.5 text-sm sm:grid-cols-2">
-              {planMeta.highlights.map((h) => (
+              {(planMeta?.highlights ?? []).map((h) => (
                 <li key={h} className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                   {h}
