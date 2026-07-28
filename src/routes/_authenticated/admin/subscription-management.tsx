@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Users } from "lucide-react";
 import { SubscriptionsTable } from "@/features/subscription/components/subscriptions-table";
+import { BioLinkAddonsPanel } from "@/features/subscription/components/bio-link-addons-panel";
 
 export const Route = createFileRoute("/_authenticated/admin/subscription-management")({
   head: () => ({
@@ -23,7 +24,10 @@ function SubscriptionManagementPage() {
           Assign, extend, upgrade, suspend or cancel plans for every customer workspace.
         </p>
       </div>
-      <SubscriptionsTable />
+      <div className="space-y-6">
+        <SubscriptionsTable />
+        <BioLinkAddonsPanel />
+      </div>
     </div>
   );
 }
