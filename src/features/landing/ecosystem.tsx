@@ -13,7 +13,8 @@
  * branding + realistic Indian business references — no placeholder copy.
  */
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { BUILTIN_TEMPLATES } from "@/features/templates/catalog";
 import { AnimatePresence, motion, useInView, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
