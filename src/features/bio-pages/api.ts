@@ -69,7 +69,14 @@ export async function createBioPage(input: CreateBioPageInput): Promise<BioPageR
     } as never)
     .select("*")
     .single();
-  if (error) throw error;
+  if (error) {
+    if ((error.message ?? "").includes("BIO_LINK_LIMIT_REACHED")) {
+      throw new Error(
+        "You have reached your Bio Link limit. Purchase additional Bio Links (\u20b979 each) to create more.",
+      );
+    }
+    throw error;
+  }
   return data as unknown as BioPageRow;
 }
 
