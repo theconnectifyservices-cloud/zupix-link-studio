@@ -18,7 +18,7 @@ export function usePropertySave() {
   const [saving, setSaving] = useState(false);
 
   const isDirty = status === "dirty" || status === "error";
-  const canSave = !!pageId && isDirty && !saving && status !== "saving";
+  const canSave = !!pageId && isDirty && !saving;
 
   async function save(): Promise<boolean> {
     if (!pageId || saving) return false;
