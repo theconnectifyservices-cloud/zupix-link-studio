@@ -311,7 +311,7 @@ function TemplatesDialog() {
           <span className="hidden sm:inline">Templates</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex h-[80vh] max-w-6xl flex-col gap-3 p-4">
+      <DialogContent className="flex h-[90vh] max-h-[90vh] w-[95vw] max-w-6xl flex-col gap-3 overflow-hidden p-4 sm:h-[85vh]">
         <DialogHeader className="text-left">
           <DialogTitle>Template Library</DialogTitle>
           <DialogDescription>
