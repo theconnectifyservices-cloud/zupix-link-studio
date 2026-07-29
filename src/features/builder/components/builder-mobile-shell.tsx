@@ -17,7 +17,6 @@ import {
   CircleDot,
   SlidersHorizontal,
   Rocket,
-  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import {

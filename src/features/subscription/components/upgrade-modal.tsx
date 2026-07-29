@@ -4,7 +4,7 @@
  * coming-soon with an inline waitlist form.
  */
 import { useState } from "react";
-import { Check, Sparkles, X, Zap } from "lucide-react";
+import { Check, Sparkles, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";

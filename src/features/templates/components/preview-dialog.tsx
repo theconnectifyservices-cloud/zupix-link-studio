@@ -4,7 +4,7 @@
  * actions when the caller opted in.
  */
 
-import { Crown, Monitor, Smartphone, X } from "lucide-react";
+import { Crown, Monitor, Smartphone } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

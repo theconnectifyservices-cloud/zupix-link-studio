@@ -3,7 +3,7 @@
  * cannot yet apply. Provides Upgrade + Compare Plans CTAs.
  */
 
-import { Crown, Lock, Sparkles, X } from "lucide-react";
+import { Crown, Lock, Sparkles } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
