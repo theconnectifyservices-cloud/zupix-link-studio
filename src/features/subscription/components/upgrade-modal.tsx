@@ -4,7 +4,7 @@
  * coming-soon with an inline waitlist form.
  */
 import { useState } from "react";
-import { Check, Sparkles, X, Zap } from "lucide-react";
+import { Check, Sparkles, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -40,13 +40,6 @@ export function UpgradeModal() {
             <div className="absolute -right-32 -bottom-32 h-96 w-96 rounded-full bg-purple-500/25 blur-3xl" />
           </div>
 
-          <button
-            onClick={closeUpgrade}
-            className="absolute right-4 top-4 z-10 rounded-full p-2 text-muted-foreground transition hover:bg-muted"
-            aria-label="Close"
-          >
-            <X className="h-4 w-4" />
-          </button>
 
           <div className="relative px-6 py-8 sm:px-10 sm:py-10">
             <div className="mx-auto max-w-2xl text-center">

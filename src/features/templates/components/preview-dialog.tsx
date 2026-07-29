@@ -4,7 +4,7 @@
  * actions when the caller opted in.
  */
 
-import { Crown, Monitor, Smartphone, X } from "lucide-react";
+import { Crown, Monitor, Smartphone } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -55,9 +55,6 @@ export function PreviewDialog({ template, onClose, onApply }: Props) {
               ))}
             </div>
           </div>
-          <Button variant="ghost" size="icon" aria-label="Close" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
 
         <div className="grid min-h-0 flex-1 gap-6 overflow-y-auto bg-muted/40 p-6 md:grid-cols-[1fr_320px]">
