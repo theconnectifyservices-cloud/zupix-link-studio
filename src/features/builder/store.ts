@@ -21,6 +21,7 @@ import {
   DEFAULT_MOTION,
   applyPresetTheme,
   normalizeTheme,
+  ensureGoogleFont,
   resetColors as resetColorsFn,
   resetTypography as resetTypographyFn,
   resetSpacing as resetSpacingFn,
