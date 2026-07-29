@@ -15,6 +15,8 @@ import {
   clearRecoveredDraft,
   type RecoveredDraft,
 } from "@/features/builder";
+import { BuilderMobileShell } from "@/features/builder/components/builder-mobile-shell";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { PageLoader } from "@/shared/ui/page-loader";
 import { ErrorState } from "@/shared/ui/error-state";
 import { Button } from "@/components/ui/button";
