@@ -542,25 +542,6 @@ function TemplateCard({
         </DropdownMenu>
       </div>
 
-      {onApply && (
-        <div className="border-t p-2">
-          <Button
-            size="sm"
-            variant={locked ? "outline" : "default"}
-            className="w-full gap-1.5"
-            onClick={locked ? onLocked : onApply}
-          >
-            {locked ? (
-              <>
-                <Lock className="h-3.5 w-3.5" />
-                Unlock theme
-              </>
-            ) : (
-              "Apply theme"
-            )}
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
