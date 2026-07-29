@@ -281,10 +281,7 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
             description="Try adjusting your search, category or filter."
           />
         ) : (
-          <div
-            className="grid grid-cols-2 gap-3 pb-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-            style={{ contentVisibility: "auto", containIntrinsicSize: "1200px" }}
-          >
+          <div className="grid grid-cols-2 gap-3 pb-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((t) => (
               <TemplateCard
                 key={t.id}
@@ -379,6 +376,28 @@ function TemplateCard({
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border bg-card transition hover:-translate-y-0.5 hover:shadow-lg">
+      {onApply && (
+        <div className="border-b bg-card p-2">
+          <Button
+            size="sm"
+            variant={locked ? "outline" : "default"}
+            className="w-full gap-1.5"
+            onClick={locked ? onLocked : onApply}
+          >
+            {locked ? (
+              <>
+                <Lock className="h-3.5 w-3.5" />
+                Unlock theme
+              </>
+            ) : (
+              <>
+                <Check className="h-3.5 w-3.5" />
+                Apply theme
+              </>
+            )}
+          </Button>
+        </div>
+      )}
       <button
         type="button"
         onClick={onOpen}
@@ -523,25 +542,6 @@ function TemplateCard({
         </DropdownMenu>
       </div>
 
-      {onApply && (
-        <div className="border-t p-2">
-          <Button
-            size="sm"
-            variant={locked ? "outline" : "default"}
-            className="w-full gap-1.5"
-            onClick={locked ? onLocked : onApply}
-          >
-            {locked ? (
-              <>
-                <Lock className="h-3.5 w-3.5" />
-                Unlock theme
-              </>
-            ) : (
-              "Apply theme"
-            )}
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
