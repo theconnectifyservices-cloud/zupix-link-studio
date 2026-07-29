@@ -42,6 +42,8 @@ function BuilderPage() {
     queryFn: () => fetchBuilderPage(id),
   });
 
+  const isMobile = useIsMobile();
+
   useEffect(() => {
     if (!data) return;
     load(data.id, data.name, data.content, data.slug);
@@ -65,8 +67,6 @@ function BuilderPage() {
   if (error)
     return <ErrorState title="Couldn't load page" description={(error as Error).message} />;
   if (!data) throw notFound();
-
-  const isMobile = useIsMobile();
 
   return (
     <div className="flex h-dvh w-full flex-col bg-background">
