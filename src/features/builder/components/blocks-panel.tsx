@@ -68,7 +68,9 @@ function PaletteTile({ def, onAdded }: { def: BlockDef; onAdded?: () => void }) 
           return;
         }
         addBlock(def.create());
+        onAdded?.();
       }}
+
       {...(draggable ? attributes : {})}
       {...(draggable ? listeners : {})}
       className={cn(
