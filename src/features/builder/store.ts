@@ -21,6 +21,7 @@ import {
   DEFAULT_MOTION,
   applyPresetTheme,
   normalizeTheme,
+  ensureGoogleFont,
   resetColors as resetColorsFn,
   resetTypography as resetTypographyFn,
   resetSpacing as resetSpacingFn,
@@ -732,12 +733,22 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
   },
   applyTemplate: (theme, opts) => {
     const { content, history } = get();
+    // Fully hydrate the incoming template theme so every token
+    // (colors, typography, buttons, background, motion, profile…)
+    // is present before we hand it to the renderer. Guarantees the
+    // card-apply and preview-apply paths produce identical results.
+    const nextTheme = normalizeTheme(theme);
+    // Preload any Google Fonts declared by the template so the
+    // typography renders immediately without a black/white flash.
+    if (typeof window !== "undefined") {
+      for (const family of nextTheme.googleFonts ?? []) ensureGoogleFont(family);
+    }
     const blocks = opts?.replaceContent
       ? (opts.blocks ?? []).map((b) => structuredClone(b))
       : (content.blocks ?? []);
     set({
       history: pushHistory(history, content),
-      content: normalizeBioContent({ ...content, blocks, theme: { ...theme } }),
+      content: normalizeBioContent({ ...content, blocks, theme: nextTheme }),
       selectedId: null,
       selectedIds: [],
       saveStatus: "dirty",

@@ -32,8 +32,8 @@ export function PreviewDialog({ template, onClose, onApply }: Props) {
         if (!open) onClose();
       }}
     >
-      <DialogContent className="max-w-5xl gap-0 p-0">
-        <DialogHeader className="flex-row items-start justify-between gap-4 border-b p-4">
+      <DialogContent className="flex h-[90vh] max-h-[90vh] w-[95vw] max-w-5xl flex-col gap-0 overflow-hidden p-0 sm:h-[85vh]">
+        <DialogHeader className="flex shrink-0 flex-row items-start justify-between gap-4 border-b p-4">
           <div className="min-w-0">
             <DialogTitle className="flex items-center gap-2">
               {template.name}
@@ -60,7 +60,7 @@ export function PreviewDialog({ template, onClose, onApply }: Props) {
           </Button>
         </DialogHeader>
 
-        <div className="grid gap-6 bg-muted/40 p-6 md:grid-cols-[1fr_320px]">
+        <div className="grid min-h-0 flex-1 gap-6 overflow-y-auto bg-muted/40 p-6 md:grid-cols-[1fr_320px]">
           {/* Desktop frame */}
           <div className="flex min-h-[420px] flex-col overflow-hidden rounded-xl border bg-background shadow-sm">
             <div className="flex items-center gap-1.5 border-b bg-muted/60 px-3 py-2 text-xs text-muted-foreground">
@@ -91,7 +91,7 @@ export function PreviewDialog({ template, onClose, onApply }: Props) {
         </div>
 
         {onApply && (
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t p-4">
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t bg-background p-4">
             <p className="text-xs text-muted-foreground">
               Applying replaces the current design tokens. Your blocks are kept unless you choose to
               replace content.
