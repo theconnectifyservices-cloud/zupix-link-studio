@@ -15,6 +15,8 @@ import {
   clearRecoveredDraft,
   type RecoveredDraft,
 } from "@/features/builder";
+import { BuilderMobileShell } from "@/features/builder/components/builder-mobile-shell";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { PageLoader } from "@/shared/ui/page-loader";
 import { ErrorState } from "@/shared/ui/error-state";
 import { Button } from "@/components/ui/button";
@@ -64,15 +66,19 @@ function BuilderPage() {
     return <ErrorState title="Couldn't load page" description={(error as Error).message} />;
   if (!data) throw notFound();
 
+  const isMobile = useIsMobile();
+
   return (
     <div className="flex h-dvh w-full flex-col bg-background">
       <BuilderDndProvider>
-        <BuilderTopbar
-          onTogglePreview={() => setPreviewMode((v) => !v)}
-          previewMode={previewMode}
-          viewport={viewport}
-          onViewportChange={setViewport}
-        />
+        {!isMobile && (
+          <BuilderTopbar
+            onTogglePreview={() => setPreviewMode((v) => !v)}
+            previewMode={previewMode}
+            viewport={viewport}
+            onViewportChange={setViewport}
+          />
+        )}
         {draft && (
           <div className="flex items-center gap-2 border-b bg-amber-500/10 px-3 py-2 text-xs text-amber-900 dark:text-amber-200">
             <AlertTriangle className="h-4 w-4 shrink-0" />
@@ -111,21 +117,31 @@ function BuilderPage() {
             </Button>
           </div>
         )}
-        <div className="flex min-h-0 flex-1">
-          {!previewMode && (
-            <aside className="hidden w-72 shrink-0 border-r bg-background md:flex">
-              <BuilderLeftPanel />
-            </aside>
-          )}
-          <div className="min-w-0 flex-1">
-            <BuilderPreview viewport={viewport} />
+        {isMobile ? (
+          <div className="min-h-0 flex-1">
+            <BuilderMobileShell
+              previewMode={previewMode}
+              onTogglePreview={() => setPreviewMode((v) => !v)}
+              viewport={viewport}
+            />
           </div>
-          {!previewMode && (
-            <aside className="hidden w-80 shrink-0 border-l bg-background lg:flex">
-              <BuilderRightPanel />
-            </aside>
-          )}
-        </div>
+        ) : (
+          <div className="flex min-h-0 flex-1">
+            {!previewMode && (
+              <aside className="hidden w-72 shrink-0 border-r bg-background md:flex">
+                <BuilderLeftPanel />
+              </aside>
+            )}
+            <div className="min-w-0 flex-1">
+              <BuilderPreview viewport={viewport} />
+            </div>
+            {!previewMode && (
+              <aside className="hidden w-80 shrink-0 border-l bg-background lg:flex">
+                <BuilderRightPanel />
+              </aside>
+            )}
+          </div>
+        )}
       </BuilderDndProvider>
     </div>
   );
