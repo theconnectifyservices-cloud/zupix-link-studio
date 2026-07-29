@@ -313,14 +313,6 @@ function PanelSheet({
                 <SheetDescription className="text-xs">{description}</SheetDescription>
               )}
             </div>
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              aria-label="Close"
-              className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground hover:bg-muted"
-            >
-              <X className="h-4 w-4" />
-            </button>
           </div>
         </SheetHeader>
         <div

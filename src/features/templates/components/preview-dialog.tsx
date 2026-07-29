@@ -55,9 +55,6 @@ export function PreviewDialog({ template, onClose, onApply }: Props) {
               ))}
             </div>
           </div>
-          <Button variant="ghost" size="icon" aria-label="Close" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
 
         <div className="grid min-h-0 flex-1 gap-6 overflow-y-auto bg-muted/40 p-6 md:grid-cols-[1fr_320px]">

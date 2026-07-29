@@ -31,14 +31,6 @@ export function PremiumLockModal({ open, onOpenChange, templateName, tier }: Pro
       <DialogContent className="max-w-md gap-0 overflow-hidden p-0">
         {/* Animated hero */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-purple-500/10 to-amber-500/10 px-6 pb-6 pt-8 text-center">
-          <button
-            type="button"
-            onClick={() => onOpenChange(false)}
-            aria-label="Close"
-            className="absolute right-3 top-3 rounded-full p-1.5 text-muted-foreground transition hover:bg-background/70"
-          >
-            <X className="h-4 w-4" />
-          </button>
           <div className="relative mx-auto flex h-16 w-16 items-center justify-center">
             <div className="absolute inset-0 animate-ping rounded-full bg-primary/20" />
             <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-purple-600 text-primary-foreground shadow-lg">
