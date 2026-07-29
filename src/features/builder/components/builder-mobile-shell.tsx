@@ -17,6 +17,7 @@ import {
   CircleDot,
   SlidersHorizontal,
   Rocket,
+  Check,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -26,10 +27,21 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useBuilderStore } from "../store";
 import { saveBuilderContent } from "../api";
+import { usePropertySave } from "../use-property-save";
 import { BuilderPreview } from "./builder-preview";
 import { BlocksPanel } from "./blocks-panel";
 import { ThemePanel } from "./theme-panel";
