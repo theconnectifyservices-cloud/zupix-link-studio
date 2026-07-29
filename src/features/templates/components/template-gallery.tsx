@@ -281,10 +281,7 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
             description="Try adjusting your search, category or filter."
           />
         ) : (
-          <div
-            className="grid grid-cols-2 gap-3 pb-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-            style={{ contentVisibility: "auto", containIntrinsicSize: "1200px" }}
-          >
+          <div className="grid grid-cols-2 gap-3 pb-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((t) => (
               <TemplateCard
                 key={t.id}
