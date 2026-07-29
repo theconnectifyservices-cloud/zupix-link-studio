@@ -376,6 +376,28 @@ function TemplateCard({
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border bg-card transition hover:-translate-y-0.5 hover:shadow-lg">
+      {onApply && (
+        <div className="border-b bg-card p-2">
+          <Button
+            size="sm"
+            variant={locked ? "outline" : "default"}
+            className="w-full gap-1.5"
+            onClick={locked ? onLocked : onApply}
+          >
+            {locked ? (
+              <>
+                <Lock className="h-3.5 w-3.5" />
+                Unlock theme
+              </>
+            ) : (
+              <>
+                <Check className="h-3.5 w-3.5" />
+                Apply theme
+              </>
+            )}
+          </Button>
+        </div>
+      )}
       <button
         type="button"
         onClick={onOpen}
