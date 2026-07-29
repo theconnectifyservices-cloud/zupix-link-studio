@@ -17,6 +17,7 @@ import {
   CircleDot,
   SlidersHorizontal,
   Rocket,
+  Check,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -26,10 +27,21 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useBuilderStore } from "../store";
 import { saveBuilderContent } from "../api";
+import { usePropertySave } from "../use-property-save";
 import { BuilderPreview } from "./builder-preview";
 import { BlocksPanel } from "./blocks-panel";
 import { ThemePanel } from "./theme-panel";
@@ -243,15 +255,124 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
         <PagesPanel />
       </PanelSheet>
 
-      <PanelSheet
+      <PropertiesSheet
         open={panel === "properties"}
-        onOpenChange={(o) => setPanel(o ? "properties" : null)}
-        title="Properties"
-        description={selectedId ? "Edit the selected block." : "Select a block to edit."}
-      >
-        <PropertyPanel />
-      </PanelSheet>
+        onClose={() => setPanel(null)}
+        selectedId={selectedId}
+      />
     </div>
+  );
+}
+
+function PropertiesSheet({
+  open,
+  onClose,
+  selectedId,
+}: {
+  open: boolean;
+  onClose: () => void;
+  selectedId: string | null;
+}) {
+  const { canSave, save, saving, isDirty } = usePropertySave();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  function requestClose() {
+    if (isDirty) setConfirmOpen(true);
+    else onClose();
+  }
+
+  return (
+    <>
+      <Sheet
+        open={open}
+        onOpenChange={(o) => {
+          if (o) return;
+          requestClose();
+        }}
+      >
+        <SheetContent
+          side="bottom"
+          className="flex h-[85dvh] flex-col gap-0 rounded-t-2xl border-t p-0"
+        >
+          <div className="flex shrink-0 justify-center pb-2 pt-3">
+            <div className="h-1.5 w-10 rounded-full bg-muted-foreground/30" />
+          </div>
+          <SheetHeader className="sticky top-0 z-10 shrink-0 border-b bg-background/95 px-4 pb-3 text-left backdrop-blur">
+            <div className="flex items-center justify-between gap-2 pr-8">
+              <div className="min-w-0">
+                <SheetTitle className="text-base">Properties</SheetTitle>
+                <SheetDescription className="text-xs">
+                  {selectedId ? "Edit the selected block." : "Select a block to edit."}
+                </SheetDescription>
+              </div>
+              <Button
+                size="sm"
+                onClick={save}
+                disabled={!canSave}
+                aria-label="Save changes"
+                className={cn(
+                  "h-8 gap-1.5 rounded-full px-3 text-xs font-medium shadow-sm transition",
+                  canSave &&
+                    "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:opacity-90",
+                )}
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Saving…
+                  </>
+                ) : isDirty ? (
+                  "Save"
+                ) : (
+                  <>
+                    <Check className="h-3.5 w-3.5" />
+                    Saved
+                  </>
+                )}
+              </Button>
+            </div>
+          </SheetHeader>
+          <div
+            className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6 pt-4"
+            style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)" }}
+          >
+            <PropertyPanel />
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved edits. What would you like to do?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col-reverse gap-2 sm:flex-row">
+            <AlertDialogCancel className="mt-0">Cancel</AlertDialogCancel>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setConfirmOpen(false);
+                onClose();
+              }}
+            >
+              Discard
+            </Button>
+            <AlertDialogAction
+              onClick={async () => {
+                const ok = await save();
+                setConfirmOpen(false);
+                if (ok) onClose();
+              }}
+            >
+              Save & close
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 
