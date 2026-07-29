@@ -10,7 +10,7 @@ import { PlanBadge } from "@/features/subscription/components/plan-badge";
 import { requiredPlanForBlock } from "@/features/subscription/plans";
 
 /** Add-blocks palette. Click to append, or drag onto the canvas. */
-export function BlocksPanel() {
+export function BlocksPanel({ onAdded }: { onAdded?: () => void } = {}) {
   const groups = [
     { key: "essentials", label: "Essentials" },
     { key: "media", label: "Media" },
@@ -30,7 +30,7 @@ export function BlocksPanel() {
             </div>
             <div className="grid grid-cols-2 gap-2">
               {items.map((def) => (
-                <PaletteTile key={def.type} def={def} />
+                <PaletteTile key={def.type} def={def} onAdded={onAdded} />
               ))}
             </div>
           </div>
@@ -40,7 +40,8 @@ export function BlocksPanel() {
   );
 }
 
-function PaletteTile({ def }: { def: BlockDef }) {
+function PaletteTile({ def, onAdded }: { def: BlockDef; onAdded?: () => void }) {
+
   const addBlock = useBuilderStore((s) => s.addBlock);
   const access = useBlockAccess(def.type);
   const requiredPlan = requiredPlanForBlock(def.type);
@@ -67,7 +68,9 @@ function PaletteTile({ def }: { def: BlockDef }) {
           return;
         }
         addBlock(def.create());
+        onAdded?.();
       }}
+
       {...(draggable ? attributes : {})}
       {...(draggable ? listeners : {})}
       className={cn(

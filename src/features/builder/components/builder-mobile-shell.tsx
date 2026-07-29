@@ -191,7 +191,7 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
         title="Add block"
         description="Tap to insert or drag onto the canvas."
       >
-        <BlocksPanel />
+        <BlocksPanel onAdded={() => setPanel("properties")} />
       </PanelSheet>
 
       <PanelSheet
