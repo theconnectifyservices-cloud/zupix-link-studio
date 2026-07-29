@@ -1464,7 +1464,7 @@ export function LandingHero() {
           {/* Stats */}
           <div className="relative min-w-0 overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-[clamp(1rem,3.5vw,1.5rem)] backdrop-blur-md md:col-span-8 md:row-span-3 xl:row-span-2">
             <div className="grid min-w-0 grid-cols-2 gap-[clamp(0.625rem,2.6vw,1rem)] min-[1200px]:grid-cols-4">
-              <Stat icon={BadgeCheck} label="Profiles created" target={54200} suffix="+" />
+              <Stat icon={BadgeCheck} label="Profiles created" target={5600} />
               <Stat icon={Palette} label="Premium themes" target={20} />
               <Stat icon={Eye} label="Monthly page views" target={2400000} suffix="+" />
               <Stat icon={Globe2} label="Indian businesses" target={1500} suffix="+" />
