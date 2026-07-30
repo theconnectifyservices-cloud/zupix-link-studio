@@ -3,7 +3,7 @@ import { DashboardLayout } from "@/shared/layouts";
 import { PageHeader } from "@/shared/navigation/page-header";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/__layout-probe")({
+export const Route = createFileRoute("/layout-probe")({
   ssr: false,
   component: () => (
     <DashboardLayout>
