@@ -108,52 +108,64 @@ export function BuilderPreview({
                 : "max-h-[820px] min-h-[560px] rounded-xl",
             )}
             style={themeStyle}
-            onClick={() => clearSelection()}
+            onClick={() => !previewMode && clearSelection()}
           >
-            <ThemeBackgroundLayer theme={theme} />
-            <div
-              className={cn("relative", pageCls)}
-              style={{
-                paddingInline: "var(--zx-page-pad-x)",
-                paddingBlock: "var(--zx-page-pad-y)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--zx-block-gap)",
-                maxWidth: "var(--zx-content-max)",
-                marginInline: "auto",
-              }}
-            >
-              <SortableContext items={items} strategy={verticalListSortingStrategy}>
-                {blocks.length === 0 ? (
-                  <div
-                    ref={setNodeRef}
-                    className={cn(
-                      "rounded-lg border-2 border-dashed py-24 text-center text-sm text-muted-foreground transition-colors",
-                      isOver && "border-primary bg-primary/5 text-primary",
-                    )}
-                  >
-                    Drag a block here to get started.
-                  </div>
-                ) : (
-                  blocks.map((b, i) => (
-                    <SortableCanvasBlock
-                      key={b.id}
-                      block={b}
-                      index={i}
-                      viewport={viewport}
-                      staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
-                      reduceMotion={!!motion.reduce}
-                      previewMode={previewMode}
-                    />
-                  ))
-                )}
-              </SortableContext>
-
-            </div>
-            <EditorInteractionGuard active={!previewMode}>
-              <ContactWidget config={contactWidget} embedded />
-            </EditorInteractionGuard>
+            <RendererModeProvider mode={previewMode ? "public" : "builder"}>
+              <ThemeBackgroundLayer theme={theme} />
+              <div
+                className={cn("relative", pageCls)}
+                style={{
+                  paddingInline: "var(--zx-page-pad-x)",
+                  paddingBlock: "var(--zx-page-pad-y)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "var(--zx-block-gap)",
+                  maxWidth: "var(--zx-content-max)",
+                  marginInline: "auto",
+                }}
+              >
+                <SortableContext items={items} strategy={verticalListSortingStrategy}>
+                  {blocks.length === 0 ? (
+                    <div
+                      ref={setNodeRef}
+                      className={cn(
+                        "rounded-lg border-2 border-dashed py-24 text-center text-sm text-muted-foreground transition-colors",
+                        isOver && "border-primary bg-primary/5 text-primary",
+                      )}
+                    >
+                      Drag a block here to get started.
+                    </div>
+                  ) : (
+                    blocks.map((b, i) =>
+                      previewMode ? (
+                        <BlockRenderer
+                          key={b.id}
+                          block={b}
+                          index={i}
+                          viewport={viewport}
+                          staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
+                          reduceMotion={!!motion.reduce}
+                        />
+                      ) : (
+                        <SortableCanvasBlock
+                          key={b.id}
+                          block={b}
+                          index={i}
+                          viewport={viewport}
+                          staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
+                          reduceMotion={!!motion.reduce}
+                        />
+                      ),
+                    )
+                  )}
+                </SortableContext>
+              </div>
+              <EditorInteractionGuard active={!previewMode}>
+                <ContactWidget config={contactWidget} embedded />
+              </EditorInteractionGuard>
+            </RendererModeProvider>
           </div>
+
 
         </div>
       </div>
