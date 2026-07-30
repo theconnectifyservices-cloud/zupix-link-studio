@@ -133,7 +133,7 @@ function BuilderPage() {
               </aside>
             )}
             <div className="min-w-0 flex-1">
-              <BuilderPreview viewport={viewport} />
+              <BuilderPreview viewport={viewport} previewMode={previewMode} />
             </div>
             {!previewMode && (
               <aside className="hidden w-80 shrink-0 border-l bg-background lg:flex">

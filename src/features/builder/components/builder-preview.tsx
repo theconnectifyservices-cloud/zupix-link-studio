@@ -42,6 +42,8 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { ContactWidget } from "@/features/contact-widget";
+import { RendererModeProvider } from "../renderer-mode";
+import { EditorInteractionGuard } from "./editor-interaction-guard";
 
 
 type Viewport = "mobile" | "tablet" | "desktop";
@@ -53,7 +55,14 @@ const FRAME: Record<Viewport, string> = {
 };
 
 /** Live phone-frame preview. Sortable canvas + drop target for palette items. */
-export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport }) {
+export function BuilderPreview({
+  viewport = "mobile",
+  previewMode = false,
+}: {
+  viewport?: Viewport;
+  /** Live preview: real links, real embeds. Otherwise editor mode. */
+  previewMode?: boolean;
+}) {
   const blocks = useBuilderStore((s) => s.content.blocks ?? []);
   const theme = useBuilderStore((s) => s.content.theme) ?? DEFAULT_THEME;
   const contactWidget = useBuilderStore((s) => s.content.contactWidget);
@@ -99,27 +108,64 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
                 : "max-h-[820px] min-h-[560px] rounded-xl",
             )}
             style={themeStyle}
-            onClick={() => clearSelection()}
+            onClick={() => !previewMode && clearSelection()}
           >
-            <ThemeBackgroundLayer theme={theme} />
-            <div
-              className={cn("relative", pageCls)}
-              style={{
-                paddingInline: "var(--zx-page-pad-x)",
-                paddingBlock: "var(--zx-page-pad-y)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--zx-block-gap)",
-                maxWidth: "var(--zx-content-max)",
-                marginInline: "auto",
-              }}
-            >
-              <SortableContext items={items} strategy={verticalListSortingStrategy}>
-...
-              </SortableContext>
-            </div>
-            <ContactWidget config={contactWidget} embedded />
+            <RendererModeProvider mode={previewMode ? "public" : "builder"}>
+              <ThemeBackgroundLayer theme={theme} />
+              <div
+                className={cn("relative", pageCls)}
+                style={{
+                  paddingInline: "var(--zx-page-pad-x)",
+                  paddingBlock: "var(--zx-page-pad-y)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "var(--zx-block-gap)",
+                  maxWidth: "var(--zx-content-max)",
+                  marginInline: "auto",
+                }}
+              >
+                <SortableContext items={items} strategy={verticalListSortingStrategy}>
+                  {blocks.length === 0 ? (
+                    <div
+                      ref={setNodeRef}
+                      className={cn(
+                        "rounded-lg border-2 border-dashed py-24 text-center text-sm text-muted-foreground transition-colors",
+                        isOver && "border-primary bg-primary/5 text-primary",
+                      )}
+                    >
+                      Drag a block here to get started.
+                    </div>
+                  ) : (
+                    blocks.map((b, i) =>
+                      previewMode ? (
+                        <BlockRenderer
+                          key={b.id}
+                          block={b}
+                          index={i}
+                          viewport={viewport}
+                          staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
+                          reduceMotion={!!motion.reduce}
+                        />
+                      ) : (
+                        <SortableCanvasBlock
+                          key={b.id}
+                          block={b}
+                          index={i}
+                          viewport={viewport}
+                          staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
+                          reduceMotion={!!motion.reduce}
+                        />
+                      ),
+                    )
+                  )}
+                </SortableContext>
+              </div>
+              <EditorInteractionGuard active={!previewMode}>
+                <ContactWidget config={contactWidget} embedded />
+              </EditorInteractionGuard>
+            </RendererModeProvider>
           </div>
+
 
         </div>
       </div>
@@ -286,13 +332,22 @@ function SortableCanvasBlock({
                   {block.name || block.type} · collapsed
                 </div>
               ) : (
-                <BlockRenderer
-                  block={block}
-                  index={index}
-                  viewport={viewport}
-                  staggerStep={staggerStep}
-                  reduceMotion={reduceMotion}
-                />
+                <EditorInteractionGuard
+                  active
+                  onSelect={(e) => {
+                    if (e.shiftKey) selectRange(block.id);
+                    else if (e.metaKey || e.ctrlKey) toggleSelect(block.id);
+                    else select(block.id);
+                  }}
+                >
+                  <BlockRenderer
+                    block={block}
+                    index={index}
+                    viewport={viewport}
+                    staggerStep={staggerStep}
+                    reduceMotion={reduceMotion}
+                  />
+                </EditorInteractionGuard>
               )}
             </div>
           </div>
