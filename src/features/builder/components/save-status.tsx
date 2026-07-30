@@ -64,7 +64,10 @@ export function SaveStatusBadge({
         >
           <Icon
             aria-hidden
-            className={cn(compact ? "h-3 w-3" : "h-3.5 w-3.5", status === "saving" && "animate-spin")}
+            className={cn(
+              compact ? "h-3 w-3" : "h-3.5 w-3.5",
+              status === "saving" && "animate-spin",
+            )}
           />
           {label}
         </motion.span>
