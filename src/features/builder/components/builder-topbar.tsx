@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { useBuilderStore } from "../store";
 import { saveBuilderContent } from "../api";
 import { cn } from "@/lib/utils";
+import { SaveStatusBadge, type SaveStatus } from "./save-status";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -279,25 +280,8 @@ function VersionHistoryDialog() {
   );
 }
 
-function SaveIndicator({
-  status,
-}: {
-  status: ReturnType<typeof useBuilderStore.getState>["saveStatus"];
-}) {
-  const items = {
-    idle: { icon: CircleDot, label: "Ready", cls: "text-muted-foreground" },
-    dirty: { icon: CircleDot, label: "Unsaved changes", cls: "text-amber-600" },
-    saving: { icon: Loader2, label: "Saving…", cls: "text-muted-foreground animate-spin-slow" },
-    saved: { icon: CheckCircle2, label: "Saved", cls: "text-emerald-600" },
-    error: { icon: AlertCircle, label: "Save failed", cls: "text-destructive" },
-  } as const;
-  const it = items[status];
-  return (
-    <span className={cn("flex items-center gap-1.5 text-xs", it.cls)}>
-      <it.icon className={cn("h-3.5 w-3.5", status === "saving" && "animate-spin")} />
-      {it.label}
-    </span>
-  );
+function SaveIndicator({ status }: { status: SaveStatus }) {
+  return <SaveStatusBadge status={status} />;
 }
 
 function TemplatesDialog() {
