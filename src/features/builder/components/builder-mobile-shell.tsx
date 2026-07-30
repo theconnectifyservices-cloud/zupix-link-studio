@@ -110,11 +110,11 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col bg-background">
-      {/* Compact top bar */}
-      <header className="flex h-12 shrink-0 items-center gap-1 border-b bg-background/95 px-2 backdrop-blur">
-        <Button variant="ghost" size="icon" aria-label="Back" asChild className="h-9 w-9">
+      {/* Compact top bar — always below the device status bar / notch */}
+      <header className="sticky top-0 z-40 flex min-h-14 shrink-0 items-center gap-0.5 border-b bg-background/95 px-1.5 pt-[env(safe-area-inset-top,0px)] pl-[max(0.375rem,env(safe-area-inset-left))] pr-[max(0.375rem,env(safe-area-inset-right))] backdrop-blur">
+        <Button variant="ghost" size="icon" aria-label="Back" asChild className="h-11 w-11 shrink-0">
           <Link to="/app/projects">
-            <ArrowLeft className="h-4.5 w-4.5" />
+            <ArrowLeft className="h-5 w-5" />
           </Link>
         </Button>
         <div className="min-w-0 flex-1">
@@ -127,7 +127,7 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
           aria-label="Undo"
           onClick={undo}
           disabled={past === 0}
-          className="h-9 w-9"
+          className="h-11 w-11 shrink-0"
         >
           <Undo2 className="h-4 w-4" />
         </Button>
@@ -137,7 +137,7 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
           aria-label="Redo"
           onClick={redo}
           disabled={future === 0}
-          className="h-9 w-9"
+          className="h-11 w-11 shrink-0"
         >
           <Redo2 className="h-4 w-4" />
         </Button>
@@ -146,11 +146,12 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
           size="icon"
           aria-label="Toggle preview"
           onClick={onTogglePreview}
-          className="h-9 w-9"
+          className="h-11 w-11 shrink-0"
         >
           <Eye className="h-4 w-4" />
         </Button>
       </header>
+
 
       {/* Canvas — full-screen, edge-to-edge */}
       <div className="relative min-h-0 flex-1 overflow-hidden">
