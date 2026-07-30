@@ -22,6 +22,7 @@ import type {
 } from "../types";
 import { newId } from "../types";
 import { CustomCodeEditor } from "./property-editors/custom-code-editor";
+import { FontFamilyField } from "./font-family-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -217,13 +218,12 @@ export function PropertyPanel() {
             value={block.nameColor}
             onChange={(v) => set("nameColor", v)}
           />
-          <Field label="Font family">
-            <Input
-              value={block.nameFontFamily ?? ""}
-              onChange={(e) => set("nameFontFamily", e.target.value || undefined)}
-              placeholder="Inherit theme"
-            />
-          </Field>
+          <FontFamilyField
+            label="Name font"
+            value={block.nameFontFamily}
+            onChange={(v) => set("nameFontFamily", v)}
+          />
+
           <Field label="Font size (px)">
             <Input
               type="number"
@@ -278,13 +278,11 @@ export function PropertyPanel() {
             value={block.bioColor}
             onChange={(v) => set("bioColor", v)}
           />
-          <Field label="Font family">
-            <Input
-              value={block.bioFontFamily ?? ""}
-              onChange={(e) => set("bioFontFamily", e.target.value || undefined)}
-              placeholder="Inherit theme"
-            />
-          </Field>
+          <FontFamilyField
+            label="Bio font"
+            value={block.bioFontFamily}
+            onChange={(v) => set("bioFontFamily", v)}
+          />
           <Field label="Font size (px)">
             <Input
               type="number"
@@ -595,13 +593,7 @@ export function PropertyPanel() {
           </Row>
 
           <SectionTitle>Typography</SectionTitle>
-          <Field label="Font family">
-            <Input
-              value={block.fontFamily ?? ""}
-              onChange={(e) => set("fontFamily", e.target.value || undefined)}
-              placeholder="Inherit theme"
-            />
-          </Field>
+          <FontFamilyField value={block.fontFamily} onChange={(v) => set("fontFamily", v)} />
           <Field label="Font size (px)">
             <Input
               type="number"
@@ -1814,13 +1806,10 @@ function ButtonGroupEditor({
                   </Row>
 
                   <SectionTitle>Typography</SectionTitle>
-                  <Field label="Font family">
-                    <Input
-                      value={b.fontFamily ?? ""}
-                      placeholder="Inherit"
-                      onChange={(e) => upd(i, { fontFamily: e.target.value || undefined })}
-                    />
-                  </Field>
+                  <FontFamilyField
+                    value={b.fontFamily}
+                    onChange={(v) => upd(i, { fontFamily: v })}
+                  />
                   <div className="grid grid-cols-2 gap-2">
                     <Field label="Size (px)">
                       <Input
@@ -2341,6 +2330,10 @@ function SharedSettings({
             />
           </Field>
         </div>
+        <FontFamilyField
+          value={s.fontFamily}
+          onChange={(v) => onChange({ fontFamily: v })}
+        />
         <Field label="Border radius">
           <SelectSimple
             value={s.radius ?? "none"}

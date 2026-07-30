@@ -151,7 +151,13 @@ export interface BlockSettings {
   visibility?: { desktop?: boolean; tablet?: boolean; mobile?: boolean };
   /** Per-viewport spacing / typography overrides. */
   responsive?: Partial<Record<Viewport, ResponsiveOverrides>>;
+  /**
+   * Element-level font override (full CSS stack).
+   * `undefined` = inherit the global theme typography.
+   */
+  fontFamily?: string;
 }
+
 
 export interface BaseBlock {
   id: string;

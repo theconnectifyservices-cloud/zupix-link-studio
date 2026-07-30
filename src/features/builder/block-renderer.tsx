@@ -179,6 +179,14 @@ export function BlockRenderer({
     marginBottom,
     background: s.background,
   };
+  // Element font override: beats the theme font for this block only. Also
+  // shadows the theme font vars so nested nodes that reference them follow.
+  if (s.fontFamily) {
+    style.fontFamily = s.fontFamily;
+    const vars = style as Record<string, string>;
+    vars["--zx-heading-family"] = s.fontFamily;
+    vars["--zx-btn-font"] = s.fontFamily;
+  }
   if (fontScale && fontScale !== 1) style.fontSize = `${fontScale}em`;
   if (anim !== "none") {
     (style as Record<string, string>)["--zx-anim-dur"] = `${s.animationDuration ?? 600}ms`;
@@ -190,6 +198,7 @@ export function BlockRenderer({
 
   const hasWrap =
     !!s.background ||
+    !!s.fontFamily ||
     !!paddingX ||
     !!paddingY ||
     !!marginTop ||
@@ -198,6 +207,7 @@ export function BlockRenderer({
     anim !== "none" ||
     !!hover ||
     (fontScale && fontScale !== 1);
+
 
   const inner = renderInner(block, reduceMotion);
   if (!hasWrap) return inner;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
@@ -26,9 +26,11 @@ import {
   DEFAULT_THEME,
   bgEffectClasses,
   pageTransitionClass,
+  ensureGoogleFont,
   resolveMode,
   themeToCssVars,
 } from "../theme";
+import { collectFontFamilies } from "../fonts";
 import { cn } from "@/lib/utils";
 import { ThemeBackgroundLayer } from "./theme-background-layer";
 import { Button } from "@/components/ui/button";
@@ -56,6 +58,11 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
   const items = blocks.map((b) => b.id);
 
   const { setNodeRef, isOver } = useDroppable({ id: "canvas-empty" });
+
+  // Preload only the fonts referenced by per-element overrides.
+  useEffect(() => {
+    for (const f of collectFontFamilies(blocks)) ensureGoogleFont(f);
+  }, [blocks]);
 
   const isPhone = viewport === "mobile";
   const resolvedMode = resolveMode(theme.mode);
