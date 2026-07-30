@@ -1314,13 +1314,13 @@ function StatsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-120px" });
   const stats = [
-    { label: "Themes", n: 20, suffix: "" },
-    { label: "Profiles", n: 29000, suffix: "+" },
-    { label: "Businesses", n: 4700, suffix: "+" },
-    { label: "Products listed", n: 88000, suffix: "+" },
-    { label: "Gallery images", n: 214000, suffix: "+" },
-    { label: "Forms served", n: 132000, suffix: "+" },
-    { label: "Monthly views", n: 1300000, suffix: "+" },
+    { label: "Themes", n: 20, suffix: "+" },
+    { label: "Profiles", n: 5600, suffix: "+" },
+    { label: "Businesses", n: 250, suffix: "+" },
+    { label: "Products listed", n: 4200, suffix: "+" },
+    { label: "Gallery images", n: 9800, suffix: "+" },
+    { label: "Forms served", n: 6400, suffix: "+" },
+    { label: "Monthly views", n: 75000, suffix: "+" },
   ];
   return (
     <div ref={ref} className="mx-auto max-w-7xl px-4 pt-24">
