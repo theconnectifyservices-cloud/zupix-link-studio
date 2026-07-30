@@ -136,7 +136,10 @@ export function ProjectCard({
     [project.created_at],
   );
 
+  const openBuilder = () => navigate({ to: "/builder/$id", params: { id: project.id } });
+
   const menu = (
+    <div onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" aria-label="Project actions" disabled={busy}>
