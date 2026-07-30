@@ -1054,29 +1054,25 @@ body {
   overflow-wrap: break-word;
 }
 
-/* 2 · Media never overflows or distorts its container. */
-img,
-svg,
-video,
-canvas,
-iframe {
-  max-width: 100%;
-}
-img,
-video {
-  height: auto;
-}
-img[width][height] {
-  height: auto;
-}
+/* 2 · Media never overflows its container. Base layer only, so Tailwind
+      sizing utilities (h-9, w-full, …) always win. */
+@layer base {
+  img,
+  svg,
+  video,
+  canvas,
+  iframe {
+    max-width: 100%;
+  }
 
-/* 3 · Headings wrap gracefully instead of breaking mid-word. */
-h1, h2, h3, h4, h5, h6 {
-  overflow-wrap: break-word;
-  text-wrap: balance;
-}
-p, li, dd, dt, figcaption {
-  text-wrap: pretty;
+  /* 3 · Headings wrap gracefully instead of breaking mid-word. */
+  h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+    text-wrap: balance;
+  }
+  p, li, dd, dt, figcaption {
+    text-wrap: pretty;
+  }
 }
 
 /* 4 · iOS never zooms the viewport when a field is focused. */
