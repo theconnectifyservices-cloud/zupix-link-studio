@@ -724,8 +724,8 @@ function Stat({
       className="text-white transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.07]"
       value={
         <>
-          <span className="sm:hidden">{formatCompactCount(v, suffix)}</span>
-          <span className="hidden min-[640px]:inline">{formatFullCount(v.toLocaleString("en-IN"), suffix)}</span>
+          <span className="landing-stat-compact-value">{formatCompactCount(v, suffix)}</span>
+          <span className="landing-stat-full-value">{formatFullCount(v.toLocaleString("en-IN"), suffix)}</span>
         </>
       }
     />
