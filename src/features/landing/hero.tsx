@@ -700,7 +700,7 @@ function formatCompactCount(n: number, suffix?: string) {
   return `${n}${ending}`;
 }
 
-function formatFullCount(n: number, suffix?: string) {
+function formatFullCount(n: string, suffix?: string) {
   return `${n}${suffix ?? ""}`;
 }
 
