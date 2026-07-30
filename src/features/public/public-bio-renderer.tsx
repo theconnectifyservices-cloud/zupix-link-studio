@@ -139,6 +139,8 @@ export function PublicBioRenderer({
           pageDescription={pageDescription}
         />
       </div>
+      <ContactWidget config={content.contactWidget} />
     </div>
   );
 }
+
