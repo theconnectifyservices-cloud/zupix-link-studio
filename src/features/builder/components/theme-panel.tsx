@@ -1039,7 +1039,13 @@ export function ThemePanel() {
             onChange={(v) => patchMotion({ reduce: v })}
           />
         </TabsContent>
+
+        {/* ── SMART CONTACT WIDGET ─────────────────────────────────── */}
+        <TabsContent value="contact" className="mt-3">
+          <ContactWidgetPanel />
+        </TabsContent>
       </Tabs>
+
     </div>
   );
 }
