@@ -42,6 +42,8 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { ContactWidget } from "@/features/contact-widget";
+import { RendererModeProvider } from "../renderer-mode";
+import { EditorInteractionGuard } from "./editor-interaction-guard";
 
 
 type Viewport = "mobile" | "tablet" | "desktop";
@@ -53,7 +55,14 @@ const FRAME: Record<Viewport, string> = {
 };
 
 /** Live phone-frame preview. Sortable canvas + drop target for palette items. */
-export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport }) {
+export function BuilderPreview({
+  viewport = "mobile",
+  previewMode = false,
+}: {
+  viewport?: Viewport;
+  /** Live preview: real links, real embeds. Otherwise editor mode. */
+  previewMode?: boolean;
+}) {
   const blocks = useBuilderStore((s) => s.content.blocks ?? []);
   const theme = useBuilderStore((s) => s.content.theme) ?? DEFAULT_THEME;
   const contactWidget = useBuilderStore((s) => s.content.contactWidget);
@@ -118,7 +127,9 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
 ...
               </SortableContext>
             </div>
-            <ContactWidget config={contactWidget} embedded />
+            <EditorInteractionGuard active={!previewMode}>
+              <ContactWidget config={contactWidget} embedded />
+            </EditorInteractionGuard>
           </div>
 
         </div>
@@ -133,12 +144,14 @@ function SortableCanvasBlock({
   viewport = "mobile",
   staggerStep = 0,
   reduceMotion = false,
+  previewMode = false,
 }: {
   block: Block;
   index?: number;
   viewport?: Viewport;
   staggerStep?: number;
   reduceMotion?: boolean;
+  previewMode?: boolean;
 }) {
   const selectedId = useBuilderStore((s) => s.selectedId);
   const selectedIds = useBuilderStore((s) => s.selectedIds);
@@ -286,13 +299,22 @@ function SortableCanvasBlock({
                   {block.name || block.type} · collapsed
                 </div>
               ) : (
-                <BlockRenderer
-                  block={block}
-                  index={index}
-                  viewport={viewport}
-                  staggerStep={staggerStep}
-                  reduceMotion={reduceMotion}
-                />
+                <EditorInteractionGuard
+                  active={!previewMode}
+                  onSelect={(e) => {
+                    if (e.shiftKey) selectRange(block.id);
+                    else if (e.metaKey || e.ctrlKey) toggleSelect(block.id);
+                    else select(block.id);
+                  }}
+                >
+                  <BlockRenderer
+                    block={block}
+                    index={index}
+                    viewport={viewport}
+                    staggerStep={staggerStep}
+                    reduceMotion={reduceMotion}
+                  />
+                </EditorInteractionGuard>
               )}
             </div>
           </div>
