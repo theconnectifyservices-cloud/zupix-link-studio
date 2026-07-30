@@ -67,27 +67,55 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
   const urgent = data.status === "trial_ending_soon";
 
   if (variant === "chip") {
+    const compact =
+      c.days > 0 ? `${c.days}d` : c.hours > 0 ? `${c.hours}h` : `${c.minutes}m`;
+    const full =
+      c.days > 0
+        ? `${c.days}d ${c.hours}h left`
+        : c.hours > 0
+          ? `${c.hours}h ${c.minutes}m left`
+          : `${c.minutes}m ${c.seconds}s left`;
+    const tone = urgent
+      ? "border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20"
+      : "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20";
+
     return (
-      <button
-        onClick={() => openUpgrade({ suggestedPlan: "tejas", reason: "Keep Tejas after your trial" })}
-        className={cn(
-          "hidden sm:inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition",
-          urgent
-            ? "border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20"
-            : "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20",
-          className,
-        )}
-      >
-        <Clock className="h-3 w-3" />
-        {c.days > 0
-          ? `${c.days}d ${c.hours}h left`
-          : c.hours > 0
-            ? `${c.hours}h ${c.minutes}m left`
-            : `${c.minutes}m ${c.seconds}s left`}
-        <span className="hidden md:inline text-muted-foreground/70">· Trial</span>
-      </button>
+      <>
+        {/* Mobile: perfectly round glass badge */}
+        <button
+          type="button"
+          aria-label={`Trial: ${full}`}
+          onClick={() => openUpgrade({ suggestedPlan: "tejas", reason: "Keep Tejas after your trial" })}
+          className={cn(
+            "inline-grid h-10 w-10 shrink-0 place-items-center rounded-full border leading-none backdrop-blur transition sm:hidden",
+            tone,
+            className,
+          )}
+        >
+          <span className="flex flex-col items-center justify-center gap-px text-center">
+            <Clock className="h-3 w-3" aria-hidden />
+            <span className="text-[10px] font-semibold tabular-nums leading-none">{compact}</span>
+          </span>
+        </button>
+
+        {/* Desktop: pill */}
+        <button
+          type="button"
+          onClick={() => openUpgrade({ suggestedPlan: "tejas", reason: "Keep Tejas after your trial" })}
+          className={cn(
+            "hidden min-h-9 items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 text-xs font-medium backdrop-blur transition sm:inline-flex",
+            tone,
+            className,
+          )}
+        >
+          <Clock className="h-3.5 w-3.5 shrink-0" />
+          {full}
+          <span className="hidden md:inline text-muted-foreground/70">· Trial</span>
+        </button>
+      </>
     );
   }
+
 
   const units: Array<{ label: string; value: number }> = [
     { label: "Days", value: c.days },
