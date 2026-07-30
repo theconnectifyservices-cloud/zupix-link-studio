@@ -56,15 +56,19 @@ export function PublicBioRenderer({
   const pageCls = pageTransitionClass(theme);
   const blocks = content.blocks ?? [];
 
-  // Preload custom fonts so text renders without FOUT
+  // Preload every font referenced by the saved theme (explicit googleFonts
+  // list + whatever the typography stacks name) so the published page uses
+  // exactly the same faces as the builder preview.
   useEffect(() => {
     const families = [
+      ...(theme.googleFonts ?? []),
       theme.typography?.fontFamily,
       theme.typography?.headingFamily,
       theme.typography?.buttonFamily,
     ].filter(Boolean) as string[];
     for (const f of families) ensureGoogleFont(f);
-  }, [theme.typography]);
+  }, [theme.typography, theme.googleFonts]);
+
 
   const rootRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
