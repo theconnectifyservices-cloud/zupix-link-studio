@@ -725,7 +725,7 @@ function Stat({
       value={
         <>
           <span className="sm:hidden">{formatCompactCount(v, suffix)}</span>
-          <span className="hidden sm:inline">{formatFullCount(v.toLocaleString("en-IN"), suffix)}</span>
+          <span className="hidden min-[640px]:inline">{formatFullCount(v.toLocaleString("en-IN"), suffix)}</span>
         </>
       }
     />
@@ -1276,9 +1276,9 @@ export function LandingHero() {
         </div>
 
         {/* Bento */}
-        <div className="grid gap-4 md:grid-cols-12 md:auto-rows-[130px]">
+        <div className="grid gap-4 lg:grid-cols-12 lg:auto-rows-[130px]">
           {/* Headline cell */}
-          <div className="relative flex flex-col justify-center overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-8 backdrop-blur-md md:col-span-8 md:row-span-4 md:p-12">
+          <div className="relative flex flex-col justify-center overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-8 backdrop-blur-md lg:col-span-8 lg:row-span-4 lg:p-12">
             <div
               className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-40"
               style={{
@@ -1383,7 +1383,7 @@ export function LandingHero() {
           </div>
 
           {/* Phone cell */}
-          <div className="relative rounded-[36px] border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-6 backdrop-blur-md md:col-span-4 md:row-span-6">
+          <div className="relative rounded-[36px] border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-6 backdrop-blur-md lg:col-span-4 lg:row-span-6">
             {/* Inner clipped surface holds the phone + glow so floating cards can extend beyond */}
             <div className="relative h-full overflow-hidden rounded-[30px]">
               <div
@@ -1427,7 +1427,7 @@ export function LandingHero() {
               title="Verified badge"
               sub="Business profile · approved"
               tone="#22c55e"
-              className="left-2 top-10 md:-left-8"
+              className="left-2 top-10 lg:-left-8"
               delay={0.2}
             />
             <FloatCard
@@ -1435,7 +1435,7 @@ export function LandingHero() {
               title="UPI ₹4,800 received"
               sub={`from ${demo.handle}`}
               tone="#ff6b35"
-              className="right-2 top-24 md:-right-10"
+              className="right-2 top-24 lg:-right-10"
               delay={0.5}
             />
             <FloatCard
@@ -1443,7 +1443,7 @@ export function LandingHero() {
               title="New WhatsApp order"
               sub="Kalyan Heritage · 2 items"
               tone="#22d3ee"
-              className="right-3 bottom-40 md:-right-14"
+              className="right-3 bottom-40 lg:-right-14"
               delay={0.9}
             />
             <FloatCard
@@ -1451,7 +1451,7 @@ export function LandingHero() {
               title="+128 profile views"
               sub="last 5 minutes"
               tone="#a78bfa"
-              className="left-3 bottom-28 md:-left-14"
+              className="left-3 bottom-28 lg:-left-14"
               delay={1.2}
             />
             <FloatCard
@@ -1459,7 +1459,7 @@ export function LandingHero() {
               title="Custom domain live"
               sub="kalyan.link · DNS verified"
               tone="#38bdf8"
-              className="left-6 bottom-4 md:-left-6"
+              className="left-6 bottom-4 lg:-left-6"
               delay={1.5}
             />
             <FloatCard
@@ -1467,13 +1467,13 @@ export function LandingHero() {
               title="Theme applied"
               sub="Sunset Blaze · saved"
               tone="#e84393"
-              className="right-6 bottom-6 md:-right-4"
+              className="right-6 bottom-6 lg:-right-4"
               delay={1.8}
             />
           </div>
 
           {/* Stats */}
-          <div className="relative min-w-0 overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-[clamp(1rem,3.5vw,1.5rem)] backdrop-blur-md md:col-span-8 md:row-span-3 xl:row-span-2">
+          <div className="relative min-w-0 overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-[clamp(1rem,3.5vw,1.5rem)] backdrop-blur-md lg:col-span-8 lg:row-span-3 xl:row-span-2">
             <ResponsiveStatsGrid className="min-[1200px]:grid-cols-4">
               <Stat icon={BadgeCheck} label="Profiles created" target={5600} />
               <Stat icon={Palette} label="Premium themes" target={20} />

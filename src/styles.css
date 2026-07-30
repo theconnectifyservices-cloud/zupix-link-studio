@@ -1217,6 +1217,12 @@ body {
   }
 }
 
+@media (min-width: 1024px) {
+  .landing-stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 /* 10 · Momentum scrolling + no rubber-band chaining inside panels. */
 [data-scroll-panel] {
   overscroll-behavior: contain;
