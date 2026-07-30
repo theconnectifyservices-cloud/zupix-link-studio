@@ -13,6 +13,7 @@ import {
   themeToCssVars,
 } from "@/features/builder/theme";
 
+import { collectFontFamilies } from "@/features/builder/fonts";
 import type { BioContent } from "@/features/builder/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { initTracker } from "@/features/analytics/tracker";
@@ -65,9 +66,11 @@ export function PublicBioRenderer({
       theme.typography?.fontFamily,
       theme.typography?.headingFamily,
       theme.typography?.buttonFamily,
+      // Per-element font overrides — only fonts actually used on the page.
+      ...collectFontFamilies(content.blocks ?? []),
     ].filter(Boolean) as string[];
     for (const f of families) ensureGoogleFont(f);
-  }, [theme.typography, theme.googleFonts]);
+  }, [theme.typography, theme.googleFonts, content.blocks]);
 
 
   const rootRef = useRef<HTMLDivElement | null>(null);
