@@ -20,9 +20,9 @@ export function PageHeader({
   return (
     <div className={cn("mb-6 space-y-3", className)}>
       {breadcrumbs && breadcrumbs.length > 0 && <BreadcrumbNav items={breadcrumbs} />}
-      <div className="flex w-full min-w-0 flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex w-full min-w-0 flex-col items-stretch gap-3 tablet:flex-row tablet:items-center tablet:justify-between">
         <div className="w-full min-w-0 flex-1 basis-auto">
-          <h1 className="text-xl font-semibold tracking-tight [overflow-wrap:break-word] sm:truncate sm:text-2xl">
+          <h1 className="text-xl font-semibold tracking-tight [overflow-wrap:break-word] tablet:truncate tablet:text-2xl">
             {title}
           </h1>
           {description && (
@@ -32,7 +32,7 @@ export function PageHeader({
           )}
         </div>
         {actions && (
-          <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto sm:max-w-full sm:justify-end [&_button]:whitespace-nowrap">
+          <div className="flex w-full min-w-0 flex-wrap items-center gap-2 tablet:w-auto tablet:max-w-full tablet:justify-end [&_button]:whitespace-nowrap">
             {actions}
           </div>
         )}
