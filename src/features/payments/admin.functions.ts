@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { getAdapter } from "./gateways/registry";
 import type { PaymentGatewayPrivate, PaymentGatewayPublic, PaymentProvider } from "./types";
 import { redactGateway } from "./types";
 
@@ -105,6 +104,7 @@ export const testGatewayConnection = createServerFn({ method: "POST" })
     if (error || !row) throw new Error("Gateway not found");
     await assertAdmin(context, row.workspace_id);
 
+    const { getAdapter } = await import("./gateways/registry");
     const adapter = getAdapter(row.provider as PaymentProvider);
     const result = await adapter.health(row as PaymentGatewayPrivate);
     await supabaseAdmin

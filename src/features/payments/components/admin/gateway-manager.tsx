@@ -23,7 +23,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { listGatewaysAdmin, upsertGateway, deleteGateway, testGatewayConnection } from "../../admin.functions";
-import { REGISTRY_META } from "../../gateways/registry";
+import { REGISTRY_META } from "../../gateways/meta";
 import type { PaymentGatewayPublic, PaymentProvider, PaymentMode } from "../../types";
 import { MediaField } from "@/shared/ui/media-field";
 

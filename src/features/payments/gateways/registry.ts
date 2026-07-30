@@ -1,3 +1,7 @@
+/**
+ * Server-only gateway registry: the adapters use Node `crypto`, so this module
+ * must never be imported from a component. UI code imports `./meta` instead.
+ */
 import type { GatewayAdapter, PaymentProvider } from "../types";
 import { razorpayAdapter } from "./razorpay.adapter";
 import { payuAdapter } from "./payu.adapter";
@@ -16,33 +20,3 @@ export function getAdapter(provider: PaymentProvider): GatewayAdapter {
   if (!a) throw new Error(`Unknown payment provider: ${provider}`);
   return a;
 }
-
-export const REGISTRY_META: Record<
-  PaymentProvider,
-  { label: string; logo: string; description: string; methods: string[] }
-> = {
-  razorpay: {
-    label: "Razorpay",
-    logo: "https://razorpay.com/favicon.png",
-    description: "Cards, UPI, Net Banking, Wallets, EMI",
-    methods: ["upi", "card", "netbanking", "wallet", "emi"],
-  },
-  payu: {
-    label: "PayU",
-    logo: "https://payu.in/favicon.ico",
-    description: "Cards, UPI, Net Banking, Wallets",
-    methods: ["upi", "card", "netbanking", "wallet"],
-  },
-  cashfree: {
-    label: "Cashfree",
-    logo: "https://www.cashfree.com/favicon.ico",
-    description: "Cards, UPI, Net Banking, Wallets",
-    methods: ["upi", "card", "netbanking", "wallet"],
-  },
-  manual_upi: {
-    label: "Manual UPI",
-    logo: "https://upipayments.co.in/favicon.ico",
-    description: "Show QR, verify screenshot manually",
-    methods: ["upi"],
-  },
-};

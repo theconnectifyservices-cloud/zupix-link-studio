@@ -19,8 +19,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         <main
           className={
             compact
-              ? "flex-1 overflow-auto px-3 py-3 pb-20 sm:px-4 lg:px-5 lg:pb-3"
-              : "flex-1 overflow-auto px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6"
+              ? "min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3 pb-[calc(5rem+env(safe-area-inset-bottom))] sm:px-4 lg:px-5 lg:pb-3"
+              : "min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-6 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-6 lg:px-8 lg:pb-6"
           }
         >
           {children}
