@@ -57,7 +57,7 @@ function AiHome() {
         description="Your intelligent assistant for bio pages, templates, analytics and more."
         breadcrumbs={[{ label: "Dashboard", href: "/app" }, { label: "AI" }]}
         actions={
-          <div className="flex gap-2">
+          <div className="flex min-w-0 flex-wrap justify-end gap-2 min-[768px]:flex-nowrap">
             <Button variant="outline" onClick={() => navigate({ to: "/app/ai/growth" })}>
               <TrendingUp className="mr-1 h-4 w-4" /> Growth Coach
             </Button>
