@@ -43,13 +43,13 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
           className,
         )}
       >
-        <div className="flex items-start gap-4">
-          <div className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg">
+        <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg">
             <Clock className="h-5 w-5" />
           </div>
-          <div className="flex-1">
+          <div className="min-w-0 flex-1 basis-auto">
             <div className="text-sm font-semibold">Your Tejas trial has ended</div>
-            <p className="mt-0.5 text-sm text-muted-foreground">
+            <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground [overflow-wrap:break-word]">
               Premium blocks are locked. Your data is safe — upgrade any time to restore full access.
             </p>
             <Button size="sm" className="mt-3 gap-1.5" onClick={() => openUpgrade({ suggestedPlan: "tejas" })}>
