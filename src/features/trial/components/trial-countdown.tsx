@@ -117,11 +117,11 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
   }
 
 
-  const units: Array<{ label: string; value: number }> = [
-    { label: "Days", value: c.days },
-    { label: "Hours", value: c.hours },
-    { label: "Minutes", value: c.minutes },
-    { label: "Seconds", value: c.seconds },
+  const units: Array<{ label: string; short: string; value: number }> = [
+    { label: "Days", short: "Days", value: c.days },
+    { label: "Hours", short: "Hrs", value: c.hours },
+    { label: "Minutes", short: "Min", value: c.minutes },
+    { label: "Seconds", short: "Sec", value: c.seconds },
   ];
 
   return (
@@ -129,7 +129,7 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "relative overflow-hidden rounded-2xl border p-5 backdrop-blur",
+        "relative overflow-hidden rounded-2xl border p-4 backdrop-blur sm:p-5",
         urgent
           ? "border-amber-500/40 bg-gradient-to-br from-amber-500/10 via-background to-orange-500/5"
           : "border-primary/30 bg-gradient-to-br from-primary/10 via-background to-purple-500/5",
@@ -171,8 +171,9 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
               <div className="text-[clamp(1rem,4.5vw,1.25rem)] font-bold leading-none tabular-nums">
                 {String(u.value).padStart(2, "0")}
               </div>
-              <div className="mt-1.5 w-full truncate text-[10px] uppercase leading-none tracking-wider text-muted-foreground">
-                {u.label}
+              <div className="mt-1.5 w-full whitespace-nowrap text-[10px] uppercase leading-none tracking-wider text-muted-foreground">
+                <span className="sm:hidden">{u.short}</span>
+                <span className="hidden sm:inline">{u.label}</span>
               </div>
             </div>
           ))}
