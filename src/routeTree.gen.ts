@@ -14,6 +14,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LayoutProbeRouteImport } from './routes/layout-probe'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
@@ -111,6 +112,11 @@ const PricingRoute = PricingRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LayoutProbeRoute = LayoutProbeRouteImport.update({
+  id: '/layout-probe',
+  path: '/layout-probe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -523,6 +529,7 @@ const AuthenticatedAppBillingInvoicesIdPrintRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
+  '/layout-probe': typeof LayoutProbeRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -602,6 +609,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
+  '/layout-probe': typeof LayoutProbeRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -681,6 +689,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/layout-probe': typeof LayoutProbeRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -762,6 +771,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$slug'
+    | '/layout-probe'
     | '/login'
     | '/pricing'
     | '/robots.txt'
@@ -841,6 +851,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
+    | '/layout-probe'
     | '/login'
     | '/pricing'
     | '/robots.txt'
@@ -919,6 +930,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/_authenticated'
+    | '/layout-probe'
     | '/login'
     | '/pricing'
     | '/robots.txt'
@@ -1000,6 +1012,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRouteWithChildren
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  LayoutProbeRoute: typeof LayoutProbeRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
@@ -1056,6 +1069,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/layout-probe': {
+      id: '/layout-probe'
+      path: '/layout-probe'
+      fullPath: '/layout-probe'
+      preLoaderRoute: typeof LayoutProbeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -1757,6 +1777,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRouteWithChildren,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  LayoutProbeRoute: LayoutProbeRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
@@ -1780,3 +1801,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
