@@ -19,6 +19,8 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { initTracker } from "@/features/analytics/tracker";
 import { fetchPublicTracking, injectTracking, removeTracking } from "@/features/tracking";
 import { BrandingLayer } from "@/features/growth";
+import { ContactWidget } from "@/features/contact-widget";
+
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -139,6 +141,8 @@ export function PublicBioRenderer({
           pageDescription={pageDescription}
         />
       </div>
+      <ContactWidget config={content.contactWidget} />
     </div>
   );
 }
+

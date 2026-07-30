@@ -15,7 +15,10 @@ import {
   Plus,
   X,
   Zap,
+  MessageCircle,
 } from "lucide-react";
+import { ContactWidgetPanel } from "@/features/contact-widget";
+
 import { useBuilderStore } from "../store";
 import {
   BACKGROUND_PATTERNS,
@@ -114,13 +117,15 @@ export function ThemePanel() {
           <TabIcon value="type" icon={Type} label="Type" />
           <TabIcon value="buttons" icon={MousePointer2} label="Btn" />
         </TabsList>
-        <TabsList className="mt-1 grid w-full grid-cols-5">
+        <TabsList className="mt-1 grid w-full grid-cols-6">
           <TabIcon value="bg" icon={ImageIcon} label="BG" />
           <TabIcon value="card" icon={Square} label="Card" />
           <TabIcon value="profile" icon={UserCircle2} label="Profile" />
           <TabIcon value="space" icon={Ruler} label="Space" />
           <TabIcon value="motion" icon={Zap} label="Motion" />
+          <TabIcon value="contact" icon={MessageCircle} label="Contact" />
         </TabsList>
+
 
         <TabsContent value="presets" className="mt-3">
           <PresetsGrid current={theme.preset} onSelect={applyPreset} />
@@ -1034,7 +1039,13 @@ export function ThemePanel() {
             onChange={(v) => patchMotion({ reduce: v })}
           />
         </TabsContent>
+
+        {/* ── SMART CONTACT WIDGET ─────────────────────────────────── */}
+        <TabsContent value="contact" className="mt-3">
+          <ContactWidgetPanel />
+        </TabsContent>
       </Tabs>
+
     </div>
   );
 }

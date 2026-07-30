@@ -41,6 +41,8 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { ContactWidget } from "@/features/contact-widget";
+
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
@@ -54,6 +56,8 @@ const FRAME: Record<Viewport, string> = {
 export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport }) {
   const blocks = useBuilderStore((s) => s.content.blocks ?? []);
   const theme = useBuilderStore((s) => s.content.theme) ?? DEFAULT_THEME;
+  const contactWidget = useBuilderStore((s) => s.content.contactWidget);
+
   const clearSelection = useBuilderStore((s) => s.clearSelection);
   const items = blocks.map((b) => b.id);
 
@@ -111,35 +115,12 @@ export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport })
               }}
             >
               <SortableContext items={items} strategy={verticalListSortingStrategy}>
-                {blocks.length === 0 ? (
-                  <div
-                    ref={setNodeRef}
-                    className={cn(
-                      "flex flex-col items-center gap-3 rounded-lg border-2 border-dashed py-16 text-center text-muted-foreground transition-colors",
-                      isOver ? "border-primary bg-primary/5" : "border-muted",
-                    )}
-                  >
-                    <Sparkles className="h-8 w-8" />
-                    <div className="text-sm font-medium text-foreground">Start building</div>
-                    <p className="max-w-[220px] text-xs">
-                      Drag a block here or tap one from the left panel.
-                    </p>
-                  </div>
-                ) : (
-                  blocks.map((b, i) => (
-                    <SortableCanvasBlock
-                      key={b.id}
-                      block={b}
-                      index={i}
-                      viewport={viewport}
-                      staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
-                      reduceMotion={!!motion.reduce}
-                    />
-                  ))
-                )}
+...
               </SortableContext>
             </div>
+            <ContactWidget config={contactWidget} embedded />
           </div>
+
         </div>
       </div>
     </div>

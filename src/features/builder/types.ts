@@ -677,7 +677,10 @@ export interface BioContent {
   seo?: Record<string, unknown>;
   settings?: Record<string, unknown>;
   analytics?: Record<string, unknown>;
+  /** Floating smart contact widget configuration (LS contact widget). */
+  contactWidget?: import("@/features/contact-widget/types").ContactWidgetConfig;
 }
+
 
 export const EMPTY_CONTENT: BioContent = { blocks: [] };
 

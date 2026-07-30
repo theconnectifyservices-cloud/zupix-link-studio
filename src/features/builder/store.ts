@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import type { Block, BioContent } from "./types";
+import {
+  normalizeContactWidget,
+  type ContactActionConfig,
+  type ContactActionId,
+  type ContactWidgetConfig,
+} from "@/features/contact-widget/types";
 import { createEmptyBioContent, normalizeBioContent } from "./content-normalizer";
+
 import type {
   PageTheme,
   ThemeBackground,
@@ -100,7 +107,10 @@ interface BuilderState {
   deleteVersion: (versionId: string) => void;
 
   // theme
+  patchContactWidget: (patch: Partial<ContactWidgetConfig>) => void;
+  patchContactAction: (id: ContactActionId, patch: Partial<ContactActionConfig>) => void;
   patchTheme: (patch: Partial<PageTheme>) => void;
+
   patchThemeColors: (patch: Partial<ThemeColors>) => void;
   patchThemeTypography: (patch: Partial<ThemeTypography>) => void;
   patchThemeSpacing: (patch: Partial<ThemeSpacing>) => void;
@@ -523,6 +533,31 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     if (pageId) saveVersionsToStorage(pageId, next);
   },
 
+  patchContactWidget: (patch) => {
+    const { content, history } = get();
+    const current = normalizeContactWidget(content.contactWidget);
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, contactWidget: { ...current, ...patch } },
+      saveStatus: "dirty",
+    });
+  },
+  patchContactAction: (id, patch) => {
+    const { content, history } = get();
+    const current = normalizeContactWidget(content.contactWidget);
+    set({
+      history: pushHistory(history, content),
+      content: {
+        ...content,
+        contactWidget: {
+          ...current,
+          actions: current.actions.map((a) => (a.id === id ? { ...a, ...patch } : a)),
+        },
+      },
+      saveStatus: "dirty",
+    });
+  },
+
   patchTheme: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
@@ -532,6 +567,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       saveStatus: "dirty",
     });
   },
+
   patchThemeColors: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
