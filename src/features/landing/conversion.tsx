@@ -1213,8 +1213,8 @@ function SectionFinalCta() {
             </div>
 
             <ResponsiveStatsGrid className="mx-auto mt-12 max-w-3xl lg:grid-cols-4">
-              <TrustStat icon={Users} label="Businesses" value={<CountUp to={12800} suffix="+" />} />
-              <TrustStat icon={Eye} label="Views served" value={<CountUp to={48} suffix="M+" />} />
+              <TrustStat icon={Users} label="Businesses" value={<CountUp to={250} suffix="+" />} />
+              <TrustStat icon={Eye} label="Monthly views" value={<CountUp to={75000} format={(n) => Math.round(n).toLocaleString("en-IN")} suffix="+" />} />
               <TrustStat icon={Star} label="Avg. rating" value={<CountUp to={4.9} format={(n) => n.toFixed(1)} />} />
               <TrustStat icon={Gauge} label="Uptime" value={<CountUp to={99.9} format={(n) => n.toFixed(1)} suffix="%" />} />
             </ResponsiveStatsGrid>
