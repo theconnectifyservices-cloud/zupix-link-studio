@@ -43,13 +43,13 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
           className,
         )}
       >
-        <div className="flex items-start gap-4">
-          <div className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg">
+        <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg">
             <Clock className="h-5 w-5" />
           </div>
-          <div className="flex-1">
+          <div className="min-w-0 flex-1 basis-auto">
             <div className="text-sm font-semibold">Your Tejas trial has ended</div>
-            <p className="mt-0.5 text-sm text-muted-foreground">
+            <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground [overflow-wrap:break-word]">
               Premium blocks are locked. Your data is safe — upgrade any time to restore full access.
             </p>
             <Button size="sm" className="mt-3 gap-1.5" onClick={() => openUpgrade({ suggestedPlan: "tejas" })}>
@@ -144,22 +144,22 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
           )}
         />
       </div>
-      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
+      <div className="relative flex w-full min-w-0 flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="w-full min-w-0 flex-1 basis-auto">
           <div className="inline-flex min-h-7 max-w-full items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/30 bg-background/60 px-3 py-1 text-[11px] font-bold uppercase leading-none tracking-wider text-primary backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate">{urgent ? "Trial ending soon" : "Tejas trial active"}</span>
           </div>
-          <h3 className="mt-2.5 text-base font-semibold sm:text-lg">
+          <h3 className="mt-2.5 text-base font-semibold [overflow-wrap:break-word] sm:text-lg">
             {urgent ? "Hurry — keep Tejas unlocked" : "Your 3-day Tejas trial"}
           </h3>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground [overflow-wrap:break-word]">
             {urgent
               ? "Upgrade now to keep FAQs, Forms, Custom Domain & branding removal."
               : "All Tejas features are unlocked. Countdown below shows when the trial ends."}
           </p>
         </div>
-        <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:shrink-0 sm:grid-cols-4 sm:gap-2.5">
+        <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fit,minmax(72px,1fr))] gap-2 sm:w-auto sm:shrink-0 sm:grid-cols-4 sm:gap-2.5">
           {units.map((u) => (
             <div
               key={u.label}
@@ -168,7 +168,7 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
                 urgent && "border-amber-500/40",
               )}
             >
-              <div className="text-[clamp(1rem,4.5vw,1.25rem)] font-bold leading-none tabular-nums">
+              <div className="w-full text-center text-[clamp(1rem,4.5vw,1.25rem)] font-bold leading-none tabular-nums">
                 {String(u.value).padStart(2, "0")}
               </div>
               <div className="mt-1.5 w-full whitespace-nowrap text-[10px] uppercase leading-none tracking-wider text-muted-foreground">
@@ -178,6 +178,7 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
             </div>
           ))}
         </div>
+
 
       </div>
       <div className="relative mt-4 flex flex-wrap items-center gap-2">
