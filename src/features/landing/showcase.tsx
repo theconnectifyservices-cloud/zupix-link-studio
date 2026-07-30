@@ -1328,7 +1328,7 @@ function StatsSection() {
         title={<>Real numbers. Real <em className="font-serif italic text-[#ff8a5c]">businesses</em>. Live from India.</>}
         sub="Stats reset and count on scroll. Every counter reflects real production data across the ZUPIX network."
       />
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-3 sm:gap-4 lg:grid-cols-7">
         {stats.map((s) => (
           <StatTile key={s.label} label={s.label} target={s.n} active={inView} suffix={s.suffix} />
         ))}
@@ -1343,13 +1343,16 @@ function StatTile({ label, target, active, suffix }: { label: string; target: nu
     : n >= 1000 ? Math.round(n / 100) / 10 + "K"
     : String(n);
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.05] to-white/[0.01] p-5 backdrop-blur">
-      <div className="bg-gradient-to-br from-white to-white/70 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
+    <div className="flex h-full min-w-0 flex-col items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.05] to-white/[0.01] px-3 py-4 text-center backdrop-blur sm:px-4 sm:py-5">
+      <div className="whitespace-nowrap bg-gradient-to-br from-white to-white/70 bg-clip-text text-[clamp(1.375rem,6vw,1.875rem)] font-bold leading-none text-transparent sm:text-3xl lg:text-[1.75rem] xl:text-4xl">
         {display}{suffix}
       </div>
-      <div className="mt-1 text-[11px] font-medium uppercase tracking-widest text-white/50">{label}</div>
+      <div className="mt-1.5 hyphens-none break-normal text-[10px] font-medium uppercase leading-tight tracking-[0.08em] text-white/50 sm:text-[11px] sm:tracking-widest">
+        {label}
+      </div>
     </div>
   );
 }
+
 
 export default LandingShowcase;
