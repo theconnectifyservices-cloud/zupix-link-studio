@@ -8,14 +8,16 @@ import { ImageIcon, Trash2, Pencil, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MediaPicker, type CropShape } from "@/features/media/components/media-picker";
+import { MediaPicker } from "@/features/media/components/media-picker";
+import type { CropShape } from "@/features/media/crop";
+import type { AspectValue } from "@/features/media/components/image-cropper";
 
 interface Props {
   label: string;
   value?: string;
   onChange: (url: string | undefined) => void;
   /** Optional crop config. Omit to skip cropping entirely. */
-  crop?: { shape: CropShape; aspect: number | "free" };
+  crop?: { shape: CropShape; aspect: AspectValue; lockAspect?: boolean };
   /** Preview aspect ratio (CSS). */
   previewAspect?: string;
   /** Show as circular preview (for avatars). */
