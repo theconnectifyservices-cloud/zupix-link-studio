@@ -32,7 +32,7 @@ export function PageHeader({
           )}
         </div>
         {actions && (
-          <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto sm:shrink-0 sm:flex-nowrap [&_button]:whitespace-nowrap">
+          <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto sm:max-w-full sm:justify-end [&_button]:whitespace-nowrap">
             {actions}
           </div>
         )}
