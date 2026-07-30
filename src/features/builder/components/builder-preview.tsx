@@ -124,8 +124,31 @@ export function BuilderPreview({
               }}
             >
               <SortableContext items={items} strategy={verticalListSortingStrategy}>
-...
+                {blocks.length === 0 ? (
+                  <div
+                    ref={setNodeRef}
+                    className={cn(
+                      "rounded-lg border-2 border-dashed py-24 text-center text-sm text-muted-foreground transition-colors",
+                      isOver && "border-primary bg-primary/5 text-primary",
+                    )}
+                  >
+                    Drag a block here to get started.
+                  </div>
+                ) : (
+                  blocks.map((b, i) => (
+                    <SortableCanvasBlock
+                      key={b.id}
+                      block={b}
+                      index={i}
+                      viewport={viewport}
+                      staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
+                      reduceMotion={!!motion.reduce}
+                      previewMode={previewMode}
+                    />
+                  ))
+                )}
               </SortableContext>
+
             </div>
             <EditorInteractionGuard active={!previewMode}>
               <ContactWidget config={contactWidget} embedded />
