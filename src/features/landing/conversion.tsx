@@ -1211,7 +1211,7 @@ function SectionFinalCta() {
 
             </div>
 
-            <div className="mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
+            <div className="mx-auto mt-12 grid max-w-3xl grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-5 sm:grid-cols-4 sm:gap-6">
               <TrustStat icon={Users} label="Businesses" value={<CountUp to={12800} suffix="+" />} />
               <TrustStat icon={Eye} label="Views served" value={<CountUp to={48} suffix="M+" />} />
               <TrustStat icon={Star} label="Avg. rating" value={<CountUp to={4.9} format={(n) => n.toFixed(1)} />} />
@@ -1234,13 +1234,14 @@ function TrustStat({
   value: ReactNode;
 }) {
   return (
-    <div className="text-center">
-      <div className="mx-auto grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-white/90 backdrop-blur">
+    <div className="min-w-0 text-center">
+      <div className="mx-auto grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 text-white/90 backdrop-blur">
         <Icon className="h-4 w-4" />
       </div>
-      <div className="mt-2 text-2xl font-semibold text-white">{value}</div>
-      <div className="text-xs uppercase tracking-wide text-white/60">{label}</div>
+      <div className="mt-2 whitespace-nowrap text-[clamp(1.125rem,5vw,1.5rem)] font-semibold leading-none text-white">{value}</div>
+      <div className="mt-1 break-normal text-[10px] uppercase leading-tight tracking-wide text-white/60 sm:text-xs">{label}</div>
     </div>
+
   );
 }
 
