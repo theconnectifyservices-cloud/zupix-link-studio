@@ -25,7 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ImageCropper, type AspectValue } from "./image-cropper";
 import { isVectorImage } from "../crop";
-import type { CropShape } from "../crop";
 import { useMediaAssets } from "../hooks";
 import { uploadAsset, signedUrl } from "../api";
 import { MediaThumbnail } from "./media-thumbnail";
@@ -130,7 +129,7 @@ export function MediaPicker({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-h-[92dvh] max-w-3xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
