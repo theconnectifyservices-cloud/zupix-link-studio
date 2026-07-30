@@ -1114,7 +1114,132 @@ body {
 @utility page-x { padding-inline: clamp(1rem, 4vw, 2rem); }
 @utility section-y { padding-block: clamp(2.5rem, 7vw, 5rem); }
 
-/* 9 · Momentum scrolling + no rubber-band chaining inside panels. */
+/* 9 · Reusable premium statistics rhythm for landing metrics. */
+@utility landing-stats-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(0.875rem, 3.75vw, 1.125rem);
+}
+
+@utility landing-stat-card {
+  display: flex;
+  min-width: 0;
+  width: 100%;
+  min-height: clamp(8.5rem, 39vw, 9.75rem);
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4.4vw, 1.375rem) clamp(0.75rem, 3.4vw, 1rem);
+  text-align: center;
+  border-radius: var(--radius-3xl);
+  border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  background: color-mix(in srgb, currentColor 4.5%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+@utility landing-stat-icon {
+  display: grid;
+  width: clamp(2.125rem, 9vw, 2.625rem);
+  height: clamp(2.125rem, 9vw, 2.625rem);
+  flex-shrink: 0;
+  place-items: center;
+  margin-bottom: clamp(0.625rem, 2.4vw, 0.875rem);
+  border-radius: var(--radius-2xl);
+  border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  transition: transform var(--duration-slow) var(--ease-standard);
+}
+
+@utility landing-stat-icon-svg {
+  width: clamp(1rem, 3.2vw, 1.25rem);
+  height: clamp(1rem, 3.2vw, 1.25rem);
+}
+
+@utility landing-stat-number {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  font-size: clamp(1.55rem, 7vw, 2rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility landing-stat-label {
+  display: block;
+  max-width: 100%;
+  margin-top: clamp(0.625rem, 2.4vw, 0.8125rem);
+  color: color-mix(in srgb, currentColor 52%, transparent);
+  font-size: clamp(0.625rem, 2.45vw, 0.74rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+@utility landing-stat-compact-value {
+  display: inline;
+}
+
+@utility landing-stat-full-value {
+  display: none;
+}
+
+@media (max-width: 374px) {
+  .landing-stats-grid {
+    gap: 0.75rem;
+  }
+
+  .landing-stat-card {
+    min-height: 8.75rem;
+    padding-inline: 0.625rem;
+  }
+
+  .landing-stat-label {
+    font-size: 0.625rem;
+    letter-spacing: 0.025em;
+  }
+}
+
+@media (min-width: 640px) {
+  .landing-stat-compact-value {
+    display: none;
+  }
+
+  .landing-stat-full-value {
+    display: inline;
+  }
+
+  .landing-stat-card {
+    min-height: 9.25rem;
+    padding: 1.375rem 1rem;
+  }
+
+  .landing-stat-number {
+    font-size: clamp(2rem, 4.5vw, 2.625rem);
+  }
+
+  .landing-stat-label {
+    letter-spacing: 0.12em;
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* 10 · Momentum scrolling + no rubber-band chaining inside panels. */
 [data-scroll-panel] {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
