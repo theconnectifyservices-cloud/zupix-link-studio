@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { SaveActionButton, SaveStatusBadge, type SaveStatus } from "./save-status";
 import { useBuilderStore } from "../store";
 import { saveBuilderContent } from "../api";
 import { usePropertySave } from "../use-property-save";
@@ -305,31 +306,7 @@ function PropertiesSheet({
                   {selectedId ? "Edit the selected block." : "Select a block to edit."}
                 </SheetDescription>
               </div>
-              <Button
-                size="sm"
-                onClick={save}
-                disabled={!canSave}
-                aria-label="Save changes"
-                className={cn(
-                  "h-8 gap-1.5 rounded-full px-3 text-xs font-medium shadow-sm transition",
-                  canSave &&
-                    "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:opacity-90",
-                )}
-              >
-                {saving ? (
-                  <>
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Saving…
-                  </>
-                ) : isDirty ? (
-                  "Save"
-                ) : (
-                  <>
-                    <Check className="h-3.5 w-3.5" />
-                    Saved
-                  </>
-                )}
-              </Button>
+              <SaveActionButton saving={saving} isDirty={isDirty} canSave={canSave} onSave={save} />
             </div>
           </SheetHeader>
           <div
@@ -446,21 +423,8 @@ function PanelSheet({
   );
 }
 
-function SaveIndicator({ status }: { status: ReturnType<typeof useBuilderStore.getState>["saveStatus"] }) {
-  const map = {
-    idle: { icon: CircleDot, label: "Ready", cls: "text-muted-foreground" },
-    dirty: { icon: CircleDot, label: "Unsaved", cls: "text-amber-600" },
-    saving: { icon: Loader2, label: "Saving…", cls: "text-muted-foreground" },
-    saved: { icon: CheckCircle2, label: "Saved", cls: "text-emerald-600" },
-    error: { icon: AlertCircle, label: "Failed", cls: "text-destructive" },
-  } as const;
-  const it = map[status];
-  return (
-    <span className={cn("flex items-center gap-1 text-[10px]", it.cls)}>
-      <it.icon className={cn("h-3 w-3", status === "saving" && "animate-spin")} />
-      {it.label}
-    </span>
-  );
+function SaveIndicator({ status }: { status: SaveStatus }) {
+  return <SaveStatusBadge status={status} compact />;
 }
 
 // Silence unused-imports for reserved future actions.
