@@ -1,2 +1,2 @@
 export * from "./types";
-export * from "./gateways/registry";
+export * from "./gateways/meta";

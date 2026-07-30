@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { getAdapter, REGISTRY_META } from "./gateways/registry";
+import { REGISTRY_META } from "./gateways/meta";
 import type {
   CreateOrderInput,
   CreateOrderResult,
@@ -109,6 +109,7 @@ export const createCheckoutOrder = createServerFn({ method: "POST" })
     if (oErr || !order) throw oErr ?? new Error("Order not created");
 
 
+    const { getAdapter } = await import("./gateways/registry");
     const adapter = getAdapter(gw.provider as PaymentProvider);
     const input: CreateOrderInput = {
       workspaceId: data.workspaceId,

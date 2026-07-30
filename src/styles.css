@@ -1035,3 +1035,87 @@ html {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Mobile hardening · Enterprise Mobile UI QA Sprint
+   Global, reusable rules — no per-component duplication.
+   ═══════════════════════════════════════════════════════════ */
+
+/* 1 · No horizontal scroll anywhere. `clip` (not `hidden`) keeps
+      position:sticky working inside the page. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+body {
+  min-width: 320px;
+  /* Long URLs / handles / unbroken words can never blow out a container. */
+  overflow-wrap: break-word;
+}
+
+/* 2 · Media never overflows its container. Base layer only, so Tailwind
+      sizing utilities (h-9, w-full, …) always win. */
+@layer base {
+  img,
+  svg,
+  video,
+  canvas,
+  iframe {
+    max-width: 100%;
+  }
+
+  /* 3 · Headings wrap gracefully instead of breaking mid-word. */
+  h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+    text-wrap: balance;
+  }
+  p, li, dd, dt, figcaption {
+    text-wrap: pretty;
+  }
+}
+
+/* 4 · iOS never zooms the viewport when a field is focused. */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* 5 · Comfortable touch targets on phones (opt out with data-compact). */
+@media (pointer: coarse) and (max-width: 767px) {
+  button:not([data-compact]),
+  [role="button"]:not([data-compact]),
+  [role="tab"]:not([data-compact]),
+  summary:not([data-compact]) {
+    min-height: 36px;
+  }
+}
+
+/* 6 · Safe-area helpers for full-bleed mobile surfaces. */
+@utility pt-safe { padding-top: max(0.75rem, env(safe-area-inset-top)); }
+@utility pb-safe { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
+@utility px-safe {
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+}
+@utility mb-safe { margin-bottom: env(safe-area-inset-bottom); }
+
+/* 7 · Scrollable strips (tab bars, chip rows) without visible scrollbars. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* 8 · Shared responsive rhythm — one spacing scale for every page. */
+@utility page-x { padding-inline: clamp(1rem, 4vw, 2rem); }
+@utility section-y { padding-block: clamp(2.5rem, 7vw, 5rem); }
+
+/* 9 · Momentum scrolling + no rubber-band chaining inside panels. */
+[data-scroll-panel] {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
