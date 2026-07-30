@@ -179,14 +179,12 @@ function SortableCanvasBlock({
   viewport = "mobile",
   staggerStep = 0,
   reduceMotion = false,
-  previewMode = false,
 }: {
   block: Block;
   index?: number;
   viewport?: Viewport;
   staggerStep?: number;
   reduceMotion?: boolean;
-  previewMode?: boolean;
 }) {
   const selectedId = useBuilderStore((s) => s.selectedId);
   const selectedIds = useBuilderStore((s) => s.selectedIds);
@@ -335,7 +333,7 @@ function SortableCanvasBlock({
                 </div>
               ) : (
                 <EditorInteractionGuard
-                  active={!previewMode}
+                  active
                   onSelect={(e) => {
                     if (e.shiftKey) selectRange(block.id);
                     else if (e.metaKey || e.ctrlKey) toggleSelect(block.id);

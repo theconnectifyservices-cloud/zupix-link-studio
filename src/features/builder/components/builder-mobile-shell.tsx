@@ -155,7 +155,7 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
 
       {/* Canvas — full-screen, edge-to-edge */}
       <div className="relative min-h-0 flex-1 overflow-hidden">
-        <BuilderPreview viewport={viewport} />
+        <BuilderPreview viewport={viewport} previewMode={previewMode} />
 
         {/* Floating Save FAB */}
         {!previewMode && (
