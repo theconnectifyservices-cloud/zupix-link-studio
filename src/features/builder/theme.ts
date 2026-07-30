@@ -736,22 +736,67 @@ export function normalizeTheme(input?: Partial<PageTheme> | null): PageTheme {
 const LOADED_FONTS = new Set<string>();
 
 /**
- * Adds a Google Fonts <link> for `family` once per session. Family should
- * be the plain name (e.g. "Playfair Display"); weights are pre-selected
- * to cover typical needs.
+ * Generic/system families that must never be requested from Google Fonts.
  */
-export function ensureGoogleFont(family: string) {
-  if (!family || typeof document === "undefined") return;
-  if (LOADED_FONTS.has(family)) return;
-  LOADED_FONTS.add(family);
-  const enc = family.replace(/\s+/g, "+");
-  const href = `https://fonts.googleapis.com/css2?family=${enc}:wght@300;400;500;600;700;800;900&display=swap`;
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = href;
-  link.setAttribute("data-zx-font", family);
-  document.head.appendChild(link);
+const NON_GOOGLE_FAMILIES = new Set(
+  [
+    "ui-sans-serif",
+    "ui-serif",
+    "ui-monospace",
+    "ui-rounded",
+    "system-ui",
+    "-apple-system",
+    "blinkmacsystemfont",
+    "segoe ui",
+    "sans-serif",
+    "serif",
+    "monospace",
+    "cursive",
+    "fantasy",
+    "georgia",
+    "times new roman",
+    "arial",
+    "helvetica",
+    "helvetica neue",
+    "courier new",
+    "apple color emoji",
+    "segoe ui emoji",
+  ].map((s) => s.toLowerCase()),
+);
+
+/**
+ * Extracts loadable Google-font family names from a CSS font stack such as
+ * `'"Playfair Display", Georgia, serif'` → `["Playfair Display"]`.
+ * Accepts a plain family name too.
+ */
+export function extractFontFamilies(stack: string | undefined | null): string[] {
+  if (!stack) return [];
+  return stack
+    .split(",")
+    .map((part) => part.trim().replace(/^["']|["']$/g, "").trim())
+    .filter((f) => f.length > 0 && !NON_GOOGLE_FAMILIES.has(f.toLowerCase()));
 }
+
+/**
+ * Adds a Google Fonts <link> once per session. Accepts either a plain
+ * family name ("Playfair Display") or a full CSS font stack — the first
+ * non-generic family in the stack is loaded.
+ */
+export function ensureGoogleFont(familyOrStack: string) {
+  if (!familyOrStack || typeof document === "undefined") return;
+  for (const family of extractFontFamilies(familyOrStack)) {
+    if (LOADED_FONTS.has(family)) continue;
+    LOADED_FONTS.add(family);
+    const enc = family.replace(/\s+/g, "+");
+    const href = `https://fonts.googleapis.com/css2?family=${enc}:wght@300;400;500;600;700;800;900&display=swap`;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    link.setAttribute("data-zx-font", family);
+    document.head.appendChild(link);
+  }
+}
+
 
 export const GOOGLE_FONTS: string[] = [
   "Inter",
