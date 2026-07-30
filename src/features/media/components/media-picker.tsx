@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ImageCropper, type AspectValue } from "./image-cropper";
 import { isVectorImage } from "../crop";
+import type { CropShape } from "../crop";
 import { useMediaAssets } from "../hooks";
 import { uploadAsset, signedUrl } from "../api";
 import { MediaThumbnail } from "./media-thumbnail";
