@@ -100,7 +100,10 @@ interface BuilderState {
   deleteVersion: (versionId: string) => void;
 
   // theme
+  patchContactWidget: (patch: Partial<ContactWidgetConfig>) => void;
+  patchContactAction: (id: ContactActionId, patch: Partial<ContactActionConfig>) => void;
   patchTheme: (patch: Partial<PageTheme>) => void;
+
   patchThemeColors: (patch: Partial<ThemeColors>) => void;
   patchThemeTypography: (patch: Partial<ThemeTypography>) => void;
   patchThemeSpacing: (patch: Partial<ThemeSpacing>) => void;
