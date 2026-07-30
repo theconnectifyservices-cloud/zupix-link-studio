@@ -17,7 +17,7 @@ import {
   Share2,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -101,6 +101,7 @@ export function ProjectCard({
   view?: "grid" | "list";
 }) {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [renameOpen, setRenameOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -135,7 +136,10 @@ export function ProjectCard({
     [project.created_at],
   );
 
+  const openBuilder = () => navigate({ to: "/builder/$id", params: { id: project.id } });
+
   const menu = (
+    <div onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" aria-label="Project actions" disabled={busy}>
@@ -182,6 +186,7 @@ export function ProjectCard({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </div>
   );
 
   const shareLink = `zupix.link/${project.slug ?? ""}`;
@@ -189,8 +194,17 @@ export function ProjectCard({
   return (
     <>
       <Card
+        role="button"
+        tabIndex={0}
+        onClick={openBuilder}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openBuilder();
+          }
+        }}
         className={cn(
-          "group relative overflow-hidden transition-all hover:shadow-md",
+          "group relative cursor-pointer overflow-hidden transition-all hover:shadow-md",
           isList && "flex flex-row items-center gap-4 p-4",
         )}
       >
@@ -253,7 +267,12 @@ export function ProjectCard({
               <div>Created {created}</div>
             </div>
             <Button variant="ghost" size="icon" aria-label="Open" asChild>
-              <a href={`https://${shareLink}`} target="_blank" rel="noreferrer">
+              <a
+                href={`https://${shareLink}`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <ExternalLink className="h-4 w-4" />
               </a>
             </Button>
