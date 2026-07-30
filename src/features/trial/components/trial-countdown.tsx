@@ -27,7 +27,7 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
         <button
           onClick={() => openUpgrade({ suggestedPlan: "tejas", reason: "Your trial has ended" })}
           className={cn(
-            "hidden sm:inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 transition",
+            "inline-flex min-h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-amber-500/40 bg-amber-500/10 px-3.5 text-xs font-medium text-amber-700 backdrop-blur transition hover:bg-amber-500/20 dark:text-amber-300",
             className,
           )}
         >
