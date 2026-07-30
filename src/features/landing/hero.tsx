@@ -28,6 +28,7 @@ import {
   Utensils,
 } from "lucide-react";
 import { PORTRAITS, COVERS } from "./demo-media";
+import { ResponsiveStatCard, ResponsiveStatsGrid } from "./responsive-stat";
 
 /* ────────────────────────────────────────────────────────── demo content */
 
@@ -686,9 +687,20 @@ function useCountUp(target: number, duration = 1600, start = true) {
   return value;
 }
 
-function formatCount(n: number, suffix?: string) {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M${suffix ?? ""}`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(n >= 10_000 ? 0 : 1)}K${suffix ?? ""}`;
+function formatCompactCount(n: number, suffix?: string) {
+  const ending = suffix ?? "";
+  if (n >= 1_000_000) {
+    const value = n / 1_000_000;
+    return `${Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1)}M${ending}`;
+  }
+  if (n >= 1_000) {
+    const value = n / 1_000;
+    return `${Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1)}K${ending}`;
+  }
+  return `${n}${ending}`;
+}
+
+function formatFullCount(n: number, suffix?: string) {
   return `${n}${suffix ?? ""}`;
 }
 
@@ -705,19 +717,18 @@ function Stat({
 }) {
   const v = useCountUp(target);
   return (
-    <div className="group flex min-h-[clamp(104px,24vw,142px)] min-w-0 flex-col items-center justify-center rounded-3xl border border-white/10 bg-white/[0.045] p-[clamp(0.875rem,3vw,1.5rem)] text-center backdrop-blur transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.07]">
-      {Icon ? (
-        <span className="mb-[clamp(0.375rem,1.5vw,0.625rem)] grid size-[clamp(1.75rem,5vw,2.25rem)] shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.06] text-[#ff6b35] transition-transform duration-300 group-hover:scale-105">
-          <Icon className="size-[clamp(0.875rem,2.8vw,1.125rem)]" />
-        </span>
-      ) : null}
-      <span className="block max-w-full whitespace-nowrap text-[clamp(1.375rem,4.5vw,2.625rem)] font-semibold leading-none text-white tabular-nums tracking-normal">
-        {formatCount(v, suffix)}
-      </span>
-      <span className="mt-[clamp(0.375rem,1.4vw,0.625rem)] block max-w-full whitespace-normal text-balance break-words text-[clamp(0.625rem,2.2vw,0.72rem)] font-medium uppercase leading-tight tracking-[0.08em] text-white/45 sm:tracking-[0.14em]">
-        {label}
-      </span>
-    </div>
+    <ResponsiveStatCard
+      icon={Icon}
+      label={label}
+      iconClassName="text-[#ff6b35]"
+      className="text-white transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.07]"
+      value={
+        <>
+          <span className="sm:hidden">{formatCompactCount(v, suffix)}</span>
+          <span className="hidden sm:inline">{formatFullCount(v.toLocaleString("en-IN"), suffix)}</span>
+        </>
+      }
+    />
   );
 }
 
@@ -1463,12 +1474,12 @@ export function LandingHero() {
 
           {/* Stats */}
           <div className="relative min-w-0 overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-[clamp(1rem,3.5vw,1.5rem)] backdrop-blur-md md:col-span-8 md:row-span-3 xl:row-span-2">
-            <div className="grid min-w-0 grid-cols-2 gap-[clamp(0.625rem,2.6vw,1rem)] min-[1200px]:grid-cols-4">
+            <ResponsiveStatsGrid className="min-[1200px]:grid-cols-4">
               <Stat icon={BadgeCheck} label="Profiles created" target={5600} />
               <Stat icon={Palette} label="Premium themes" target={20} />
               <Stat icon={Eye} label="Monthly page views" target={2400000} suffix="+" />
               <Stat icon={Globe2} label="Indian businesses" target={1500} suffix="+" />
-            </div>
+            </ResponsiveStatsGrid>
             {/* Demo indicator strip */}
             <div className="mt-[clamp(0.875rem,3vw,1.25rem)] grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 sm:flex sm:flex-wrap">
               <span className="min-w-0 text-[clamp(0.58rem,1.9vw,0.625rem)] font-medium uppercase tracking-[0.18em] text-white/40 sm:shrink-0">
