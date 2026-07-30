@@ -1211,7 +1211,7 @@ function SectionFinalCta() {
 
             </div>
 
-            <div className="mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
+            <div className="mx-auto mt-12 grid max-w-3xl grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-5 sm:grid-cols-4 sm:gap-6">
               <TrustStat icon={Users} label="Businesses" value={<CountUp to={12800} suffix="+" />} />
               <TrustStat icon={Eye} label="Views served" value={<CountUp to={48} suffix="M+" />} />
               <TrustStat icon={Star} label="Avg. rating" value={<CountUp to={4.9} format={(n) => n.toFixed(1)} />} />
