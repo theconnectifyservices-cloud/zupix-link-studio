@@ -144,35 +144,40 @@ export function TrialCountdown({ variant = "chip", className }: Props) {
           )}
         />
       </div>
-      <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-background/60 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-            <Sparkles className="h-3 w-3" />
-            {urgent ? "Trial ending soon" : "Tejas trial active"}
+      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <div className="inline-flex min-h-7 max-w-full items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/30 bg-background/60 px-3 py-1 text-[11px] font-bold uppercase leading-none tracking-wider text-primary backdrop-blur">
+            <Sparkles className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">{urgent ? "Trial ending soon" : "Tejas trial active"}</span>
           </div>
-          <h3 className="mt-2 text-lg font-semibold">
+          <h3 className="mt-2.5 text-base font-semibold sm:text-lg">
             {urgent ? "Hurry — keep Tejas unlocked" : "Your 3-day Tejas trial"}
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
             {urgent
               ? "Upgrade now to keep FAQs, Forms, Custom Domain & branding removal."
               : "All Tejas features are unlocked. Countdown below shows when the trial ends."}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:shrink-0 sm:grid-cols-4 sm:gap-2.5">
           {units.map((u) => (
             <div
               key={u.label}
               className={cn(
-                "min-w-[54px] rounded-xl border bg-background/70 px-2 py-2 text-center backdrop-blur",
+                "flex min-w-0 flex-col items-center justify-center rounded-xl border bg-background/70 px-2 py-2.5 text-center backdrop-blur sm:min-w-[58px]",
                 urgent && "border-amber-500/40",
               )}
             >
-              <div className="text-lg font-bold tabular-nums">{String(u.value).padStart(2, "0")}</div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{u.label}</div>
+              <div className="text-[clamp(1rem,4.5vw,1.25rem)] font-bold leading-none tabular-nums">
+                {String(u.value).padStart(2, "0")}
+              </div>
+              <div className="mt-1.5 w-full truncate text-[10px] uppercase leading-none tracking-wider text-muted-foreground">
+                {u.label}
+              </div>
             </div>
           ))}
         </div>
+
       </div>
       <div className="relative mt-4 flex flex-wrap items-center gap-2">
         <Button size="sm" className="gap-1.5" onClick={() => openUpgrade({ suggestedPlan: "tejas" })}>
