@@ -1475,10 +1475,10 @@ export function LandingHero() {
           {/* Stats */}
           <div className="relative min-w-0 overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-[clamp(1rem,3.5vw,1.5rem)] backdrop-blur-md lg:col-span-8 lg:row-span-3 xl:row-span-2">
             <ResponsiveStatsGrid className="min-[1200px]:grid-cols-4">
-              <Stat icon={BadgeCheck} label="Profiles created" target={5600} />
-              <Stat icon={Palette} label="Premium themes" target={20} />
-              <Stat icon={Eye} label="Monthly page views" target={2400000} suffix="+" />
-              <Stat icon={Globe2} label="Indian businesses" target={1500} suffix="+" />
+              <Stat icon={BadgeCheck} label="Profiles created" target={5600} suffix="+" />
+              <Stat icon={Palette} label="Premium themes" target={20} suffix="+" />
+              <Stat icon={Eye} label="Monthly page views" target={75000} suffix="+" />
+              <Stat icon={Globe2} label="Indian businesses" target={250} suffix="+" />
             </ResponsiveStatsGrid>
             {/* Demo indicator strip */}
             <div className="mt-[clamp(0.875rem,3vw,1.25rem)] grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 sm:flex sm:flex-wrap">
