@@ -56,6 +56,8 @@ const FRAME: Record<Viewport, string> = {
 export function BuilderPreview({ viewport = "mobile" }: { viewport?: Viewport }) {
   const blocks = useBuilderStore((s) => s.content.blocks ?? []);
   const theme = useBuilderStore((s) => s.content.theme) ?? DEFAULT_THEME;
+  const contactWidget = useBuilderStore((s) => s.content.contactWidget);
+
   const clearSelection = useBuilderStore((s) => s.clearSelection);
   const items = blocks.map((b) => b.id);
 
