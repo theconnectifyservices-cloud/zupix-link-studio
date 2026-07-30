@@ -10,9 +10,7 @@
  * can be persisted in block content and rendered on published pages.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import Cropper from "react-easy-crop";
-import type { Area } from "react-easy-crop";
-import { Upload, ImageIcon, LinkIcon, Search, Loader2, X } from "lucide-react";
+import { Upload, ImageIcon, LinkIcon, Search, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -25,7 +23,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
+import { ImageCropper, type AspectValue } from "./image-cropper";
+import { isVectorImage } from "../crop";
+import type { CropShape } from "../crop";
 import { useMediaAssets } from "../hooks";
 import { uploadAsset, signedUrl } from "../api";
 import { MediaThumbnail } from "./media-thumbnail";
@@ -34,7 +34,7 @@ import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-work
 
 const LONG_TTL = 60 * 60 * 24 * 365; // 1 year
 
-export type CropShape = "round" | "rect";
+export type { CropShape } from "../crop";
 
 export interface MediaPickerProps {
   open: boolean;
@@ -42,7 +42,7 @@ export interface MediaPickerProps {
   onSelect: (url: string) => void;
   title?: string;
   /** Crop config; omit to skip cropping. */
-  crop?: { shape: CropShape; aspect: number | "free" };
+  crop?: { shape: CropShape; aspect: AspectValue; lockAspect?: boolean };
 }
 
 export function MediaPicker({
@@ -141,10 +141,9 @@ export function MediaPicker({
             crop={crop}
             onCancel={() => setPending(null)}
             onDone={confirm}
-            onSkip={() => confirm(pending.url)}
-            uploadCropped={async (blob) => {
+            uploadCropped={async (blob, ext, mime) => {
               if (!workspaceId || !userId) return pending.url;
-              const file = new File([blob], `crop-${Date.now()}.webp`, { type: "image/webp" });
+              const file = new File([blob], `crop-${Date.now()}.${ext}`, { type: mime });
               const asset = await uploadAsset({
                 file,
                 workspaceId,
@@ -311,183 +310,53 @@ function UploadPane({ onFile, busy }: { onFile: (f: File) => void; busy: boolean
 
 /* -------------------- Crop stage -------------------- */
 
+/**
+ * Thin wrapper around the shared <ImageCropper/>: handles the "no crop
+ * configured" and vector (SVG) shortcuts, then uploads the cropped result.
+ */
 function CropStage({
   src,
   crop,
   onCancel,
   onDone,
-  onSkip,
   uploadCropped,
 }: {
   src: string;
   crop?: MediaPickerProps["crop"];
   onCancel: () => void;
   onDone: (url: string) => void;
-  onSkip: () => void;
-  uploadCropped: (b: Blob) => Promise<string>;
+  uploadCropped: (b: Blob, ext: string, mime: string) => Promise<string>;
 }) {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [rotation, setRotation] = useState(0);
-  const [flipH, setFlipH] = useState(false);
-  const [flipV, setFlipV] = useState(false);
-  const [area, setArea] = useState<Area | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const aspect =
-    !crop || crop.aspect === "free" ? undefined : (crop.aspect as number);
-
-  if (!crop) {
-    // No crop configured — commit immediately.
-    onDone(src);
-    return null;
-  }
-
-  const save = async () => {
-    if (!area) {
-      onDone(src);
-      return;
-    }
-    try {
-      setSaving(true);
-      const blob = await getCroppedBlob(src, area, rotation, flipH, flipV);
-      const url = await uploadCropped(blob);
-      onDone(url);
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Crop failed");
-    } finally {
-      setSaving(false);
-    }
-  };
+  // SVGs stay vector — never rasterize them. Same for pickers without crop.
+  const skipCrop = !crop || isVectorImage(src);
+  useEffect(() => {
+    if (skipCrop) onDone(src);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skipCrop, src]);
+  if (skipCrop) return null;
 
   return (
-    <div className="space-y-3">
-      <div className="relative h-[360px] w-full overflow-hidden rounded-md border bg-muted">
-        <Cropper
-          image={src}
-          crop={pos}
-          zoom={zoom}
-          rotation={rotation}
-          aspect={aspect}
-          cropShape={crop.shape}
-          transform={`translate(${pos.x}px, ${pos.y}px) rotate(${rotation}deg) scale(${
-            flipH ? -1 : 1
-          }, ${flipV ? -1 : 1}) scale(${zoom})`}
-          onCropChange={setPos}
-          onZoomChange={setZoom}
-          onRotationChange={setRotation}
-          onCropComplete={(_, a) => setArea(a)}
-          showGrid
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <Label className="text-xs">Zoom</Label>
-          <Slider min={1} max={3} step={0.05} value={[zoom]} onValueChange={(v) => setZoom(v[0])} />
-        </div>
-        <div>
-          <Label className="text-xs">Rotate</Label>
-          <Slider
-            min={0}
-            max={360}
-            step={1}
-            value={[rotation]}
-            onValueChange={(v) => setRotation(v[0])}
-          />
-        </div>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        <Button size="sm" variant="outline" onClick={() => setFlipH((v) => !v)}>
-          Flip H
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => setFlipV((v) => !v)}>
-          Flip V
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => setRotation((r) => (r + 90) % 360)}>
-          Rotate 90°
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => {
-            setPos({ x: 0, y: 0 });
-            setZoom(1);
-            setRotation(0);
-            setFlipH(false);
-            setFlipV(false);
-          }}
-        >
-          Reset
-        </Button>
-      </div>
-      <DialogFooter>
-        <Button variant="ghost" onClick={onCancel} disabled={saving}>
-          <X className="mr-1 h-4 w-4" /> Back
-        </Button>
-        <Button variant="outline" onClick={onSkip} disabled={saving}>
-          Skip crop
-        </Button>
-        <Button onClick={save} disabled={saving}>
-          {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
-          Apply
-        </Button>
-      </DialogFooter>
-    </div>
-  );
-}
-
-/* -------------------- Crop utility -------------------- */
-
-async function loadImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = url;
-  });
-}
-
-async function getCroppedBlob(
-  src: string,
-  area: Area,
-  rotation: number,
-  flipH: boolean,
-  flipV: boolean,
-): Promise<Blob> {
-  const image = await loadImage(src);
-  const rad = (rotation * Math.PI) / 180;
-  const sin = Math.abs(Math.sin(rad));
-  const cos = Math.abs(Math.cos(rad));
-  const bWidth = image.width * cos + image.height * sin;
-  const bHeight = image.width * sin + image.height * cos;
-
-  const bCanvas = document.createElement("canvas");
-  bCanvas.width = bWidth;
-  bCanvas.height = bHeight;
-  const bCtx = bCanvas.getContext("2d")!;
-  bCtx.translate(bWidth / 2, bHeight / 2);
-  bCtx.rotate(rad);
-  bCtx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
-  bCtx.drawImage(image, -image.width / 2, -image.height / 2);
-
-  const out = document.createElement("canvas");
-  out.width = Math.round(area.width);
-  out.height = Math.round(area.height);
-  const oCtx = out.getContext("2d")!;
-  oCtx.drawImage(
-    bCanvas,
-    Math.round(area.x),
-    Math.round(area.y),
-    Math.round(area.width),
-    Math.round(area.height),
-    0,
-    0,
-    Math.round(area.width),
-    Math.round(area.height),
-  );
-
-  return await new Promise<Blob>((resolve, reject) =>
-    out.toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob failed"))), "image/webp", 0.9),
+    <ImageCropper
+      src={src}
+      shape={crop!.shape}
+      defaultAspect={crop!.aspect}
+      lockAspect={crop!.lockAspect}
+      busy={saving}
+      onCancel={onCancel}
+      onSkip={() => onDone(src)}
+      onApply={async (result) => {
+        try {
+          setSaving(true);
+          const url = await uploadCropped(result.blob, result.ext, result.mime);
+          onDone(url);
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Crop failed");
+        } finally {
+          setSaving(false);
+        }
+      }}
+    />
   );
 }
