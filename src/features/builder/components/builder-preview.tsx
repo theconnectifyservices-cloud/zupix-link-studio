@@ -41,6 +41,8 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { ContactWidget } from "@/features/contact-widget";
+
 
 type Viewport = "mobile" | "tablet" | "desktop";
 
