@@ -217,13 +217,12 @@ export function PropertyPanel() {
             value={block.nameColor}
             onChange={(v) => set("nameColor", v)}
           />
-          <Field label="Font family">
-            <Input
-              value={block.nameFontFamily ?? ""}
-              onChange={(e) => set("nameFontFamily", e.target.value || undefined)}
-              placeholder="Inherit theme"
-            />
-          </Field>
+          <FontFamilyField
+            label="Name font"
+            value={block.nameFontFamily}
+            onChange={(v) => set("nameFontFamily", v)}
+          />
+
           <Field label="Font size (px)">
             <Input
               type="number"
