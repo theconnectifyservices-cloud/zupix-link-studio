@@ -15,7 +15,10 @@ import {
   Plus,
   X,
   Zap,
+  MessageCircle,
 } from "lucide-react";
+import { ContactWidgetPanel } from "@/features/contact-widget";
+
 import { useBuilderStore } from "../store";
 import {
   BACKGROUND_PATTERNS,
