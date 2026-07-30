@@ -267,7 +267,12 @@ export function ProjectCard({
               <div>Created {created}</div>
             </div>
             <Button variant="ghost" size="icon" aria-label="Open" asChild>
-              <a href={`https://${shareLink}`} target="_blank" rel="noreferrer">
+              <a
+                href={`https://${shareLink}`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <ExternalLink className="h-4 w-4" />
               </a>
             </Button>
