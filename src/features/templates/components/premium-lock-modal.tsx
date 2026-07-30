@@ -28,7 +28,7 @@ export function PremiumLockModal({ open, onOpenChange, templateName, tier }: Pro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md gap-0 overflow-hidden p-0">
+      <DialogContent className="max-h-[calc(100dvh-1.5rem)] max-w-md gap-0 touch-pan-y overflow-y-auto overscroll-contain p-0 sm:max-h-[90dvh]">
         {/* Animated hero */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-purple-500/10 to-amber-500/10 px-6 pb-6 pt-8 text-center">
           <div className="relative mx-auto flex h-16 w-16 items-center justify-center">

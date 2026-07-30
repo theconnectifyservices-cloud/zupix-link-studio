@@ -33,8 +33,8 @@ export function UpgradeModal() {
 
   return (
     <Dialog open={upgradeOpen} onOpenChange={(o) => !o && closeUpgrade()}>
-      <DialogContent className="max-w-5xl overflow-hidden border-none bg-transparent p-0 shadow-2xl">
-        <div className="relative overflow-hidden rounded-2xl border bg-background/80 backdrop-blur-xl">
+      <DialogContent className="max-h-[calc(100dvh-1.5rem)] max-w-5xl touch-pan-y overflow-y-auto overscroll-contain border-none bg-transparent p-0 shadow-2xl sm:max-h-[90dvh]">
+        <div className="relative rounded-2xl border bg-background/80 backdrop-blur-xl">
           <div aria-hidden className="pointer-events-none absolute inset-0 opacity-70">
             <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/25 blur-3xl" />
             <div className="absolute -right-32 -bottom-32 h-96 w-96 rounded-full bg-purple-500/25 blur-3xl" />
