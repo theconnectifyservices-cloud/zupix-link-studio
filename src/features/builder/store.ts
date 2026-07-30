@@ -523,6 +523,31 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
     if (pageId) saveVersionsToStorage(pageId, next);
   },
 
+  patchContactWidget: (patch) => {
+    const { content, history } = get();
+    const current = normalizeContactWidget(content.contactWidget);
+    set({
+      history: pushHistory(history, content),
+      content: { ...content, contactWidget: { ...current, ...patch } },
+      saveStatus: "dirty",
+    });
+  },
+  patchContactAction: (id, patch) => {
+    const { content, history } = get();
+    const current = normalizeContactWidget(content.contactWidget);
+    set({
+      history: pushHistory(history, content),
+      content: {
+        ...content,
+        contactWidget: {
+          ...current,
+          actions: current.actions.map((a) => (a.id === id ? { ...a, ...patch } : a)),
+        },
+      },
+      saveStatus: "dirty",
+    });
+  },
+
   patchTheme: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
@@ -532,6 +557,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       saveStatus: "dirty",
     });
   },
+
   patchThemeColors: (patch) => {
     const { content, history } = get();
     const current = normalizeTheme(content.theme);
