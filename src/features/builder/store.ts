@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import type { Block, BioContent } from "./types";
+import {
+  normalizeContactWidget,
+  type ContactActionConfig,
+  type ContactActionId,
+  type ContactWidgetConfig,
+} from "@/features/contact-widget/types";
 import { createEmptyBioContent, normalizeBioContent } from "./content-normalizer";
+
 import type {
   PageTheme,
   ThemeBackground,
