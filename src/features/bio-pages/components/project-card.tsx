@@ -186,6 +186,7 @@ export function ProjectCard({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </div>
   );
 
   const shareLink = `zupix.link/${project.slug ?? ""}`;
@@ -193,8 +194,17 @@ export function ProjectCard({
   return (
     <>
       <Card
+        role="button"
+        tabIndex={0}
+        onClick={openBuilder}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openBuilder();
+          }
+        }}
         className={cn(
-          "group relative overflow-hidden transition-all hover:shadow-md",
+          "group relative cursor-pointer overflow-hidden transition-all hover:shadow-md",
           isList && "flex flex-row items-center gap-4 p-4",
         )}
       >
