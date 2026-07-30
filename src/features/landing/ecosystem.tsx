@@ -572,7 +572,8 @@ function WhyBento() {
           <>
             Chosen by{" "}
             <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-300 bg-clip-text text-transparent">
-              1,500+
+              250+
+
             </span>{" "}
             Indian businesses
           </>
