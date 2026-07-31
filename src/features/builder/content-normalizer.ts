@@ -123,6 +123,13 @@ function normalizeGalleryBlock(raw: JsonObject, id: string): GalleryBlock {
     columns: raw.columns === 3 || raw.columns === 4 ? raw.columns : 2,
     gap: raw.gap === "sm" || raw.gap === "lg" ? raw.gap : "md",
     rounded: raw.rounded === "none" || raw.rounded === "sm" || raw.rounded === "lg" ? raw.rounded : "md",
+    autoplay: raw.autoplay !== false,
+    autoplaySpeed:
+      typeof raw.autoplaySpeed === "number" && raw.autoplaySpeed >= 1500 ? raw.autoplaySpeed : 4000,
+    loop: raw.loop !== false,
+    showArrows: raw.showArrows !== false,
+    showDots: raw.showDots !== false,
+    lightbox: raw.lightbox !== false,
     images,
   } as GalleryBlock;
 }

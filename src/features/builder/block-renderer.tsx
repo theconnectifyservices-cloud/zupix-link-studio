@@ -25,6 +25,7 @@ import { buildSrcDoc } from "@/features/custom-code/sanitize";
 import { ErrorBoundary } from "@/shared/error/error-boundary";
 
 import { useRendererMode } from "./renderer-mode";
+import { GalleryRender } from "./components/gallery-render";
 import { resolveHeroEffects } from "./effects/hero-effects";
 import { getIcon as getButtonIcon } from "./button-icons";
 import { cn } from "@/lib/utils";
@@ -1085,87 +1086,6 @@ function VideoRender({ block }: { block: VideoBlock }) {
         allowFullScreen
         title="Video"
       />
-    </div>
-  );
-}
-
-// ── Gallery ──────────────────────────────────────────────────────────────
-function GalleryRender({ block }: { block: GalleryBlock }) {
-  const [preview, setPreview] = useState<string | null>(null);
-  const images = block.images ?? [];
-  const rounded =
-    block.rounded === "lg"
-      ? "rounded-xl"
-      : block.rounded === "md"
-        ? "rounded-lg"
-        : block.rounded === "sm"
-          ? "rounded"
-          : "rounded-none";
-  const gap = block.gap === "lg" ? "gap-4" : block.gap === "sm" ? "gap-1" : "gap-2";
-  if (images.length === 0) {
-    return (
-      <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">
-        Add gallery images
-      </div>
-    );
-  }
-  if (block.layout === "carousel") {
-    return (
-      <div className={cn("flex snap-x snap-mandatory overflow-x-auto", gap)}>
-        {images.map((img) => (
-          <img
-            key={img.id}
-            src={img.url}
-            alt={img.alt ?? ""}
-            className={cn("h-40 w-40 shrink-0 cursor-pointer snap-start object-cover", rounded)}
-            onClick={() => setPreview(img.url)}
-          />
-        ))}
-        {preview && <LightBox url={preview} onClose={() => setPreview(null)} />}
-      </div>
-    );
-  }
-  if (block.layout === "masonry") {
-    const cols = block.columns ?? 2;
-    return (
-      <div className={cn("columns-2", cols === 3 && "columns-3", cols === 4 && "columns-4", gap)}>
-        {images.map((img) => (
-          <img
-            key={img.id}
-            src={img.url}
-            alt={img.alt ?? ""}
-            className={cn("mb-2 w-full cursor-pointer break-inside-avoid object-cover", rounded)}
-            onClick={() => setPreview(img.url)}
-          />
-        ))}
-        {preview && <LightBox url={preview} onClose={() => setPreview(null)} />}
-      </div>
-    );
-  }
-  const cols = block.columns ?? 2;
-  const gridCols = cols === 4 ? "grid-cols-4" : cols === 3 ? "grid-cols-3" : "grid-cols-2";
-  return (
-    <div className={cn("grid", gridCols, gap)}>
-      {images.map((img) => (
-        <img
-          key={img.id}
-          src={img.url}
-          alt={img.alt ?? ""}
-          className={cn("aspect-square w-full cursor-pointer object-cover", rounded)}
-          onClick={() => setPreview(img.url)}
-        />
-      ))}
-      {preview && <LightBox url={preview} onClose={() => setPreview(null)} />}
-    </div>
-  );
-}
-function LightBox({ url, onClose }: { url: string; onClose: () => void }) {
-  return (
-    <div
-      onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-    >
-      <img src={url} alt="" className="max-h-full max-w-full rounded" />
     </div>
   );
 }
