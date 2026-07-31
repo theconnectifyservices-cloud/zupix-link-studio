@@ -10,7 +10,8 @@ const signupInput = z.object({
   email: z.string().trim().email().max(255),
   phone: z.string().trim().min(8).max(20),
   password: z.string().min(8).max(72),
-  licenseKey: z.string().trim().min(4).max(64),
+  /** Optional — omitted for the default trial signup flow. */
+  licenseKey: z.string().trim().min(4).max(64).optional(),
   deviceId: z.string().trim().max(80).optional(),
   deviceLabel: z.string().trim().max(120).optional(),
 });
