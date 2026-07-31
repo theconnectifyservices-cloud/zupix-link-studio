@@ -101,6 +101,19 @@ export const enterpriseSignupSchema = z
     phone: phoneSchema,
     password: passwordSchema,
     confirm: z.string().min(1, "Confirm your password"),
+  })
+  .refine((d) => d.password === d.confirm, {
+    message: "Passwords do not match",
+    path: ["confirm"],
+  });
+
+export const licenseActivationSignupSchema = z
+  .object({
+    fullName: z.string().trim().min(2, "Enter your full name").max(80),
+    email: emailSchema,
+    phone: phoneSchema,
+    password: passwordSchema,
+    confirm: z.string().min(1, "Confirm your password"),
     licenseKey: z
       .string()
       .trim()
