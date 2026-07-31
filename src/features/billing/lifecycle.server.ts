@@ -292,6 +292,13 @@ export async function activateFromPaidOrder(input: {
     .eq("id", workspaceId)
     .maybeSingle();
   if (workspace?.owner_id) {
+    // Paid but not yet licensed → admin must issue/assign a license key.
+    await supabaseAdmin
+      .from("profiles")
+      .update({ license_activation_status: "pending" } as never)
+      .eq("id", workspace.owner_id)
+      .is("license_id", null);
+
     await supabaseAdmin.from("notifications").insert({
       user_id: workspace.owner_id,
       workspace_id: workspaceId,
