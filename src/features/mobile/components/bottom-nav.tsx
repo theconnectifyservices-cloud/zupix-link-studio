@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, BarChart3, LayoutGrid, Settings, Sparkles } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, UserRound } from "lucide-react";
 
 interface Item {
   to: string;
@@ -8,12 +8,11 @@ interface Item {
   exact?: boolean;
 }
 
+/** Mobile Limited Mode: only core modules are reachable below 768px. */
 const items: Item[] = [
   { to: "/app", label: "Home", icon: LayoutDashboard, exact: true },
   { to: "/app/projects", label: "Pages", icon: LayoutGrid },
-  { to: "/app/ai", label: "AI", icon: Sparkles },
-  { to: "/app/analytics", label: "Insights", icon: BarChart3 },
-  { to: "/app/settings", label: "Settings", icon: Settings },
+  { to: "/app/settings/profile", label: "Profile", icon: UserRound },
 ];
 
 /** Bottom navigation for mobile & tablet portrait — hidden on lg+. */
@@ -23,7 +22,8 @@ export function BottomNav() {
       aria-label="Primary"
       className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
-      <ul className="grid grid-cols-5">
+      <ul className="grid grid-cols-3">
+
         {items.map((it) => {
           const Icon = it.icon;
           return (
