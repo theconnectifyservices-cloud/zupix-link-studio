@@ -14,6 +14,7 @@ import { formatDistanceToNow } from "date-fns";
 
 import { UpgradeCard } from "@/features/growth";
 import { usePlan } from "@/features/subscription";
+import { DesktopRecommendedBanner } from "@/features/mobile";
 
 export const Route = createFileRoute("/_authenticated/app/")({
   component: Overview,
@@ -59,6 +60,7 @@ function Overview() {
 
   return (
     <div className="mx-auto max-w-6xl">
+      <DesktopRecommendedBanner />
       <PageHeader
         title={`Welcome back, ${displayName}`}
         description={workspace ? `Workspace: ${workspace.name}` : "Set up your first bio page."}
