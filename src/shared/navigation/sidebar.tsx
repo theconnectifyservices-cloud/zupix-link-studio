@@ -70,6 +70,8 @@ const appItems: Item[] = [
   { icon: Zap, label: "Automation", href: "/app/automation" },
   { icon: Sparkles, label: "ZUPIX AI", href: "/app/ai" },
   { icon: Crown, label: "My Subscription", href: "/app/my-subscription" },
+  { icon: KeyRound, label: "My License", href: "/app/license" },
+
   { icon: Users, label: "Workspace", href: "/app/team" },
   { icon: Building2, label: "Agency", href: "/app/agency", requires: ["can_manage_agency"] },
   { icon: Shield, label: "Enterprise", href: "/app/enterprise", requires: ["can_manage_enterprise"] },
