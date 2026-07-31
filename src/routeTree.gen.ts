@@ -71,6 +71,7 @@ import { Route as AuthenticatedAdminPaymentGatewaysRouteImport } from './routes/
 import { Route as AuthenticatedAdminLicensesRouteImport } from './routes/_authenticated/admin/licenses'
 import { Route as AuthenticatedAdminGrowthEngineRouteImport } from './routes/_authenticated/admin/growth-engine'
 import { Route as AuthenticatedAdminCouponsRouteImport } from './routes/_authenticated/admin/coupons'
+import { Route as AuthenticatedAdminCommunicationCenterRouteImport } from './routes/_authenticated/admin/communication-center'
 import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authenticated.app.ai.index'
 import { Route as ApiPublicWebhooksRazorpayRouteImport } from './routes/api/public/webhooks/razorpay'
 import { Route as ApiPublicWebhooksPayuRouteImport } from './routes/api/public/webhooks/payu'
@@ -426,6 +427,12 @@ const AuthenticatedAdminCouponsRoute =
     path: '/admin/coupons',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminCommunicationCenterRoute =
+  AuthenticatedAdminCommunicationCenterRouteImport.update({
+    id: '/admin/communication-center',
+    path: '/admin/communication-center',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAppAiIndexRoute = AuthenticatedAppAiIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -557,6 +564,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/admin/communication-center': typeof AuthenticatedAdminCommunicationCenterRoute
   '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/admin/licenses': typeof AuthenticatedAdminLicensesRoute
@@ -638,6 +646,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth': typeof AuthIndexRoute
+  '/admin/communication-center': typeof AuthenticatedAdminCommunicationCenterRoute
   '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/admin/licenses': typeof AuthenticatedAdminLicensesRoute
@@ -721,6 +730,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/_authenticated/admin/communication-center': typeof AuthenticatedAdminCommunicationCenterRoute
   '/_authenticated/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/_authenticated/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/_authenticated/admin/licenses': typeof AuthenticatedAdminLicensesRoute
@@ -805,6 +815,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/admin/communication-center'
     | '/admin/coupons'
     | '/admin/growth-engine'
     | '/admin/licenses'
@@ -886,6 +897,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth'
+    | '/admin/communication-center'
     | '/admin/coupons'
     | '/admin/growth-engine'
     | '/admin/licenses'
@@ -968,6 +980,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/_authenticated/admin/communication-center'
     | '/_authenticated/admin/coupons'
     | '/_authenticated/admin/growth-engine'
     | '/_authenticated/admin/licenses'
@@ -1494,6 +1507,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCouponsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/communication-center': {
+      id: '/_authenticated/admin/communication-center'
+      path: '/admin/communication-center'
+      fullPath: '/admin/communication-center'
+      preLoaderRoute: typeof AuthenticatedAdminCommunicationCenterRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/app/ai/': {
       id: '/_authenticated/app/ai/'
       path: '/'
@@ -1788,6 +1808,7 @@ const AuthenticatedAppRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedAdminCommunicationCenterRoute: typeof AuthenticatedAdminCommunicationCenterRoute
   AuthenticatedAdminCouponsRoute: typeof AuthenticatedAdminCouponsRoute
   AuthenticatedAdminGrowthEngineRoute: typeof AuthenticatedAdminGrowthEngineRoute
   AuthenticatedAdminLicensesRoute: typeof AuthenticatedAdminLicensesRoute
@@ -1801,6 +1822,8 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedAdminCommunicationCenterRoute:
+    AuthenticatedAdminCommunicationCenterRoute,
   AuthenticatedAdminCouponsRoute: AuthenticatedAdminCouponsRoute,
   AuthenticatedAdminGrowthEngineRoute: AuthenticatedAdminGrowthEngineRoute,
   AuthenticatedAdminLicensesRoute: AuthenticatedAdminLicensesRoute,
