@@ -33,6 +33,18 @@ function AuthenticatedLayout() {
   }, [session.status, navigate]);
 
   useEffect(() => {
+    // Force a password change after an admin reset / temporary password.
+    if (
+      session.status === "authenticated" &&
+      profile &&
+      (profile as { force_password_change?: boolean }).force_password_change &&
+      !window.location.pathname.startsWith("/app/settings/password")
+    ) {
+      navigate({ to: "/app/settings/password" });
+    }
+  }, [session.status, profile, navigate]);
+
+  useEffect(() => {
     // Redirect to onboarding if incomplete
     if (
       session.status === "authenticated" &&
@@ -43,6 +55,7 @@ function AuthenticatedLayout() {
       navigate({ to: "/onboarding" });
     }
   }, [session.status, profile, navigate]);
+
 
   if (session.status === "loading" || (userId && isLoading)) {
     return <PageLoader />;

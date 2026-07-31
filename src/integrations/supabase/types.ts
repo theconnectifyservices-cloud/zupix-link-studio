@@ -874,6 +874,27 @@ export type Database = {
           },
         ]
       }
+      auth_login_attempts: {
+        Row: {
+          created_at: string
+          id: string
+          identifier: string
+          success: boolean
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          identifier: string
+          success?: boolean
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          identifier?: string
+          success?: boolean
+        }
+        Relationships: []
+      }
       billing_coupon_redemptions: {
         Row: {
           amount_discounted_minor: number
@@ -2976,6 +2997,47 @@ export type Database = {
           },
         ]
       }
+      license_activations: {
+        Row: {
+          created_at: string
+          device_id: string
+          device_label: string | null
+          id: string
+          last_seen_at: string
+          license_id: string
+          revoked_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          device_label?: string | null
+          id?: string
+          last_seen_at?: string
+          license_id: string
+          revoked_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          device_label?: string | null
+          id?: string
+          last_seen_at?: string
+          license_id?: string
+          revoked_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "license_activations_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "product_licenses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       license_seats: {
         Row: {
           assigned_at: string
@@ -4749,6 +4811,63 @@ export type Database = {
           },
         ]
       }
+      product_licenses: {
+        Row: {
+          activated_at: string | null
+          created_at: string
+          created_by: string | null
+          customer_name: string | null
+          email: string | null
+          expires_at: string | null
+          id: string
+          last_login_at: string | null
+          license_key: string
+          max_devices: number
+          notes: string | null
+          phone: string | null
+          plan: Database["public"]["Enums"]["product_license_plan"]
+          status: Database["public"]["Enums"]["product_license_status"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          activated_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          last_login_at?: string | null
+          license_key: string
+          max_devices?: number
+          notes?: string | null
+          phone?: string | null
+          plan?: Database["public"]["Enums"]["product_license_plan"]
+          status?: Database["public"]["Enums"]["product_license_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          activated_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          last_login_at?: string | null
+          license_key?: string
+          max_devices?: number
+          notes?: string | null
+          phone?: string | null
+          plan?: Database["public"]["Enums"]["product_license_plan"]
+          status?: Database["public"]["Enums"]["product_license_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"] | null
@@ -4759,9 +4878,11 @@ export type Database = {
           deleted_at: string | null
           display_name: string | null
           email: string | null
+          force_password_change: boolean
           id: string
           language: string | null
           last_login_at: string | null
+          license_id: string | null
           mfa_enabled: boolean
           onboarding_completed: boolean
           phone: string | null
@@ -4770,6 +4891,7 @@ export type Database = {
           security_alerts_enabled: boolean
           status: Database["public"]["Enums"]["account_status"]
           subscription_tier: string
+          temp_password_expires_at: string | null
           timezone: string | null
           updated_at: string
           username: string | null
@@ -4784,9 +4906,11 @@ export type Database = {
           deleted_at?: string | null
           display_name?: string | null
           email?: string | null
+          force_password_change?: boolean
           id: string
           language?: string | null
           last_login_at?: string | null
+          license_id?: string | null
           mfa_enabled?: boolean
           onboarding_completed?: boolean
           phone?: string | null
@@ -4795,6 +4919,7 @@ export type Database = {
           security_alerts_enabled?: boolean
           status?: Database["public"]["Enums"]["account_status"]
           subscription_tier?: string
+          temp_password_expires_at?: string | null
           timezone?: string | null
           updated_at?: string
           username?: string | null
@@ -4809,9 +4934,11 @@ export type Database = {
           deleted_at?: string | null
           display_name?: string | null
           email?: string | null
+          force_password_change?: boolean
           id?: string
           language?: string | null
           last_login_at?: string | null
+          license_id?: string | null
           mfa_enabled?: boolean
           onboarding_completed?: boolean
           phone?: string | null
@@ -4820,6 +4947,7 @@ export type Database = {
           security_alerts_enabled?: boolean
           status?: Database["public"]["Enums"]["account_status"]
           subscription_tier?: string
+          temp_password_expires_at?: string | null
           timezone?: string | null
           updated_at?: string
           username?: string | null
@@ -6523,6 +6651,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_signup_availability: {
+        Args: { _email: string; _phone: string }
+        Returns: Json
+      }
       ensure_personal_workspace: {
         Args: never
         Returns: {
@@ -6557,6 +6689,7 @@ export type Database = {
       }
       ensure_tejas_trial: { Args: { _workspace_id: string }; Returns: Json }
       expire_stale_trials: { Args: never; Returns: number }
+      generate_license_key: { Args: never; Returns: string }
       get_public_tracking: { Args: { _workspace_id: string }; Returns: Json }
       has_pending_workspace_invitation: {
         Args: {
@@ -6616,6 +6749,11 @@ export type Database = {
         Args: { _workspace_id: string }
         Returns: string
       }
+      redeem_license: {
+        Args: { _device_id: string; _device_label?: string; _key: string }
+        Returns: Json
+      }
+      touch_license_login: { Args: { _device_id?: string }; Returns: undefined }
       user_owns_workspace: {
         Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
@@ -6635,6 +6773,7 @@ export type Database = {
           valid: boolean
         }[]
       }
+      validate_license_key: { Args: { _key: string }; Returns: Json }
       workspace_bio_link_addons: {
         Args: { _workspace_id: string }
         Returns: number
@@ -6827,6 +6966,19 @@ export type Database = {
         | "refunded"
         | "partially_refunded"
       payout_status: "pending" | "processing" | "paid" | "failed" | "cancelled"
+      product_license_plan:
+        | "trial_3day"
+        | "monthly"
+        | "yearly"
+        | "lifetime"
+        | "reseller"
+        | "enterprise"
+      product_license_status:
+        | "unused"
+        | "active"
+        | "suspended"
+        | "revoked"
+        | "expired"
       promotion_discount_type: "percentage" | "fixed"
       promotion_status: "scheduled" | "active" | "expired" | "disabled"
       reseller_client_status:
@@ -7177,6 +7329,21 @@ export const Constants = {
         "partially_refunded",
       ],
       payout_status: ["pending", "processing", "paid", "failed", "cancelled"],
+      product_license_plan: [
+        "trial_3day",
+        "monthly",
+        "yearly",
+        "lifetime",
+        "reseller",
+        "enterprise",
+      ],
+      product_license_status: [
+        "unused",
+        "active",
+        "suspended",
+        "revoked",
+        "expired",
+      ],
       promotion_discount_type: ["percentage", "fixed"],
       promotion_status: ["scheduled", "active", "expired", "disabled"],
       reseller_client_status: [

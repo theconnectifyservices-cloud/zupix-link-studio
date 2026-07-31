@@ -89,6 +89,32 @@ export const signupSchema = z.object({
   password: passwordSchema,
 });
 
+export const phoneSchema = z
+  .string()
+  .trim()
+  .regex(/^\+?[0-9][0-9\s-]{7,18}$/, "Enter a valid phone number");
+
+export const enterpriseSignupSchema = z
+  .object({
+    fullName: z.string().trim().min(2, "Enter your full name").max(80),
+    email: emailSchema,
+    phone: phoneSchema,
+    password: passwordSchema,
+    confirm: z.string().min(1, "Confirm your password"),
+    licenseKey: z
+      .string()
+      .trim()
+      .min(4, "License Key is required")
+      .max(64, "License Key is too long"),
+  })
+  .refine((d) => d.password === d.confirm, {
+    message: "Passwords do not match",
+    path: ["confirm"],
+  });
+
+export type EnterpriseSignupInput = z.infer<typeof enterpriseSignupSchema>;
+
+
 export const forgotPasswordSchema = z.object({ email: emailSchema });
 
 export const resetPasswordSchema = z

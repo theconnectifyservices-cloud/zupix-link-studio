@@ -6,6 +6,8 @@ import type { z } from "zod";
 import { PasswordInput } from "@/features/auth/components/password-input";
 import { resetPasswordSchema } from "@/features/auth/schemas";
 import { updatePassword } from "@/features/auth/api";
+import { supabase } from "@/integrations/supabase/client";
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
@@ -26,12 +28,20 @@ function PasswordSettings() {
   async function onSubmit(values: Values) {
     try {
       await updatePassword(values.password);
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        await supabase
+          .from("profiles" as never)
+          .update({ force_password_change: false, temp_password_expires_at: null } as never)
+          .eq("id", data.user.id);
+      }
       toast.success("Password updated");
       reset();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed");
     }
   }
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-md space-y-4">
