@@ -90,11 +90,13 @@ async function handleAuthed(
   navigate: ReturnType<typeof useNavigate>,
   redirectTo?: string,
 ) {
+  await touchLicenseLogin();
   try {
     await startTejasTrial({ data: {} });
   } catch {
     /* non-fatal */
   }
+
   const intent =
     typeof window !== "undefined" ? window.sessionStorage.getItem("zupix:auth_intent") : null;
   if (intent && typeof window !== "undefined")
