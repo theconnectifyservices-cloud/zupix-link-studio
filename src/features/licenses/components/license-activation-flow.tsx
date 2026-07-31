@@ -14,7 +14,7 @@ import { PasswordInput } from "@/features/auth/components/password-input";
 import { passwordSchema, phoneSchema, emailSchema } from "@/features/auth/schemas";
 import { signInWithPassword } from "@/features/auth/api";
 import { getDeviceId, getDeviceLabel } from "../device";
-import { licenseErrorMessage } from "../errors";
+import { licenseErrorMessage } from "../types";
 import { inspectLicenseKey, signUpWithLicense } from "../signup.functions";
 
 const passwordOnlySchema = z
