@@ -600,7 +600,10 @@ export interface CustomCodeBlock extends BaseBlock {
   minHeight?: number;
   borderRadius?: number;
   lazy?: boolean;
+  /** Visual HTML Builder configuration (layout/style/button/motion). */
+  design?: import("@/features/custom-code/design").CcDesign;
 }
+
 
 export interface GenericBlock extends BaseBlock {
   type: Exclude<
