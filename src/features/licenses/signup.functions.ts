@@ -6,9 +6,10 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const signupInput = z.object({
-  fullName: z.string().trim().min(2).max(80),
-  email: z.string().trim().email().max(255),
-  phone: z.string().trim().min(8).max(20),
+  /** Optional when the licence already carries the customer details. */
+  fullName: z.string().trim().min(2).max(80).optional(),
+  email: z.string().trim().email().max(255).optional(),
+  phone: z.string().trim().min(8).max(20).optional(),
   password: z.string().min(8).max(72),
   /** Optional — omitted for the default trial signup flow. */
   licenseKey: z.string().trim().min(4).max(64).optional(),
