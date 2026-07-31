@@ -34,6 +34,7 @@ import { Route as ApiAiChatRouteImport } from './routes/api/ai.chat'
 import { Route as AdminBuilderIdRouteImport } from './routes/admin.builder.$id'
 import { Route as AuthenticatedBuilderIdRouteImport } from './routes/_authenticated.builder.$id'
 import { Route as AuthenticatedAppWhiteLabelRouteImport } from './routes/_authenticated.app.white-label'
+import { Route as AuthenticatedAppWhatsNewRouteImport } from './routes/_authenticated/app/whats-new'
 import { Route as AuthenticatedAppTrackingRouteImport } from './routes/_authenticated.app.tracking'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated.app.templates'
 import { Route as AuthenticatedAppTeamRouteImport } from './routes/_authenticated.app.team'
@@ -71,6 +72,7 @@ import { Route as AuthenticatedAdminPaymentGatewaysRouteImport } from './routes/
 import { Route as AuthenticatedAdminLicensesRouteImport } from './routes/_authenticated/admin/licenses'
 import { Route as AuthenticatedAdminGrowthEngineRouteImport } from './routes/_authenticated/admin/growth-engine'
 import { Route as AuthenticatedAdminCouponsRouteImport } from './routes/_authenticated/admin/coupons'
+import { Route as AuthenticatedAdminCommunicationCenterRouteImport } from './routes/_authenticated/admin/communication-center'
 import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authenticated.app.ai.index'
 import { Route as ApiPublicWebhooksRazorpayRouteImport } from './routes/api/public/webhooks/razorpay'
 import { Route as ApiPublicWebhooksPayuRouteImport } from './routes/api/public/webhooks/payu'
@@ -214,6 +216,12 @@ const AuthenticatedAppWhiteLabelRoute =
   AuthenticatedAppWhiteLabelRouteImport.update({
     id: '/white-label',
     path: '/white-label',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppWhatsNewRoute =
+  AuthenticatedAppWhatsNewRouteImport.update({
+    id: '/whats-new',
+    path: '/whats-new',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppTrackingRoute =
@@ -426,6 +434,12 @@ const AuthenticatedAdminCouponsRoute =
     path: '/admin/coupons',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminCommunicationCenterRoute =
+  AuthenticatedAdminCommunicationCenterRouteImport.update({
+    id: '/admin/communication-center',
+    path: '/admin/communication-center',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAppAiIndexRoute = AuthenticatedAppAiIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -557,6 +571,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/admin/communication-center': typeof AuthenticatedAdminCommunicationCenterRoute
   '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/admin/licenses': typeof AuthenticatedAdminLicensesRoute
@@ -594,6 +609,7 @@ export interface FileRoutesByFullPath {
   '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
+  '/app/whats-new': typeof AuthenticatedAppWhatsNewRoute
   '/app/white-label': typeof AuthenticatedAppWhiteLabelRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/admin/builder/$id': typeof AdminBuilderIdRoute
@@ -638,6 +654,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth': typeof AuthIndexRoute
+  '/admin/communication-center': typeof AuthenticatedAdminCommunicationCenterRoute
   '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/admin/licenses': typeof AuthenticatedAdminLicensesRoute
@@ -674,6 +691,7 @@ export interface FileRoutesByTo {
   '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
+  '/app/whats-new': typeof AuthenticatedAppWhatsNewRoute
   '/app/white-label': typeof AuthenticatedAppWhiteLabelRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/admin/builder/$id': typeof AdminBuilderIdRoute
@@ -721,6 +739,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/auth/': typeof AuthIndexRoute
+  '/_authenticated/admin/communication-center': typeof AuthenticatedAdminCommunicationCenterRoute
   '/_authenticated/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/_authenticated/admin/growth-engine': typeof AuthenticatedAdminGrowthEngineRoute
   '/_authenticated/admin/licenses': typeof AuthenticatedAdminLicensesRoute
@@ -758,6 +777,7 @@ export interface FileRoutesById {
   '/_authenticated/app/team': typeof AuthenticatedAppTeamRoute
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/tracking': typeof AuthenticatedAppTrackingRoute
+  '/_authenticated/app/whats-new': typeof AuthenticatedAppWhatsNewRoute
   '/_authenticated/app/white-label': typeof AuthenticatedAppWhiteLabelRoute
   '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/admin/builder/$id': typeof AdminBuilderIdRoute
@@ -805,6 +825,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/admin/communication-center'
     | '/admin/coupons'
     | '/admin/growth-engine'
     | '/admin/licenses'
@@ -842,6 +863,7 @@ export interface FileRouteTypes {
     | '/app/team'
     | '/app/templates'
     | '/app/tracking'
+    | '/app/whats-new'
     | '/app/white-label'
     | '/builder/$id'
     | '/admin/builder/$id'
@@ -886,6 +908,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth'
+    | '/admin/communication-center'
     | '/admin/coupons'
     | '/admin/growth-engine'
     | '/admin/licenses'
@@ -922,6 +945,7 @@ export interface FileRouteTypes {
     | '/app/team'
     | '/app/templates'
     | '/app/tracking'
+    | '/app/whats-new'
     | '/app/white-label'
     | '/builder/$id'
     | '/admin/builder/$id'
@@ -968,6 +992,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/auth/'
+    | '/_authenticated/admin/communication-center'
     | '/_authenticated/admin/coupons'
     | '/_authenticated/admin/growth-engine'
     | '/_authenticated/admin/licenses'
@@ -1005,6 +1030,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/team'
     | '/_authenticated/app/templates'
     | '/_authenticated/app/tracking'
+    | '/_authenticated/app/whats-new'
     | '/_authenticated/app/white-label'
     | '/_authenticated/builder/$id'
     | '/admin/builder/$id'
@@ -1233,6 +1259,13 @@ declare module '@tanstack/react-router' {
       path: '/white-label'
       fullPath: '/app/white-label'
       preLoaderRoute: typeof AuthenticatedAppWhiteLabelRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/whats-new': {
+      id: '/_authenticated/app/whats-new'
+      path: '/whats-new'
+      fullPath: '/app/whats-new'
+      preLoaderRoute: typeof AuthenticatedAppWhatsNewRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/tracking': {
@@ -1494,6 +1527,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCouponsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/communication-center': {
+      id: '/_authenticated/admin/communication-center'
+      path: '/admin/communication-center'
+      fullPath: '/admin/communication-center'
+      preLoaderRoute: typeof AuthenticatedAdminCommunicationCenterRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/app/ai/': {
       id: '/_authenticated/app/ai/'
       path: '/'
@@ -1743,6 +1783,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppTeamRoute: typeof AuthenticatedAppTeamRoute
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppTrackingRoute: typeof AuthenticatedAppTrackingRoute
+  AuthenticatedAppWhatsNewRoute: typeof AuthenticatedAppWhatsNewRoute
   AuthenticatedAppWhiteLabelRoute: typeof AuthenticatedAppWhiteLabelRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
@@ -1778,6 +1819,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppTeamRoute: AuthenticatedAppTeamRoute,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppTrackingRoute: AuthenticatedAppTrackingRoute,
+  AuthenticatedAppWhatsNewRoute: AuthenticatedAppWhatsNewRoute,
   AuthenticatedAppWhiteLabelRoute: AuthenticatedAppWhiteLabelRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
@@ -1788,6 +1830,7 @@ const AuthenticatedAppRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedAdminCommunicationCenterRoute: typeof AuthenticatedAdminCommunicationCenterRoute
   AuthenticatedAdminCouponsRoute: typeof AuthenticatedAdminCouponsRoute
   AuthenticatedAdminGrowthEngineRoute: typeof AuthenticatedAdminGrowthEngineRoute
   AuthenticatedAdminLicensesRoute: typeof AuthenticatedAdminLicensesRoute
@@ -1801,6 +1844,8 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedAdminCommunicationCenterRoute:
+    AuthenticatedAdminCommunicationCenterRoute,
   AuthenticatedAdminCouponsRoute: AuthenticatedAdminCouponsRoute,
   AuthenticatedAdminGrowthEngineRoute: AuthenticatedAdminGrowthEngineRoute,
   AuthenticatedAdminLicensesRoute: AuthenticatedAdminLicensesRoute,

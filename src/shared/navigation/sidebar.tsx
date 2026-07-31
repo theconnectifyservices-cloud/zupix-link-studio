@@ -28,6 +28,7 @@ import {
   Award,
   Crown,
   KeyRound,
+  Bell,
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
@@ -72,6 +73,7 @@ const appItems: Item[] = [
   { icon: Sparkles, label: "ZUPIX AI", href: "/app/ai" },
   { icon: Crown, label: "My Subscription", href: "/app/my-subscription" },
   { icon: KeyRound, label: "My License", href: "/app/license" },
+  { icon: Sparkles, label: "What's New", href: "/app/whats-new" },
 
   { icon: Users, label: "Workspace", href: "/app/team" },
   { icon: Building2, label: "Agency", href: "/app/agency", requires: ["can_manage_agency"] },
@@ -90,6 +92,7 @@ const appItems: Item[] = [
   { icon: Shield, label: "Payment Hub", href: "/admin/payment-gateways", requiresRole: ["admin", "super_admin"] },
   { icon: KeyRound, label: "License Manager", href: "/admin/licenses", requiresRole: ["admin", "super_admin"] },
   { icon: Users, label: "User Management", href: "/admin/users", requiresRole: ["admin", "super_admin"] },
+  { icon: Bell, label: "Communication Center", href: "/admin/communication-center", requiresRole: ["admin", "super_admin"] },
 
 ];
 

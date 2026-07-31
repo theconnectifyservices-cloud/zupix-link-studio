@@ -2151,6 +2151,194 @@ export type Database = {
           },
         ]
       }
+      comm_announcement_bars: {
+        Row: {
+          background_color: string
+          button_text: string | null
+          button_url: string | null
+          created_at: string
+          created_by: string | null
+          ends_at: string | null
+          id: string
+          is_enabled: boolean
+          message: string
+          mode: Database["public"]["Enums"]["comm_bar_mode"]
+          starts_at: string
+          text_color: string
+          updated_at: string
+        }
+        Insert: {
+          background_color?: string
+          button_text?: string | null
+          button_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string | null
+          id?: string
+          is_enabled?: boolean
+          message: string
+          mode?: Database["public"]["Enums"]["comm_bar_mode"]
+          starts_at?: string
+          text_color?: string
+          updated_at?: string
+        }
+        Update: {
+          background_color?: string
+          button_text?: string | null
+          button_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string | null
+          id?: string
+          is_enabled?: boolean
+          message?: string
+          mode?: Database["public"]["Enums"]["comm_bar_mode"]
+          starts_at?: string
+          text_color?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      comm_notification_receipts: {
+        Row: {
+          created_at: string
+          deleted_at: string | null
+          id: string
+          notification_id: string
+          popup_seen_at: string | null
+          read_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          notification_id: string
+          popup_seen_at?: string | null
+          read_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          notification_id?: string
+          popup_seen_at?: string | null
+          read_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comm_notification_receipts_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "comm_notifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comm_notifications: {
+        Row: {
+          audience: Database["public"]["Enums"]["comm_audience"]
+          banner_image_url: string | null
+          button_text: string | null
+          button_url: string | null
+          channels: Json
+          created_at: string
+          created_by: string | null
+          description: string
+          ends_at: string | null
+          id: string
+          metadata: Json
+          priority: Database["public"]["Enums"]["comm_priority"]
+          starts_at: string
+          status: Database["public"]["Enums"]["comm_status"]
+          target_user_ids: string[]
+          title: string
+          type: Database["public"]["Enums"]["comm_notification_type"]
+          updated_at: string
+        }
+        Insert: {
+          audience?: Database["public"]["Enums"]["comm_audience"]
+          banner_image_url?: string | null
+          button_text?: string | null
+          button_url?: string | null
+          channels?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          ends_at?: string | null
+          id?: string
+          metadata?: Json
+          priority?: Database["public"]["Enums"]["comm_priority"]
+          starts_at?: string
+          status?: Database["public"]["Enums"]["comm_status"]
+          target_user_ids?: string[]
+          title: string
+          type?: Database["public"]["Enums"]["comm_notification_type"]
+          updated_at?: string
+        }
+        Update: {
+          audience?: Database["public"]["Enums"]["comm_audience"]
+          banner_image_url?: string | null
+          button_text?: string | null
+          button_url?: string | null
+          channels?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          ends_at?: string | null
+          id?: string
+          metadata?: Json
+          priority?: Database["public"]["Enums"]["comm_priority"]
+          starts_at?: string
+          status?: Database["public"]["Enums"]["comm_status"]
+          target_user_ids?: string[]
+          title?: string
+          type?: Database["public"]["Enums"]["comm_notification_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      comm_release_notes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          release_date: string
+          status: Database["public"]["Enums"]["comm_status"]
+          title: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          release_date?: string
+          status?: Database["public"]["Enums"]["comm_status"]
+          title: string
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          release_date?: string
+          status?: Database["public"]["Enums"]["comm_status"]
+          title?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
       commission_rules: {
         Row: {
           active: boolean
@@ -6658,6 +6846,34 @@ export type Database = {
         Args: { _email: string; _phone: string }
         Returns: Json
       }
+      comm_mark_all_read: { Args: never; Returns: number }
+      comm_my_notifications: {
+        Args: never
+        Returns: {
+          banner_image_url: string
+          button_text: string
+          button_url: string
+          created_at: string
+          description: string
+          id: string
+          popup_seen_at: string
+          priority: Database["public"]["Enums"]["comm_priority"]
+          read_at: string
+          starts_at: string
+          title: string
+          type: Database["public"]["Enums"]["comm_notification_type"]
+        }[]
+      }
+      comm_set_notification_state: {
+        Args: {
+          _deleted?: boolean
+          _notification_id: string
+          _popup_seen?: boolean
+          _read?: boolean
+        }
+        Returns: undefined
+      }
+      comm_user_audiences: { Args: { _user_id: string }; Returns: string[] }
       ensure_personal_workspace: {
         Args: never
         Returns: {
@@ -6876,6 +7092,25 @@ export type Database = {
       bio_page_visibility: "public" | "private" | "unlisted" | "password"
       campaign_status: "draft" | "active" | "paused" | "completed" | "archived"
       client_status: "trial" | "active" | "suspended" | "archived"
+      comm_audience:
+        | "all"
+        | "trial"
+        | "udaan"
+        | "tejas"
+        | "garuda"
+        | "vajra"
+        | "lifetime"
+        | "selected"
+      comm_bar_mode: "static" | "marquee"
+      comm_notification_type:
+        | "information"
+        | "update"
+        | "success"
+        | "warning"
+        | "offer"
+        | "maintenance"
+      comm_priority: "low" | "normal" | "high" | "important"
+      comm_status: "draft" | "published" | "archived"
       commission_rule_type: "fixed" | "percentage" | "tiered" | "custom"
       commission_status: "pending" | "approved" | "paid" | "void"
       conversion_goal_type:
@@ -7228,6 +7463,27 @@ export const Constants = {
       bio_page_visibility: ["public", "private", "unlisted", "password"],
       campaign_status: ["draft", "active", "paused", "completed", "archived"],
       client_status: ["trial", "active", "suspended", "archived"],
+      comm_audience: [
+        "all",
+        "trial",
+        "udaan",
+        "tejas",
+        "garuda",
+        "vajra",
+        "lifetime",
+        "selected",
+      ],
+      comm_bar_mode: ["static", "marquee"],
+      comm_notification_type: [
+        "information",
+        "update",
+        "success",
+        "warning",
+        "offer",
+        "maintenance",
+      ],
+      comm_priority: ["low", "normal", "high", "important"],
+      comm_status: ["draft", "published", "archived"],
       commission_rule_type: ["fixed", "percentage", "tiered", "custom"],
       commission_status: ["pending", "approved", "paid", "void"],
       conversion_goal_type: [

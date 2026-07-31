@@ -4,6 +4,7 @@ import { Topbar } from "@/shared/navigation/topbar";
 import { BottomNav } from "@/features/mobile";
 import { DesktopShortcutsHost } from "@/features/desktop";
 import { useWorkspaceLayout } from "@/features/desktop";
+import { AnnouncementBar, ImportantNotificationPopup } from "@/features/comms";
 
 /** Authenticated app shell for the workspace dashboard. */
 export function DashboardLayout({ children }: { children: ReactNode }) {
@@ -15,7 +16,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       <DesktopShortcutsHost />
       {!focus && <Sidebar />}
       <div className="flex min-w-0 flex-1 flex-col">
+        {!focus && <AnnouncementBar />}
         {!focus && <Topbar />}
+        <ImportantNotificationPopup />
         <main
           className={
             compact
