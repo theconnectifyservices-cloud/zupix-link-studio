@@ -62,6 +62,8 @@ export const inspectLicenseKey = createServerFn({ method: "POST" })
       plan?: string;
       maxDevices?: number | null;
       hasCustomer: boolean;
+      /** The licence customer already has an account — sign in instead of signing up. */
+      existingAccount?: boolean;
       customer?: { fullName: string; email: string; phone: string };
     }> => {
       const { isLicenseExpired } = await import("./types");
