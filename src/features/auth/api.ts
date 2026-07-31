@@ -89,11 +89,13 @@ function friendlyOtpError(message?: string | null) {
 
 
 export async function requestPasswordReset(email: string) {
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/auth/reset-password`,
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+    redirectTo: `${origin}/auth/reset-password`,
   });
   if (error) throw error;
 }
+
 
 export async function updatePassword(password: string) {
   const { error } = await supabase.auth.updateUser({ password });
@@ -123,14 +125,17 @@ export async function updateProfile(userId: string, patch: Partial<ProfileRow>) 
 }
 
 export async function checkUsernameAvailable(username: string): Promise<boolean> {
+  const value = (username ?? "").trim().toLowerCase();
+  if (!value) return false;
   const { data, error } = await supabase
     .from("profiles" as never)
     .select("id")
-    .eq("username", username.toLowerCase())
+    .eq("username", value)
     .maybeSingle();
   if (error) return false;
   return !data;
 }
+
 
 export async function fetchWorkspaces(userId: string): Promise<WorkspaceRow[]> {
   const { data, error } = await supabase
