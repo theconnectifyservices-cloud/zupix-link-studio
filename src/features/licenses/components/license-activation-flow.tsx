@@ -90,8 +90,8 @@ export function LicenseActivationFlow({
         setCustomer(null);
         setStage("details");
       }
-    } catch {
-      setError("Invalid or Expired License Key");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not verify the license. Please try again.");
     } finally {
       setVerifying(false);
     }
@@ -241,7 +241,12 @@ function PasswordOnlyForm({
         toast.error(licenseErrorMessage(res.reason, res.maxDevices));
         return;
       }
-      await signInWithPassword(res.email ?? customer.email, values.password);
+      const loginEmail = (res.email ?? customer.email ?? "").trim();
+      if (!loginEmail) {
+        toast.error("License activated, but no email is on file. Please sign in manually.");
+        return;
+      }
+      await signInWithPassword(loginEmail, values.password);
       toast.success("License activated — welcome to ZUPIX Link Studio 🎉");
       onActivated();
     } catch (err) {
