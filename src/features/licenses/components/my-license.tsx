@@ -142,7 +142,7 @@ export function MyLicense() {
               </p>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Input
-                  placeholder="ZPX-XXXX-XXXX-XXXX"
+                  placeholder="ZLS-TEJAS-XXXX-XXXX"
                   value={key}
                   onChange={(e) => setKey(e.target.value.toUpperCase())}
                   className="font-mono"
