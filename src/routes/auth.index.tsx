@@ -11,12 +11,25 @@ import { PhoneOtpForm } from "@/features/auth/components/phone-otp-form";
 import { PasswordInput } from "@/features/auth/components/password-input";
 import {
   loginSchema,
-  signupSchema,
+  enterpriseSignupSchema,
   type LoginInput,
-  type SignupInput,
+  type EnterpriseSignupInput,
 } from "@/features/auth/schemas";
-import { signInWithPassword, signUpWithPassword } from "@/features/auth/api";
+import { signInWithPassword } from "@/features/auth/api";
+import {
+  getDeviceId,
+  getDeviceLabel,
+  licenseErrorMessage,
+  touchLicenseLogin,
+} from "@/features/licenses";
+import {
+  checkLoginRate,
+  recordLoginAttempt,
+  signUpWithLicense,
+} from "@/features/licenses/signup.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { startTejasTrial } from "@/features/trial/activation.functions";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
