@@ -488,7 +488,21 @@ function renderInner(block: Block, reduceMotion: boolean) {
     case "embed":
       return <EmbedRender block={block} />;
     case "customCode":
-      return <CustomCodeRender block={block} />;
+      return (
+        <ErrorBoundary
+          fallback={
+            <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-xs text-destructive">
+              <div className="font-medium">Custom Code couldn't be rendered</div>
+              <div className="mt-1 opacity-80">
+                Check the HTML for unsupported or malformed markup.
+              </div>
+            </div>
+          }
+        >
+          <CustomCodeRender block={block} />
+        </ErrorBoundary>
+      );
+
 
 
     default:
