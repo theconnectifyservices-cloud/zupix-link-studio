@@ -232,6 +232,7 @@ export const signUpWithLicense = createServerFn({ method: "POST" })
         user_id: userId,
         status: "active",
         activated_at: new Date().toISOString(),
+        last_login_at: new Date().toISOString(),
         customer_name: fullName,
         email,
         phone,
