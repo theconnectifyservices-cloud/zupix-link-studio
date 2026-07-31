@@ -13,6 +13,7 @@ import type {
   FaqItem,
   FileBlock,
   GalleryImage,
+  GalleryBlock,
   SocialFeedBlock,
   SocialLink,
   SocialPlatform,
