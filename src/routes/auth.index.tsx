@@ -12,10 +12,8 @@ import { PasswordInput } from "@/features/auth/components/password-input";
 import {
   loginSchema,
   enterpriseSignupSchema,
-  licenseActivationSignupSchema,
   type LoginInput,
   type EnterpriseSignupInput,
-  type LicenseActivationSignupInput,
 } from "@/features/auth/schemas";
 import { signInWithPassword } from "@/features/auth/api";
 import {
@@ -24,6 +22,7 @@ import {
   licenseErrorMessage,
   touchLicenseLogin,
 } from "@/features/licenses";
+import { LicenseActivationFlow } from "@/features/licenses/components/license-activation-flow";
 import {
   checkLoginRate,
   recordLoginAttempt,
@@ -221,19 +220,28 @@ function SignupForm({ onDone }: { onDone: () => void }) {
     resolver: zodResolver(enterpriseSignupSchema),
     defaultValues: { phone: "+91" },
   });
-  const licenseForm = useForm<LicenseActivationSignupInput>({
-    resolver: zodResolver(licenseActivationSignupSchema),
-    defaultValues: { phone: "+91" },
-  });
 
-  const form = withLicense ? (licenseForm as unknown as typeof trialForm) : trialForm;
+  const form = trialForm;
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = form;
 
-  async function onSubmit(values: EnterpriseSignupInput & { licenseKey?: string }) {
+  if (withLicense) {
+    return (
+      <LicenseActivationFlow
+        onBack={() => setWithLicense(false)}
+        onActivated={() => {
+          navigate({ to: "/app" });
+          onDone();
+        }}
+      />
+    );
+  }
+
+
+  async function onSubmit(values: EnterpriseSignupInput) {
     try {
       const res = (await signUp({
         data: {
@@ -241,7 +249,6 @@ function SignupForm({ onDone }: { onDone: () => void }) {
           email: values.email,
           phone: values.phone.replace(/[^\d+]/g, ""),
           password: values.password,
-          ...(withLicense && values.licenseKey ? { licenseKey: values.licenseKey } : {}),
           deviceId: getDeviceId(),
           deviceLabel: getDeviceLabel(),
         },
@@ -254,11 +261,7 @@ function SignupForm({ onDone }: { onDone: () => void }) {
 
       await signInWithPassword(values.email, values.password);
       await touchLicenseLogin();
-      toast.success(
-        withLicense
-          ? "Account created and license activated 🎉"
-          : "Account created — your 3-day UDAAN trial is active 🎉",
-      );
+      toast.success("Account created — your 3-day UDAAN trial is active 🎉");
       navigate({ to: "/app" });
       onDone();
     } catch (err) {
@@ -267,11 +270,7 @@ function SignupForm({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <form
-      key={withLicense ? "license" : "trial"}
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="signup-name">Full name</Label>
         <Input id="signup-name" autoComplete="name" {...register("fullName")} />
@@ -300,50 +299,22 @@ function SignupForm({ onDone }: { onDone: () => void }) {
         </div>
       </div>
 
-      {withLicense ? (
-        <div className="space-y-2">
-          <Label htmlFor="signup-license">License key</Label>
-          <Input
-            id="signup-license"
-            placeholder="ZLS-TEJAS-XXXX-XXXX"
-            className="font-mono uppercase"
-            {...licenseForm.register("licenseKey")}
-          />
-          {licenseForm.formState.errors.licenseKey ? (
-            <p className="text-xs text-destructive">
-              {licenseForm.formState.errors.licenseKey.message}
-            </p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Your key is verified and your plan activated before the account is created.
-            </p>
-          )}
-        </div>
-      ) : null}
-
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting
-          ? withLicense
-            ? "Verifying license…"
-            : "Creating account…"
-          : withLicense
-            ? "Activate license & create account"
-            : "Create account"}
+        {isSubmitting ? "Creating account…" : "Create account"}
       </Button>
 
       <button
         type="button"
-        onClick={() => setWithLicense((v) => !v)}
+        onClick={() => setWithLicense(true)}
         className="w-full text-center text-xs font-medium text-primary underline underline-offset-4"
       >
-        {withLicense ? "← Back to free 3-day trial signup" : "Already have a License Key?"}
+        Already have a License Key?
       </button>
 
-      {!withLicense ? (
-        <p className="text-center text-xs text-muted-foreground">
-          No license key needed — you start on the UDAAN 3-day trial with full trial access.
-        </p>
-      ) : null}
+      <p className="text-center text-xs text-muted-foreground">
+        No license key needed — you start on the UDAAN 3-day trial with full trial access.
+      </p>
+
       <p className="text-center text-xs text-muted-foreground">
         By continuing you agree to our Terms and Privacy Policy.
       </p>
