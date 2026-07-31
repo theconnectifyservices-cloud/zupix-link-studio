@@ -81,19 +81,40 @@ export function licenseErrorMessage(reason?: string | null, maxDevices?: number 
       return `This License Key has reached its activation limit${
         maxDevices && maxDevices > 0 ? ` (${maxDevices} device${maxDevices > 1 ? "s" : ""})` : ""
       }.`;
+    case "invalid":
+    case "not_found":
+      return "License Not Found";
     case "already_used":
-      return "This License Key is already linked to another account.";
+    case "active":
+      return "License Already Activated";
     case "suspended":
-      return "This License Key is suspended. Contact support.";
+      return "License Suspended";
     case "revoked":
-      return "This License Key has been revoked.";
+      return "License Revoked";
     case "expired":
-      return "Invalid or Expired License Key";
+      return "License Expired";
+    case "customer_mismatch":
+      return "Customer Mismatch — contact support to update your license details.";
+    case "missing_details":
+      return "This license has no customer details. Please complete the form.";
     case "email_taken":
-      return "An account with this email already exists.";
+      return "An account with this email already exists. Please sign in instead.";
     case "phone_taken":
-      return "An account with this phone number already exists.";
+      return "An account with this phone number already exists. Please sign in instead.";
     default:
-      return "Invalid or Expired License Key";
+      return reason ? `Activation failed: ${reason}` : "Invalid or Expired License Key";
   }
+}
+
+/**
+ * Expiry is stored as a date (midnight UTC). A license is valid through the
+ * whole of its expiry day, so compare against the end of that day.
+ */
+export function isLicenseExpired(expiresAt?: string | null): boolean {
+  if (!expiresAt) return false;
+  const t = new Date(expiresAt).getTime();
+  if (Number.isNaN(t)) return false;
+  const endOfDay = new Date(t);
+  endOfDay.setUTCHours(23, 59, 59, 999);
+  return endOfDay.getTime() < Date.now();
 }
