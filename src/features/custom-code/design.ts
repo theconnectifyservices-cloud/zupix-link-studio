@@ -271,6 +271,7 @@ export function buildDesignCss(input?: Partial<CcDesign> | null, mobileMaxWidth 
 
   return [
     keyframes(),
+    `.zx-cc-scope .zx-anim{width:100%;}`,
     desktop,
     shell.join("\n"),
     animationCss(d.animation ?? "none", d.animationDuration ?? 2, d.animationDelay ?? 0),
