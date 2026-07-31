@@ -1,4 +1,6 @@
 import DOMPurify from "dompurify";
+import { buildDesignCss, type CcDesign } from "./design";
+
 
 /**
  * Sanitize user-provided HTML for a Custom Code block.
