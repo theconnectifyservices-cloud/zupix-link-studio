@@ -13,8 +13,8 @@ export async function listLicenses(search?: string): Promise<ProductLicense[]> {
   return (data as ProductLicense[]) ?? [];
 }
 
-export async function generateKey(): Promise<string> {
-  const { data, error } = await db.rpc("generate_license_key");
+export async function generateKey(plan: string = "monthly"): Promise<string> {
+  const { data, error } = await db.rpc("generate_license_key", { _plan: plan });
   if (error) throw error;
   return data as string;
 }
