@@ -34,6 +34,7 @@ import { Route as ApiAiChatRouteImport } from './routes/api/ai.chat'
 import { Route as AdminBuilderIdRouteImport } from './routes/admin.builder.$id'
 import { Route as AuthenticatedBuilderIdRouteImport } from './routes/_authenticated.builder.$id'
 import { Route as AuthenticatedAppWhiteLabelRouteImport } from './routes/_authenticated.app.white-label'
+import { Route as AuthenticatedAppWhatsNewRouteImport } from './routes/_authenticated/app/whats-new'
 import { Route as AuthenticatedAppTrackingRouteImport } from './routes/_authenticated.app.tracking'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated.app.templates'
 import { Route as AuthenticatedAppTeamRouteImport } from './routes/_authenticated.app.team'
@@ -215,6 +216,12 @@ const AuthenticatedAppWhiteLabelRoute =
   AuthenticatedAppWhiteLabelRouteImport.update({
     id: '/white-label',
     path: '/white-label',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppWhatsNewRoute =
+  AuthenticatedAppWhatsNewRouteImport.update({
+    id: '/whats-new',
+    path: '/whats-new',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppTrackingRoute =
@@ -602,6 +609,7 @@ export interface FileRoutesByFullPath {
   '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
+  '/app/whats-new': typeof AuthenticatedAppWhatsNewRoute
   '/app/white-label': typeof AuthenticatedAppWhiteLabelRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/admin/builder/$id': typeof AdminBuilderIdRoute
@@ -683,6 +691,7 @@ export interface FileRoutesByTo {
   '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
+  '/app/whats-new': typeof AuthenticatedAppWhatsNewRoute
   '/app/white-label': typeof AuthenticatedAppWhiteLabelRoute
   '/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/admin/builder/$id': typeof AdminBuilderIdRoute
@@ -768,6 +777,7 @@ export interface FileRoutesById {
   '/_authenticated/app/team': typeof AuthenticatedAppTeamRoute
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/tracking': typeof AuthenticatedAppTrackingRoute
+  '/_authenticated/app/whats-new': typeof AuthenticatedAppWhatsNewRoute
   '/_authenticated/app/white-label': typeof AuthenticatedAppWhiteLabelRoute
   '/_authenticated/builder/$id': typeof AuthenticatedBuilderIdRoute
   '/admin/builder/$id': typeof AdminBuilderIdRoute
@@ -853,6 +863,7 @@ export interface FileRouteTypes {
     | '/app/team'
     | '/app/templates'
     | '/app/tracking'
+    | '/app/whats-new'
     | '/app/white-label'
     | '/builder/$id'
     | '/admin/builder/$id'
@@ -934,6 +945,7 @@ export interface FileRouteTypes {
     | '/app/team'
     | '/app/templates'
     | '/app/tracking'
+    | '/app/whats-new'
     | '/app/white-label'
     | '/builder/$id'
     | '/admin/builder/$id'
@@ -1018,6 +1030,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/team'
     | '/_authenticated/app/templates'
     | '/_authenticated/app/tracking'
+    | '/_authenticated/app/whats-new'
     | '/_authenticated/app/white-label'
     | '/_authenticated/builder/$id'
     | '/admin/builder/$id'
@@ -1246,6 +1259,13 @@ declare module '@tanstack/react-router' {
       path: '/white-label'
       fullPath: '/app/white-label'
       preLoaderRoute: typeof AuthenticatedAppWhiteLabelRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/whats-new': {
+      id: '/_authenticated/app/whats-new'
+      path: '/whats-new'
+      fullPath: '/app/whats-new'
+      preLoaderRoute: typeof AuthenticatedAppWhatsNewRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/tracking': {
@@ -1763,6 +1783,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppTeamRoute: typeof AuthenticatedAppTeamRoute
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppTrackingRoute: typeof AuthenticatedAppTrackingRoute
+  AuthenticatedAppWhatsNewRoute: typeof AuthenticatedAppWhatsNewRoute
   AuthenticatedAppWhiteLabelRoute: typeof AuthenticatedAppWhiteLabelRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
@@ -1798,6 +1819,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppTeamRoute: AuthenticatedAppTeamRoute,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppTrackingRoute: AuthenticatedAppTrackingRoute,
+  AuthenticatedAppWhatsNewRoute: AuthenticatedAppWhatsNewRoute,
   AuthenticatedAppWhiteLabelRoute: AuthenticatedAppWhiteLabelRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
