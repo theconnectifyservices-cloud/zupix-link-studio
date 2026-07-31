@@ -239,13 +239,9 @@ function CarouselLayout({ block, images, interactive, onOpen }: LayoutProps) {
   const drag = useRef<{ x: number; active: boolean } | null>(null);
 
   const go = useCallback(
-    (next: number) => {
-      setIndex((cur) => {
-        if (count === 0) return 0;
-        if (loop) return (next + count) % count;
-        return Math.min(count - 1, Math.max(0, next));
-      });
-      void cur_noop;
+    (target: number) => {
+      if (count === 0) return;
+      setIndex(loop ? (target + count) % count : Math.min(count - 1, Math.max(0, target)));
     },
     [count, loop],
   );
@@ -370,8 +366,6 @@ function CarouselLayout({ block, images, interactive, onOpen }: LayoutProps) {
     </div>
   );
 }
-
-const cur_noop = undefined;
 
 /* -------------------------------------------------------------------------- */
 /*  Lightbox                                                                   */
