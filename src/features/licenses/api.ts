@@ -42,7 +42,8 @@ export async function deleteLicense(id: string) {
 }
 
 export async function regenerateLicenseKey(id: string): Promise<string> {
-  const key = await generateKey();
+  const { data: row } = await db.from("product_licenses").select("plan").eq("id", id).maybeSingle();
+  const key = await generateKey((row?.plan as string) ?? "monthly");
   await updateLicense(id, { license_key: key });
   return key;
 }
