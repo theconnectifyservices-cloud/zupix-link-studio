@@ -64,31 +64,35 @@ export const inspectLicenseKey = createServerFn({ method: "POST" })
       hasCustomer: boolean;
       customer?: { fullName: string; email: string; phone: string };
     }> => {
+      const { isLicenseExpired } = await import("./types");
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const admin = supabaseAdmin as any;
+      const key = (data.licenseKey ?? "").trim();
       const { data: lic } = await admin
         .from("product_licenses")
         .select("id, status, expires_at, max_devices, user_id, plan, customer_name, email, phone")
-        .ilike("license_key", data.licenseKey.trim())
+        .ilike("license_key", key)
         .maybeSingle();
 
-      if (!lic) return { valid: false, reason: "invalid", hasCustomer: false };
+      if (!lic) return { valid: false, reason: "not_found", hasCustomer: false };
       if (lic.user_id) return { valid: false, reason: "already_used", hasCustomer: false };
-      if (["revoked", "suspended", "expired"].includes(lic.status))
-        return { valid: false, reason: lic.status, hasCustomer: false };
-      if (lic.expires_at && new Date(lic.expires_at).getTime() < Date.now())
+      if (lic.status === "revoked") return { valid: false, reason: "revoked", hasCustomer: false };
+      if (lic.status === "suspended") return { valid: false, reason: "suspended", hasCustomer: false };
+      if (lic.status === "active") return { valid: false, reason: "already_used", hasCustomer: false };
+      if (lic.status === "expired" || isLicenseExpired(lic.expires_at))
         return { valid: false, reason: "expired", hasCustomer: false };
 
+      const maxDevices = typeof lic.max_devices === "number" ? lic.max_devices : -1;
       const { count } = await admin
         .from("license_activations")
         .select("id", { count: "exact", head: true })
         .eq("license_id", lic.id)
         .is("revoked_at", null);
-      if (lic.max_devices >= 0 && (count ?? 0) >= lic.max_devices)
+      if (maxDevices >= 0 && (count ?? 0) >= maxDevices)
         return {
           valid: false,
           reason: "device_limit",
-          maxDevices: lic.max_devices,
+          maxDevices,
           hasCustomer: false,
         };
 
@@ -115,7 +119,7 @@ export const inspectLicenseKey = createServerFn({ method: "POST" })
       return {
         valid: true,
         plan: lic.plan ?? undefined,
-        maxDevices: lic.max_devices ?? null,
+        maxDevices,
         hasCustomer,
         customer: hasCustomer ? { fullName, email, phone } : undefined,
       };
