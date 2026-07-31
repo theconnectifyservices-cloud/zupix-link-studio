@@ -22,6 +22,8 @@ export interface SignupResult {
   reason?: string;
   maxDevices?: number | null;
   userId?: string;
+  /** Resolved account email (may come from the licence record). */
+  email?: string;
 }
 
 export const verifyLicenseKey = createServerFn({ method: "POST" })
