@@ -115,6 +115,8 @@ function OrDivider() {
 
 function LoginForm({ redirectTo }: { redirectTo?: string }) {
   const navigate = useNavigate();
+  const rateCheck = useServerFn(checkLoginRate);
+  const logAttempt = useServerFn(recordLoginAttempt);
   const {
     register,
     handleSubmit,
@@ -125,9 +127,27 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
   });
 
   async function onSubmit(values: LoginInput) {
+    const identifier = values.email.trim().toLowerCase();
+    try {
+      const gate = (await rateCheck({ data: { identifier } })) as {
+        allowed: boolean;
+        retryInMinutes?: number;
+      };
+      if (!gate.allowed) {
+        toast.error(
+          `Too many failed sign-in attempts. Try again in ${gate.retryInMinutes ?? 15} minutes.`,
+        );
+        return;
+      }
+    } catch {
+      /* rate limiter unavailable — continue */
+    }
     try {
       await signInWithPassword(values.email, values.password);
+      void logAttempt({ data: { identifier, success: true } }).catch(() => {});
+      await touchLicenseLogin();
       toast.success("Signed in");
+
       try { await startTejasTrial({ data: {} }); } catch { /* non-fatal */ }
       const intent =
         typeof window !== "undefined" ? window.sessionStorage.getItem("zupix:auth_intent") : null;
