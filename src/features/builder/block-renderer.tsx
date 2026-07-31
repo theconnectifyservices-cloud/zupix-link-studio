@@ -1902,6 +1902,7 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
         css: block.css ?? "",
         js: block.js ?? "",
         allowJs: allowJs && !!block.jsEnabled,
+        design: block.design,
       });
     } catch (err) {
       buildError = err instanceof Error ? err.message : "Could not process this HTML.";

@@ -1,3 +1,4 @@
+export * from "./design";
 export * from "./sanitize";
 export * from "./presets";
 export * from "./api";
