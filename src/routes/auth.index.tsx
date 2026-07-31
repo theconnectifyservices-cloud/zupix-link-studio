@@ -160,7 +160,15 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Signing in..." : "Sign in"}
         </Button>
+        <p className="text-center text-xs text-muted-foreground">
+          Previously used Google sign-in? Use{" "}
+          <Link to="/auth/forgot-password" className="underline">
+            Forgot password
+          </Link>{" "}
+          to set a password — your account and data stay the same.
+        </p>
       </form>
+
     </div>
   );
 }
