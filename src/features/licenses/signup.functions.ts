@@ -59,28 +59,34 @@ export const signUpWithLicense = createServerFn({ method: "POST" })
     if (avail?.email_taken) return { ok: false, reason: "email_taken" };
     if (avail?.phone_taken) return { ok: false, reason: "phone_taken" };
 
-    // 2. Licence must be valid BEFORE the account is created
-    const { data: lic } = await admin
-      .from("product_licenses")
-      .select("id, status, expires_at, max_devices, user_id")
-      .ilike("license_key", data.licenseKey.trim())
-      .maybeSingle();
-    if (!lic) return { ok: false, reason: "invalid" };
-    if (lic.user_id) return { ok: false, reason: "already_used" };
-    if (["revoked", "suspended", "expired"].includes(lic.status))
-      return { ok: false, reason: lic.status };
-    if (lic.expires_at && new Date(lic.expires_at).getTime() < Date.now())
-      return { ok: false, reason: "expired" };
+    const licenseKey = data.licenseKey?.trim();
+    let lic: any = null;
 
-    const { count } = await admin
-      .from("license_activations")
-      .select("id", { count: "exact", head: true })
-      .eq("license_id", lic.id)
-      .is("revoked_at", null);
-    if (lic.max_devices >= 0 && (count ?? 0) >= lic.max_devices)
-      return { ok: false, reason: "device_limit", maxDevices: lic.max_devices };
+    // 2. When a licence key is supplied it must be valid BEFORE the account is created
+    if (licenseKey) {
+      const { data: found } = await admin
+        .from("product_licenses")
+        .select("id, status, expires_at, max_devices, user_id")
+        .ilike("license_key", licenseKey)
+        .maybeSingle();
+      lic = found;
+      if (!lic) return { ok: false, reason: "invalid" };
+      if (lic.user_id) return { ok: false, reason: "already_used" };
+      if (["revoked", "suspended", "expired"].includes(lic.status))
+        return { ok: false, reason: lic.status };
+      if (lic.expires_at && new Date(lic.expires_at).getTime() < Date.now())
+        return { ok: false, reason: "expired" };
 
-    // 3. Create the account
+      const { count } = await admin
+        .from("license_activations")
+        .select("id", { count: "exact", head: true })
+        .eq("license_id", lic.id)
+        .is("revoked_at", null);
+      if (lic.max_devices >= 0 && (count ?? 0) >= lic.max_devices)
+        return { ok: false, reason: "device_limit", maxDevices: lic.max_devices };
+    }
+
+    // 3. Create the account (trigger provisions workspace + 3-day UDAAN trial)
     const { data: created, error: createErr } = await admin.auth.admin.createUser({
       email,
       password: data.password,
@@ -97,8 +103,25 @@ export const signUpWithLicense = createServerFn({ method: "POST" })
     }
     const userId = created.user.id as string;
 
+    if (!lic) {
+      // Default trial onboarding — no licence attached yet.
+      await admin
+        .from("profiles")
+        .update({ display_name: data.fullName, phone, license_activation_status: "none" })
+        .eq("id", userId);
+      return { ok: true, userId };
+    }
+
     // 4. Link + activate the licence
-    await admin.from("profiles").update({ display_name: data.fullName, phone, license_id: lic.id }).eq("id", userId);
+    await admin
+      .from("profiles")
+      .update({
+        display_name: data.fullName,
+        phone,
+        license_id: lic.id,
+        license_activation_status: "active",
+      })
+      .eq("id", userId);
     await admin.from("license_activations").upsert(
       {
         license_id: lic.id,
