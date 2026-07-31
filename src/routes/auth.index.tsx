@@ -155,8 +155,10 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
       const target = intent === "trial" ? "/app/my-subscription" : (redirectTo as "/app") ?? "/app";
       navigate({ to: target });
     } catch (err) {
+      void logAttempt({ data: { identifier, success: false } }).catch(() => {});
       toast.error(err instanceof Error ? err.message : "Sign-in failed");
     }
+
   }
 
   return (
