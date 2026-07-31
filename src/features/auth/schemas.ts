@@ -126,6 +126,7 @@ export const licenseActivationSignupSchema = z
   });
 
 export type EnterpriseSignupInput = z.infer<typeof enterpriseSignupSchema>;
+export type LicenseActivationSignupInput = z.infer<typeof licenseActivationSignupSchema>;
 
 
 export const forgotPasswordSchema = z.object({ email: emailSchema });
