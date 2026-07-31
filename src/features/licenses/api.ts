@@ -13,8 +13,8 @@ export async function listLicenses(search?: string): Promise<ProductLicense[]> {
   return (data as ProductLicense[]) ?? [];
 }
 
-export async function generateKey(): Promise<string> {
-  const { data, error } = await db.rpc("generate_license_key");
+export async function generateKey(plan: string = "monthly"): Promise<string> {
+  const { data, error } = await db.rpc("generate_license_key", { _plan: plan });
   if (error) throw error;
   return data as string;
 }
@@ -42,7 +42,8 @@ export async function deleteLicense(id: string) {
 }
 
 export async function regenerateLicenseKey(id: string): Promise<string> {
-  const key = await generateKey();
+  const { data: row } = await db.from("product_licenses").select("plan").eq("id", id).maybeSingle();
+  const key = await generateKey((row?.plan as string) ?? "monthly");
   await updateLicense(id, { license_key: key });
   return key;
 }

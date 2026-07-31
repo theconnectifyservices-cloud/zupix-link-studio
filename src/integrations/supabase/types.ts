@@ -4882,6 +4882,7 @@ export type Database = {
           id: string
           language: string | null
           last_login_at: string | null
+          license_activation_status: string
           license_id: string | null
           mfa_enabled: boolean
           onboarding_completed: boolean
@@ -4910,6 +4911,7 @@ export type Database = {
           id: string
           language?: string | null
           last_login_at?: string | null
+          license_activation_status?: string
           license_id?: string | null
           mfa_enabled?: boolean
           onboarding_completed?: boolean
@@ -4938,6 +4940,7 @@ export type Database = {
           id?: string
           language?: string | null
           last_login_at?: string | null
+          license_activation_status?: string
           license_id?: string | null
           mfa_enabled?: boolean
           onboarding_completed?: boolean
@@ -6689,7 +6692,7 @@ export type Database = {
       }
       ensure_tejas_trial: { Args: { _workspace_id: string }; Returns: Json }
       expire_stale_trials: { Args: never; Returns: number }
-      generate_license_key: { Args: never; Returns: string }
+      generate_license_key: { Args: { _plan?: string }; Returns: string }
       get_public_tracking: { Args: { _workspace_id: string }; Returns: Json }
       has_pending_workspace_invitation: {
         Args: {
@@ -6740,6 +6743,7 @@ export type Database = {
         Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
       }
+      license_plan_prefix: { Args: { _plan: string }; Returns: string }
       next_invoice_number: { Args: never; Returns: string }
       org_role_of: {
         Args: { _org_id: string; _user_id: string }

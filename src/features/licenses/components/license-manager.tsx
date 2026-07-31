@@ -348,7 +348,7 @@ function LicenseDialog({
         await updateLicense(license.id, { ...payload, status: value.status as LicenseStatusValue });
         toast.success("Licence updated");
       } else {
-        const key = await generateKey();
+        const key = await generateKey(String(value.plan));
         await createLicense({
           ...payload,
           license_key: key,
@@ -516,7 +516,7 @@ function BulkCreateDialog({
       const rows: Partial<ProductLicense>[] = [];
       for (let i = 0; i < Math.min(Math.max(count, 1), 200); i++) {
         rows.push({
-          license_key: await generateKey(),
+          license_key: await generateKey(plan),
           plan,
           max_devices: devices,
           status: "unused",
