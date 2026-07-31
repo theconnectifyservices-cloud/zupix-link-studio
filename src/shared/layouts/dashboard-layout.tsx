@@ -19,7 +19,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         {!focus && <AnnouncementBar />}
         {!focus && <Topbar />}
         <ImportantNotificationPopup />
-
+        <main
           className={
             compact
               ? "min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3 pb-[calc(5rem+env(safe-area-inset-bottom))] sm:px-4 lg:px-5 lg:pb-3"
