@@ -22,6 +22,8 @@ import type {
   Viewport,
 } from "./types";
 import { buildSrcDoc } from "@/features/custom-code/sanitize";
+import { ErrorBoundary } from "@/shared/error/error-boundary";
+
 import { useRendererMode } from "./renderer-mode";
 import { resolveHeroEffects } from "./effects/hero-effects";
 import { getIcon as getButtonIcon } from "./button-icons";
