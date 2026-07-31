@@ -1877,14 +1877,21 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
     return () => window.removeEventListener("message", onMessage);
   }, [block.minHeight]);
 
-  const srcDoc = visible
-    ? buildSrcDoc({
+  let buildError: string | null = null;
+  let srcDoc = "";
+  if (visible && hasContent) {
+    try {
+      srcDoc = buildSrcDoc({
         html: block.html ?? "",
         css: block.css ?? "",
         js: block.js ?? "",
         allowJs: allowJs && !!block.jsEnabled,
-      })
-    : "";
+      });
+    } catch (err) {
+      buildError = err instanceof Error ? err.message : "Could not process this HTML.";
+      srcDoc = "";
+    }
+  }
 
   const maxWidth =
     block.containerWidth === "narrow"
@@ -1892,6 +1899,35 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
       : block.containerWidth === "wide"
         ? 960
         : undefined;
+
+  if (!hasContent) {
+    if (mode === "public") return null;
+    return (
+      <div
+        className="rounded-md border border-dashed p-6 text-center text-xs text-muted-foreground"
+        data-builder-only="true"
+      >
+        <div className="font-medium text-foreground">Custom Code block</div>
+        <div className="mt-1">Insert HTML, an embed, or pick a preset from the right panel.</div>
+      </div>
+    );
+  }
+
+  if (buildError) {
+    if (mode === "public") return null;
+    return (
+      <div
+        className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-xs text-destructive"
+        data-builder-only="true"
+      >
+        <div className="font-medium">Custom Code couldn't be rendered</div>
+        <div className="mt-1 break-words opacity-80">{buildError}</div>
+      </div>
+    );
+  }
+
+  const jsBlocked = !!block.js?.trim() && !(allowJs && block.jsEnabled);
+
 
   return (
     <div
