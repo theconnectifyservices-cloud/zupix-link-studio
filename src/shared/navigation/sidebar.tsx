@@ -34,6 +34,7 @@ import { useUIStore } from "@/stores";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { APP_CONFIG } from "@/config/app.config";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import { useUserRoles } from "@/features/auth/hooks/use-user-roles";
 import type { Permission } from "@/features/auth/rbac";
