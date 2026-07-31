@@ -55,6 +55,7 @@ function AuthPage() {
   const navigate = useNavigate();
   const search = useSearch({ from: "/auth/" });
   const [tab, setTab] = useState<"login" | "signup">(search.mode ?? "login");
+  const [activating, setActivating] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -63,6 +64,20 @@ function AuthPage() {
       }
     });
   }, [navigate, search.redirect]);
+
+  if (activating) {
+    return (
+      <AuthShell
+        title="Activate your License"
+        subtitle="Enter your license key to activate your paid plan"
+      >
+        <LicenseActivationFlow
+          onBack={() => setActivating(false)}
+          onActivated={() => navigate({ to: "/app" })}
+        />
+      </AuthShell>
+    );
+  }
 
   return (
     <AuthShell
@@ -83,6 +98,29 @@ function AuthPage() {
           <SignupForm onDone={() => setTab("login")} />
         </TabsContent>
       </Tabs>
+
+      <div className="mt-6 rounded-xl border border-dashed bg-muted/30 p-4 text-center">
+        <p className="text-sm font-semibold text-foreground">🎟 Have a License Key?</p>
+        <p className="mt-1 text-xs text-muted-foreground">Activate your paid plan instantly.</p>
+        <Button
+          type="button"
+          variant="outline"
+          className="mt-3 w-full"
+          onClick={() => setActivating(true)}
+        >
+          Activate License
+        </Button>
+      </div>
+
+      <div className="mt-4 space-y-1 text-center">
+        <p className="text-xs font-medium text-foreground">New here?</p>
+        <p className="text-xs text-muted-foreground">
+          Create a free account and enjoy the UDAAN 3-Day Free Trial.
+        </p>
+        <p className="text-xs text-muted-foreground">
+          Upgrade anytime to unlock premium features.
+        </p>
+      </div>
     </AuthShell>
   );
 }
@@ -198,13 +236,6 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Signing in..." : "Sign in"}
         </Button>
-        <p className="text-center text-xs text-muted-foreground">
-          Previously used Google sign-in? Use{" "}
-          <Link to="/auth/forgot-password" className="underline">
-            Forgot password
-          </Link>{" "}
-          to set a password — your account and data stay the same.
-        </p>
       </form>
 
     </div>
