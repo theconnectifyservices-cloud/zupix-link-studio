@@ -129,6 +129,7 @@ export const inspectLicenseKey = createServerFn({ method: "POST" })
 export const signUpWithLicense = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => signupInput.parse(d))
   .handler(async ({ data }): Promise<SignupResult> => {
+    const { isLicenseExpired } = await import("./types");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as any;
 
@@ -143,20 +144,27 @@ export const signUpWithLicense = createServerFn({ method: "POST" })
         .ilike("license_key", licenseKey)
         .maybeSingle();
       lic = found;
-      if (!lic) return { ok: false, reason: "invalid" };
+      if (!lic) return { ok: false, reason: "not_found" };
       if (lic.user_id) return { ok: false, reason: "already_used" };
-      if (["revoked", "suspended", "expired"].includes(lic.status))
-        return { ok: false, reason: lic.status };
-      if (lic.expires_at && new Date(lic.expires_at).getTime() < Date.now())
+      if (lic.status === "revoked") return { ok: false, reason: "revoked" };
+      if (lic.status === "suspended") return { ok: false, reason: "suspended" };
+      if (lic.status === "active") return { ok: false, reason: "already_used" };
+      if (lic.status === "expired" || isLicenseExpired(lic.expires_at))
         return { ok: false, reason: "expired" };
 
+      const licenseEmail = (lic.email ?? "").trim().toLowerCase();
+      const enteredEmail = (data.email ?? "").trim().toLowerCase();
+      if (licenseEmail && enteredEmail && licenseEmail !== enteredEmail)
+        return { ok: false, reason: "customer_mismatch" };
+
+      const maxDevices = typeof lic.max_devices === "number" ? lic.max_devices : -1;
       const { count } = await admin
         .from("license_activations")
         .select("id", { count: "exact", head: true })
         .eq("license_id", lic.id)
         .is("revoked_at", null);
-      if (lic.max_devices >= 0 && (count ?? 0) >= lic.max_devices)
-        return { ok: false, reason: "device_limit", maxDevices: lic.max_devices };
+      if (maxDevices >= 0 && (count ?? 0) >= maxDevices)
+        return { ok: false, reason: "device_limit", maxDevices };
     }
 
     // 2. Resolve identity — the licence's stored customer wins when the client omits fields
