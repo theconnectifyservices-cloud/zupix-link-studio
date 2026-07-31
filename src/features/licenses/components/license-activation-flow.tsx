@@ -79,11 +79,7 @@ export function LicenseActivationFlow({
         customer?: Customer;
       };
       if (!res.valid) {
-        setError(
-          res.reason && res.reason !== "invalid"
-            ? licenseErrorMessage(res.reason, res.maxDevices ?? null)
-            : "Invalid or Expired License Key",
-        );
+        setError(licenseErrorMessage(res.reason, res.maxDevices ?? null));
         return;
       }
       setPlan(res.plan ?? null);
