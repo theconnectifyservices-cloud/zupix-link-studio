@@ -1253,3 +1253,24 @@ body {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
+
+/* 11 · Announcement bar marquee. */
+.marquee-content {
+  display: inline-block;
+  min-width: 100%;
+  animation: zupix-marquee 22s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+@keyframes zupix-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-content { animation: none; }
+}

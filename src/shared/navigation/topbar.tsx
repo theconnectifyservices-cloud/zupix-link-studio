@@ -1,6 +1,6 @@
 import { WorkspaceSwitcher } from "./workspace-switcher";
 import { GlobalSearch } from "./global-search";
-import { NotificationPanel } from "./notification-panel";
+import { NotificationBell } from "@/features/comms";
 import { ProfileMenu } from "./profile-menu";
 import { MobileSidebarTrigger } from "./mobile-sidebar-trigger";
 import {
@@ -29,7 +29,7 @@ export function Topbar({ variant = "app" }: TopbarProps) {
           <ClipboardHistory />
           <ProductivityModeMenu />
         </div>
-        <NotificationPanel />
+        <NotificationBell />
         <ProfileMenu variant={variant} />
       </div>
     </header>
