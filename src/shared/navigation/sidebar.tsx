@@ -88,6 +88,9 @@ const appItems: Item[] = [
   { icon: Award, label: "Launch Center", href: "/app/launch", requires: ["can_manage_launch"] },
   { icon: Shield, label: "Subscription Management", href: "/admin/subscription-management", requiresRole: ["admin", "super_admin"] },
   { icon: Shield, label: "Payment Hub", href: "/admin/payment-gateways", requiresRole: ["admin", "super_admin"] },
+  { icon: KeyRound, label: "License Manager", href: "/admin/licenses", requiresRole: ["admin", "super_admin"] },
+  { icon: Users, label: "User Management", href: "/admin/users", requiresRole: ["admin", "super_admin"] },
+
 ];
 
 const bottomItems: Item[] = [
