@@ -1822,18 +1822,6 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
     !!(block.css && block.css.trim()) ||
     !!(block.js && block.js.trim());
 
-  if (!hasContent) {
-    if (mode === "public") return null;
-    return (
-      <div
-        className="rounded-md border border-dashed p-6 text-center text-xs text-muted-foreground"
-        data-builder-only="true"
-      >
-        <div className="font-medium text-foreground">Custom Code block</div>
-        <div className="mt-1">Insert HTML, an embed, or pick a preset from the right panel.</div>
-      </div>
-    );
-  }
 
   // Fetch workspace-level JS toggle once (public — the sanitizer strips
   // <script> unless the workspace has explicitly opted-in).
