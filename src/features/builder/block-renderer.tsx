@@ -22,6 +22,8 @@ import type {
   Viewport,
 } from "./types";
 import { buildSrcDoc } from "@/features/custom-code/sanitize";
+import { ErrorBoundary } from "@/shared/error/error-boundary";
+
 import { useRendererMode } from "./renderer-mode";
 import { resolveHeroEffects } from "./effects/hero-effects";
 import { getIcon as getButtonIcon } from "./button-icons";
@@ -488,7 +490,21 @@ function renderInner(block: Block, reduceMotion: boolean) {
     case "embed":
       return <EmbedRender block={block} />;
     case "customCode":
-      return <CustomCodeRender block={block} />;
+      return (
+        <ErrorBoundary
+          fallback={
+            <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-xs text-destructive">
+              <div className="font-medium">Custom Code couldn't be rendered</div>
+              <div className="mt-1 opacity-80">
+                Check the HTML for unsupported or malformed markup.
+              </div>
+            </div>
+          }
+        >
+          <CustomCodeRender block={block} />
+        </ErrorBoundary>
+      );
+
 
 
     default:
@@ -1822,18 +1838,6 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
     !!(block.css && block.css.trim()) ||
     !!(block.js && block.js.trim());
 
-  if (!hasContent) {
-    if (mode === "public") return null;
-    return (
-      <div
-        className="rounded-md border border-dashed p-6 text-center text-xs text-muted-foreground"
-        data-builder-only="true"
-      >
-        <div className="font-medium text-foreground">Custom Code block</div>
-        <div className="mt-1">Insert HTML, an embed, or pick a preset from the right panel.</div>
-      </div>
-    );
-  }
 
   // Fetch workspace-level JS toggle once (public — the sanitizer strips
   // <script> unless the workspace has explicitly opted-in).
@@ -1889,14 +1893,21 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
     return () => window.removeEventListener("message", onMessage);
   }, [block.minHeight]);
 
-  const srcDoc = visible
-    ? buildSrcDoc({
+  let buildError: string | null = null;
+  let srcDoc = "";
+  if (visible && hasContent) {
+    try {
+      srcDoc = buildSrcDoc({
         html: block.html ?? "",
         css: block.css ?? "",
         js: block.js ?? "",
         allowJs: allowJs && !!block.jsEnabled,
-      })
-    : "";
+      });
+    } catch (err) {
+      buildError = err instanceof Error ? err.message : "Could not process this HTML.";
+      srcDoc = "";
+    }
+  }
 
   const maxWidth =
     block.containerWidth === "narrow"
@@ -1904,6 +1915,35 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
       : block.containerWidth === "wide"
         ? 960
         : undefined;
+
+  if (!hasContent) {
+    if (mode === "public") return null;
+    return (
+      <div
+        className="rounded-md border border-dashed p-6 text-center text-xs text-muted-foreground"
+        data-builder-only="true"
+      >
+        <div className="font-medium text-foreground">Custom Code block</div>
+        <div className="mt-1">Insert HTML, an embed, or pick a preset from the right panel.</div>
+      </div>
+    );
+  }
+
+  if (buildError) {
+    if (mode === "public") return null;
+    return (
+      <div
+        className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-xs text-destructive"
+        data-builder-only="true"
+      >
+        <div className="font-medium">Custom Code couldn't be rendered</div>
+        <div className="mt-1 break-words opacity-80">{buildError}</div>
+      </div>
+    );
+  }
+
+  const jsBlocked = !!block.js?.trim() && !(allowJs && block.jsEnabled);
+
 
   return (
     <div
@@ -1928,6 +1968,15 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
           display: "block",
         }}
       />
+      {jsBlocked && mode !== "public" && (
+        <div
+          className="mt-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-700 dark:text-amber-300"
+          data-builder-only="true"
+        >
+          JavaScript in this block is disabled for safety — the HTML and CSS still render.
+        </div>
+      )}
+
     </div>
   );
 }
