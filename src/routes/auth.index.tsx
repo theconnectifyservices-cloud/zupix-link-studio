@@ -12,10 +12,8 @@ import { PasswordInput } from "@/features/auth/components/password-input";
 import {
   loginSchema,
   enterpriseSignupSchema,
-  licenseActivationSignupSchema,
   type LoginInput,
   type EnterpriseSignupInput,
-  type LicenseActivationSignupInput,
 } from "@/features/auth/schemas";
 import { signInWithPassword } from "@/features/auth/api";
 import {
@@ -24,6 +22,7 @@ import {
   licenseErrorMessage,
   touchLicenseLogin,
 } from "@/features/licenses";
+import { LicenseActivationFlow } from "@/features/licenses/components/license-activation-flow";
 import {
   checkLoginRate,
   recordLoginAttempt,
