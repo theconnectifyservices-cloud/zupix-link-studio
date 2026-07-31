@@ -8,33 +8,57 @@ interface BIPEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-const DISMISS_KEY = "zupix:pwa:install-dismissed";
-const SNOOZE_KEY = "zupix:pwa:install-snooze";
-const SNOOZE_MS = 1000 * 60 * 60 * 24 * 3; // 3 days
+/** Dismissal is remembered for 7 days (value = expiry timestamp in ms). */
+const DISMISS_KEY = "pwa-install-dismissed";
+const LEGACY_KEYS = ["zupix:pwa:install-dismissed", "zupix:pwa:install-snooze"];
+const DISMISS_MS = 1000 * 60 * 60 * 24 * 7;
 
 function isIOS() {
   if (typeof navigator === "undefined") return false;
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
+  const ua = navigator.userAgent;
+  const iPadOS = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+  return (/iPad|iPhone|iPod/.test(ua) && !("MSStream" in window)) || iPadOS;
+}
+
+function isStandalone() {
+  if (typeof window === "undefined") return false;
+  return Boolean(
+    window.matchMedia?.("(display-mode: standalone)").matches ||
+      window.matchMedia?.("(display-mode: fullscreen)").matches ||
+      window.matchMedia?.("(display-mode: minimal-ui)").matches ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (navigator as any).standalone === true,
+  );
+}
+
+/** True while a stored dismissal is still inside its 7-day window. */
+function dismissActive() {
+  if (typeof window === "undefined") return false;
+  const raw = window.localStorage.getItem(DISMISS_KEY);
+  if (!raw) return false;
+  const until = Number(raw);
+  // Legacy/boolean values ("true"/"1") are treated as a fresh 7-day window.
+  if (!Number.isFinite(until) || until <= 0) {
+    window.localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_MS));
+    return true;
+  }
+  if (until > Date.now()) return true;
+  window.localStorage.removeItem(DISMISS_KEY);
+  return false;
 }
 
 export function useInstallPrompt() {
   const [deferred, setDeferred] = useState<BIPEvent | null>(null);
   const [installed, setInstalled] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
-  const [snoozed, setSnoozed] = useState(false);
+  const [dismissed, setDismissed] = useState(true); // pessimistic until checked client-side
   const [ios, setIos] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setDismissed(window.localStorage.getItem(DISMISS_KEY) === "1");
-    const snoozeUntil = Number(window.localStorage.getItem(SNOOZE_KEY) ?? 0);
-    setSnoozed(snoozeUntil > Date.now());
+    LEGACY_KEYS.forEach((k) => window.localStorage.removeItem(k));
+    setDismissed(dismissActive());
     setIos(isIOS());
-    const standalone =
-      window.matchMedia?.("(display-mode: standalone)").matches ||
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (navigator as any).standalone === true;
-    setInstalled(Boolean(standalone));
+    setInstalled(isStandalone());
 
     const onBIP = (e: Event) => {
       e.preventDefault();
@@ -44,55 +68,70 @@ export function useInstallPrompt() {
       setInstalled(true);
       setDeferred(null);
     };
+    const mq = window.matchMedia?.("(display-mode: standalone)");
+    const onDisplayChange = () => setInstalled(isStandalone());
     window.addEventListener("beforeinstallprompt", onBIP);
     window.addEventListener("appinstalled", onInstalled);
+    mq?.addEventListener?.("change", onDisplayChange);
     return () => {
       window.removeEventListener("beforeinstallprompt", onBIP);
       window.removeEventListener("appinstalled", onInstalled);
+      mq?.removeEventListener?.("change", onDisplayChange);
     };
   }, []);
 
   const promptInstall = useCallback(async () => {
     if (!deferred) return "unavailable" as const;
-    await deferred.prompt();
-    const { outcome } = await deferred.userChoice;
-    setDeferred(null);
-    return outcome;
+    try {
+      await deferred.prompt();
+      const { outcome } = await deferred.userChoice;
+      // A deferred prompt can only be used once.
+      setDeferred(null);
+      return outcome;
+    } catch {
+      setDeferred(null);
+      return "dismissed" as const;
+    }
   }, [deferred]);
 
+  /** Hide the banner and keep it hidden for 7 days. */
   const dismiss = useCallback(() => {
-    window.localStorage.setItem(DISMISS_KEY, "1");
+    try {
+      window.localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_MS));
+    } catch {
+      /* storage unavailable — session-only dismissal */
+    }
     setDismissed(true);
   }, []);
 
-  const snooze = useCallback(() => {
-    window.localStorage.setItem(SNOOZE_KEY, String(Date.now() + SNOOZE_MS));
-    setSnoozed(true);
-  }, []);
-
   const reset = useCallback(() => {
-    window.localStorage.removeItem(DISMISS_KEY);
-    window.localStorage.removeItem(SNOOZE_KEY);
+    try {
+      window.localStorage.removeItem(DISMISS_KEY);
+      LEGACY_KEYS.forEach((k) => window.localStorage.removeItem(k));
+    } catch {
+      /* ignore */
+    }
     setDismissed(false);
-    setSnoozed(false);
   }, []);
 
-  const canInstall =
-    (Boolean(deferred) || ios) && !installed && !dismissed && !snoozed;
+  const hasNativePrompt = Boolean(deferred);
+  // Show only with a real install path: native prompt, or the iOS Safari fallback.
+  const canInstall = (hasNativePrompt || ios) && !installed && !dismissed;
 
   return {
     canInstall,
     installed,
     dismissed,
-    snoozed,
     isIOS: ios,
-    hasNativePrompt: Boolean(deferred),
+    hasNativePrompt,
     promptInstall,
     dismiss,
-    snooze,
+    /** Kept for API compatibility — same 7-day dismissal. */
+    snooze: dismiss,
     reset,
   };
 }
+
 
 
 export function useServiceWorker() {
