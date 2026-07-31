@@ -93,19 +93,31 @@ const bottomItems: Item[] = [
 
 const adminItems: Item[] = [{ icon: Shield, label: "Admin", href: "/app" }];
 
+/** Modules kept available on mobile (<768px) — everything else is desktop-only. */
+const MOBILE_ALLOWED_HREFS = new Set(["/app", "/app/projects", "/app/settings/profile"]);
+
 export function Sidebar({ variant = "app", className }: SidebarProps) {
   const rawItems = variant === "admin" ? adminItems : appItems;
   const collapsed = !useUIStore((s) => s.sidebarOpen);
   const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { isLoading: rolesLoading, hasAny, roles } = useUserRoles();
+  const isMobile = useIsMobile();
 
   // While roles load, hide guarded items to prevent flash of unauthorized modules.
   const items = rawItems.filter((i) => {
+    if (isMobile && !MOBILE_ALLOWED_HREFS.has(i.href)) return false;
     if (i.requires && !(!rolesLoading && hasAny(i.requires))) return false;
     if (i.requiresRole && !(!rolesLoading && i.requiresRole.some((r) => roles.includes(r as never)))) return false;
     return true;
   });
+
+  const visibleBottomItems = isMobile
+    ? bottomItems
+        .filter((i) => MOBILE_ALLOWED_HREFS.has(i.href))
+        .map((i) => (i.href === "/app/settings/profile" ? { ...i, label: "Profile" } : i))
+    : bottomItems;
+
 
   const isActive = (item: Item) =>
     item.exact
