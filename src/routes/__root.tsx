@@ -18,6 +18,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { CommandPalette, ShortcutsDialog, ProductivityModeEffect } from "@/features/desktop";
 import { ErrorBoundary } from "@/shared/error/error-boundary";
 import { InstallBanner, UpdateBanner, OfflineIndicator } from "@/features/pwa";
+import { RecoveryLinkRedirect } from "@/features/auth/recovery-redirect";
 
 function NotFoundComponent() {
   return (
@@ -187,6 +188,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <RecoveryLinkRedirect />
       <ThemeApplier />
       <ProductivityModeEffect />
       <AuthSubscriber />
