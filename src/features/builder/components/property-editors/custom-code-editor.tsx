@@ -32,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CustomCodeVisualControls } from "./custom-code-visual-controls";
 import type { Block, CustomCodeBlock } from "../../types";
 import {
   CUSTOM_CODE_PRESETS,
@@ -48,7 +49,7 @@ interface Props {
 }
 
 export function CustomCodeEditor({ block, update }: Props) {
-  const [tab, setTab] = useState<"html" | "css" | "js" | "settings">("html");
+  const [tab, setTab] = useState<"design" | "html" | "css" | "js" | "settings">("html");
   const [split, setSplit] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
@@ -84,8 +85,9 @@ export function CustomCodeEditor({ block, update }: Props) {
         css: block.css ?? "",
         js: block.js ?? "",
         allowJs: allowJsWorkspace && !!block.jsEnabled,
+        design: block.design,
       }),
-    [block.html, block.css, block.js, block.jsEnabled, allowJsWorkspace],
+    [block.html, block.css, block.js, block.jsEnabled, block.design, allowJsWorkspace],
   );
 
   const insertPreset = (key: string) => {
@@ -100,7 +102,7 @@ export function CustomCodeEditor({ block, update }: Props) {
   };
 
   const copy = async () => {
-    const src = block[tab === "settings" ? "html" : tab] ?? "";
+    const src = block[tab === "settings" || tab === "design" ? "html" : tab] ?? "";
     await navigator.clipboard.writeText(String(src));
     toast.success("Copied");
   };
@@ -182,6 +184,9 @@ export function CustomCodeEditor({ block, update }: Props) {
       <div className="flex flex-wrap items-center gap-1 border-b bg-muted/40 p-1.5">
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)} className="flex-1">
           <TabsList className="h-8">
+            <TabsTrigger value="design" className="h-7 px-2 text-xs">
+              Design
+            </TabsTrigger>
             <TabsTrigger value="html" className="h-7 px-2 text-xs">
               HTML
             </TabsTrigger>
@@ -219,6 +224,14 @@ export function CustomCodeEditor({ block, update }: Props) {
         </div>
       </div>
       <div className="min-w-0">
+        {tab === "design" && (
+          <div className="max-h-[70vh] overflow-y-auto p-3" style={{ maxHeight: editorHeight }}>
+            <CustomCodeVisualControls
+              design={block.design}
+              onChange={(design) => set("design", design)}
+            />
+          </div>
+        )}
         {tab === "html" && (
           <CodeMirror
             value={block.html ?? ""}
