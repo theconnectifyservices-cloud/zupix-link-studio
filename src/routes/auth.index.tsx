@@ -221,17 +221,26 @@ function SignupForm({ onDone }: { onDone: () => void }) {
     resolver: zodResolver(enterpriseSignupSchema),
     defaultValues: { phone: "+91" },
   });
-  const licenseForm = useForm<LicenseActivationSignupInput>({
-    resolver: zodResolver(licenseActivationSignupSchema),
-    defaultValues: { phone: "+91" },
-  });
 
-  const form = withLicense ? (licenseForm as unknown as typeof trialForm) : trialForm;
+  const form = trialForm;
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = form;
+
+  if (withLicense) {
+    return (
+      <LicenseActivationFlow
+        onBack={() => setWithLicense(false)}
+        onActivated={() => {
+          navigate({ to: "/app" });
+          onDone();
+        }}
+      />
+    );
+  }
+
 
   async function onSubmit(values: EnterpriseSignupInput & { licenseKey?: string }) {
     try {
