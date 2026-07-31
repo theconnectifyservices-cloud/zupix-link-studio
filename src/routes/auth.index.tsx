@@ -174,22 +174,45 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
 }
 
 function SignupForm({ onDone }: { onDone: () => void }) {
+  const navigate = useNavigate();
+  const signUp = useServerFn(signUpWithLicense);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignupInput>({ resolver: zodResolver(signupSchema) });
+  } = useForm<EnterpriseSignupInput>({
+    resolver: zodResolver(enterpriseSignupSchema),
+    defaultValues: { phone: "+91" },
+  });
 
-  async function onSubmit(values: SignupInput) {
+  async function onSubmit(values: EnterpriseSignupInput) {
     try {
-      const { data } = await signUpWithPassword(values.email, values.password);
-      // If email auto-confirm is on and a session exists, activate the trial now.
-      if (data?.session) {
-        try { await startTejasTrial({ data: {} }); } catch { /* non-fatal */ }
-        toast.success("Welcome! Your 3-day Tejas trial is active 🚀");
-      } else {
-        toast.success("Account created. Check your email to verify.");
+      const res = (await signUp({
+        data: {
+          fullName: values.fullName,
+          email: values.email,
+          phone: values.phone.replace(/[^\d+]/g, ""),
+          password: values.password,
+          licenseKey: values.licenseKey,
+          deviceId: getDeviceId(),
+          deviceLabel: getDeviceLabel(),
+        },
+      })) as { ok: boolean; reason?: string; maxDevices?: number | null };
+
+      if (!res.ok) {
+        toast.error(licenseErrorMessage(res.reason, res.maxDevices));
+        return;
       }
+
+      await signInWithPassword(values.email, values.password);
+      await touchLicenseLogin();
+      try {
+        await startTejasTrial({ data: {} });
+      } catch {
+        /* non-fatal */
+      }
+      toast.success("Account created and license activated 🎉");
+      navigate({ to: "/app" });
       onDone();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Sign-up failed");
@@ -197,35 +220,57 @@ function SignupForm({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="signup-name">Full name</Label>
+        <Input id="signup-name" autoComplete="name" {...register("fullName")} />
+        {errors.fullName && <p className="text-xs text-destructive">{errors.fullName.message}</p>}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="signup-email">Email address</Label>
+        <Input id="signup-email" type="email" autoComplete="email" {...register("email")} />
+        {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="signup-phone">Phone number</Label>
+        <Input id="signup-phone" type="tel" autoComplete="tel" placeholder="+91 98765 43210" {...register("phone")} />
+        {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="signup-email">Email</Label>
-          <Input id="signup-email" type="email" autoComplete="email" {...register("email")} />
-          {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+          <Label htmlFor="signup-password">Create password</Label>
+          <PasswordInput id="signup-password" autoComplete="new-password" {...register("password")} />
+          {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="signup-password">Password</Label>
-          <PasswordInput
-            id="signup-password"
-            autoComplete="new-password"
-            {...register("password")}
-          />
-          {errors.password ? (
-            <p className="text-xs text-destructive">{errors.password.message}</p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              At least 8 characters, mix of upper, lower, and numbers.
-            </p>
-          )}
+          <Label htmlFor="signup-confirm">Confirm password</Label>
+          <PasswordInput id="signup-confirm" autoComplete="new-password" {...register("confirm")} />
+          {errors.confirm && <p className="text-xs text-destructive">{errors.confirm.message}</p>}
         </div>
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Creating account..." : "Create account"}
-        </Button>
-        <p className="text-center text-xs text-muted-foreground">
-          By continuing you agree to our Terms and Privacy Policy.
-        </p>
-      </form>
-    </div>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="signup-license">License key</Label>
+        <Input
+          id="signup-license"
+          placeholder="ZPX-XXXX-XXXX-XXXX"
+          className="font-mono uppercase"
+          {...register("licenseKey")}
+        />
+        {errors.licenseKey ? (
+          <p className="text-xs text-destructive">{errors.licenseKey.message}</p>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            Required. Your key is verified before the account is created.
+          </p>
+        )}
+      </div>
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
+        {isSubmitting ? "Verifying license…" : "Create account"}
+      </Button>
+      <p className="text-center text-xs text-muted-foreground">
+        By continuing you agree to our Terms and Privacy Policy.
+      </p>
+    </form>
   );
 }
+
