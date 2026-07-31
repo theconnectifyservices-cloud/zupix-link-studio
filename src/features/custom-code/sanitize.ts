@@ -127,9 +127,12 @@ export function buildSrcDoc(input: {
   css?: string;
   js?: string;
   allowJs?: boolean;
+  /** Visual builder design config compiled to CSS. */
+  design?: unknown;
 }): string {
   const cleanHtml = sanitizeHtml(input.html, { stripScripts: !input.allowJs });
   const css = scopeCss(input.css ?? "");
+  const designCss = input.design ? buildDesignCss(input.design as Partial<CcDesign>) : "";
   const js = input.allowJs && input.js ? input.js : "";
   return `<!doctype html><html><head><meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -138,9 +141,11 @@ export function buildSrcDoc(input: {
   html,body{margin:0;padding:0;background:transparent;color:inherit;font-family:inherit}
   .zx-cc-scope{max-width:100%}
   img,video,iframe{max-width:100%}
+${designCss}
 ${css}
 </style></head>
-<body><div class="zx-cc-scope">${cleanHtml}</div>
+<body><div class="zx-cc-scope"><div class="zx-anim">${cleanHtml}</div></div>
+
 <script>
   (function(){
     function post(){
