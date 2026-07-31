@@ -7,7 +7,7 @@ import { z } from "zod";
 
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/features/auth/components/auth-shell";
-import { GoogleButton } from "@/features/auth/components/google-button";
+import { PhoneOtpForm } from "@/features/auth/components/phone-otp-form";
 import { PasswordInput } from "@/features/auth/components/password-input";
 import {
   loginSchema,
@@ -52,17 +52,15 @@ function AuthPage() {
 
   return (
     <AuthShell
-      title={tab === "login" ? "Welcome back" : "Create your account"}
-      subtitle={
-        tab === "login"
-          ? "Sign in to your ZUPIX Link Studio account"
-          : "Start building your bio link in minutes"
-      }
+      title="Welcome to ZUPIX Link Studio"
+      subtitle="Sign in with your mobile number — we'll text you a 6-digit code"
     >
+      <PhoneOtpForm onVerified={() => handleAuthed(navigate, search.redirect)} />
+      <OrDivider />
       <Tabs value={tab} onValueChange={(v) => setTab(v as "login" | "signup")}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="login">Sign in</TabsTrigger>
-          <TabsTrigger value="signup">Sign up</TabsTrigger>
+          <TabsTrigger value="login">Email sign in</TabsTrigger>
+          <TabsTrigger value="signup">Email sign up</TabsTrigger>
         </TabsList>
         <TabsContent value="login" className="mt-6">
           <LoginForm redirectTo={search.redirect} />
@@ -73,6 +71,23 @@ function AuthPage() {
       </Tabs>
     </AuthShell>
   );
+}
+
+async function handleAuthed(
+  navigate: ReturnType<typeof useNavigate>,
+  redirectTo?: string,
+) {
+  try {
+    await startTejasTrial({ data: {} });
+  } catch {
+    /* non-fatal */
+  }
+  const intent =
+    typeof window !== "undefined" ? window.sessionStorage.getItem("zupix:auth_intent") : null;
+  if (intent && typeof window !== "undefined")
+    window.sessionStorage.removeItem("zupix:auth_intent");
+  const target = intent === "trial" ? "/app/my-subscription" : ((redirectTo as "/app") ?? "/app");
+  navigate({ to: target });
 }
 
 function OrDivider() {
@@ -113,8 +128,6 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
 
   return (
     <div>
-      <GoogleButton />
-      <OrDivider />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="login-email">Email</Label>
@@ -177,8 +190,6 @@ function SignupForm({ onDone }: { onDone: () => void }) {
 
   return (
     <div>
-      <GoogleButton label="Sign up with Google" />
-      <OrDivider />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="signup-email">Email</Label>

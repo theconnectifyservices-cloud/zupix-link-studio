@@ -4758,7 +4758,7 @@ export type Database = {
           created_at: string
           deleted_at: string | null
           display_name: string | null
-          email: string
+          email: string | null
           id: string
           language: string | null
           last_login_at: string | null
@@ -4783,7 +4783,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           display_name?: string | null
-          email: string
+          email?: string | null
           id: string
           language?: string | null
           last_login_at?: string | null
@@ -4808,7 +4808,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           display_name?: string | null
-          email?: string
+          email?: string | null
           id?: string
           language?: string | null
           last_login_at?: string | null

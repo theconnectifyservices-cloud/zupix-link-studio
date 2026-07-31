@@ -1,5 +1,4 @@
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 
 export interface ProfileRow {
   id: string;
@@ -47,12 +46,35 @@ export async function signUpWithPassword(email: string, password: string) {
   return { data };
 }
 
-export async function signInWithGoogle() {
-  const result = await lovable.auth.signInWithOAuth("google", {
-    redirect_uri: `${window.location.origin}/auth/callback`,
+/** Send a 6-digit SMS OTP to an E.164 phone number. Creates the user on first use. */
+export async function sendPhoneOtp(phoneE164: string) {
+  const { error } = await supabase.auth.signInWithOtp({
+    phone: phoneE164,
+    options: { channel: "sms", shouldCreateUser: true },
   });
-  if (result.error) throw result.error;
-  return result;
+  if (error) throw new Error(friendlyOtpError(error.message));
+}
+
+/** Verify the 6-digit SMS OTP and establish the session. */
+export async function verifyPhoneOtp(phoneE164: string, token: string) {
+  const { data, error } = await supabase.auth.verifyOtp({
+    phone: phoneE164,
+    token,
+    type: "sms",
+  });
+  if (error) throw new Error(friendlyOtpError(error.message));
+  return data;
+}
+
+function friendlyOtpError(message: string) {
+  const m = message.toLowerCase();
+  if (m.includes("sms") && (m.includes("provider") || m.includes("not enabled") || m.includes("disabled"))) {
+    return "SMS sign-in is not switched on yet. Please try again shortly.";
+  }
+  if (m.includes("invalid") && m.includes("otp")) return "That code is incorrect. Please check and try again.";
+  if (m.includes("expired")) return "That code has expired. Request a new one.";
+  if (m.includes("rate") || m.includes("too many")) return "Too many attempts. Please wait a minute and try again.";
+  return message;
 }
 
 export async function requestPasswordReset(email: string) {
