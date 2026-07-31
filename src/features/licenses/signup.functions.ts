@@ -4,6 +4,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const signupInput = z.object({
   /** Optional when the licence already carries the customer details. */
@@ -146,7 +147,7 @@ export const linkLicenseToCurrentUser = createServerFn({ method: "POST" })
 
     const { data: lic } = await admin
       .from("product_licenses")
-      .select("id, status, expires_at, max_devices, user_id, customer_name, email, phone")
+      .select("id, status, expires_at, max_devices, user_id, activated_at, customer_name, email, phone")
       .ilike("license_key", (data.licenseKey ?? "").trim())
       .maybeSingle();
 
