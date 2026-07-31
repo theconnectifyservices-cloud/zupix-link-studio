@@ -407,6 +407,14 @@ export interface GalleryBlock extends BaseBlock {
   gap?: "sm" | "md" | "lg";
   rounded?: "none" | "sm" | "md" | "lg";
   images: GalleryImage[];
+  /** Carousel options */
+  autoplay?: boolean;
+  autoplaySpeed?: number;
+  loop?: boolean;
+  showArrows?: boolean;
+  showDots?: boolean;
+  /** Open images fullscreen on click (default true) */
+  lightbox?: boolean;
 }
 
 // ── Social Feed (architecture only) ──────────────────────────────────────

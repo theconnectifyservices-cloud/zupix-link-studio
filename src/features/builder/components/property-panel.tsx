@@ -13,6 +13,7 @@ import type {
   FaqItem,
   FileBlock,
   GalleryImage,
+  GalleryBlock,
   SocialFeedBlock,
   SocialLink,
   SocialPlatform,
@@ -843,6 +844,8 @@ export function PropertyPanel() {
           onGap={(v) => set("gap", v)}
           onRounded={(v) => set("rounded", v)}
           onImages={(v) => set("images", v)}
+          block={block}
+          set={set}
         />
       )}
       {block.type === "socialFeed" && <SocialFeedEditor block={block} set={set} />}
@@ -1274,6 +1277,8 @@ function GalleryEditor({
   onGap,
   onRounded,
   onImages,
+  block,
+  set,
 }: {
   layout: "grid" | "carousel" | "masonry";
   columns: 2 | 3 | 4;
@@ -1285,6 +1290,8 @@ function GalleryEditor({
   onGap: (v: string) => void;
   onRounded: (v: string) => void;
   onImages: (v: GalleryImage[]) => void;
+  block: GalleryBlock;
+  set: (k: string, v: unknown) => void;
 }) {
   function move(i: number, dir: -1 | 1) {
     const t = i + dir;
@@ -1340,6 +1347,48 @@ function GalleryEditor({
             ["lg", "Large"],
           ]}
         />
+      </Field>
+      {layout === "carousel" && (
+        <div className="space-y-2 rounded-md border p-2">
+          <Label className="text-xs font-medium">Carousel</Label>
+          <Field label="Autoplay">
+            <Switch
+              checked={block.autoplay !== false}
+              onCheckedChange={(v) => set("autoplay", v)}
+            />
+          </Field>
+          {block.autoplay !== false && (
+            <Field label="Speed (ms)">
+              <Input
+                type="number"
+                min={1500}
+                step={500}
+                value={block.autoplaySpeed ?? 4000}
+                onChange={(e) =>
+                  set("autoplaySpeed", Math.max(1500, Number(e.target.value) || 4000))
+                }
+              />
+            </Field>
+          )}
+          <Field label="Infinite loop">
+            <Switch checked={block.loop !== false} onCheckedChange={(v) => set("loop", v)} />
+          </Field>
+          <Field label="Arrows">
+            <Switch
+              checked={block.showArrows !== false}
+              onCheckedChange={(v) => set("showArrows", v)}
+            />
+          </Field>
+          <Field label="Dots">
+            <Switch
+              checked={block.showDots !== false}
+              onCheckedChange={(v) => set("showDots", v)}
+            />
+          </Field>
+        </div>
+      )}
+      <Field label="Fullscreen lightbox">
+        <Switch checked={block.lightbox !== false} onCheckedChange={(v) => set("lightbox", v)} />
       </Field>
       <div className="space-y-2">
         <Label className="text-xs">Images</Label>
