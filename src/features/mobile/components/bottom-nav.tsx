@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, LayoutGrid, UserRound } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, Palette, UserRound } from "lucide-react";
 
 interface Item {
   to: string;
@@ -12,6 +12,7 @@ interface Item {
 const items: Item[] = [
   { to: "/app", label: "Home", icon: LayoutDashboard, exact: true },
   { to: "/app/projects", label: "Pages", icon: LayoutGrid },
+  { to: "/app/templates", label: "Themes", icon: Palette },
   { to: "/app/settings/profile", label: "Profile", icon: UserRound },
 ];
 
@@ -22,7 +23,7 @@ export function BottomNav() {
       aria-label="Primary"
       className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
-      <ul className="grid grid-cols-3">
+      <ul className="grid grid-cols-4">
 
         {items.map((it) => {
           const Icon = it.icon;
