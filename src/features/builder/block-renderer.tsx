@@ -1952,6 +1952,15 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
           display: "block",
         }}
       />
+      {jsBlocked && mode !== "public" && (
+        <div
+          className="mt-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-700 dark:text-amber-300"
+          data-builder-only="true"
+        >
+          JavaScript in this block is disabled for safety — the HTML and CSS still render.
+        </div>
+      )}
+
     </div>
   );
 }
