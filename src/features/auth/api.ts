@@ -33,8 +33,17 @@ export interface WorkspaceRow {
 
 export async function signInWithPassword(email: string, password: string) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
+  if (error) {
+    const m = (error.message ?? "").toLowerCase();
+    if (m.includes("invalid login credentials")) {
+      throw new Error(
+        "Email or password is incorrect. If you previously signed in with Google, use \"Forgot password?\" to set a password for this email — your account and data stay the same.",
+      );
+    }
+    throw error;
+  }
 }
+
 
 export async function signUpWithPassword(email: string, password: string) {
   const { data, error } = await supabase.auth.signUp({
@@ -66,23 +75,27 @@ export async function verifyPhoneOtp(phoneE164: string, token: string) {
   return data;
 }
 
-function friendlyOtpError(message: string) {
-  const m = message.toLowerCase();
+function friendlyOtpError(message?: string | null) {
+  const m = (message ?? "").toLowerCase();
+  if (!m) return "Something went wrong. Please try again.";
   if (m.includes("sms") && (m.includes("provider") || m.includes("not enabled") || m.includes("disabled"))) {
     return "SMS sign-in is not switched on yet. Please try again shortly.";
   }
   if (m.includes("invalid") && m.includes("otp")) return "That code is incorrect. Please check and try again.";
   if (m.includes("expired")) return "That code has expired. Request a new one.";
   if (m.includes("rate") || m.includes("too many")) return "Too many attempts. Please wait a minute and try again.";
-  return message;
+  return message as string;
 }
 
+
 export async function requestPasswordReset(email: string) {
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/auth/reset-password`,
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+    redirectTo: `${origin}/auth/reset-password`,
   });
   if (error) throw error;
 }
+
 
 export async function updatePassword(password: string) {
   const { error } = await supabase.auth.updateUser({ password });
@@ -112,14 +125,17 @@ export async function updateProfile(userId: string, patch: Partial<ProfileRow>) 
 }
 
 export async function checkUsernameAvailable(username: string): Promise<boolean> {
+  const value = (username ?? "").trim().toLowerCase();
+  if (!value) return false;
   const { data, error } = await supabase
     .from("profiles" as never)
     .select("id")
-    .eq("username", username.toLowerCase())
+    .eq("username", value)
     .maybeSingle();
   if (error) return false;
   return !data;
 }
+
 
 export async function fetchWorkspaces(userId: string): Promise<WorkspaceRow[]> {
   const { data, error } = await supabase
