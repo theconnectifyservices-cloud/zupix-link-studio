@@ -161,7 +161,7 @@ export function Sidebar({ variant = "app", className }: SidebarProps) {
         </nav>
 
         <div className="space-y-1 border-t p-3">
-          <SidebarItems items={bottomItems} collapsed={collapsed} isActive={isActive} />
+          <SidebarItems items={visibleBottomItems} collapsed={collapsed} isActive={isActive} />
           <Button
             variant="ghost"
             size="sm"
