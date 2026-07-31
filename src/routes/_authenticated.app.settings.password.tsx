@@ -6,6 +6,8 @@ import type { z } from "zod";
 import { PasswordInput } from "@/features/auth/components/password-input";
 import { resetPasswordSchema } from "@/features/auth/schemas";
 import { updatePassword } from "@/features/auth/api";
+import { supabase } from "@/integrations/supabase/client";
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
