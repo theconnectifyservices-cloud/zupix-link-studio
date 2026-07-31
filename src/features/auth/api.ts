@@ -37,7 +37,7 @@ export async function signInWithPassword(email: string, password: string) {
     const m = (error.message ?? "").toLowerCase();
     if (m.includes("invalid login credentials")) {
       throw new Error(
-        "Email or password is incorrect. If you previously signed in with Google, use \"Forgot password?\" to set a password for this email — your account and data stay the same.",
+        "Email or password is incorrect. Use \"Forgot password?\" if you need to reset it.",
       );
     }
     throw error;
