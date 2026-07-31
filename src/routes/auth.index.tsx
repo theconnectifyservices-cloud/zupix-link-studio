@@ -12,8 +12,10 @@ import { PasswordInput } from "@/features/auth/components/password-input";
 import {
   loginSchema,
   enterpriseSignupSchema,
+  licenseActivationSignupSchema,
   type LoginInput,
   type EnterpriseSignupInput,
+  type LicenseActivationSignupInput,
 } from "@/features/auth/schemas";
 import { signInWithPassword } from "@/features/auth/api";
 import {
