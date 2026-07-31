@@ -4,6 +4,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const signupInput = z.object({
   /** Optional when the licence already carries the customer details. */
@@ -62,33 +63,39 @@ export const inspectLicenseKey = createServerFn({ method: "POST" })
       plan?: string;
       maxDevices?: number | null;
       hasCustomer: boolean;
+      /** The licence customer already has an account — sign in instead of signing up. */
+      existingAccount?: boolean;
       customer?: { fullName: string; email: string; phone: string };
     }> => {
+      const { isLicenseExpired } = await import("./types");
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const admin = supabaseAdmin as any;
+      const key = (data.licenseKey ?? "").trim();
       const { data: lic } = await admin
         .from("product_licenses")
         .select("id, status, expires_at, max_devices, user_id, plan, customer_name, email, phone")
-        .ilike("license_key", data.licenseKey.trim())
+        .ilike("license_key", key)
         .maybeSingle();
 
-      if (!lic) return { valid: false, reason: "invalid", hasCustomer: false };
+      if (!lic) return { valid: false, reason: "not_found", hasCustomer: false };
       if (lic.user_id) return { valid: false, reason: "already_used", hasCustomer: false };
-      if (["revoked", "suspended", "expired"].includes(lic.status))
-        return { valid: false, reason: lic.status, hasCustomer: false };
-      if (lic.expires_at && new Date(lic.expires_at).getTime() < Date.now())
+      if (lic.status === "revoked") return { valid: false, reason: "revoked", hasCustomer: false };
+      if (lic.status === "suspended") return { valid: false, reason: "suspended", hasCustomer: false };
+      if (lic.status === "active") return { valid: false, reason: "already_used", hasCustomer: false };
+      if (lic.status === "expired" || isLicenseExpired(lic.expires_at))
         return { valid: false, reason: "expired", hasCustomer: false };
 
+      const maxDevices = typeof lic.max_devices === "number" ? lic.max_devices : -1;
       const { count } = await admin
         .from("license_activations")
         .select("id", { count: "exact", head: true })
         .eq("license_id", lic.id)
         .is("revoked_at", null);
-      if (lic.max_devices >= 0 && (count ?? 0) >= lic.max_devices)
+      if (maxDevices >= 0 && (count ?? 0) >= maxDevices)
         return {
           valid: false,
           reason: "device_limit",
-          maxDevices: lic.max_devices,
+          maxDevices,
           hasCustomer: false,
         };
 
@@ -97,34 +104,105 @@ export const inspectLicenseKey = createServerFn({ method: "POST" })
       const phone = (lic.phone ?? "").trim();
       const hasCustomer = Boolean(fullName && email && phone);
 
-      // A licence pre-filled with a customer whose email/phone is already registered
-      // cannot silently create a duplicate account.
+      // If the licence customer already has an account, activation becomes a
+      // sign-in + link flow instead of a signup.
+      let existingAccount = false;
       if (hasCustomer) {
         const { data: avail } = await admin.rpc("check_signup_availability", {
           _email: email,
           _phone: phone.replace(/[^\d+]/g, ""),
         });
-        if (avail?.email_taken || avail?.phone_taken)
-          return {
-            valid: false,
-            reason: avail?.email_taken ? "email_taken" : "phone_taken",
-            hasCustomer: false,
-          };
+        existingAccount = Boolean(avail?.email_taken || avail?.phone_taken);
       }
 
       return {
         valid: true,
         plan: lic.plan ?? undefined,
-        maxDevices: lic.max_devices ?? null,
+        maxDevices,
         hasCustomer,
+        existingAccount,
         customer: hasCustomer ? { fullName, email, phone } : undefined,
       };
     },
   );
 
+/** Link + activate a verified licence onto the currently signed-in account. */
+export const linkLicenseToCurrentUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { licenseKey: string; deviceId?: string; deviceLabel?: string }) =>
+    z
+      .object({
+        licenseKey: z.string().trim().min(1).max(64),
+        deviceId: z.string().trim().max(80).optional(),
+        deviceLabel: z.string().trim().max(120).optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }): Promise<SignupResult> => {
+    const { isLicenseExpired } = await import("./types");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const admin = supabaseAdmin as any;
+    const userId = context.userId as string;
+    const userEmail = ((context.claims as any)?.email ?? "").trim().toLowerCase();
+
+    const { data: lic } = await admin
+      .from("product_licenses")
+      .select("id, status, expires_at, max_devices, user_id, activated_at, customer_name, email, phone")
+      .ilike("license_key", (data.licenseKey ?? "").trim())
+      .maybeSingle();
+
+    if (!lic) return { ok: false, reason: "not_found" };
+    if (lic.user_id && lic.user_id !== userId) return { ok: false, reason: "already_used" };
+    if (lic.status === "revoked") return { ok: false, reason: "revoked" };
+    if (lic.status === "suspended") return { ok: false, reason: "suspended" };
+    if (lic.status === "expired" || isLicenseExpired(lic.expires_at))
+      return { ok: false, reason: "expired" };
+
+    const licEmail = (lic.email ?? "").trim().toLowerCase();
+    if (licEmail && userEmail && licEmail !== userEmail)
+      return { ok: false, reason: "customer_mismatch" };
+
+    const maxDevices = typeof lic.max_devices === "number" ? lic.max_devices : -1;
+    const { count } = await admin
+      .from("license_activations")
+      .select("id", { count: "exact", head: true })
+      .eq("license_id", lic.id)
+      .is("revoked_at", null);
+    if (!lic.user_id && maxDevices >= 0 && (count ?? 0) >= maxDevices)
+      return { ok: false, reason: "device_limit", maxDevices };
+
+    await admin
+      .from("profiles")
+      .update({ license_id: lic.id, license_activation_status: "active" })
+      .eq("id", userId);
+    await admin.from("license_activations").upsert(
+      {
+        license_id: lic.id,
+        user_id: userId,
+        device_id: data.deviceId || `srv_${userId}`,
+        device_label: data.deviceLabel ?? null,
+      },
+      { onConflict: "license_id,device_id" },
+    );
+    const now = new Date().toISOString();
+    await admin
+      .from("product_licenses")
+      .update({
+        user_id: userId,
+        status: "active",
+        activated_at: lic.activated_at ?? now,
+        last_login_at: now,
+      })
+      .eq("id", lic.id);
+
+    return { ok: true, userId, email: licEmail || userEmail };
+  });
+
+
 export const signUpWithLicense = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => signupInput.parse(d))
   .handler(async ({ data }): Promise<SignupResult> => {
+    const { isLicenseExpired } = await import("./types");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as any;
 
@@ -139,20 +217,27 @@ export const signUpWithLicense = createServerFn({ method: "POST" })
         .ilike("license_key", licenseKey)
         .maybeSingle();
       lic = found;
-      if (!lic) return { ok: false, reason: "invalid" };
+      if (!lic) return { ok: false, reason: "not_found" };
       if (lic.user_id) return { ok: false, reason: "already_used" };
-      if (["revoked", "suspended", "expired"].includes(lic.status))
-        return { ok: false, reason: lic.status };
-      if (lic.expires_at && new Date(lic.expires_at).getTime() < Date.now())
+      if (lic.status === "revoked") return { ok: false, reason: "revoked" };
+      if (lic.status === "suspended") return { ok: false, reason: "suspended" };
+      if (lic.status === "active") return { ok: false, reason: "already_used" };
+      if (lic.status === "expired" || isLicenseExpired(lic.expires_at))
         return { ok: false, reason: "expired" };
 
+      const licenseEmail = (lic.email ?? "").trim().toLowerCase();
+      const enteredEmail = (data.email ?? "").trim().toLowerCase();
+      if (licenseEmail && enteredEmail && licenseEmail !== enteredEmail)
+        return { ok: false, reason: "customer_mismatch" };
+
+      const maxDevices = typeof lic.max_devices === "number" ? lic.max_devices : -1;
       const { count } = await admin
         .from("license_activations")
         .select("id", { count: "exact", head: true })
         .eq("license_id", lic.id)
         .is("revoked_at", null);
-      if (lic.max_devices >= 0 && (count ?? 0) >= lic.max_devices)
-        return { ok: false, reason: "device_limit", maxDevices: lic.max_devices };
+      if (maxDevices >= 0 && (count ?? 0) >= maxDevices)
+        return { ok: false, reason: "device_limit", maxDevices };
     }
 
     // 2. Resolve identity — the licence's stored customer wins when the client omits fields
@@ -220,6 +305,7 @@ export const signUpWithLicense = createServerFn({ method: "POST" })
         user_id: userId,
         status: "active",
         activated_at: new Date().toISOString(),
+        last_login_at: new Date().toISOString(),
         customer_name: fullName,
         email,
         phone,

@@ -15,7 +15,7 @@ import { passwordSchema, phoneSchema, emailSchema } from "@/features/auth/schema
 import { signInWithPassword } from "@/features/auth/api";
 import { getDeviceId, getDeviceLabel } from "../device";
 import { licenseErrorMessage } from "../types";
-import { inspectLicenseKey, signUpWithLicense } from "../signup.functions";
+import { inspectLicenseKey, signUpWithLicense, linkLicenseToCurrentUser } from "../signup.functions";
 
 const passwordOnlySchema = z
   .object({ password: passwordSchema, confirm: z.string().min(1, "Confirm your password") })
@@ -57,7 +57,7 @@ export function LicenseActivationFlow({
   const [licenseKey, setLicenseKey] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [stage, setStage] = useState<"key" | "password" | "details">("key");
+  const [stage, setStage] = useState<"key" | "password" | "details" | "signin">("key");
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
 
@@ -76,26 +76,23 @@ export function LicenseActivationFlow({
         plan?: string;
         maxDevices?: number | null;
         hasCustomer: boolean;
+        existingAccount?: boolean;
         customer?: Customer;
       };
       if (!res.valid) {
-        setError(
-          res.reason && res.reason !== "invalid"
-            ? licenseErrorMessage(res.reason, res.maxDevices ?? null)
-            : "Invalid or Expired License Key",
-        );
+        setError(licenseErrorMessage(res.reason, res.maxDevices ?? null));
         return;
       }
       setPlan(res.plan ?? null);
       if (res.hasCustomer && res.customer) {
         setCustomer(res.customer);
-        setStage("password");
+        setStage(res.existingAccount ? "signin" : "password");
       } else {
         setCustomer(null);
         setStage("details");
       }
-    } catch {
-      setError("Invalid or Expired License Key");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not verify the license. Please try again.");
     } finally {
       setVerifying(false);
     }
@@ -164,7 +161,11 @@ export function LicenseActivationFlow({
         <ShieldCheck className="h-4 w-4 text-primary" />
         <AlertDescription className="text-xs">
           License verified{plan ? ` — ${plan.toUpperCase()} plan` : ""}.
-          {customer ? " Your details are already on file." : " Please complete your details."}
+          {stage === "signin"
+            ? " An account already exists for this customer — sign in to link the license."
+            : customer
+              ? " Your details are already on file."
+              : " Please complete your details."}
         </AlertDescription>
       </Alert>
 
@@ -172,7 +173,9 @@ export function LicenseActivationFlow({
         <CustomerSummary customer={customer} />
       ) : null}
 
-      {stage === "password" && customer ? (
+      {stage === "signin" && customer ? (
+        <SignInAndLinkForm licenseKey={licenseKey} customer={customer} onActivated={onActivated} />
+      ) : stage === "password" && customer ? (
         <PasswordOnlyForm
           licenseKey={licenseKey}
           customer={customer}
@@ -245,7 +248,12 @@ function PasswordOnlyForm({
         toast.error(licenseErrorMessage(res.reason, res.maxDevices));
         return;
       }
-      await signInWithPassword(res.email ?? customer.email, values.password);
+      const loginEmail = (res.email ?? customer.email ?? "").trim();
+      if (!loginEmail) {
+        toast.error("License activated, but no email is on file. Please sign in manually.");
+        return;
+      }
+      await signInWithPassword(loginEmail, values.password);
       toast.success("License activated — welcome to ZUPIX Link Studio 🎉");
       onActivated();
     } catch (err) {
@@ -369,6 +377,63 @@ function DetailsForm({
       </div>
       <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? "Activating…" : "Activate license & create account"}
+      </Button>
+    </form>
+  );
+}
+
+function SignInAndLinkForm({
+  licenseKey,
+  customer,
+  onActivated,
+}: {
+  licenseKey: string;
+  customer: Customer;
+  onActivated: () => void;
+}) {
+  const link = useServerFn(linkLicenseToCurrentUser);
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!password) return;
+    setBusy(true);
+    try {
+      await signInWithPassword(customer.email, password);
+      const res = (await link({
+        data: {
+          licenseKey,
+          deviceId: getDeviceId(),
+          deviceLabel: getDeviceLabel(),
+        },
+      })) as { ok: boolean; reason?: string; maxDevices?: number | null };
+      if (!res.ok) {
+        toast.error(licenseErrorMessage(res.reason, res.maxDevices));
+        return;
+      }
+      toast.success("License activated — welcome back to ZUPIX Link Studio 🎉");
+      onActivated();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Activation failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="activate-signin-password">Password for {customer.email}</Label>
+        <PasswordInput
+          id="activate-signin-password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <Button type="submit" className="w-full" disabled={busy || !password}>
+        {busy ? "Activating…" : "Sign in & activate license"}
       </Button>
     </form>
   );
