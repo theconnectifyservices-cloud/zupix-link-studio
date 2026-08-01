@@ -68,6 +68,8 @@ import {
 } from "@/components/ui/accordion";
 import { useBuilderStore } from "./store";
 import { DEFAULT_PROFILE } from "./theme";
+import { IntegrationRender } from "./integrations/integration-render";
+
 
 const SOCIAL_ICON: Record<SocialPlatform, LucideIcon> = {
   instagram: Instagram,
