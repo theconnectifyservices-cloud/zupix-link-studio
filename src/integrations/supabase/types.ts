@@ -5002,6 +5002,199 @@ export type Database = {
           },
         ]
       }
+      platform_update_events: {
+        Row: {
+          channel: string
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json
+          user_id: string | null
+          version: string | null
+          version_id: string | null
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json
+          user_id?: string | null
+          version?: string | null
+          version_id?: string | null
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json
+          user_id?: string | null
+          version?: string | null
+          version_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_update_events_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "platform_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_update_receipts: {
+        Row: {
+          channel: string
+          created_at: string
+          dismissed_at: string | null
+          id: string
+          metadata: Json
+          never_show_at: string | null
+          read_at: string | null
+          seen_at: string | null
+          updated_at: string
+          updated_at_action: string | null
+          user_id: string
+          version_id: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          dismissed_at?: string | null
+          id?: string
+          metadata?: Json
+          never_show_at?: string | null
+          read_at?: string | null
+          seen_at?: string | null
+          updated_at?: string
+          updated_at_action?: string | null
+          user_id: string
+          version_id: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          dismissed_at?: string | null
+          id?: string
+          metadata?: Json
+          never_show_at?: string | null
+          read_at?: string | null
+          seen_at?: string | null
+          updated_at?: string
+          updated_at_action?: string | null
+          user_id?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_update_receipts_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "platform_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_versions: {
+        Row: {
+          banner_image_url: string | null
+          bug_fixes: string[]
+          channels: Json
+          created_at: string
+          created_by: string | null
+          description: string
+          docs_url: string | null
+          id: string
+          is_forced: boolean
+          is_important: boolean
+          is_pinned: boolean
+          metadata: Json
+          performance_improvements: string[]
+          priority: Database["public"]["Enums"]["platform_update_priority"]
+          publish_at: string | null
+          published_at: string | null
+          release_date: string
+          release_type: Database["public"]["Enums"]["platform_release_type"]
+          security_updates: string[]
+          status: Database["public"]["Enums"]["platform_update_status"]
+          target_plans: string[]
+          target_user_ids: string[]
+          title: string
+          translations: Json
+          updated_at: string
+          version: string
+          version_sort: number
+          video_url: string | null
+          visibility: Database["public"]["Enums"]["platform_update_visibility"]
+          whats_new: string[]
+        }
+        Insert: {
+          banner_image_url?: string | null
+          bug_fixes?: string[]
+          channels?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          docs_url?: string | null
+          id?: string
+          is_forced?: boolean
+          is_important?: boolean
+          is_pinned?: boolean
+          metadata?: Json
+          performance_improvements?: string[]
+          priority?: Database["public"]["Enums"]["platform_update_priority"]
+          publish_at?: string | null
+          published_at?: string | null
+          release_date?: string
+          release_type?: Database["public"]["Enums"]["platform_release_type"]
+          security_updates?: string[]
+          status?: Database["public"]["Enums"]["platform_update_status"]
+          target_plans?: string[]
+          target_user_ids?: string[]
+          title: string
+          translations?: Json
+          updated_at?: string
+          version: string
+          version_sort?: number
+          video_url?: string | null
+          visibility?: Database["public"]["Enums"]["platform_update_visibility"]
+          whats_new?: string[]
+        }
+        Update: {
+          banner_image_url?: string | null
+          bug_fixes?: string[]
+          channels?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          docs_url?: string | null
+          id?: string
+          is_forced?: boolean
+          is_important?: boolean
+          is_pinned?: boolean
+          metadata?: Json
+          performance_improvements?: string[]
+          priority?: Database["public"]["Enums"]["platform_update_priority"]
+          publish_at?: string | null
+          published_at?: string | null
+          release_date?: string
+          release_type?: Database["public"]["Enums"]["platform_release_type"]
+          security_updates?: string[]
+          status?: Database["public"]["Enums"]["platform_update_status"]
+          target_plans?: string[]
+          target_user_ids?: string[]
+          title?: string
+          translations?: Json
+          updated_at?: string
+          version?: string
+          version_sort?: number
+          video_url?: string | null
+          visibility?: Database["public"]["Enums"]["platform_update_visibility"]
+          whats_new?: string[]
+        }
+        Relationships: []
+      }
       product_licenses: {
         Row: {
           activated_at: string | null
@@ -5071,8 +5264,11 @@ export type Database = {
           email: string | null
           force_password_change: boolean
           id: string
+          is_beta_tester: boolean
           language: string | null
           last_login_at: string | null
+          last_seen_app_version: string | null
+          last_seen_app_version_at: string | null
           license_activation_status: string
           license_id: string | null
           mfa_enabled: boolean
@@ -5100,8 +5296,11 @@ export type Database = {
           email?: string | null
           force_password_change?: boolean
           id: string
+          is_beta_tester?: boolean
           language?: string | null
           last_login_at?: string | null
+          last_seen_app_version?: string | null
+          last_seen_app_version_at?: string | null
           license_activation_status?: string
           license_id?: string | null
           mfa_enabled?: boolean
@@ -5129,8 +5328,11 @@ export type Database = {
           email?: string | null
           force_password_change?: boolean
           id?: string
+          is_beta_tester?: boolean
           language?: string | null
           last_login_at?: string | null
+          last_seen_app_version?: string | null
+          last_seen_app_version_at?: string | null
           license_activation_status?: string
           license_id?: string | null
           mfa_enabled?: boolean
@@ -6985,6 +7187,61 @@ export type Database = {
         Args: { _org_id: string; _user_id: string }
         Returns: Database["public"]["Enums"]["org_role"]
       }
+      platform_my_versions: {
+        Args: never
+        Returns: {
+          banner_image_url: string
+          bug_fixes: string[]
+          description: string
+          dismissed_at: string
+          docs_url: string
+          id: string
+          is_forced: boolean
+          is_important: boolean
+          is_pinned: boolean
+          never_show_at: string
+          performance_improvements: string[]
+          priority: Database["public"]["Enums"]["platform_update_priority"]
+          published_at: string
+          read_at: string
+          release_date: string
+          release_type: Database["public"]["Enums"]["platform_release_type"]
+          security_updates: string[]
+          seen_at: string
+          title: string
+          updated_at_action: string
+          version: string
+          version_sort: number
+          video_url: string
+          whats_new: string[]
+        }[]
+      }
+      platform_set_update_state: {
+        Args: {
+          _dismissed?: boolean
+          _never_show?: boolean
+          _read?: boolean
+          _seen?: boolean
+          _updated?: boolean
+          _version_id: string
+        }
+        Returns: undefined
+      }
+      platform_update_analytics: {
+        Args: { _version_id: string }
+        Returns: Json
+      }
+      platform_user_plan: { Args: { _user_id: string }; Returns: string }
+      platform_user_targeted: {
+        Args: {
+          _target_plans: string[]
+          _target_user_ids: string[]
+          _user_id: string
+          _visibility: Database["public"]["Enums"]["platform_update_visibility"]
+        }
+        Returns: boolean
+      }
+      platform_version_sort_key: { Args: { _version: string }; Returns: number }
       public_workspace_branding: {
         Args: { _workspace_id: string }
         Returns: Json
@@ -7229,6 +7486,15 @@ export type Database = {
         | "refunded"
         | "partially_refunded"
       payout_status: "pending" | "processing" | "paid" | "failed" | "cancelled"
+      platform_release_type:
+        | "major_update"
+        | "feature_update"
+        | "bug_fix"
+        | "security_update"
+        | "hotfix"
+      platform_update_priority: "low" | "normal" | "high" | "critical"
+      platform_update_status: "draft" | "scheduled" | "published" | "archived"
+      platform_update_visibility: "everyone" | "plan" | "users" | "beta"
       product_license_plan:
         | "trial_3day"
         | "monthly"
@@ -7613,6 +7879,16 @@ export const Constants = {
         "partially_refunded",
       ],
       payout_status: ["pending", "processing", "paid", "failed", "cancelled"],
+      platform_release_type: [
+        "major_update",
+        "feature_update",
+        "bug_fix",
+        "security_update",
+        "hotfix",
+      ],
+      platform_update_priority: ["low", "normal", "high", "critical"],
+      platform_update_status: ["draft", "scheduled", "published", "archived"],
+      platform_update_visibility: ["everyone", "plan", "users", "beta"],
       product_license_plan: [
         "trial_3day",
         "monthly",
