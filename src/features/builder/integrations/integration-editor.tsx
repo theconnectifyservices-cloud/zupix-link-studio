@@ -28,7 +28,7 @@ export function IntegrationEditor({
   update,
 }: {
   block: IntegrationBlock;
-  update: (patch: Partial<IntegrationBlock>) => void;
+  update: (id: string, patch: Partial<IntegrationBlock>) => void;
 }) {
   const def = getIntegration(block.provider);
   if (!def) {
@@ -39,10 +39,12 @@ export function IntegrationEditor({
     );
   }
 
+  const patch = (p: Partial<IntegrationBlock>) => update(block.id, p);
   const mode = (block.mode ?? def.modes[0]) as IntegrationDisplayMode;
   const cfg = block.config ?? {};
   const setCfg = (key: string, value: string | number | boolean) =>
-    update({ config: { ...cfg, [key]: value } });
+    patch({ config: { ...cfg, [key]: value } });
+
 
   const Icon = def.icon;
 
