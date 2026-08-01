@@ -45,6 +45,8 @@ import { saveBuilderContent } from "../api";
 import { usePropertySave } from "../use-property-save";
 import { BuilderPreview } from "./builder-preview";
 import { BlocksPanel } from "./blocks-panel";
+import { IntegrationsPanel } from "../integrations/integrations-panel";
+
 import { ThemePanel } from "./theme-panel";
 import { LayersPanel } from "./layers-panel";
 import { PagesPanel } from "./pages-panel";
