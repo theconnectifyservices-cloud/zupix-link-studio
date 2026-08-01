@@ -43,6 +43,7 @@ export interface GrowthEngineSettings {
   referral_cta_label: string;
   redirect_url: string;
   accent_color: string;
+  plan_branding_defaults: PlanBrandingDefaults;
 }
 
 export const DEFAULT_GROWTH_SETTINGS: GrowthEngineSettings = {
@@ -63,10 +64,27 @@ export const DEFAULT_GROWTH_SETTINGS: GrowthEngineSettings = {
   referral_cta_label: "Start Building",
   redirect_url: "/pricing",
   accent_color: "#7c3aed",
+  plan_branding_defaults: DEFAULT_PLAN_BRANDING,
 };
 
-/** Plan codes that show branding. Everything else is white-labeled. */
-export const BRANDED_PLANS: ReadonlySet<string> = new Set(["udaan", "free", "starter"]);
+/** Plan codes where branding is mandatory (UDAAN / free / trial). */
+export const BRANDED_PLANS: ReadonlySet<string> = new Set(["udaan", "free", "starter", "trial"]);
 export function isBrandedPlan(code: string | null | undefined): boolean {
   return !code || BRANDED_PLANS.has(code);
 }
+
+/** Paid plan codes an admin can set a default branding mode for. */
+export const PAID_PLAN_CODES = ["tejas", "garuda", "vajra", "lifetime", "shikhar"] as const;
+
+export const PLAN_LABELS: Record<string, string> = {
+  tejas: "TEJAS",
+  garuda: "GARUDA",
+  vajra: "VAJRA",
+  lifetime: "LIFETIME",
+  shikhar: "SHIKHAR",
+};
+
+export function isBrandingMode(v: unknown): v is BrandingMode {
+  return v === "hidden" || v === "compact" || v === "full";
+}
+
