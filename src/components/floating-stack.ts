@@ -50,8 +50,10 @@ export function useFloatingStackOffset(
     if (typeof window === "undefined") return;
     let frame = 0;
 
+    (window as any).__zxDbgMount = ((window as any).__zxDbgMount ?? 0) + 1;
     const measure = () => {
       const self = selfRef.current;
+      (window as any).__zxDbg0 = { hasSelf: !!self };
       if (!self) return;
       const viewportH = window.innerHeight;
       const selfRect = self.getBoundingClientRect();
