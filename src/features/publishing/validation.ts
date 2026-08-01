@@ -35,6 +35,8 @@ const SUPPORTED_TYPES: Block["type"][] = [
   "map",
   "file",
   "contact",
+  "integration",
+  "highlightCards",
   "buttonGroup",
   "embed",
   "customCode",
