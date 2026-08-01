@@ -5,6 +5,7 @@ import { useSession } from "@/features/auth/hooks/use-session";
 import { useProfile } from "@/features/auth/hooks/use-profile";
 import { PageLoader } from "@/shared/ui/page-loader";
 import { UpgradeModal } from "@/features/subscription";
+import { resolvePostAuthTarget } from "@/features/auth/post-auth-target";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
