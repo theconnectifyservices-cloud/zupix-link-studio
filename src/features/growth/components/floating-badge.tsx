@@ -5,11 +5,15 @@ import { trackGrowthEvent } from "../track";
 
 interface Props {
   settings: GrowthEngineSettings;
+  /** Compact badge = smaller, subtext hidden (paid plans that opt into a badge only). */
+  compact?: boolean;
+  plan?: string;
 }
 
 /** Bottom-right glass badge. Sticky, mobile responsive, tasteful. */
-export function FloatingBadge({ settings }: Props) {
+export function FloatingBadge({ settings, compact = false, plan }: Props) {
   const href = settings.redirect_url || "/pricing";
+
   return (
     <motion.a
       href={href}
