@@ -763,6 +763,15 @@ export interface GenericBlock extends BaseBlock {
     | "embed"
     | "customCode"
     | "integration"
+    | "socialButtons"
+    | "whatsappButton"
+    | "callButton"
+    | "emailButton"
+    | "smsButton"
+    | "telegramButton"
+    | "followCard"
+    | "qrContact"
+
 
   >;
   [key: string]: unknown;
