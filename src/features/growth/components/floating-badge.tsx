@@ -1,7 +1,9 @@
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight } from "lucide-react";
 import type { GrowthEngineSettings } from "../types";
 import { trackGrowthEvent } from "../track";
+import { FLOATING_BASE_BOTTOM, useFloatingStackOffset } from "@/components/floating-stack";
 
 interface Props {
   settings: GrowthEngineSettings;
@@ -13,6 +15,9 @@ interface Props {
 /** Bottom-right glass badge. Sticky, mobile responsive, tasteful. */
 export function FloatingBadge({ settings, compact = false, plan }: Props) {
   const href = settings.redirect_url || "/pricing";
+  const ref = useRef<HTMLAnchorElement | null>(null);
+  // Stacks above the contact widget / back-to-top / third-party chat bubbles.
+  const stackOffset = useFloatingStackOffset(ref, { side: "bottom-right", priority: 2 });
 
   return (
     <motion.a
@@ -28,13 +33,17 @@ export function FloatingBadge({ settings, compact = false, plan }: Props) {
       onViewportEnter={() =>
         trackGrowthEvent("branding_view", { source: "floating_badge", compact, plan })
       }
-      className={`group fixed bottom-4 right-4 z-[60] inline-flex items-center rounded-full p-[1.5px] backdrop-blur-xl sm:bottom-6 sm:right-6 ${
+      ref={ref}
+      data-zx-floating="bottom-right"
+      data-zx-floating-priority={2}
+      className={`zx-floating group fixed bottom-20 right-4 z-[60] inline-flex max-w-[calc(100vw-2rem)] items-center rounded-full p-[1.5px] backdrop-blur-xl ${
         compact
           ? "gap-1.5 shadow-[0_4px_18px_rgba(0,0,0,0.14)]"
           : "gap-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.18)]"
       }`}
       style={{
         background: `linear-gradient(135deg, ${settings.accent_color}, #ec4899 55%, #f59e0b)`,
+        bottom: stackOffset > 0 ? `calc(${FLOATING_BASE_BOTTOM} + ${stackOffset}px)` : FLOATING_BASE_BOTTOM,
       }}
       aria-label={compact ? settings.badge_text : `${settings.badge_text} — ${settings.badge_subtext}`}
     >

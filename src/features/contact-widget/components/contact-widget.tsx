@@ -111,6 +111,8 @@ export function ContactWidget({ config, embedded = false, className }: Props) {
         className,
       )}
       style={{ bottom: `calc(1rem + env(safe-area-inset-bottom, 0px))` }}
+      data-zx-floating={embedded ? undefined : isLeft ? "bottom-left" : "bottom-right"}
+      data-zx-floating-priority={embedded ? undefined : 0}
     >
       {/* Action menu — always mounted so opening costs no layout work. */}
       <ul

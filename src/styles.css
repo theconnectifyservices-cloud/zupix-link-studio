@@ -1308,3 +1308,17 @@ body {
 @media (hover: hover) and (pointer: fine) {
   .zx-bg-fixed { background-attachment: fixed; }
 }
+
+/* ── Floating widget insets ────────────────────────────────────────────
+   Mobile: 16px side / safe-area + 20px bottom. Tablet: 20px. Desktop: 24px.
+   Browsers without env() support drop the calc() and keep the 80px fallback. */
+.zx-floating {
+  --zx-float-inset: 20px;
+  right: 16px;
+}
+@media (min-width: 768px) {
+  .zx-floating { right: 20px; }
+}
+@media (min-width: 1024px) {
+  .zx-floating { --zx-float-inset: 24px; right: 24px; }
+}
