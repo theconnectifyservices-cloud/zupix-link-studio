@@ -570,6 +570,31 @@ export function ThemePanel() {
                   </SelectContent>
                 </Select>
               </Field>
+              <NumField
+                label="Image opacity"
+                min={0}
+                max={1}
+                step={0.05}
+                value={bg.imageOpacity ?? 1}
+                suffix=""
+                onChange={(v) => patchBg({ imageOpacity: v })}
+              />
+              <label className="flex items-center justify-between rounded-md border p-2 text-[11px]">
+                <span className="text-muted-foreground">Tile / repeat image</span>
+                <input
+                  type="checkbox"
+                  checked={!!bg.repeat}
+                  onChange={(e) => patchBg({ repeat: e.target.checked })}
+                />
+              </label>
+              <label className="flex items-center justify-between rounded-md border p-2 text-[11px]">
+                <span className="text-muted-foreground">Fixed (parallax on desktop)</span>
+                <input
+                  type="checkbox"
+                  checked={!!bg.fixed}
+                  onChange={(e) => patchBg({ fixed: e.target.checked })}
+                />
+              </label>
               <details className="rounded-md border p-2">
                 <summary className="cursor-pointer text-[11px] text-muted-foreground">
                   Image URL (advanced)
@@ -581,6 +606,7 @@ export function ThemePanel() {
                   placeholder="https://…"
                 />
               </details>
+
             </>
           )}
 

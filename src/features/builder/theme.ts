@@ -151,6 +151,12 @@ export interface ThemeBackground {
   patternId?: string; // key into BACKGROUND_PATTERNS
   size?: BackgroundSize;
   position?: BackgroundPosition;
+  /** Tile the image instead of painting a single copy. */
+  repeat?: boolean;
+  /** 0..1 opacity of the image layer itself (not the overlay). */
+  imageOpacity?: number;
+  /** Parallax-style fixed attachment (disabled on touch devices). */
+  fixed?: boolean;
   blur?: number; // px, background blur (applied to bg layer only)
   overlay?: string; // css overlay color (rgba/hex/hsl)
   overlayOpacity?: number; // 0..1
@@ -166,6 +172,9 @@ export const DEFAULT_BACKGROUND: ThemeBackground = {
   kind: "color",
   size: "cover",
   position: "center",
+  repeat: false,
+  imageOpacity: 1,
+  fixed: false,
   blur: 0,
   overlay: "#000000",
   overlayOpacity: 0,
@@ -175,6 +184,7 @@ export const DEFAULT_BACKGROUND: ThemeBackground = {
   animatedGradient: false,
   meshGradient: false,
 };
+
 
 /** Built-in SVG data-URI patterns — trusted, no external requests. */
 export const BACKGROUND_PATTERNS: { id: string; label: string; url: string }[] = [

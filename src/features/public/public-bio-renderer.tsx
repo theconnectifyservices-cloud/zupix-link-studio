@@ -101,10 +101,14 @@ export function PublicBioRenderer({
       data-theme-mode={resolvedMode}
       className={cn(
         resolvedMode === "dark" && "dark",
-        "min-h-dvh w-full",
+        // `relative isolate` is required: the background image/overlay layers
+        // paint at -z-10, so without a stacking context here they render
+        // *behind* this element's own base colour/gradient and disappear.
+        "relative isolate min-h-dvh w-full",
         `zx-vp-${viewport}`,
         bgCls,
       )}
+
       style={themeStyle}
     >
       <ThemeBackgroundLayer theme={theme} />

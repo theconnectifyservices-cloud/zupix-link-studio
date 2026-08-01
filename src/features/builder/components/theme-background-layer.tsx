@@ -65,12 +65,16 @@ export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
   const blend = bg.blendMode && bg.blendMode !== "normal" ? bg.blendMode : undefined;
 
   let imageStyle: CSSProperties | null = null;
+  let imageOpacity = 1;
+  let fixedAttachment = false;
   if (bg.kind === "image" && bg.imageUrl) {
+    imageOpacity = typeof bg.imageOpacity === "number" ? bg.imageOpacity : 1;
+    fixedAttachment = !!bg.fixed;
     imageStyle = {
       backgroundImage: `url("${bg.imageUrl}")`,
       backgroundSize: bg.size ?? "cover",
       backgroundPosition: bg.position ?? "center",
-      backgroundRepeat: "no-repeat",
+      backgroundRepeat: bg.repeat ? "repeat" : "no-repeat",
     };
   } else if (bg.kind === "pattern") {
     const url = backgroundPatternUrl(bg.patternId);
@@ -92,9 +96,13 @@ export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
       {hasImageLayer && (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+          className={
+            "pointer-events-none absolute inset-0 -z-10 overflow-hidden" +
+            (fixedAttachment ? " zx-bg-fixed" : "")
+          }
           style={{
             ...imageStyle!,
+            opacity: imageOpacity,
             filter: blur ? `blur(${blur}px)` : undefined,
             mixBlendMode: blend,
             transform: blur ? "scale(1.06)" : undefined,
@@ -102,6 +110,7 @@ export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
           }}
         />
       )}
+
       {hasOverlay && (
         <div
           aria-hidden
