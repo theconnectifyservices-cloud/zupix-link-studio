@@ -10,11 +10,24 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  BRANDING_MODES,
   DEFAULT_GROWTH_SETTINGS,
+  DEFAULT_PLAN_BRANDING,
+  PAID_PLAN_CODES,
+  PLAN_LABELS,
   fetchGrowthSettings,
   updateGrowthSettings,
+  type BrandingMode,
   type GrowthEngineSettings,
 } from "@/features/growth";
+
 
 export const Route = createFileRoute("/_authenticated/admin/growth-engine")({
   head: () => ({
