@@ -21,6 +21,8 @@ export type BlockType =
   | "map"
   | "file"
   | "contact"
+  | "integration"
+
   | "buttonGroup"
   | "embed"
   | "customCode"
