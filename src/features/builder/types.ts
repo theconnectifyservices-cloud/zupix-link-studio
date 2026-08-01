@@ -615,7 +615,19 @@ export interface CustomCodeBlock extends BaseBlock {
 }
 
 
+// ── Integration (Integration Center — structured JSON only) ──────────────
+export interface IntegrationBlock extends BaseBlock {
+  type: "integration";
+  /** Provider key from the integration registry (e.g. "whatsapp"). */
+  provider: string;
+  /** Display mode: button | embed | popup | newTab | floating. */
+  mode: string;
+  /** Structured provider + style configuration. Never raw HTML. */
+  config: Record<string, string | number | boolean | undefined>;
+}
+
 export interface GenericBlock extends BaseBlock {
+
   type: Exclude<
     BlockType,
     | "profile"
