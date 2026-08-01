@@ -22,7 +22,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
-import { useAdminVersions, useVersionAnalytics, useVersionMutations } from "../../hooks";
+import {
+  useAdminVersions,
+  useSkipOverview,
+  useVersionAnalytics,
+  useVersionMutations,
+} from "../../hooks";
 import {
   PRIORITY_LABEL,
   PRIORITY_STYLE,
@@ -31,6 +36,7 @@ import {
   STATUS_LABEL,
   STATUS_STYLE,
   VISIBILITY_LABEL,
+  formatDuration,
   type PlatformVersion,
 } from "../../types";
 import { VersionEditor } from "./version-editor";
@@ -69,6 +75,8 @@ export function UpdateCenterAdmin() {
           New Version
         </Button>
       </header>
+
+      <SkipOverviewCard />
 
       {isLoading ? (
         <div className="space-y-3">
@@ -199,6 +207,51 @@ export function UpdateCenterAdmin() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+}
+
+/** Platform-wide skip reporting. */
+function SkipOverviewCard() {
+  const { data, isLoading } = useSkipOverview();
+  if (isLoading) return <Skeleton className="h-28 w-full rounded-2xl" />;
+  if (!data) return null;
+  const top = data.top_skipped?.[0];
+  const stats = [
+    { label: "Total skips", value: data.total_skips },
+    { label: "Skip rate", value: `${data.skip_rate}%` },
+    { label: "Most skipped", value: top ? `v${top.version}` : "—" },
+    { label: "Avg. time before skip", value: formatDuration(data.avg_seconds_before_skip) },
+  ];
+  return (
+    <Card className="overflow-hidden">
+      <div className="border-b px-4 py-3 sm:px-5">
+        <h2 className="text-sm font-semibold">Skip analytics</h2>
+        <p className="text-xs text-muted-foreground">
+          How often customers choose “Skip this version”. Critical releases cannot be skipped.
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-px bg-border sm:grid-cols-4">
+        {stats.map((s) => (
+          <div key={s.label} className="bg-card px-4 py-3">
+            <p className="text-lg font-semibold tabular-nums">{s.value}</p>
+            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{s.label}</p>
+          </div>
+        ))}
+      </div>
+      {data.top_skipped?.length > 1 && (
+        <ul className="divide-y border-t text-sm">
+          {data.top_skipped.map((v) => (
+            <li key={v.version} className="flex items-center justify-between px-4 py-2 sm:px-5">
+              <span className="truncate">
+                <span className="font-medium tabular-nums">v{v.version}</span>{" "}
+                <span className="text-muted-foreground">{v.title}</span>
+              </span>
+              <span className="tabular-nums text-muted-foreground">{v.skips} skipped</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
   );
 }
 
