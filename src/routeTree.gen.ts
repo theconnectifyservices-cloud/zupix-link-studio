@@ -59,6 +59,7 @@ import { Route as AuthenticatedAppEnterpriseRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppDomainsRouteImport } from './routes/_authenticated.app.domains'
 import { Route as AuthenticatedAppConversionsRouteImport } from './routes/_authenticated.app.conversions'
 import { Route as AuthenticatedAppCommunicationsRouteImport } from './routes/_authenticated.app.communications'
+import { Route as AuthenticatedAppChangelogRouteImport } from './routes/_authenticated/app/changelog'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated.app.campaigns'
 import { Route as AuthenticatedAppBillingRouteImport } from './routes/_authenticated.app.billing'
 import { Route as AuthenticatedAppAutomationRouteImport } from './routes/_authenticated.app.automation'
@@ -66,6 +67,7 @@ import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppAiRouteImport } from './routes/_authenticated.app.ai'
 import { Route as AuthenticatedAppAgencyRouteImport } from './routes/_authenticated.app.agency'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedAdminUpdateCenterRouteImport } from './routes/_authenticated/admin/update-center'
 import { Route as AuthenticatedAdminSubscriptionsRouteImport } from './routes/_authenticated/admin/subscriptions'
 import { Route as AuthenticatedAdminSubscriptionManagementRouteImport } from './routes/_authenticated/admin/subscription-management'
 import { Route as AuthenticatedAdminPaymentGatewaysRouteImport } from './routes/_authenticated/admin/payment-gateways'
@@ -361,6 +363,12 @@ const AuthenticatedAppCommunicationsRoute =
     path: '/communications',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppChangelogRoute =
+  AuthenticatedAppChangelogRouteImport.update({
+    id: '/changelog',
+    path: '/changelog',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppCampaignsRoute =
   AuthenticatedAppCampaignsRouteImport.update({
     id: '/campaigns',
@@ -399,6 +407,12 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/admin/users',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminUpdateCenterRoute =
+  AuthenticatedAdminUpdateCenterRouteImport.update({
+    id: '/admin/update-center',
+    path: '/admin/update-center',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminSubscriptionsRoute =
   AuthenticatedAdminSubscriptionsRouteImport.update({
     id: '/admin/subscriptions',
@@ -585,6 +599,7 @@ export interface FileRoutesByFullPath {
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/admin/subscription-management': typeof AuthenticatedAdminSubscriptionManagementRoute
   '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
+  '/admin/update-center': typeof AuthenticatedAdminUpdateCenterRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
@@ -592,6 +607,7 @@ export interface FileRoutesByFullPath {
   '/app/automation': typeof AuthenticatedAppAutomationRoute
   '/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
+  '/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
   '/app/domains': typeof AuthenticatedAppDomainsRoute
@@ -669,12 +685,14 @@ export interface FileRoutesByTo {
   '/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/admin/subscription-management': typeof AuthenticatedAdminSubscriptionManagementRoute
   '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
+  '/admin/update-center': typeof AuthenticatedAdminUpdateCenterRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
   '/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
+  '/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
   '/app/domains': typeof AuthenticatedAppDomainsRoute
@@ -755,6 +773,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/payment-gateways': typeof AuthenticatedAdminPaymentGatewaysRoute
   '/_authenticated/admin/subscription-management': typeof AuthenticatedAdminSubscriptionManagementRoute
   '/_authenticated/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
+  '/_authenticated/admin/update-center': typeof AuthenticatedAdminUpdateCenterRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/app/agency': typeof AuthenticatedAppAgencyRoute
   '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
@@ -762,6 +781,7 @@ export interface FileRoutesById {
   '/_authenticated/app/automation': typeof AuthenticatedAppAutomationRoute
   '/_authenticated/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
+  '/_authenticated/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/_authenticated/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/_authenticated/app/conversions': typeof AuthenticatedAppConversionsRoute
   '/_authenticated/app/domains': typeof AuthenticatedAppDomainsRoute
@@ -842,6 +862,7 @@ export interface FileRouteTypes {
     | '/admin/payment-gateways'
     | '/admin/subscription-management'
     | '/admin/subscriptions'
+    | '/admin/update-center'
     | '/admin/users'
     | '/app/agency'
     | '/app/ai'
@@ -849,6 +870,7 @@ export interface FileRouteTypes {
     | '/app/automation'
     | '/app/billing'
     | '/app/campaigns'
+    | '/app/changelog'
     | '/app/communications'
     | '/app/conversions'
     | '/app/domains'
@@ -926,12 +948,14 @@ export interface FileRouteTypes {
     | '/admin/payment-gateways'
     | '/admin/subscription-management'
     | '/admin/subscriptions'
+    | '/admin/update-center'
     | '/admin/users'
     | '/app/agency'
     | '/app/analytics'
     | '/app/automation'
     | '/app/billing'
     | '/app/campaigns'
+    | '/app/changelog'
     | '/app/communications'
     | '/app/conversions'
     | '/app/domains'
@@ -1011,6 +1035,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/payment-gateways'
     | '/_authenticated/admin/subscription-management'
     | '/_authenticated/admin/subscriptions'
+    | '/_authenticated/admin/update-center'
     | '/_authenticated/admin/users'
     | '/_authenticated/app/agency'
     | '/_authenticated/app/ai'
@@ -1018,6 +1043,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/automation'
     | '/_authenticated/app/billing'
     | '/_authenticated/app/campaigns'
+    | '/_authenticated/app/changelog'
     | '/_authenticated/app/communications'
     | '/_authenticated/app/conversions'
     | '/_authenticated/app/domains'
@@ -1449,6 +1475,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppCommunicationsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/changelog': {
+      id: '/_authenticated/app/changelog'
+      path: '/changelog'
+      fullPath: '/app/changelog'
+      preLoaderRoute: typeof AuthenticatedAppChangelogRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/campaigns': {
       id: '/_authenticated/app/campaigns'
       path: '/campaigns'
@@ -1496,6 +1529,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/update-center': {
+      id: '/_authenticated/admin/update-center'
+      path: '/admin/update-center'
+      fullPath: '/admin/update-center'
+      preLoaderRoute: typeof AuthenticatedAdminUpdateCenterRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/admin/subscriptions': {
@@ -1782,6 +1822,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAutomationRoute: typeof AuthenticatedAppAutomationRoute
   AuthenticatedAppBillingRoute: typeof AuthenticatedAppBillingRouteWithChildren
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
+  AuthenticatedAppChangelogRoute: typeof AuthenticatedAppChangelogRoute
   AuthenticatedAppCommunicationsRoute: typeof AuthenticatedAppCommunicationsRoute
   AuthenticatedAppConversionsRoute: typeof AuthenticatedAppConversionsRoute
   AuthenticatedAppDomainsRoute: typeof AuthenticatedAppDomainsRoute
@@ -1818,6 +1859,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAutomationRoute: AuthenticatedAppAutomationRoute,
   AuthenticatedAppBillingRoute: AuthenticatedAppBillingRouteWithChildren,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
+  AuthenticatedAppChangelogRoute: AuthenticatedAppChangelogRoute,
   AuthenticatedAppCommunicationsRoute: AuthenticatedAppCommunicationsRoute,
   AuthenticatedAppConversionsRoute: AuthenticatedAppConversionsRoute,
   AuthenticatedAppDomainsRoute: AuthenticatedAppDomainsRoute,
@@ -1860,6 +1902,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminPaymentGatewaysRoute: typeof AuthenticatedAdminPaymentGatewaysRoute
   AuthenticatedAdminSubscriptionManagementRoute: typeof AuthenticatedAdminSubscriptionManagementRoute
   AuthenticatedAdminSubscriptionsRoute: typeof AuthenticatedAdminSubscriptionsRoute
+  AuthenticatedAdminUpdateCenterRoute: typeof AuthenticatedAdminUpdateCenterRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedBuilderIdRoute: typeof AuthenticatedBuilderIdRoute
 }
@@ -1877,6 +1920,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminSubscriptionManagementRoute:
     AuthenticatedAdminSubscriptionManagementRoute,
   AuthenticatedAdminSubscriptionsRoute: AuthenticatedAdminSubscriptionsRoute,
+  AuthenticatedAdminUpdateCenterRoute: AuthenticatedAdminUpdateCenterRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedBuilderIdRoute: AuthenticatedBuilderIdRoute,
 }

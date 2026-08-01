@@ -93,6 +93,7 @@ const appItems: Item[] = [
   { icon: KeyRound, label: "License Manager", href: "/admin/licenses", requiresRole: ["admin", "super_admin"] },
   { icon: Users, label: "User Management", href: "/admin/users", requiresRole: ["admin", "super_admin"] },
   { icon: Bell, label: "Communication Center", href: "/admin/communication-center", requiresRole: ["admin", "super_admin"] },
+  { icon: Rocket, label: "App Update Center", href: "/admin/update-center", requiresRole: ["admin", "super_admin"] },
 
 ];
 

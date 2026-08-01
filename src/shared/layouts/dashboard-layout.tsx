@@ -5,6 +5,7 @@ import { BottomNav } from "@/features/mobile";
 import { DesktopShortcutsHost } from "@/features/desktop";
 import { useWorkspaceLayout } from "@/features/desktop";
 import { AnnouncementBar, ImportantNotificationPopup } from "@/features/comms";
+import { UpdateModal } from "@/features/updates";
 
 /** Authenticated app shell for the workspace dashboard. */
 export function DashboardLayout({ children }: { children: ReactNode }) {
@@ -19,6 +20,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         {!focus && <AnnouncementBar />}
         {!focus && <Topbar />}
         <ImportantNotificationPopup />
+        <UpdateModal />
         <main
           className={
             compact
