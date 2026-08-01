@@ -65,7 +65,7 @@ export function IntegrationEditor({
 
       <div className="space-y-1.5">
         <Label className="text-xs">Display as</Label>
-        <Select value={mode} onValueChange={(v) => update({ mode: v })}>
+        <Select value={mode} onValueChange={(v) => patch({ mode: v })}>
           <SelectTrigger className="h-9">
             <SelectValue />
           </SelectTrigger>
