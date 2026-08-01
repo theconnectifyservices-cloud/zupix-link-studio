@@ -40,6 +40,14 @@ const SUPPORTED_TYPES: Block["type"][] = [
   "buttonGroup",
   "embed",
   "customCode",
+  "socialButtons",
+  "whatsappButton",
+  "callButton",
+  "emailButton",
+  "smsButton",
+  "telegramButton",
+  "followCard",
+  "qrContact",
 ];
 
 const URL_LIKE =

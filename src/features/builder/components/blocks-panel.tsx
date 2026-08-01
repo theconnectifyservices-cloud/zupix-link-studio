@@ -13,6 +13,7 @@ import { requiredPlanForBlock } from "@/features/subscription/plans";
 export function BlocksPanel({ onAdded }: { onAdded?: () => void } = {}) {
   const groups = [
     { key: "essentials", label: "Essentials" },
+    { key: "social", label: "Social & Contact" },
     { key: "media", label: "Media" },
     { key: "advanced", label: "Advanced" },
     { key: "commerce", label: "Commerce" },
