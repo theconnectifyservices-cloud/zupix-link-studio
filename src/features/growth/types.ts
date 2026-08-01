@@ -1,3 +1,30 @@
+/** How ZUPIX branding renders on a public bio page. */
+export type BrandingMode = "hidden" | "compact" | "full";
+
+export const BRANDING_MODES: Array<{ value: BrandingMode; label: string; hint: string }> = [
+  { value: "hidden", label: "Hidden", hint: "No ZUPIX branding on your public page." },
+  { value: "compact", label: "Compact Badge", hint: "Small “Built with ZUPIX” badge at the bottom." },
+  { value: "full", label: "Full Branding Card", hint: "Logo, description and CTA card plus the badge." },
+];
+
+/** Admin-controlled default branding mode per paid plan code. */
+export type PlanBrandingDefaults = Record<string, BrandingMode>;
+
+export const DEFAULT_PLAN_BRANDING: PlanBrandingDefaults = {
+  tejas: "hidden",
+  garuda: "hidden",
+  vajra: "hidden",
+  lifetime: "hidden",
+  shikhar: "hidden",
+};
+
+export interface WorkspaceBranding {
+  plan: string;
+  mode: BrandingMode;
+  /** UDAAN / free plans cannot change branding. */
+  locked: boolean;
+}
+
 export interface GrowthEngineSettings {
   floating_badge_enabled: boolean;
   footer_cta_enabled: boolean;
