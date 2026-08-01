@@ -113,7 +113,8 @@ export function PublicBioRenderer({
         style={{
           paddingInline: "var(--zx-page-pad-x)",
           paddingBlock: "var(--zx-page-pad-y)",
-          gap: "var(--zx-block-gap)",
+          // Auto Layout: per-section spacing owns the gap.
+          gap: 0,
           maxWidth: "var(--zx-content-max)",
         }}
       >

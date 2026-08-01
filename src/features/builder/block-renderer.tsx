@@ -215,18 +215,45 @@ export function BlockRenderer({
 
 
   const inner = renderInner(block, reduceMotion);
-  if (!hasWrap) return inner;
   const commonProps = {
     className: wrapCls,
     style,
-    "data-block-id": block.id,
-    "data-block-type": block.type,
-    "data-hide-mobile": vis.mobile === false || undefined,
-    "data-hide-tablet": vis.tablet === false || undefined,
-    "data-hide-desktop": vis.desktop === false || undefined,
   } as const;
-  return <div {...commonProps}>{inner}</div>;
+  const content = hasWrap ? <div {...commonProps}>{inner}</div> : inner;
+
+  // ── Auto Layout Engine ────────────────────────────────────────────────
+  // Every section is wrapped in a flow-level box that owns its outer
+  // spacing. Sections always stack after the previous one's rendered
+  // height + its bottom spacing, so Spacer blocks are never required.
+  const spaceTop = rOver.spaceTop ?? s.spaceTop;
+  const spaceBottom = rOver.spaceBottom ?? s.spaceBottom;
+  // Creative blocks (spacer/divider) are self-spacing: no implicit gap.
+  const selfSpaced = block.type === "spacer";
+  const layoutStyle: CSSProperties = {
+    marginTop: `${spaceTop ?? 0}px`,
+    marginBottom:
+      spaceBottom !== undefined
+        ? `${spaceBottom}px`
+        : selfSpaced
+          ? "0px"
+          : "var(--zx-section-gap, 32px)",
+  };
+
+  return (
+    <div
+      className="zx-section"
+      style={layoutStyle}
+      data-block-id={block.id}
+      data-block-type={block.type}
+      data-hide-mobile={vis.mobile === false || undefined}
+      data-hide-tablet={vis.tablet === false || undefined}
+      data-hide-desktop={vis.desktop === false || undefined}
+    >
+      {content}
+    </div>
+  );
 }
+
 
 /** Compute btn-fx className + CSS vars for a button-ish block.
  * Applied to the actual button/pill element so effects clip to the button

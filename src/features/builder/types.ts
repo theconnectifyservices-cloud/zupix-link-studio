@@ -98,6 +98,9 @@ export interface ResponsiveOverrides {
   paddingY?: number;
   marginTop?: number;
   marginBottom?: number;
+  /** Auto Layout: per-viewport section spacing overrides (px). */
+  spaceTop?: number;
+  spaceBottom?: number;
   /** Font size multiplier for scalable text inside the block. */
   fontScale?: number;
 }
@@ -106,6 +109,14 @@ export type Viewport = "mobile" | "tablet" | "desktop";
 
 /** Shared visual/behavior settings available on every advanced block. */
 export interface BlockSettings {
+  /**
+   * Auto Layout Engine — outer stacking space for the section.
+   * `spaceTop` defaults to 0, `spaceBottom` falls back to the page's
+   * Default Section Gap (theme.spacing.sectionGap). Sections always flow
+   * one after another; Spacer blocks are never required.
+   */
+  spaceTop?: number; // px
+  spaceBottom?: number; // px
   paddingY?: number; // px
   paddingX?: number; // px
   marginTop?: number; // px

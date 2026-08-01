@@ -119,7 +119,8 @@ export function BuilderPreview({
                   paddingBlock: "var(--zx-page-pad-y)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "var(--zx-block-gap)",
+                  // Auto Layout: per-section spacing owns the gap.
+          gap: 0,
                   maxWidth: "var(--zx-content-max)",
                   marginInline: "auto",
                 }}

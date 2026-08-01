@@ -2345,6 +2345,37 @@ function SharedSettings({
         Block settings
       </summary>
       <div className="mt-3 space-y-3">
+        <div className="rounded-md border bg-muted/30 p-2">
+          <p className="mb-2 text-[11px] font-medium text-muted-foreground">
+            Section spacing (auto layout)
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            <Field label="Top spacing (px)">
+              <Input
+                type="number"
+                min={0}
+                max={400}
+                placeholder="0"
+                value={s.spaceTop ?? ""}
+                onChange={(e) => onChange({ spaceTop: numOrUndef(e.target.value) })}
+              />
+            </Field>
+            <Field label="Bottom spacing (px)">
+              <Input
+                type="number"
+                min={0}
+                max={400}
+                placeholder="Page default"
+                value={s.spaceBottom ?? ""}
+                onChange={(e) => onChange({ spaceBottom: numOrUndef(e.target.value) })}
+              />
+            </Field>
+          </div>
+          <p className="mt-1.5 text-[10px] text-muted-foreground">
+            Empty bottom spacing uses the page's Default Section Gap. Sections never overlap —
+            Spacer blocks are only for creative layouts.
+          </p>
+        </div>
         <div className="grid grid-cols-2 gap-2">
           <Field label="Padding Y (px)">
             <Input
