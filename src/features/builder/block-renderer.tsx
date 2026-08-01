@@ -69,6 +69,7 @@ import {
 import { useBuilderStore } from "./store";
 import { DEFAULT_PROFILE } from "./theme";
 import { HighlightCardsRender } from "./components/highlight-cards-render";
+import { SocialIconsRender } from "./components/social-icons-render";
 import type { HighlightCardsBlock } from "./types";
 import { IntegrationRender } from "./integrations/integration-render";
 

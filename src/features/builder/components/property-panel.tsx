@@ -42,6 +42,7 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { getBlockDef } from "../block-registry";
 import { ImageField } from "./image-field";
 import { HighlightCardsEditor } from "./highlight-cards-editor";
+import { SocialIconsEditor } from "./social-icons-editor";
 import type { HighlightCardsBlock } from "../types";
 import { VideoSourceField } from "./video-source-field";
 import { MediaFileField } from "./media-file-field";
@@ -831,9 +832,7 @@ export function PropertyPanel() {
         </Field>
       )}
 
-      {block.type === "social" && (
-        <SocialEditor links={block.links} onChange={(links) => set("links", links)} />
-      )}
+      {block.type === "social" && <SocialIconsEditor block={block} set={set} />}
 
       {block.type === "video" && <VideoEditor block={block} set={set} />}
       {block.type === "gallery" && (
