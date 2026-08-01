@@ -28,6 +28,7 @@ import {
   Award,
   Crown,
   KeyRound,
+  Rocket,
   Bell,
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
