@@ -490,7 +490,10 @@ function renderInner(block: Block, reduceMotion: boolean) {
       return <FileRender block={block} />;
     case "contact":
       return <ContactRender block={block} />;
+    case "integration":
+      return <IntegrationRender block={block} />;
     case "embed":
+
       return <EmbedRender block={block} />;
     case "customCode":
       return (
