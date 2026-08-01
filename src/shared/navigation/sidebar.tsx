@@ -99,6 +99,7 @@ const appItems: Item[] = [
 ];
 
 const bottomItems: Item[] = [
+  { icon: Rocket, label: "Changelog", href: "/app/changelog" },
   { icon: Settings, label: "Settings", href: "/app/settings/profile" },
   { icon: LifeBuoy, label: "Help & Support", href: "/app/help" },
 ];
