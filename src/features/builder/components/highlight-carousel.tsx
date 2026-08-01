@@ -73,7 +73,6 @@ export function HighlightCarousel({
   useEffect(() => {
     if (!embla) return;
     setSnaps(embla.scrollSnapList());
-    (window as any).__zxEmbla = embla;
     sync();
     embla.on("select", sync).on("reInit", () => {
       setSnaps(embla.scrollSnapList());
