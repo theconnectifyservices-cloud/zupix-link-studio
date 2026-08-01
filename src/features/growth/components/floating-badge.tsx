@@ -36,7 +36,7 @@ export function FloatingBadge({ settings, compact = false, plan }: Props) {
       ref={ref}
       data-zx-floating="bottom-right"
       data-zx-floating-priority={2}
-      className={`group fixed bottom-20 right-4 z-[60] inline-flex max-w-[calc(100vw-2rem)] items-center rounded-full p-[1.5px] backdrop-blur-xl [--zx-float-inset:20px] sm:right-5 lg:right-6 lg:[--zx-float-inset:24px] ${
+      className={`group fixed bottom-20 right-4 z-[60] inline-flex max-w-[calc(100vw-2rem)] items-center rounded-full p-[1.5px] backdrop-blur-xl [--zx-float-inset:20px] [@media(min-width:768px)]:right-5 [@media(min-width:1024px)]:right-6 [@media(min-width:1024px)]:[--zx-float-inset:24px] ${
         compact
           ? "gap-1.5 shadow-[0_4px_18px_rgba(0,0,0,0.14)]"
           : "gap-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.18)]"
