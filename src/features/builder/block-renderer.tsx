@@ -1273,10 +1273,13 @@ function CountdownRender({ block }: { block: CountdownBlock }) {
           [s, "Sec"],
         ].map(([n, l]) => (
           <div key={l as string} className="rounded-lg bg-muted p-2">
-            <div className="text-lg font-bold tabular-nums">{String(n).padStart(2, "0")}</div>
+            <div className="text-lg font-bold tabular-nums">
+              {n === null ? "--" : String(n).padStart(2, "0")}
+            </div>
             <div className="text-[10px] text-muted-foreground">{l}</div>
           </div>
         ))}
+
       </div>
     </div>
   );
