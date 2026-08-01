@@ -103,7 +103,73 @@ function normalizeBlock(block: unknown, index: number): Block | null {
   }
 }
 
+/**
+ * Highlight Cards travel through templates, imports, duplicates and version
+ * snapshots as plain JSON, so backfill every layout/style field here rather
+ * than requiring a migration on existing pages.
+ */
+function normalizeHighlightCardsBlock(raw: JsonObject, id: string): HighlightCardsBlock {
+  const source = asArray(raw.cards).length > 0 ? asArray(raw.cards) : asArray(raw.items);
+  const cards = source.reduce<HighlightCard[]>((acc, item, index) => {
+    if (!isObject(item)) return acc;
+    const row = item as JsonObject;
+    const title = stringValue(row.title) || stringValue(row.label);
+    const emoji = stringValue(row.emoji);
+    const svg = stringValue(row.svg);
+    const imageUrl = stringValue(row.imageUrl) || stringValue(row.url && !stringValue(row.link) ? "" : "");
+    const iconKind =
+      row.iconKind === "emoji" || row.iconKind === "svg" || row.iconKind === "image" || row.iconKind === "none"
+        ? (row.iconKind as HighlightCard["iconKind"])
+        : imageUrl
+          ? "image"
+          : svg
+            ? "svg"
+            : emoji
+              ? "emoji"
+              : "none";
+    if (!title && iconKind === "none") return acc;
+    acc.push({
+      ...row,
+      id: stringValue(row.id) || `${id}-card-${index + 1}`,
+      iconKind,
+      emoji,
+      svg,
+      imageUrl,
+      title,
+      description: stringValue(row.description) || undefined,
+      url: stringValue(row.url) || stringValue(row.link) || undefined,
+      newTab: row.newTab !== false,
+    } as HighlightCard);
+    return acc;
+  }, []);
+
+  const layouts = ["scroll", "grid", "centered", "carousel", "masonry"];
+  const styles = ["solid", "gradient", "glass", "outline"];
+  const shadows = ["none", "sm", "md", "lg", "xl"];
+  const num = (v: unknown, fallback: number) =>
+    typeof v === "number" && Number.isFinite(v) ? v : fallback;
+
+  return {
+    ...raw,
+    type: "highlightCards",
+    layout: layouts.includes(raw.layout as string) ? raw.layout : "grid",
+    columns: num(raw.columns, 3),
+    columnsTablet: num(raw.columnsTablet, 2),
+    columnsMobile: num(raw.columnsMobile, 1),
+    mobileScroll: raw.mobileScroll !== false,
+    gap: raw.gap === "sm" || raw.gap === "lg" ? raw.gap : "md",
+    cardStyle: styles.includes(raw.cardStyle as string) ? raw.cardStyle : "solid",
+    border: raw.border !== false,
+    radius: num(raw.radius, 16),
+    shadow: shadows.includes(raw.shadow as string) ? raw.shadow : "md",
+    iconSize: num(raw.iconSize, 34),
+    align: raw.align === "left" ? "left" : "center",
+    cards,
+  } as HighlightCardsBlock;
+}
+
 function normalizeGalleryBlock(raw: JsonObject, id: string): GalleryBlock {
+
   const source = asArray(raw.images).length > 0 ? asArray(raw.images) : asArray(raw.items);
   const images = source.reduce<GalleryImage[]>((acc, item, index) => {
       if (!isObject(item)) return acc;
