@@ -50,11 +50,8 @@ export function useFloatingStackOffset(
     if (typeof window === "undefined") return;
     let frame = 0;
 
-    console.log('[zx-stack] effect mounted');
-    (window as any).__zxDbgMount = ((window as any).__zxDbgMount ?? 0) + 1;
     const measure = () => {
       const self = selfRef.current;
-      (window as any).__zxDbg0 = { hasSelf: !!self };
       if (!self) return;
       const viewportH = window.innerHeight;
       const selfRect = self.getBoundingClientRect();
@@ -89,7 +86,6 @@ export function useFloatingStackOffset(
         needed = Math.max(needed, viewportH - rect.top + FLOATING_GAP);
       });
 
-      (window as any).__zxDbg = { self: !!self, needed };
       setOffset((prev) => (Math.abs(prev - needed) > 1 ? needed : prev));
     };
 
