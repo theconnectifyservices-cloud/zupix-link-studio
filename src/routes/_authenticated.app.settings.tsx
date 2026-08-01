@@ -8,7 +8,9 @@ const tabs = [
   { to: "/app/settings/password", label: "Password" },
   { to: "/app/settings/sessions", label: "Sessions" },
   { to: "/app/settings/notifications", label: "Notifications" },
+  { to: "/app/settings/branding", label: "Branding" },
   { to: "/app/settings/preferences", label: "Preferences" },
+
 ] as const;
 
 export const Route = createFileRoute("/_authenticated/app/settings")({
