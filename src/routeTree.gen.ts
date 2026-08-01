@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ZxDevActionbarRouteImport } from './routes/zx-dev-actionbar'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
@@ -97,6 +98,11 @@ import { Route as AuthenticatedAppAiDesignRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppAiConversationIdRouteImport } from './routes/_authenticated.app.ai.$conversationId'
 import { Route as AuthenticatedAppBillingInvoicesIdPrintRouteImport } from './routes/_authenticated.app.billing.invoices.$id.print'
 
+const ZxDevActionbarRoute = ZxDevActionbarRouteImport.update({
+  id: '/zx-dev-actionbar',
+  path: '/zx-dev-actionbar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -589,6 +595,7 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/zx-dev-actionbar': typeof ZxDevActionbarRoute
   '/$slug/$page': typeof SlugPageRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -677,6 +684,7 @@ export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/zx-dev-actionbar': typeof ZxDevActionbarRoute
   '/$slug/$page': typeof SlugPageRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -765,6 +773,7 @@ export interface FileRoutesById {
   '/robots.txt': typeof RobotsDottxtRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/zx-dev-actionbar': typeof ZxDevActionbarRoute
   '/$slug/$page': typeof SlugPageRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -855,6 +864,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/signup'
     | '/sitemap.xml'
+    | '/zx-dev-actionbar'
     | '/$slug/$page'
     | '/app'
     | '/onboarding'
@@ -943,6 +953,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/signup'
     | '/sitemap.xml'
+    | '/zx-dev-actionbar'
     | '/$slug/$page'
     | '/onboarding'
     | '/admin/dashboard'
@@ -1030,6 +1041,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/signup'
     | '/sitemap.xml'
+    | '/zx-dev-actionbar'
     | '/$slug/$page'
     | '/_authenticated/app'
     | '/_authenticated/onboarding'
@@ -1120,6 +1132,7 @@ export interface RootRouteChildren {
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ZxDevActionbarRoute: typeof ZxDevActionbarRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminProfilesRoute: typeof AdminProfilesRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
@@ -1138,6 +1151,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/zx-dev-actionbar': {
+      id: '/zx-dev-actionbar'
+      path: '/zx-dev-actionbar'
+      fullPath: '/zx-dev-actionbar'
+      preLoaderRoute: typeof ZxDevActionbarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -1960,6 +1980,7 @@ const rootRouteChildren: RootRouteChildren = {
   RobotsDottxtRoute: RobotsDottxtRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ZxDevActionbarRoute: ZxDevActionbarRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminProfilesRoute: AdminProfilesRoute,
   AuthCallbackRoute: AuthCallbackRoute,
