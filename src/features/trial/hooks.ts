@@ -43,14 +43,18 @@ export interface Countdown {
 export function useTrialCountdown() {
   const { data } = useTrial();
   const end = data?.trialEnd ? new Date(data.trialEnd).getTime() : null;
-  const [now, setNow] = useState(() => Date.now());
+  // Clock reads must not run during SSR/first render or the hydrated markup
+  // differs from the server output (React #418).
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
     if (!end) return;
+    setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, [end]);
   if (!end || !data?.isTrialing) return null;
-  const totalMs = Math.max(0, end - now);
+  const totalMs = Math.max(0, end - (now ?? end));
+
   const s = Math.floor(totalMs / 1000);
   return {
     days: Math.floor(s / 86400),
