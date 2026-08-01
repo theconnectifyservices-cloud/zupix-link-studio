@@ -381,3 +381,51 @@ export async function fetchStorageStats(workspaceId: string): Promise<StorageSta
   }
   return stats;
 }
+
+/* -------------------- ASSET MANAGER (DAM) -------------------- */
+
+/** Human-friendly Media ID shown in the UI, derived from the asset UUID. */
+export function mediaDisplayId(assetId: string): string {
+  return `IMG-${assetId.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
+}
+
+/**
+ * Rebuild the usage graph for one bio page. Runs server-side against the
+ * page's saved content, so every section that references an asset's storage
+ * path is recorded exactly once — no image is ever duplicated on reuse.
+ */
+export async function syncPageUsages(bioPageId: string): Promise<number> {
+  const { data, error } = await supabase.rpc("media_sync_page_usages", {
+    _bio_page_id: bioPageId,
+  });
+  if (error) throw error;
+  return (data as number) ?? 0;
+}
+
+/** Backfill usage data for an existing workspace (automatic migration). */
+export async function resyncWorkspaceUsages(workspaceId: string): Promise<number> {
+  const { data, error } = await supabase.rpc("media_resync_workspace_usages", {
+    _workspace_id: workspaceId,
+  });
+  if (error) throw error;
+  return (data as number) ?? 0;
+}
+
+/**
+ * Replace an asset everywhere it is used. Every section pointing at the old
+ * asset is rewritten to the new one in a single server-side pass.
+ * Returns the number of pages updated.
+ */
+export async function replaceAssetEverywhere(
+  oldAssetId: string,
+  newAsset: MediaAsset,
+): Promise<number> {
+  const newUrl = await signedUrl(newAsset.path, 60 * 60 * 24 * 365);
+  const { data, error } = await supabase.rpc("media_replace_everywhere", {
+    _old_asset: oldAssetId,
+    _new_asset: newAsset.id,
+    _new_url: newUrl,
+  });
+  if (error) throw error;
+  return (data as number) ?? 0;
+}
