@@ -94,6 +94,8 @@ export async function listAssets(q: ListAssetsQuery): Promise<MediaAsset[]> {
     query = query.or(`file_name.ilike.${term},alt_text.ilike.${term}`);
   }
   if (q.onlyUnused) query = query.eq("usage_count", 0);
+  // Crops/derivatives are hidden — the library lists each original once.
+  query = query.is("metadata->>derived_from", null);
 
   const sort = q.sort ?? "recent";
   if (sort === "recent") query = query.order("created_at", { ascending: false });
@@ -164,6 +166,11 @@ export interface UploadInput {
   userId: string;
   folderId: string | null;
   onProgress?: (pct: number) => void;
+  /**
+   * Set when this upload is a crop/derivative of an existing asset. Derived
+   * files stay out of the library grid so the same photo is never listed twice.
+   */
+  derivedFrom?: string;
 }
 
 async function sha256Hex(file: File): Promise<string> {
@@ -192,7 +199,7 @@ async function imageDimensions(file: File): Promise<{ width: number; height: num
 }
 
 export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
-  const { file, workspaceId, userId, folderId, onProgress } = input;
+  const { file, workspaceId, userId, folderId, onProgress, derivedFrom } = input;
 
   if (file.size > MAX_FILE_SIZE) throw new Error(`File exceeds ${MAX_FILE_SIZE / 1024 / 1024} MB`);
   if (!ALLOWED_MIME[file.type]) throw new Error(`Unsupported file type: ${file.type || "unknown"}`);
@@ -244,6 +251,7 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
       width: dims?.width ?? null,
       height: dims?.height ?? null,
       sha256: hash,
+      metadata: derivedFrom ? { derived_from: derivedFrom } : {},
       processing_status: "pending",
     })
     .select()
