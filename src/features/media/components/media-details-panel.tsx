@@ -15,7 +15,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { signedUrl, softDeleteAsset, updateAsset } from "../api";
+import { mediaDisplayId, signedUrl, updateAsset } from "../api";
+import { DeleteAssetDialog } from "./delete-asset-dialog";
 import { toggleAssetFavorite } from "../organization-api";
 import { compressionRatio } from "../delivery";
 import { useAssetUsages } from "../hooks";
@@ -36,7 +37,9 @@ export function MediaDetailsPanel({ asset, userId, onClose }: Props) {
   const [altText, setAltText] = useState("");
   const [tags, setTags] = useState("");
   const [saving, setSaving] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const { data: usages } = useAssetUsages(asset?.id);
+  const usageCount = usages?.length ?? asset?.usage_count ?? 0;
 
   useEffect(() => {
     if (asset) {
@@ -83,17 +86,6 @@ export function MediaDetailsPanel({ asset, userId, onClose }: Props) {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm(`Delete "${asset.file_name}"? This cannot be undone.`)) return;
-    try {
-      await softDeleteAsset(asset.id, asset.path);
-      toast.success("Deleted");
-      qc.invalidateQueries({ queryKey: ["media"] });
-      onClose();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed");
-    }
-  };
 
   return (
     <Sheet open={!!asset} onOpenChange={(o) => !o && onClose()}>
@@ -143,7 +135,12 @@ export function MediaDetailsPanel({ asset, userId, onClose }: Props) {
             <Download className="mr-1.5 h-3.5 w-3.5" /> Download
           </Button>
 
-          <Button size="sm" variant="destructive" className="ml-auto" onClick={handleDelete}>
+          <Button
+            size="sm"
+            variant="destructive"
+            className="ml-auto"
+            onClick={() => setDeleteOpen(true)}
+          >
             <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Delete
           </Button>
         </div>
@@ -201,8 +198,16 @@ export function MediaDetailsPanel({ asset, userId, onClose }: Props) {
             <dd>{new Date(asset.updated_at).toLocaleDateString()}</dd>
           </div>
           <div>
-            <dt className="text-muted-foreground">Usage</dt>
-            <dd>{asset.usage_count} references</dd>
+            <dt className="text-muted-foreground">Media ID</dt>
+            <dd className="font-mono text-xs">{mediaDisplayId(asset.id)}</dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground">Used count</dt>
+            <dd>
+              {usageCount === 0
+                ? "Not used"
+                : `Used in ${usageCount} place${usageCount === 1 ? "" : "s"}`}
+            </dd>
           </div>
         </dl>
 
@@ -299,6 +304,12 @@ export function MediaDetailsPanel({ asset, userId, onClose }: Props) {
             <VersionHistoryPanel asset={asset} userId={userId} />
           </>
         )}
+        <DeleteAssetDialog
+          asset={deleteOpen ? asset : null}
+          workspaceId={asset.workspace_id ?? undefined}
+          onOpenChange={(o) => setDeleteOpen(o)}
+          onDeleted={onClose}
+        />
       </SheetContent>
     </Sheet>
   );
