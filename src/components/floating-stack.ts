@@ -55,7 +55,6 @@ export function useFloatingStackOffset(
       if (!self) return;
       const viewportH = window.innerHeight;
       const selfRect = self.getBoundingClientRect();
-      const selfCenterX = selfRect.left + selfRect.width / 2;
       let needed = 0;
 
       const candidates = document.querySelectorAll<HTMLElement>("body *");
@@ -78,7 +77,7 @@ export function useFloatingStackOffset(
           // overlaps this widget (chat bubbles) or spans the full width
           // (cookie banners / bottom toolbars).
           const spansWidth = rect.width > window.innerWidth * 0.8;
-          const overlapsX = rect.left <= selfCenterX && rect.right >= selfCenterX;
+          const overlapsX = rect.left < selfRect.right && rect.right > selfRect.left;
           if (!spansWidth && !overlapsX) return;
           // Ignore anything larger than half the viewport height (overlays).
           if (rect.height > viewportH * 0.5) return;
