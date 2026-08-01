@@ -19,6 +19,7 @@ import type {
   SocialSurfaceStyle,
 } from "../types";
 import { BRAND_COLOR, SOCIAL_ICON } from "./social-icons-render";
+import { ButtonFxSurface } from "../button-fx";
 
 const ALIGN_CLASS = {
   left: "justify-start text-left",
@@ -45,7 +46,13 @@ function surfaceStyle(style: SocialSurfaceStyle, color: string): CSSProperties {
 }
 
 // ── Social Buttons ───────────────────────────────────────────────────────
-export function SocialButtonsRender({ block }: { block: SocialButtonsBlock }) {
+export function SocialButtonsRender({
+  block,
+  reduceMotion = false,
+}: {
+  block: SocialButtonsBlock;
+  reduceMotion?: boolean;
+}) {
   const items = block.items ?? [];
   const style = block.style ?? "filled";
   const radius = block.radius ?? 12;
@@ -73,8 +80,11 @@ export function SocialButtonsRender({ block }: { block: SocialButtonsBlock }) {
             ? (block.customColor ?? "#6366F1")
             : (item.color ?? BRAND_COLOR[item.platform] ?? "#6366F1");
         return (
-          <a
+          <ButtonFxSurface
             key={item.id}
+            as="a"
+            settings={block.settings}
+            reduceMotion={reduceMotion}
             href={item.url || "#"}
             target="_blank"
             rel="noopener noreferrer"
@@ -86,7 +96,7 @@ export function SocialButtonsRender({ block }: { block: SocialButtonsBlock }) {
           >
             {showIcons && <Icon className="h-4 w-4 shrink-0" />}
             <span className="truncate">{item.label || item.platform}</span>
-          </a>
+          </ButtonFxSurface>
         );
       })}
     </div>
@@ -145,7 +155,13 @@ export function contactActionHref(block: ContactActionBlock): string {
 
 const SIZE_CLASS = { sm: "px-3 py-2 text-xs", md: "px-4 py-2.5 text-sm", lg: "px-5 py-3 text-base" } as const;
 
-export function ContactActionRender({ block }: { block: ContactActionBlock }) {
+export function ContactActionRender({
+  block,
+  reduceMotion = false,
+}: {
+  block: ContactActionBlock;
+  reduceMotion?: boolean;
+}) {
   const meta = ACTION_META[block.type];
   const Icon = meta.icon;
   const color = block.brandColor === false ? (block.color ?? "#6366F1") : meta.color;
@@ -155,7 +171,10 @@ export function ContactActionRender({ block }: { block: ContactActionBlock }) {
 
   return (
     <div className={cn("flex w-full", ALIGN_CLASS[align])}>
-      <a
+      <ButtonFxSurface
+        as="a"
+        settings={block.settings}
+        reduceMotion={reduceMotion}
         href={href}
         target={block.newTab === false ? undefined : "_blank"}
         rel="noopener noreferrer"
@@ -168,13 +187,19 @@ export function ContactActionRender({ block }: { block: ContactActionBlock }) {
       >
         {block.showIcon !== false && <Icon className="h-4 w-4 shrink-0" />}
         <span className="truncate">{block.label || meta.label}</span>
-      </a>
+      </ButtonFxSurface>
     </div>
   );
 }
 
 // ── Follow card ──────────────────────────────────────────────────────────
-export function FollowCardRender({ block }: { block: FollowCardBlock }) {
+export function FollowCardRender({
+  block,
+  reduceMotion = false,
+}: {
+  block: FollowCardBlock;
+  reduceMotion?: boolean;
+}) {
   const links = block.links ?? [];
   const align = block.align ?? "center";
   const minimal = block.layout === "minimal";
@@ -222,8 +247,11 @@ export function FollowCardRender({ block }: { block: FollowCardBlock }) {
             const Icon = SOCIAL_ICON[l.platform] ?? SOCIAL_ICON.custom;
             const color = l.color ?? BRAND_COLOR[l.platform] ?? "#6366F1";
             return (
-              <a
+              <ButtonFxSurface
                 key={l.id}
+                as="a"
+                settings={block.settings}
+                reduceMotion={reduceMotion}
                 href={l.url || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -232,7 +260,7 @@ export function FollowCardRender({ block }: { block: FollowCardBlock }) {
               >
                 {block.showIcons !== false && <Icon className="h-3.5 w-3.5" />}
                 <span>{l.label || l.platform}</span>
-              </a>
+              </ButtonFxSurface>
             );
           })}
         </div>
