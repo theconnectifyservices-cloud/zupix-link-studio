@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BuilderMobileActionBar } from "@/features/builder/components/builder-mobile-actionbar";
 import type { BioContent } from "@/features/builder/types";
 
-export const Route = createFileRoute("/zx-dev-actionbar")({ component: Page });
+export const Route = createFileRoute("/zx-dev/actionbar")({ component: Page });
 
 function Page() {
   return (
