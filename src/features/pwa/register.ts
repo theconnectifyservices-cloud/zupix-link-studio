@@ -63,7 +63,16 @@ export async function registerServiceWorker(
   
 
   const registration = (await wb.register()) ?? null;
+  // Evict the legacy navigation cache: installed PWAs could otherwise keep
+  // serving a pre-publish HTML shell (the "no bio page exists" 404) for a
+  // slug that is now live.
+  try {
+    if (typeof caches !== "undefined") await caches.delete("zupix-pages");
+  } catch {
+    /* ignore */
+  }
   cached = { wb, registration };
+
   return cached;
 }
 
