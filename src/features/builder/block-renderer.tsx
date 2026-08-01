@@ -1226,13 +1226,18 @@ function FaqRender({ block }: { block: FaqBlock }) {
 
 // ── Countdown ────────────────────────────────────────────────────────────
 function CountdownRender({ block }: { block: CountdownBlock }) {
-  const [now, setNow] = useState(() => Date.now());
+  // `Date.now()` differs between the server render and hydration, which throws
+  // React #418 (text content mismatch). Start from the block's own target so
+  // both renders agree, then switch to the live clock after mount.
+  const target = new Date(block.target).getTime();
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
+    setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
-  const target = new Date(block.target).getTime();
-  const diff = target - now;
+  const diff = (now ?? target) - (now === null ? 0 : 0) - (now ?? target) + (target - (now ?? target));
+
   if (isNaN(target)) {
     return (
       <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
