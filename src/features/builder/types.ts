@@ -665,6 +665,8 @@ export type Block =
   | ButtonGroupBlock
   | EmbedBlock
   | CustomCodeBlock
+  | IntegrationBlock
+
   | GenericBlock;
 
 import type { PageTheme } from "./theme";
