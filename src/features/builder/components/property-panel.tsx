@@ -959,6 +959,8 @@ export function PropertyPanel() {
       )}
       {block.type === "embed" && <EmbedEditor block={block} set={set} />}
       {block.type === "customCode" && <CustomCodeEditor block={block} update={update} />}
+      {block.type === "integration" && <IntegrationEditor block={block} update={update} />}
+
 
 
       <SharedSettings settings={block.settings} onChange={setSettings} />
