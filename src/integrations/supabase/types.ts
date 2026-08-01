@@ -3010,6 +3010,7 @@ export type Database = {
           footer_subtext: string
           id: string
           og_branding_enabled: boolean
+          plan_branding_defaults: Json
           qr_branding_enabled: boolean
           redirect_url: string
           referral_cta_enabled: boolean
@@ -3031,6 +3032,7 @@ export type Database = {
           footer_subtext?: string
           id?: string
           og_branding_enabled?: boolean
+          plan_branding_defaults?: Json
           qr_branding_enabled?: boolean
           redirect_url?: string
           referral_cta_enabled?: boolean
@@ -3052,6 +3054,7 @@ export type Database = {
           footer_subtext?: string
           id?: string
           og_branding_enabled?: boolean
+          plan_branding_defaults?: Json
           qr_branding_enabled?: boolean
           redirect_url?: string
           referral_cta_enabled?: boolean
@@ -6754,6 +6757,7 @@ export type Database = {
         Row: {
           allow_custom_js: boolean
           brand_name: string | null
+          branding_mode: string | null
           created_at: string
           deleted_at: string | null
           department_id: string | null
@@ -6777,6 +6781,7 @@ export type Database = {
         Insert: {
           allow_custom_js?: boolean
           brand_name?: string | null
+          branding_mode?: string | null
           created_at?: string
           deleted_at?: string | null
           department_id?: string | null
@@ -6800,6 +6805,7 @@ export type Database = {
         Update: {
           allow_custom_js?: boolean
           brand_name?: string | null
+          branding_mode?: string | null
           created_at?: string
           deleted_at?: string | null
           department_id?: string | null
@@ -6879,6 +6885,7 @@ export type Database = {
         Returns: {
           allow_custom_js: boolean
           brand_name: string | null
+          branding_mode: string | null
           created_at: string
           deleted_at: string | null
           department_id: string | null
@@ -6964,6 +6971,10 @@ export type Database = {
       org_role_of: {
         Args: { _org_id: string; _user_id: string }
         Returns: Database["public"]["Enums"]["org_role"]
+      }
+      public_workspace_branding: {
+        Args: { _workspace_id: string }
+        Returns: Json
       }
       public_workspace_plan: {
         Args: { _workspace_id: string }
