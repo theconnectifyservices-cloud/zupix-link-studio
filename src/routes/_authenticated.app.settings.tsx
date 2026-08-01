@@ -10,6 +10,7 @@ const tabs = [
   { to: "/app/settings/notifications", label: "Notifications" },
   { to: "/app/settings/branding", label: "Branding" },
   { to: "/app/settings/preferences", label: "Preferences" },
+  { to: "/app/settings/updates", label: "Update Preferences" },
 
 ] as const;
 

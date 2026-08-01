@@ -5049,10 +5049,12 @@ export type Database = {
           created_at: string
           dismissed_at: string | null
           id: string
+          last_prompt_at: string | null
           metadata: Json
           never_show_at: string | null
           read_at: string | null
           seen_at: string | null
+          skipped_at: string | null
           updated_at: string
           updated_at_action: string | null
           user_id: string
@@ -5063,10 +5065,12 @@ export type Database = {
           created_at?: string
           dismissed_at?: string | null
           id?: string
+          last_prompt_at?: string | null
           metadata?: Json
           never_show_at?: string | null
           read_at?: string | null
           seen_at?: string | null
+          skipped_at?: string | null
           updated_at?: string
           updated_at_action?: string | null
           user_id: string
@@ -5077,10 +5081,12 @@ export type Database = {
           created_at?: string
           dismissed_at?: string | null
           id?: string
+          last_prompt_at?: string | null
           metadata?: Json
           never_show_at?: string | null
           read_at?: string | null
           seen_at?: string | null
+          skipped_at?: string | null
           updated_at?: string
           updated_at_action?: string | null
           user_id?: string
@@ -5264,6 +5270,8 @@ export type Database = {
           email: string | null
           force_password_change: boolean
           id: string
+          installed_app_version: string | null
+          installed_app_version_at: string | null
           is_beta_tester: boolean
           language: string | null
           last_login_at: string | null
@@ -5296,6 +5304,8 @@ export type Database = {
           email?: string | null
           force_password_change?: boolean
           id: string
+          installed_app_version?: string | null
+          installed_app_version_at?: string | null
           is_beta_tester?: boolean
           language?: string | null
           last_login_at?: string | null
@@ -5328,6 +5338,8 @@ export type Database = {
           email?: string | null
           force_password_change?: boolean
           id?: string
+          installed_app_version?: string | null
+          installed_app_version_at?: string | null
           is_beta_tester?: boolean
           language?: string | null
           last_login_at?: string | null
@@ -7199,6 +7211,7 @@ export type Database = {
           is_forced: boolean
           is_important: boolean
           is_pinned: boolean
+          last_prompt_at: string
           never_show_at: string
           performance_improvements: string[]
           priority: Database["public"]["Enums"]["platform_update_priority"]
@@ -7208,6 +7221,7 @@ export type Database = {
           release_type: Database["public"]["Enums"]["platform_release_type"]
           security_updates: string[]
           seen_at: string
+          skipped_at: string
           title: string
           updated_at_action: string
           version: string
@@ -7222,11 +7236,13 @@ export type Database = {
           _never_show?: boolean
           _read?: boolean
           _seen?: boolean
+          _skipped?: boolean
           _updated?: boolean
           _version_id: string
         }
         Returns: undefined
       }
+      platform_skip_overview: { Args: never; Returns: Json }
       platform_update_analytics: {
         Args: { _version_id: string }
         Returns: Json

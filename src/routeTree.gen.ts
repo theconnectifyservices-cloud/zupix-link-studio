@@ -79,6 +79,7 @@ import { Route as AuthenticatedAppAiIndexRouteImport } from './routes/_authentic
 import { Route as ApiPublicWebhooksRazorpayRouteImport } from './routes/api/public/webhooks/razorpay'
 import { Route as ApiPublicWebhooksPayuRouteImport } from './routes/api/public/webhooks/payu'
 import { Route as ApiPublicWebhooksCashfreeRouteImport } from './routes/api/public/webhooks/cashfree'
+import { Route as AuthenticatedAppSettingsUpdatesRouteImport } from './routes/_authenticated.app.settings.updates'
 import { Route as AuthenticatedAppSettingsSessionsRouteImport } from './routes/_authenticated.app.settings.sessions'
 import { Route as AuthenticatedAppSettingsSecurityRouteImport } from './routes/_authenticated.app.settings.security'
 import { Route as AuthenticatedAppSettingsPwaRouteImport } from './routes/_authenticated.app.settings.pwa'
@@ -477,6 +478,12 @@ const ApiPublicWebhooksCashfreeRoute =
     path: '/api/public/webhooks/cashfree',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AuthenticatedAppSettingsUpdatesRoute =
+  AuthenticatedAppSettingsUpdatesRouteImport.update({
+    id: '/updates',
+    path: '/updates',
+    getParentRoute: () => AuthenticatedAppSettingsRoute,
+  } as any)
 const AuthenticatedAppSettingsSessionsRoute =
   AuthenticatedAppSettingsSessionsRouteImport.update({
     id: '/sessions',
@@ -655,6 +662,7 @@ export interface FileRoutesByFullPath {
   '/app/settings/pwa': typeof AuthenticatedAppSettingsPwaRoute
   '/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
+  '/app/settings/updates': typeof AuthenticatedAppSettingsUpdatesRoute
   '/api/public/webhooks/cashfree': typeof ApiPublicWebhooksCashfreeRoute
   '/api/public/webhooks/payu': typeof ApiPublicWebhooksPayuRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
@@ -740,6 +748,7 @@ export interface FileRoutesByTo {
   '/app/settings/pwa': typeof AuthenticatedAppSettingsPwaRoute
   '/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
+  '/app/settings/updates': typeof AuthenticatedAppSettingsUpdatesRoute
   '/api/public/webhooks/cashfree': typeof ApiPublicWebhooksCashfreeRoute
   '/api/public/webhooks/payu': typeof ApiPublicWebhooksPayuRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
@@ -829,6 +838,7 @@ export interface FileRoutesById {
   '/_authenticated/app/settings/pwa': typeof AuthenticatedAppSettingsPwaRoute
   '/_authenticated/app/settings/security': typeof AuthenticatedAppSettingsSecurityRoute
   '/_authenticated/app/settings/sessions': typeof AuthenticatedAppSettingsSessionsRoute
+  '/_authenticated/app/settings/updates': typeof AuthenticatedAppSettingsUpdatesRoute
   '/api/public/webhooks/cashfree': typeof ApiPublicWebhooksCashfreeRoute
   '/api/public/webhooks/payu': typeof ApiPublicWebhooksPayuRoute
   '/api/public/webhooks/razorpay': typeof ApiPublicWebhooksRazorpayRoute
@@ -918,6 +928,7 @@ export interface FileRouteTypes {
     | '/app/settings/pwa'
     | '/app/settings/security'
     | '/app/settings/sessions'
+    | '/app/settings/updates'
     | '/api/public/webhooks/cashfree'
     | '/api/public/webhooks/payu'
     | '/api/public/webhooks/razorpay'
@@ -1003,6 +1014,7 @@ export interface FileRouteTypes {
     | '/app/settings/pwa'
     | '/app/settings/security'
     | '/app/settings/sessions'
+    | '/app/settings/updates'
     | '/api/public/webhooks/cashfree'
     | '/api/public/webhooks/payu'
     | '/api/public/webhooks/razorpay'
@@ -1091,6 +1103,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/settings/pwa'
     | '/_authenticated/app/settings/security'
     | '/_authenticated/app/settings/sessions'
+    | '/_authenticated/app/settings/updates'
     | '/api/public/webhooks/cashfree'
     | '/api/public/webhooks/payu'
     | '/api/public/webhooks/razorpay'
@@ -1615,6 +1628,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksCashfreeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app/settings/updates': {
+      id: '/_authenticated/app/settings/updates'
+      path: '/updates'
+      fullPath: '/app/settings/updates'
+      preLoaderRoute: typeof AuthenticatedAppSettingsUpdatesRouteImport
+      parentRoute: typeof AuthenticatedAppSettingsRoute
+    }
     '/_authenticated/app/settings/sessions': {
       id: '/_authenticated/app/settings/sessions'
       path: '/sessions'
@@ -1787,6 +1807,7 @@ interface AuthenticatedAppSettingsRouteChildren {
   AuthenticatedAppSettingsPwaRoute: typeof AuthenticatedAppSettingsPwaRoute
   AuthenticatedAppSettingsSecurityRoute: typeof AuthenticatedAppSettingsSecurityRoute
   AuthenticatedAppSettingsSessionsRoute: typeof AuthenticatedAppSettingsSessionsRoute
+  AuthenticatedAppSettingsUpdatesRoute: typeof AuthenticatedAppSettingsUpdatesRoute
 }
 
 const AuthenticatedAppSettingsRouteChildren: AuthenticatedAppSettingsRouteChildren =
@@ -1808,6 +1829,7 @@ const AuthenticatedAppSettingsRouteChildren: AuthenticatedAppSettingsRouteChildr
       AuthenticatedAppSettingsSecurityRoute,
     AuthenticatedAppSettingsSessionsRoute:
       AuthenticatedAppSettingsSessionsRoute,
+    AuthenticatedAppSettingsUpdatesRoute: AuthenticatedAppSettingsUpdatesRoute,
   }
 
 const AuthenticatedAppSettingsRouteWithChildren =

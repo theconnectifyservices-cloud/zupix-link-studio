@@ -212,12 +212,15 @@ function AnalyticsStrip({ versionId }: { versionId: string }) {
     { label: "Seen", value: data.seen },
     { label: "Updated", value: data.updated },
     { label: "Read", value: data.read },
+    { label: "Skipped", value: data.skipped ?? 0 },
     { label: "Ignored", value: data.ignored },
     { label: "Pending", value: data.pending },
+    { label: "Skip rate", value: `${data.skip_rate ?? 0}%` },
+    { label: "Avg. time to skip", value: formatDuration(data.avg_seconds_before_skip) },
     { label: "Dismiss rate", value: `${data.dismiss_rate}%` },
   ];
   return (
-    <div className="grid grid-cols-2 gap-px border-t bg-border sm:grid-cols-4 lg:grid-cols-7">
+    <div className="grid grid-cols-2 gap-px border-t bg-border sm:grid-cols-4 lg:grid-cols-5">
       {stats.map((s) => (
         <div key={s.label} className="bg-card px-4 py-3">
           <p className="text-lg font-semibold tabular-nums">{s.value}</p>
