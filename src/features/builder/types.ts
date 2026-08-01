@@ -22,6 +22,7 @@ export type BlockType =
   | "file"
   | "contact"
   | "integration"
+  | "highlightCards"
 
   | "buttonGroup"
   | "embed"
@@ -466,6 +467,62 @@ export interface FaqBlock extends BaseBlock {
   items: FaqItem[];
 }
 
+// ── Highlight Cards ──────────────────────────────────────────────────────
+/** How a card's icon is sourced. */
+export type HighlightIconKind = "none" | "emoji" | "svg" | "image";
+/** Section layout modes for the Highlight Cards block. */
+export type HighlightLayout = "scroll" | "grid" | "centered" | "carousel" | "masonry";
+/** Card surface treatment. */
+export type HighlightCardStyle = "solid" | "gradient" | "glass" | "outline";
+export type HighlightShadow = "none" | "sm" | "md" | "lg" | "xl";
+
+export interface HighlightCard {
+  id: string;
+  iconKind?: HighlightIconKind;
+  /** Emoji glyph when iconKind = "emoji". */
+  emoji?: string;
+  /** Raw inline SVG markup when iconKind = "svg" (sanitized at render). */
+  svg?: string;
+  /** Uploaded / library image url when iconKind = "image". */
+  imageUrl?: string;
+  title: string;
+  description?: string;
+  url?: string;
+  newTab?: boolean;
+  /** Per-card colour overrides (fall back to the section settings). */
+  bgColor?: string;
+  textColor?: string;
+}
+
+export interface HighlightCardsBlock extends BaseBlock {
+  type: "highlightCards";
+  title?: string;
+  subtitle?: string;
+  layout: HighlightLayout;
+  /** Columns per viewport for grid / masonry layouts. */
+  columns?: number;
+  columnsTablet?: number;
+  columnsMobile?: number;
+  /** Auto horizontal scroll on mobile when there are many cards. */
+  mobileScroll?: boolean;
+  gap?: "sm" | "md" | "lg";
+  cardStyle?: HighlightCardStyle;
+  bgColor?: string;
+  gradientFrom?: string;
+  gradientTo?: string;
+  textColor?: string;
+  border?: boolean;
+  borderColor?: string;
+  /** Card corner radius in px. */
+  radius?: number;
+  shadow?: HighlightShadow;
+  animation?: EntranceAnim;
+  hover?: HoverEffect;
+  iconSize?: number;
+  align?: "left" | "center";
+  cards: HighlightCard[];
+}
+
 // ── Countdown ────────────────────────────────────────────────────────────
 export interface CountdownBlock extends BaseBlock {
   type: "countdown";
@@ -689,6 +746,7 @@ export type Block =
   | EmbedBlock
   | CustomCodeBlock
   | IntegrationBlock
+  | HighlightCardsBlock
 
   | GenericBlock;
 

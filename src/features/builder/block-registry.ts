@@ -24,6 +24,7 @@ import {
   Rows,
   Rss,
   Sparkles,
+  LayoutGrid,
 } from "lucide-react";
 import type { Block, BlockType } from "./types";
 import { newId } from "./types";
@@ -136,6 +137,38 @@ export const BLOCK_DEFS: BlockDef[] = [
     group: "media",
     available: true,
     create: () => ({ id: newId(), type: "image", url: "", alt: "", rounded: "md", fit: "cover" }),
+  },
+  {
+    type: "highlightCards",
+    label: "Highlight cards",
+    description: "Icon + title cards, any purpose",
+    icon: LayoutGrid,
+    group: "essentials",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "highlightCards",
+      title: "Highlights",
+      layout: "grid",
+      columns: 3,
+      columnsTablet: 2,
+      columnsMobile: 1,
+      mobileScroll: true,
+      gap: "md",
+      cardStyle: "solid",
+      align: "center",
+      radius: 16,
+      shadow: "md",
+      iconSize: 34,
+      border: true,
+      animation: "fade-up",
+      hover: "lift",
+      cards: [
+        { id: newId(), iconKind: "emoji", emoji: "⚡", title: "Fast", description: "Loads instantly" },
+        { id: newId(), iconKind: "emoji", emoji: "🔒", title: "Secure", description: "Safe by default" },
+        { id: newId(), iconKind: "emoji", emoji: "🎨", title: "Custom", description: "Make it yours" },
+      ],
+    }),
   },
   {
     type: "gallery",
