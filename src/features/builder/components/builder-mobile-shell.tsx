@@ -123,70 +123,17 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
           <div className="truncate text-sm font-medium">{pageName || "Untitled"}</div>
           <SaveIndicator status={status} />
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Undo"
-          onClick={undo}
-          disabled={past === 0}
-          className="h-11 w-11 shrink-0"
-        >
-          <Undo2 className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Redo"
-          onClick={redo}
-          disabled={future === 0}
-          className="h-11 w-11 shrink-0"
-        >
-          <Redo2 className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={previewMode ? "default" : "ghost"}
-          size="icon"
-          aria-label="Toggle preview"
-          onClick={onTogglePreview}
-          className="h-11 w-11 shrink-0"
-        >
-          <Eye className="h-4 w-4" />
-        </Button>
       </header>
 
 
       {/* Canvas — full-screen, edge-to-edge */}
       <div className="relative min-h-0 flex-1 overflow-hidden">
         <BuilderPreview viewport={viewport} previewMode={previewMode} />
-
-        {/* Floating Save FAB */}
-        {!previewMode && (
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving || !pageId}
-            aria-label="Save"
-            className={cn(
-              "absolute right-4 z-30 grid h-12 w-12 place-items-center rounded-full shadow-lg transition-all",
-              "bg-primary text-primary-foreground active:scale-95 disabled:opacity-60",
-            )}
-            style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 76px)" }}
-          >
-            {saving ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <Save className="h-5 w-5" />
-            )}
-          </button>
-        )}
       </div>
 
       {/* Bottom toolbar */}
       {!previewMode && (
-        <nav
-          className="grid shrink-0 grid-cols-6 border-t bg-background/95 backdrop-blur"
-          style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
-        >
+        <nav className="grid shrink-0 grid-cols-6 border-t bg-background/95 backdrop-blur">
           <ToolbarBtn icon={Plus} label="Add" onClick={() => setPanel("add")} />
           <ToolbarBtn icon={Palette} label="Theme" onClick={() => setPanel("theme")} />
           <ToolbarBtn icon={Layers} label="Layers" onClick={() => setPanel("layers")} />
@@ -200,6 +147,21 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
           />
         </nav>
       )}
+
+      {/* Sticky primary actions — always visible, even in preview mode */}
+      <BuilderMobileActionBar
+        pageId={pageId}
+        content={content}
+        isDirty={status === "dirty" || status === "error"}
+        saving={saving}
+        onSave={handleSave}
+        previewMode={previewMode}
+        onTogglePreview={onTogglePreview}
+        canUndo={past > 0}
+        canRedo={future > 0}
+        onUndo={undo}
+        onRedo={redo}
+      />
 
       <PanelSheet
         open={panel === "add"}
