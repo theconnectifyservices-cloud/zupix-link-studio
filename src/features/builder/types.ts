@@ -575,8 +575,32 @@ export interface HighlightCardsBlock extends BaseBlock {
   hover?: HoverEffect;
   iconSize?: number;
   align?: "left" | "center";
+  // ── Carousel engine settings (layout = "carousel") ─────────────────────
+  /** Infinite loop. Default: true. */
+  carouselLoop?: boolean;
+  /** Autoplay. Default: false. */
+  carouselAutoplay?: boolean;
+  /** Autoplay delay in ms. Default: 4000. */
+  carouselAutoplayDelay?: number;
+  /** Pause autoplay while hovering. Default: true. */
+  carouselPauseOnHover?: boolean;
+  /** Pause autoplay on touch/drag. Default: true. */
+  carouselPauseOnTouch?: boolean;
+  /** Transition duration knob (Embla `duration`, ~ms/10). Default: 28. */
+  carouselSpeed?: number;
+  /** Drag / swipe enabled. Default: true. */
+  carouselDrag?: boolean;
+  /** Mouse-wheel navigation. Default: false. */
+  carouselWheel?: boolean;
+  /** Arrow-key navigation when focused. Default: true. */
+  carouselKeyboard?: boolean;
+  /** Show prev/next arrows. Default: true. */
+  carouselArrows?: boolean;
+  /** Show pagination dots. Default: true. */
+  carouselDots?: boolean;
   cards: HighlightCard[];
 }
+
 
 // ── Countdown ────────────────────────────────────────────────────────────
 export interface CountdownBlock extends BaseBlock {
