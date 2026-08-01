@@ -206,6 +206,13 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
         description="Tap to insert or drag onto the canvas."
       >
         <BlocksPanel onAdded={() => setPanel("properties")} />
+        <div className="mt-5 border-t pt-4">
+          <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            Integrations
+          </div>
+          <IntegrationsPanel onAdded={() => setPanel("properties")} />
+        </div>
+
       </PanelSheet>
 
       <PanelSheet
