@@ -1302,3 +1302,9 @@ body {
   height: 100%;
   display: block;
 }
+
+/* Background image with fixed attachment — desktop only (iOS Safari breaks
+   background-attachment: fixed, so limit it to pointer-capable devices). */
+@media (hover: hover) and (pointer: fine) {
+  .zx-bg-fixed { background-attachment: fixed; }
+}
