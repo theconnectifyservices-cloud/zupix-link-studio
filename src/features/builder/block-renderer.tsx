@@ -736,15 +736,8 @@ function GroupItemRender({
   baseStyle.isolation = "isolate";
 
   // Effect layer via existing engine
-  const fxSettings: BlockSettings = {
-    buttonEffect: item.effect,
-    buttonEffectColor: item.effectColor,
-    buttonEffectColor2: item.effectColor2,
-    buttonEffectSpeed: item.effectSpeed,
-    buttonEffectIntensity: item.effectIntensity,
-    buttonEffectMode: item.effectMode,
-    buttonEffectEnabled: !!item.effect && item.effect !== "none",
-  };
+  const fxSettings: BlockSettings = fxSettingsFromItem(item);
+
   const fx = computeButtonFx(fxSettings, reduceMotion);
   const style: CSSProperties = { ...baseStyle, ...fx.style };
 
