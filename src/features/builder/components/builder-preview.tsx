@@ -100,13 +100,16 @@ export function BuilderPreview({
             data-theme-mode={resolvedMode}
             className={cn(
               resolvedMode === "dark" && "dark",
-              "overflow-y-auto overflow-x-hidden",
+              // Stacking context so the -z-10 background layers stay above
+              // this element's own base colour/gradient (parity with public).
+              "relative isolate overflow-y-auto overflow-x-hidden",
               `zx-vp-${viewport}`,
               bgCls,
               isPhone
                 ? "max-h-[720px] min-h-[560px] rounded-[26px]"
                 : "max-h-[820px] min-h-[560px] rounded-xl",
             )}
+
             style={themeStyle}
             onClick={() => !previewMode && clearSelection()}
           >
