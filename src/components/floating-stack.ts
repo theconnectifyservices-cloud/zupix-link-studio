@@ -50,6 +50,7 @@ export function useFloatingStackOffset(
     if (typeof window === "undefined") return;
     let frame = 0;
 
+    console.log('[zx-stack] effect mounted');
     (window as any).__zxDbgMount = ((window as any).__zxDbgMount ?? 0) + 1;
     const measure = () => {
       const self = selfRef.current;
