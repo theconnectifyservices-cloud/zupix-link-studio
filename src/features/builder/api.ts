@@ -34,5 +34,18 @@ export async function saveBuilderContent(id: string, content: BioContent): Promi
     .update({ content: safeContent, last_saved_at: nowIso } as never)
     .eq("id", id);
   if (error) throw error;
+
+  // Refresh the media usage graph so the library knows which sections
+  // reference each asset. Non-blocking: never fail a save on this.
+  void (async () => {
+    try {
+      const { syncPageUsages } = await import("@/features/media/api");
+      await syncPageUsages(id);
+    } catch {
+      /* usage tracking is best-effort */
+    }
+  })();
+
   return nowIso;
 }
+
