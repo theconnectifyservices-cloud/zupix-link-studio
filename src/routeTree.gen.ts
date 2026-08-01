@@ -86,6 +86,7 @@ import { Route as AuthenticatedAppSettingsPasswordRouteImport } from './routes/_
 import { Route as AuthenticatedAppSettingsNotificationsRouteImport } from './routes/_authenticated.app.settings.notifications'
 import { Route as AuthenticatedAppSettingsMobileRouteImport } from './routes/_authenticated.app.settings.mobile'
 import { Route as AuthenticatedAppSettingsIdentityRouteImport } from './routes/_authenticated.app.settings.identity'
+import { Route as AuthenticatedAppSettingsBrandingRouteImport } from './routes/_authenticated.app.settings.branding'
 import { Route as AuthenticatedAppAiWorkflowsRouteImport } from './routes/_authenticated.app.ai.workflows'
 import { Route as AuthenticatedAppAiStudioRouteImport } from './routes/_authenticated.app.ai.studio'
 import { Route as AuthenticatedAppAiGrowthRouteImport } from './routes/_authenticated.app.ai.growth'
@@ -516,6 +517,12 @@ const AuthenticatedAppSettingsIdentityRoute =
     path: '/identity',
     getParentRoute: () => AuthenticatedAppSettingsRoute,
   } as any)
+const AuthenticatedAppSettingsBrandingRoute =
+  AuthenticatedAppSettingsBrandingRouteImport.update({
+    id: '/branding',
+    path: '/branding',
+    getParentRoute: () => AuthenticatedAppSettingsRoute,
+  } as any)
 const AuthenticatedAppAiWorkflowsRoute =
   AuthenticatedAppAiWorkflowsRouteImport.update({
     id: '/workflows',
@@ -622,6 +629,7 @@ export interface FileRoutesByFullPath {
   '/app/ai/growth': typeof AuthenticatedAppAiGrowthRoute
   '/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
   '/app/ai/workflows': typeof AuthenticatedAppAiWorkflowsRoute
+  '/app/settings/branding': typeof AuthenticatedAppSettingsBrandingRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/mobile': typeof AuthenticatedAppSettingsMobileRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
@@ -704,6 +712,7 @@ export interface FileRoutesByTo {
   '/app/ai/growth': typeof AuthenticatedAppAiGrowthRoute
   '/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
   '/app/ai/workflows': typeof AuthenticatedAppAiWorkflowsRoute
+  '/app/settings/branding': typeof AuthenticatedAppSettingsBrandingRoute
   '/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/app/settings/mobile': typeof AuthenticatedAppSettingsMobileRoute
   '/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
@@ -790,6 +799,7 @@ export interface FileRoutesById {
   '/_authenticated/app/ai/growth': typeof AuthenticatedAppAiGrowthRoute
   '/_authenticated/app/ai/studio': typeof AuthenticatedAppAiStudioRoute
   '/_authenticated/app/ai/workflows': typeof AuthenticatedAppAiWorkflowsRoute
+  '/_authenticated/app/settings/branding': typeof AuthenticatedAppSettingsBrandingRoute
   '/_authenticated/app/settings/identity': typeof AuthenticatedAppSettingsIdentityRoute
   '/_authenticated/app/settings/mobile': typeof AuthenticatedAppSettingsMobileRoute
   '/_authenticated/app/settings/notifications': typeof AuthenticatedAppSettingsNotificationsRoute
@@ -876,6 +886,7 @@ export interface FileRouteTypes {
     | '/app/ai/growth'
     | '/app/ai/studio'
     | '/app/ai/workflows'
+    | '/app/settings/branding'
     | '/app/settings/identity'
     | '/app/settings/mobile'
     | '/app/settings/notifications'
@@ -958,6 +969,7 @@ export interface FileRouteTypes {
     | '/app/ai/growth'
     | '/app/ai/studio'
     | '/app/ai/workflows'
+    | '/app/settings/branding'
     | '/app/settings/identity'
     | '/app/settings/mobile'
     | '/app/settings/notifications'
@@ -1043,6 +1055,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/ai/growth'
     | '/_authenticated/app/ai/studio'
     | '/_authenticated/app/ai/workflows'
+    | '/_authenticated/app/settings/branding'
     | '/_authenticated/app/settings/identity'
     | '/_authenticated/app/settings/mobile'
     | '/_authenticated/app/settings/notifications'
@@ -1625,6 +1638,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSettingsIdentityRouteImport
       parentRoute: typeof AuthenticatedAppSettingsRoute
     }
+    '/_authenticated/app/settings/branding': {
+      id: '/_authenticated/app/settings/branding'
+      path: '/branding'
+      fullPath: '/app/settings/branding'
+      preLoaderRoute: typeof AuthenticatedAppSettingsBrandingRouteImport
+      parentRoute: typeof AuthenticatedAppSettingsRoute
+    }
     '/_authenticated/app/ai/workflows': {
       id: '/_authenticated/app/ai/workflows'
       path: '/workflows'
@@ -1717,6 +1737,7 @@ const AuthenticatedAppBillingRouteWithChildren =
   )
 
 interface AuthenticatedAppSettingsRouteChildren {
+  AuthenticatedAppSettingsBrandingRoute: typeof AuthenticatedAppSettingsBrandingRoute
   AuthenticatedAppSettingsIdentityRoute: typeof AuthenticatedAppSettingsIdentityRoute
   AuthenticatedAppSettingsMobileRoute: typeof AuthenticatedAppSettingsMobileRoute
   AuthenticatedAppSettingsNotificationsRoute: typeof AuthenticatedAppSettingsNotificationsRoute
@@ -1730,6 +1751,8 @@ interface AuthenticatedAppSettingsRouteChildren {
 
 const AuthenticatedAppSettingsRouteChildren: AuthenticatedAppSettingsRouteChildren =
   {
+    AuthenticatedAppSettingsBrandingRoute:
+      AuthenticatedAppSettingsBrandingRoute,
     AuthenticatedAppSettingsIdentityRoute:
       AuthenticatedAppSettingsIdentityRoute,
     AuthenticatedAppSettingsMobileRoute: AuthenticatedAppSettingsMobileRoute,
@@ -1889,13 +1912,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

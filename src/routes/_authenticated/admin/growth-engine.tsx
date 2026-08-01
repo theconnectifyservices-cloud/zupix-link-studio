@@ -10,11 +10,24 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  BRANDING_MODES,
   DEFAULT_GROWTH_SETTINGS,
+  DEFAULT_PLAN_BRANDING,
+  PAID_PLAN_CODES,
+  PLAN_LABELS,
   fetchGrowthSettings,
   updateGrowthSettings,
+  type BrandingMode,
   type GrowthEngineSettings,
 } from "@/features/growth";
+
 
 export const Route = createFileRoute("/_authenticated/admin/growth-engine")({
   head: () => ({
@@ -109,6 +122,52 @@ function GrowthEngineAdmin() {
           ))}
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Default Branding Mode per Paid Plan</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-[12px] text-muted-foreground">
+            Applies to workspaces that haven’t chosen their own branding setting. UDAAN (Free) always
+            shows full ZUPIX branding and cannot be changed.
+          </p>
+          {PAID_PLAN_CODES.map((code) => {
+            const defaults = s.plan_branding_defaults ?? DEFAULT_PLAN_BRANDING;
+            const value = defaults[code] ?? "hidden";
+            return (
+              <div key={code} className="flex items-center justify-between gap-4 rounded-lg border p-3">
+                <div className="text-sm font-medium">{PLAN_LABELS[code] ?? code.toUpperCase()}</div>
+                <Select
+                  value={value}
+                  onValueChange={(v) =>
+                    setS((prev) => ({
+                      ...prev,
+                      plan_branding_defaults: {
+                        ...(prev.plan_branding_defaults ?? DEFAULT_PLAN_BRANDING),
+                        [code]: v as BrandingMode,
+                      },
+                    }))
+                  }
+                >
+                  <SelectTrigger className="w-[190px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BRANDING_MODES.map((m) => (
+                      <SelectItem key={m.value} value={m.value}>
+                        {m.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            );
+          })}
+        </CardContent>
+      </Card>
+
+
 
       <Card>
         <CardHeader>

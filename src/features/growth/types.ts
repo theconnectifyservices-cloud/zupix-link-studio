@@ -1,3 +1,30 @@
+/** How ZUPIX branding renders on a public bio page. */
+export type BrandingMode = "hidden" | "compact" | "full";
+
+export const BRANDING_MODES: Array<{ value: BrandingMode; label: string; hint: string }> = [
+  { value: "hidden", label: "Hidden", hint: "No ZUPIX branding on your public page." },
+  { value: "compact", label: "Compact Badge", hint: "Small “Built with ZUPIX” badge at the bottom." },
+  { value: "full", label: "Full Branding Card", hint: "Logo, description and CTA card plus the badge." },
+];
+
+/** Admin-controlled default branding mode per paid plan code. */
+export type PlanBrandingDefaults = Record<string, BrandingMode>;
+
+export const DEFAULT_PLAN_BRANDING: PlanBrandingDefaults = {
+  tejas: "hidden",
+  garuda: "hidden",
+  vajra: "hidden",
+  lifetime: "hidden",
+  shikhar: "hidden",
+};
+
+export interface WorkspaceBranding {
+  plan: string;
+  mode: BrandingMode;
+  /** UDAAN / free plans cannot change branding. */
+  locked: boolean;
+}
+
 export interface GrowthEngineSettings {
   floating_badge_enabled: boolean;
   footer_cta_enabled: boolean;
@@ -16,6 +43,7 @@ export interface GrowthEngineSettings {
   referral_cta_label: string;
   redirect_url: string;
   accent_color: string;
+  plan_branding_defaults: PlanBrandingDefaults;
 }
 
 export const DEFAULT_GROWTH_SETTINGS: GrowthEngineSettings = {
@@ -36,10 +64,27 @@ export const DEFAULT_GROWTH_SETTINGS: GrowthEngineSettings = {
   referral_cta_label: "Start Building",
   redirect_url: "/pricing",
   accent_color: "#7c3aed",
+  plan_branding_defaults: DEFAULT_PLAN_BRANDING,
 };
 
-/** Plan codes that show branding. Everything else is white-labeled. */
-export const BRANDED_PLANS: ReadonlySet<string> = new Set(["udaan", "free", "starter"]);
+/** Plan codes where branding is mandatory (UDAAN / free / trial). */
+export const BRANDED_PLANS: ReadonlySet<string> = new Set(["udaan", "free", "starter", "trial"]);
 export function isBrandedPlan(code: string | null | undefined): boolean {
   return !code || BRANDED_PLANS.has(code);
 }
+
+/** Paid plan codes an admin can set a default branding mode for. */
+export const PAID_PLAN_CODES = ["tejas", "garuda", "vajra", "lifetime", "shikhar"] as const;
+
+export const PLAN_LABELS: Record<string, string> = {
+  tejas: "TEJAS",
+  garuda: "GARUDA",
+  vajra: "VAJRA",
+  lifetime: "LIFETIME",
+  shikhar: "SHIKHAR",
+};
+
+export function isBrandingMode(v: unknown): v is BrandingMode {
+  return v === "hidden" || v === "compact" || v === "full";
+}
+
