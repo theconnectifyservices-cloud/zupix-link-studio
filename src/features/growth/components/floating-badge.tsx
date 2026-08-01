@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Sparkles, ArrowRight } from "lucide-react";
 import type { GrowthEngineSettings } from "../types";
 import { trackGrowthEvent } from "../track";
-import { floatingBaseBottom, useFloatingStackOffset } from "@/components/floating-stack";
+import { FLOATING_BASE_BOTTOM, useFloatingStackOffset } from "@/components/floating-stack";
 
 interface Props {
   settings: GrowthEngineSettings;
@@ -36,14 +36,14 @@ export function FloatingBadge({ settings, compact = false, plan }: Props) {
       ref={ref}
       data-zx-floating="bottom-right"
       data-zx-floating-priority={2}
-      className={`group fixed right-4 z-[60] inline-flex max-w-[calc(100vw-2rem)] items-center rounded-full p-[1.5px] backdrop-blur-xl [--zx-float-inset:20px] sm:right-5 lg:right-6 lg:[--zx-float-inset:24px] ${
+      className={`group fixed bottom-20 right-4 z-[60] inline-flex max-w-[calc(100vw-2rem)] items-center rounded-full p-[1.5px] backdrop-blur-xl [--zx-float-inset:20px] sm:right-5 lg:right-6 lg:[--zx-float-inset:24px] ${
         compact
           ? "gap-1.5 shadow-[0_4px_18px_rgba(0,0,0,0.14)]"
           : "gap-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.18)]"
       }`}
       style={{
         background: `linear-gradient(135deg, ${settings.accent_color}, #ec4899 55%, #f59e0b)`,
-        bottom: stackOffset > 0 ? `calc(${floatingBaseBottom()} + ${stackOffset}px)` : floatingBaseBottom(),
+        bottom: stackOffset > 0 ? `calc(${FLOATING_BASE_BOTTOM} + ${stackOffset}px)` : FLOATING_BASE_BOTTOM,
       }}
       aria-label={compact ? settings.badge_text : `${settings.badge_text} — ${settings.badge_subtext}`}
     >

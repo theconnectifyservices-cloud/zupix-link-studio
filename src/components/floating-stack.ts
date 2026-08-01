@@ -17,14 +17,12 @@ export const FLOATING_GAP = 12;
 
 export type FloatingSide = "bottom-right" | "bottom-left";
 
-/** Base bottom inset per breakpoint, safe-area aware with an 80px fallback. */
-export function floatingBaseBottom(): string {
-  const supportsEnv =
-    typeof CSS !== "undefined" &&
-    typeof CSS.supports === "function" &&
-    CSS.supports("bottom", "calc(env(safe-area-inset-bottom, 0px) + 20px)");
-  return supportsEnv ? "calc(env(safe-area-inset-bottom, 0px) + var(--zx-float-inset, 20px))" : "80px";
-}
+/**
+ * Base bottom inset, safe-area aware. Browsers without `env()` support drop
+ * this declaration entirely and fall back to the `bottom-20` (80px) class.
+ */
+export const FLOATING_BASE_BOTTOM =
+  "calc(env(safe-area-inset-bottom, 0px) + var(--zx-float-inset, 20px))";
 
 function isBottomFixed(el: Element, viewportH: number) {
   const style = window.getComputedStyle(el);
