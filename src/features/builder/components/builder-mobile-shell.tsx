@@ -44,6 +44,7 @@ import { useBuilderStore } from "../store";
 import { saveBuilderContent } from "../api";
 import { usePropertySave } from "../use-property-save";
 import { BuilderPreview } from "./builder-preview";
+import { BuilderMobileActionBar } from "./builder-mobile-actionbar";
 import { BlocksPanel } from "./blocks-panel";
 import { IntegrationsPanel } from "../integrations/integrations-panel";
 
