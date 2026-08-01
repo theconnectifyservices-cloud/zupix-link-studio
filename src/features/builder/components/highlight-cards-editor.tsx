@@ -32,6 +32,23 @@ function F({ label, children }: { label: string; children: React.ReactNode }) {
   );
 }
 
+function Toggle({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <Label className="text-xs font-normal">{label}</Label>
+      <Switch checked={checked} onCheckedChange={onChange} />
+    </div>
+  );
+}
+
 function Sel({
   value,
   onChange,
@@ -221,6 +238,86 @@ export function HighlightCardsEditor({
           />
         </F>
       </div>
+      {(block.layout ?? "grid") === "carousel" && (
+        <div className="space-y-2 rounded-md border p-2.5">
+          <div className="text-xs font-medium">Carousel</div>
+          <Toggle
+            label="Infinite loop"
+            checked={block.carouselLoop !== false}
+            onChange={(v) => set("carouselLoop", v)}
+          />
+          <Toggle
+            label="Swipe / drag"
+            checked={block.carouselDrag !== false}
+            onChange={(v) => set("carouselDrag", v)}
+          />
+          <Toggle
+            label="Show arrows"
+            checked={block.carouselArrows !== false}
+            onChange={(v) => set("carouselArrows", v)}
+          />
+          <Toggle
+            label="Show pagination dots"
+            checked={block.carouselDots !== false}
+            onChange={(v) => set("carouselDots", v)}
+          />
+          <Toggle
+            label="Keyboard arrows"
+            checked={block.carouselKeyboard !== false}
+            onChange={(v) => set("carouselKeyboard", v)}
+          />
+          <Toggle
+            label="Mouse wheel"
+            checked={block.carouselWheel === true}
+            onChange={(v) => set("carouselWheel", v)}
+          />
+          <Toggle
+            label="Autoplay"
+            checked={block.carouselAutoplay === true}
+            onChange={(v) => set("carouselAutoplay", v)}
+          />
+          {block.carouselAutoplay === true && (
+            <>
+              <F label="Autoplay speed (ms)">
+                <Input
+                  type="number"
+                  min={1000}
+                  max={15000}
+                  step={250}
+                  value={block.carouselAutoplayDelay ?? 4000}
+                  onChange={(e) =>
+                    set(
+                      "carouselAutoplayDelay",
+                      Math.max(1000, Math.min(15000, Number(e.target.value) || 4000)),
+                    )
+                  }
+                />
+              </F>
+              <Toggle
+                label="Pause on hover"
+                checked={block.carouselPauseOnHover !== false}
+                onChange={(v) => set("carouselPauseOnHover", v)}
+              />
+              <Toggle
+                label="Pause on touch"
+                checked={block.carouselPauseOnTouch !== false}
+                onChange={(v) => set("carouselPauseOnTouch", v)}
+              />
+            </>
+          )}
+          <F label="Animation speed (lower = faster)">
+            <Input
+              type="number"
+              min={8}
+              max={80}
+              value={block.carouselSpeed ?? 28}
+              onChange={(e) =>
+                set("carouselSpeed", Math.max(8, Math.min(80, Number(e.target.value) || 28)))
+              }
+            />
+          </F>
+        </div>
+      )}
       <div className="flex items-center justify-between rounded-md border p-2">
         <div className="min-w-0 pr-2">
           <div className="text-xs font-medium">Swipe on mobile</div>

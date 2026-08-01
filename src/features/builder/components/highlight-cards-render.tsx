@@ -1,8 +1,7 @@
-import { useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { HighlightCard, HighlightCardsBlock } from "../types";
 import { useRendererMode } from "../renderer-mode";
+import { HighlightCarousel } from "./highlight-carousel";
 
 const GAP: Record<string, string> = { sm: "8px", md: "14px", lg: "22px" };
 const SHADOW: Record<string, string> = {
@@ -160,8 +159,12 @@ export function HighlightCardsRender({
         : (block.columns ?? 3);
 
   // Mobile auto-scroll: many cards on a small screen become a swipe rail.
+  // The carousel layout has its own touch engine, so it is never downgraded.
   const autoScrollMobile =
-    viewport === "mobile" && block.mobileScroll !== false && cards.length > 2;
+    layout !== "carousel" &&
+    viewport === "mobile" &&
+    block.mobileScroll !== false &&
+    cards.length > 2;
 
   const header = (block.title || block.subtitle) && (
     <div className={cn("mb-3", (block.align ?? "center") === "center" ? "text-center" : "text-left")}>
@@ -182,8 +185,15 @@ export function HighlightCardsRender({
 
   let body: React.ReactNode;
 
-  if (layout === "carousel" && !autoScrollMobile) {
-    body = <Carousel block={block} perView={Math.max(1, Math.min(cols, cards.length))} gap={gap} />;
+  if (layout === "carousel") {
+    body = (
+      <HighlightCarousel
+        block={block}
+        perView={Math.max(1, Math.min(cols, cards.length))}
+        gap={gap}
+        renderCard={(i) => <CardBody block={block} card={cards[i]} index={i} />}
+      />
+    );
   } else if (layout === "scroll" || autoScrollMobile) {
     body = (
       <div
@@ -241,92 +251,6 @@ export function HighlightCardsRender({
     <div className="w-full">
       {header}
       {body}
-    </div>
-  );
-}
-
-function Carousel({
-  block,
-  perView,
-  gap,
-}: {
-  block: HighlightCardsBlock;
-  perView: number;
-  gap: string;
-}) {
-  const cards = block.cards ?? [];
-  const pages = Math.max(1, Math.ceil(cards.length / perView));
-  const [page, setPage] = useState(0);
-  const startX = useRef<number | null>(null);
-  const clamped = useMemo(() => Math.min(page, pages - 1), [page, pages]);
-
-  function go(dir: number) {
-    setPage((p) => (p + dir + pages) % pages);
-  }
-
-  return (
-    <div className="relative">
-      <div
-        className="overflow-hidden"
-        onTouchStart={(e) => (startX.current = e.touches[0]?.clientX ?? null)}
-        onTouchEnd={(e) => {
-          const s = startX.current;
-          const end = e.changedTouches[0]?.clientX ?? null;
-          if (s != null && end != null && Math.abs(end - s) > 40) go(end < s ? 1 : -1);
-          startX.current = null;
-        }}
-      >
-        <div
-          className="flex transition-transform duration-500 ease-out"
-          style={{ transform: `translateX(-${clamped * 100}%)` }}
-        >
-          {Array.from({ length: pages }).map((_, p) => (
-            <div
-              key={p}
-              className="grid w-full shrink-0"
-              style={{ gridTemplateColumns: `repeat(${perView}, minmax(0, 1fr))`, gap }}
-            >
-              {cards.slice(p * perView, p * perView + perView).map((c, i) => (
-                <CardBody key={c.id} block={block} card={c} index={i} />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-      {pages > 1 && (
-        <>
-          <button
-            type="button"
-            aria-label="Previous"
-            onClick={() => go(-1)}
-            className="absolute left-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border bg-background/80 backdrop-blur"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            aria-label="Next"
-            onClick={() => go(1)}
-            className="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border bg-background/80 backdrop-blur"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-          <div className="mt-3 flex justify-center gap-1.5">
-            {Array.from({ length: pages }).map((_, p) => (
-              <button
-                key={p}
-                type="button"
-                aria-label={`Go to slide ${p + 1}`}
-                onClick={() => setPage(p)}
-                className={cn(
-                  "h-1.5 rounded-full transition-all",
-                  p === clamped ? "w-5 bg-foreground/70" : "w-1.5 bg-foreground/25",
-                )}
-              />
-            ))}
-          </div>
-        </>
-      )}
     </div>
   );
 }
