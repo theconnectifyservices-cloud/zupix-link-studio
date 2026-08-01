@@ -1226,13 +1226,17 @@ function FaqRender({ block }: { block: FaqBlock }) {
 
 // ── Countdown ────────────────────────────────────────────────────────────
 function CountdownRender({ block }: { block: CountdownBlock }) {
-  const [now, setNow] = useState(() => Date.now());
+  // `Date.now()` differs between the server render and hydration, which throws
+  // React #418 (text content mismatch). Start from the block's own target so
+  // both renders agree, then switch to the live clock after mount.
+  const target = new Date(block.target).getTime();
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
+    setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
-  const target = new Date(block.target).getTime();
-  const diff = target - now;
+
   if (isNaN(target)) {
     return (
       <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
@@ -1240,17 +1244,22 @@ function CountdownRender({ block }: { block: CountdownBlock }) {
       </div>
     );
   }
-  if (diff <= 0) {
+
+  // Before mount, both server and client render the same neutral placeholder.
+  const diff = now === null ? null : Math.max(0, target - now);
+
+  if (diff !== null && diff <= 0) {
     return (
       <div className="rounded-xl border bg-card p-4 text-center">
         <div className="text-sm font-semibold">{block.finishedLabel || "We're live!"}</div>
       </div>
     );
   }
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff / 3600000) % 24);
-  const m = Math.floor((diff / 60000) % 60);
-  const s = Math.floor((diff / 1000) % 60);
+  const d = diff === null ? null : Math.floor(diff / 86400000);
+  const h = diff === null ? null : Math.floor((diff / 3600000) % 24);
+  const m = diff === null ? null : Math.floor((diff / 60000) % 60);
+  const s = diff === null ? null : Math.floor((diff / 1000) % 60);
+
   return (
     <div className="rounded-xl border bg-card p-4 text-center">
       {block.title && (
@@ -1264,10 +1273,13 @@ function CountdownRender({ block }: { block: CountdownBlock }) {
           [s, "Sec"],
         ].map(([n, l]) => (
           <div key={l as string} className="rounded-lg bg-muted p-2">
-            <div className="text-lg font-bold tabular-nums">{String(n).padStart(2, "0")}</div>
+            <div className="text-lg font-bold tabular-nums">
+              {n === null ? "--" : String(n).padStart(2, "0")}
+            </div>
             <div className="text-[10px] text-muted-foreground">{l}</div>
           </div>
         ))}
+
       </div>
     </div>
   );

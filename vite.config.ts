@@ -20,12 +20,18 @@ export default defineConfig({
         injectRegister: null,
         devOptions: { enabled: false },
         filename: "sw.js",
+        // TanStack Start emits browser assets into dist/client; without this the
+        // generated service worker lands in dist/ and precaches "client/*" URLs
+        // that 404 at runtime.
+        outDir: "dist/client",
         includeAssets: [
           "favicon.ico",
           "apple-touch-icon.png",
           "pwa-192x192.png",
           "pwa-512x512.png",
+          "pwa-maskable-512x512.png",
         ],
+
         manifest: {
           name: "ZUPIX Link Studio",
           short_name: "ZUPIX",
