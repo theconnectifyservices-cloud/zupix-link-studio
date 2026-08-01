@@ -70,6 +70,12 @@ import { useBuilderStore } from "./store";
 import { DEFAULT_PROFILE } from "./theme";
 import { HighlightCardsRender } from "./components/highlight-cards-render";
 import { SocialIconsRender } from "./components/social-icons-render";
+import {
+  ContactActionRender,
+  FollowCardRender,
+  QrContactRender,
+  SocialButtonsRender,
+} from "./components/social-contact-render";
 import type { HighlightCardsBlock } from "./types";
 import { IntegrationRender } from "./integrations/integration-render";
 
@@ -486,6 +492,18 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
       return <FileRender block={block} />;
     case "contact":
       return <ContactRender block={block} />;
+    case "socialButtons":
+      return <SocialButtonsRender block={block} />;
+    case "whatsappButton":
+    case "callButton":
+    case "emailButton":
+    case "smsButton":
+    case "telegramButton":
+      return <ContactActionRender block={block} />;
+    case "followCard":
+      return <FollowCardRender block={block} />;
+    case "qrContact":
+      return <QrContactRender block={block} />;
     case "integration":
       return <IntegrationRender block={block} />;
     case "highlightCards":

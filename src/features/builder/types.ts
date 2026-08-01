@@ -21,6 +21,14 @@ export type BlockType =
   | "map"
   | "file"
   | "contact"
+  | "socialButtons"
+  | "whatsappButton"
+  | "callButton"
+  | "emailButton"
+  | "smsButton"
+  | "telegramButton"
+  | "followCard"
+  | "qrContact"
   | "integration"
   | "highlightCards"
 
@@ -755,9 +763,105 @@ export interface GenericBlock extends BaseBlock {
     | "embed"
     | "customCode"
     | "integration"
+    | "socialButtons"
+    | "whatsappButton"
+    | "callButton"
+    | "emailButton"
+    | "smsButton"
+    | "telegramButton"
+    | "followCard"
+    | "qrContact"
+
 
   >;
   [key: string]: unknown;
+}
+
+// ── Social & Contact blocks ──────────────────────────────────────────────
+export type SocialSurfaceStyle = "filled" | "outline" | "soft" | "glass";
+
+export interface SocialButtonItem {
+  id: string;
+  platform: SocialPlatform;
+  label?: string;
+  url: string;
+  color?: string;
+}
+
+/** Labelled social buttons (icon + text), a richer sibling of Social Icons. */
+export interface SocialButtonsBlock extends BaseBlock {
+  type: "socialButtons";
+  items: SocialButtonItem[];
+  style?: SocialSurfaceStyle;
+  layout?: "stack" | "grid";
+  columns?: number;
+  radius?: number;
+  showIcons?: boolean;
+  colorMode?: SocialColorMode;
+  customColor?: string;
+  align?: TextAlign;
+}
+
+export type ContactActionType =
+  | "whatsappButton"
+  | "callButton"
+  | "emailButton"
+  | "smsButton"
+  | "telegramButton";
+
+/** One-tap communication button (WhatsApp / Call / Email / SMS / Telegram). */
+export interface ContactActionBlock extends BaseBlock {
+  type: ContactActionType;
+  /** Phone number, email address or telegram username depending on the type. */
+  value?: string;
+  label?: string;
+  /** Prefilled message (WhatsApp, SMS, Telegram) or email body. */
+  message?: string;
+  /** Email subject. */
+  subject?: string;
+  style?: SocialSurfaceStyle;
+  size?: "sm" | "md" | "lg";
+  width?: "full" | "auto";
+  align?: TextAlign;
+  radius?: number;
+  showIcon?: boolean;
+  brandColor?: boolean;
+  color?: string;
+  newTab?: boolean;
+}
+
+/** Profile-style follow card with social CTAs. */
+export interface FollowCardBlock extends BaseBlock {
+  type: "followCard";
+  avatarUrl?: string;
+  name?: string;
+  handle?: string;
+  description?: string;
+  links: SocialLink[];
+  layout?: "card" | "minimal";
+  align?: TextAlign;
+  radius?: number;
+  showIcons?: boolean;
+}
+
+/** Scannable vCard / link QR code with contact details. */
+export interface QrContactBlock extends BaseBlock {
+  type: "qrContact";
+  title?: string;
+  note?: string;
+  mode?: "vcard" | "url";
+  url?: string;
+  fullName?: string;
+  org?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  address?: string;
+  size?: number;
+  color?: string;
+  background?: string;
+  showDetails?: boolean;
+  downloadable?: boolean;
 }
 
 export type Block =
@@ -783,8 +887,12 @@ export type Block =
   | CustomCodeBlock
   | IntegrationBlock
   | HighlightCardsBlock
-
+  | SocialButtonsBlock
+  | ContactActionBlock
+  | FollowCardBlock
+  | QrContactBlock
   | GenericBlock;
+
 
 import type { PageTheme } from "./theme";
 
