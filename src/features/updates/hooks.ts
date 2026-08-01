@@ -5,6 +5,7 @@ import { useSession } from "@/features/auth/hooks/use-session";
 import {
   adminDeleteVersion,
   adminFetchAnalytics,
+  adminFetchSkipOverview,
   adminListVersions,
   adminSaveVersion,
   adminSetVersionStatus,
@@ -56,6 +57,8 @@ export function useLatestUpdate(): { update: MyVersion | null; isLoading: boolea
     const items = data ?? [];
     const eligible = items.filter((v) => {
       if (v.never_show_at) return false;
+      // "Skip this version" only silences THIS version — future releases still show.
+      if (v.skipped_at) return false;
       if (v.updated_at_action) return false;
       if (v.dismissed_at && Date.now() - new Date(v.dismissed_at).getTime() < REMIND_LATER_MS) {
         return false;
@@ -71,6 +74,27 @@ export function useLatestUpdate(): { update: MyVersion | null; isLoading: boolea
   }, [data]);
 
   return { update, isLoading };
+}
+
+/** Versions the user chose to skip, newest first. */
+export function useSkippedVersions() {
+  const { data, isLoading } = useMyVersions();
+  const skipped = useMemo(
+    () =>
+      (data ?? [])
+        .filter((v) => !!v.skipped_at)
+        .sort((a, b) => b.version_sort - a.version_sort),
+    [data],
+  );
+  return { skipped, isLoading };
+}
+
+export function useSkipOverview() {
+  return useQuery({
+    queryKey: ["platform-updates", "skip-overview"],
+    staleTime: 30_000,
+    queryFn: adminFetchSkipOverview,
+  });
 }
 
 export function useUpdateHistory() {

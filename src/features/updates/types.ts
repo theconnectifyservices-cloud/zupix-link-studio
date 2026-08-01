@@ -85,6 +85,8 @@ export interface MyVersion {
   dismissed_at: string | null;
   never_show_at: string | null;
   updated_at_action: string | null;
+  skipped_at: string | null;
+  last_prompt_at: string | null;
 }
 
 export interface UpdateAnalytics {
@@ -93,8 +95,36 @@ export interface UpdateAnalytics {
   updated: number;
   read: number;
   ignored: number;
+  skipped: number;
   pending: number;
+  skip_rate: number;
+  avg_seconds_before_skip: number | null;
   dismiss_rate: number;
+}
+
+/** Platform-wide skip reporting for the admin dashboard. */
+export interface SkipOverview {
+  total_skips: number;
+  skip_rate: number;
+  avg_seconds_before_skip: number | null;
+  top_skipped: Array<{ version: string; title: string; skips: number }>;
+}
+
+/** Critical / required releases can never be permanently skipped. */
+export function canSkipVersion(v: Pick<MyVersion, "is_forced" | "priority">): boolean {
+  return !v.is_forced && v.priority !== "critical";
+}
+
+/** `3600` -> `1h 0m`. Used by skip analytics. */
+export function formatDuration(seconds: number | null | undefined): string {
+  if (seconds == null || !Number.isFinite(seconds)) return "—";
+  const s = Math.max(0, Math.round(seconds));
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ${s % 60}s`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ${m % 60}m`;
+  return `${Math.floor(h / 24)}d ${h % 24}h`;
 }
 
 export const RELEASE_TYPE_LABEL: Record<ReleaseType, string> = {

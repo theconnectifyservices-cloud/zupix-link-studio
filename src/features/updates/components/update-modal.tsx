@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 import {
   ArrowRight,
   BookOpen,
   Bug,
   CheckCircle2,
+  Clock,
   Gauge,
   ShieldCheck,
   Sparkles,
+  SkipForward,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -14,7 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useLatestUpdate, useUpdateStateMutation } from "../hooks";
 import { applyAppUpdate } from "../apply-update";
-import { RELEASE_TYPE_LABEL, RELEASE_TYPE_STYLE, type MyVersion } from "../types";
+import { canSkipVersion, RELEASE_TYPE_LABEL, RELEASE_TYPE_STYLE, type MyVersion } from "../types";
 
 const SECTIONS = [
   { key: "whats_new", label: "What's New", icon: Sparkles, tone: "text-violet-500" },
@@ -58,11 +62,22 @@ export function UpdateModal() {
 
   if (!update) return null;
 
-  function close(patch: { dismissed?: boolean; neverShow?: boolean }) {
+  const canSkip = canSkipVersion(update);
+
+  function close(patch: { dismissed?: boolean; neverShow?: boolean; skipped?: boolean }) {
     if (!update) return;
     setOpen(false);
     setClosedId(update.id);
     state.mutate({ id: update.id, patch });
+  }
+
+  function skipVersion() {
+    if (!update || !canSkipVersion(update)) return;
+    const label = update.version;
+    close({ skipped: true });
+    toast.success(`Skipped v${label}`, {
+      description: "You won't see this release again. Future updates will still appear.",
+    });
   }
 
   async function updateNow() {
@@ -165,20 +180,52 @@ export function UpdateModal() {
             {applying ? "Updating…" : "Update Now"}
             {!applying && <ArrowRight className="h-4 w-4" aria-hidden />}
           </Button>
+
           {!update.is_forced && (
-            <div className="flex items-center justify-between gap-2">
-              <Button variant="ghost" size="sm" onClick={() => close({ dismissed: true })}>
-                Remind me later
-              </Button>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                className="text-muted-foreground"
-                onClick={() => close({ neverShow: true })}
+                className="gap-1.5"
+                onClick={() => close({ dismissed: true })}
               >
-                Never show again
+                <Clock className="h-4 w-4" aria-hidden />
+                Remind me tomorrow
               </Button>
+
+              {canSkip ? (
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={skipVersion}>
+                  <SkipForward className="h-4 w-4" aria-hidden />
+                  Skip this version
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => close({ dismissed: true })}
+                >
+                  Later
+                </Button>
+              )}
             </div>
+          )}
+
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="w-full gap-1.5 text-muted-foreground"
+          >
+            <Link to="/app/changelog" onClick={() => close({ dismissed: true })}>
+              <BookOpen className="h-4 w-4" aria-hidden />
+              View changelog
+            </Link>
+          </Button>
+
+          {!canSkip && !update.is_forced && (
+            <p className="text-center text-xs text-muted-foreground">
+              This is a critical update — it can be postponed, but not skipped.
+            </p>
           )}
           {update.is_forced && (
             <p className="text-center text-xs text-muted-foreground">
@@ -186,6 +233,7 @@ export function UpdateModal() {
             </p>
           )}
         </footer>
+
       </DialogContent>
     </Dialog>
   );

@@ -4,7 +4,7 @@
  * who may publish and who may only read their own targeted updates.
  */
 import { supabase } from "@/integrations/supabase/client";
-import type { MyVersion, PlatformVersion, UpdateAnalytics } from "./types";
+import type { MyVersion, PlatformVersion, SkipOverview, UpdateAnalytics } from "./types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
@@ -24,6 +24,8 @@ export interface UpdateStatePatch {
   dismissed?: boolean;
   neverShow?: boolean;
   updated?: boolean;
+  /** true = skip this version forever, false = restore it. */
+  skipped?: boolean;
 }
 
 export async function setUpdateState(versionId: string, patch: UpdateStatePatch) {
@@ -34,6 +36,7 @@ export async function setUpdateState(versionId: string, patch: UpdateStatePatch)
     _dismissed: patch.dismissed ?? null,
     _never_show: patch.neverShow ?? null,
     _updated: patch.updated ?? null,
+    _skipped: patch.skipped ?? null,
   });
   if (error) throw error;
 }
@@ -112,6 +115,13 @@ export async function adminSetVersionStatus(
   if (status === "published") patch.publish_at = null;
   const { error } = await db.from("platform_versions").update(patch).eq("id", id);
   if (error) throw error;
+}
+
+/** Platform-wide skip metrics (admin only). */
+export async function adminFetchSkipOverview(): Promise<SkipOverview> {
+  const { data, error } = await db.rpc("platform_skip_overview");
+  if (error) throw error;
+  return data as SkipOverview;
 }
 
 export async function adminFetchAnalytics(versionId: string): Promise<UpdateAnalytics> {
