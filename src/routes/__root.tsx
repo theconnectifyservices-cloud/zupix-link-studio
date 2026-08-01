@@ -19,6 +19,7 @@ import { CommandPalette, ShortcutsDialog, ProductivityModeEffect } from "@/featu
 import { ErrorBoundary } from "@/shared/error/error-boundary";
 import { InstallBanner, UpdateBanner, OfflineIndicator } from "@/features/pwa";
 import { RecoveryLinkRedirect } from "@/features/auth/recovery-redirect";
+import { GlobalBackToTop } from "@/components/global-back-to-top";
 
 /** iOS launch-image variants: [device px width, device px height, DPR]. */
 const APPLE_SPLASH: { w: number; h: number; r: number }[] = [
@@ -225,6 +226,7 @@ function RootComponent() {
       <OfflineIndicator />
       <UpdateBanner />
       <InstallBanner />
+      <GlobalBackToTop />
       <Toaster />
     </QueryClientProvider>
   );
