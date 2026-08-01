@@ -353,7 +353,23 @@ export const BLOCK_DEFS: BlockDef[] = [
       lazy: true,
     }),
   },
+  {
+    type: "integration",
+    label: "Integration",
+    description: "Connected app block",
+    icon: Code,
+    group: "integrations",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "integration",
+      provider: "whatsapp",
+      mode: "button",
+      config: {},
+    }),
+  },
   // Reserved / later phases
+
   {
     type: "html",
     label: "HTML",
