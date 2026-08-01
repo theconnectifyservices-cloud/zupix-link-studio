@@ -27,7 +27,16 @@ export function EditorInteractionGuard({
 }) {
   if (!active) return <>{children}</>;
 
+  /**
+   * Widgets that own a gesture engine (carousels, sliders) opt out by marking
+   * their root with `data-zx-interactive`, so drag / arrows / dots behave in
+   * the editor exactly as they do on the published page.
+   */
+  const isInteractive = (target: EventTarget | null) =>
+    target instanceof Element && !!target.closest("[data-zx-interactive]");
+
   const swallow = (e: ReactMouseEvent) => {
+    if (isInteractive(e.target)) return;
     e.preventDefault();
     e.stopPropagation();
   };
@@ -41,6 +50,7 @@ export function EditorInteractionGuard({
         className,
       )}
       onClickCapture={(e) => {
+        if (isInteractive(e.target)) return;
         e.preventDefault();
         e.stopPropagation();
         onSelect?.(e);
@@ -49,9 +59,13 @@ export function EditorInteractionGuard({
       onDoubleClickCapture={swallow}
       onMouseDownCapture={(e) => {
         // Keeps focus off links/buttons; drag handles live outside this guard.
+        if (isInteractive(e.target)) return;
         e.preventDefault();
       }}
-      onDragStartCapture={(e) => e.preventDefault()}
+      onDragStartCapture={(e) => {
+        if (isInteractive(e.target)) return;
+        e.preventDefault();
+      }}
     >
       {children}
     </div>

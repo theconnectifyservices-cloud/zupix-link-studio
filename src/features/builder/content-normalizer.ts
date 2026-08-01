@@ -167,6 +167,17 @@ function normalizeHighlightCardsBlock(raw: JsonObject, id: string): HighlightCar
     shadow: shadows.includes(raw.shadow as string) ? raw.shadow : "md",
     iconSize: num(raw.iconSize, 34),
     align: raw.align === "left" ? "left" : "center",
+    carouselLoop: raw.carouselLoop !== false,
+    carouselAutoplay: raw.carouselAutoplay === true,
+    carouselAutoplayDelay: num(raw.carouselAutoplayDelay, 4000),
+    carouselPauseOnHover: raw.carouselPauseOnHover !== false,
+    carouselPauseOnTouch: raw.carouselPauseOnTouch !== false,
+    carouselSpeed: num(raw.carouselSpeed, 28),
+    carouselDrag: raw.carouselDrag !== false,
+    carouselWheel: raw.carouselWheel === true,
+    carouselKeyboard: raw.carouselKeyboard !== false,
+    carouselArrows: raw.carouselArrows !== false,
+    carouselDots: raw.carouselDots !== false,
     cards,
   } as HighlightCardsBlock;
 }
