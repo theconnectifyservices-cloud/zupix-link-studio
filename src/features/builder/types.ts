@@ -638,6 +638,8 @@ export interface GenericBlock extends BaseBlock {
     | "buttonGroup"
     | "embed"
     | "customCode"
+    | "integration"
+
   >;
   [key: string]: unknown;
 }
