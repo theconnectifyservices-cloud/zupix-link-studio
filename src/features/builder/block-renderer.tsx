@@ -480,26 +480,8 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
       return <div style={{ height: `${block.height ?? 24}px` }} aria-hidden />;
 
     case "social":
-      const links = block.links ?? [];
-      if (links.length === 0) {
-        return <div className="text-center text-xs text-muted-foreground">No social links yet</div>;
-      }
-      return (
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          {links.map((l) => {
-            const Icon = SOCIAL_ICON[l.platform] ?? Globe;
-            return (
-              <span
-                key={l.id}
-                className="grid h-9 w-9 place-items-center rounded-full bg-muted text-foreground"
-                aria-label={l.label || l.platform}
-              >
-                <Icon className="h-4 w-4" />
-              </span>
-            );
-          })}
-        </div>
-      );
+      return <SocialIconsRender block={block} />;
+
 
     case "video":
       return <VideoRender block={block} />;
