@@ -1,3 +1,4 @@
+import { resolvePostAuthTarget } from "@/features/auth/post-auth-target";
 import { createFileRoute, useNavigate, useSearch, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -140,8 +141,9 @@ async function handleAuthed(
     typeof window !== "undefined" ? window.sessionStorage.getItem("zupix:auth_intent") : null;
   if (intent && typeof window !== "undefined")
     window.sessionStorage.removeItem("zupix:auth_intent");
-  const target = intent === "trial" ? "/app/my-subscription" : ((redirectTo as "/app") ?? "/app");
-  navigate({ to: target });
+  const target =
+    intent === "trial" ? "/app/my-subscription" : resolvePostAuthTarget(redirectTo);
+  navigate({ to: target as "/app" });
 }
 
 function OrDivider() {
@@ -193,8 +195,9 @@ function LoginForm({ redirectTo }: { redirectTo?: string }) {
       const intent =
         typeof window !== "undefined" ? window.sessionStorage.getItem("zupix:auth_intent") : null;
       if (intent && typeof window !== "undefined") window.sessionStorage.removeItem("zupix:auth_intent");
-      const target = intent === "trial" ? "/app/my-subscription" : (redirectTo as "/app") ?? "/app";
-      navigate({ to: target });
+      const target =
+        intent === "trial" ? "/app/my-subscription" : resolvePostAuthTarget(redirectTo);
+      navigate({ to: target as "/app" });
     } catch (err) {
       void logAttempt({ data: { identifier, success: false } }).catch(() => {});
       toast.error(err instanceof Error ? err.message : "Sign-in failed");
