@@ -25,13 +25,16 @@ export const Route = createFileRoute("/$slug/$page")({
 
 function PublicSubPage() {
   const { page } = Route.useParams();
-  const { data, isLoading } = useQuery({
+  const { data, isPending, isError } = useQuery({
     queryKey: ["public-bio", page],
     queryFn: () => fetchPublicBioPage(page),
-    retry: 1,
+    retry: 2,
     staleTime: 30_000,
   });
-  if (isLoading) return <PageLoader />;
+  if (isPending) return <PageLoader />;
+  // A failed request is a network problem, not a missing page — keep showing
+  // the loader instead of flashing a false 404 on flaky mobile connections.
+  if (isError) return <PageLoader />;
   if (!data) throw notFound();
   return <PublicBioRenderer content={data.content} pageId={data.id} slug={page} workspaceId={data.workspaceId} />;
 }

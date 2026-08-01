@@ -5,16 +5,30 @@ import { PublicBioRenderer } from "@/features/public/public-bio-renderer";
 import { buildJsonLd } from "@/features/seo/jsonld";
 import { APP_CONFIG } from "@/config/app.config";
 
+/** Normalize the incoming slug: URL-decode, trim, strip trailing slash, lowercase. */
+function normalizeSlug(raw: string): string {
+  let s = raw;
+  try {
+    s = decodeURIComponent(raw);
+  } catch {
+    /* malformed escape — use raw */
+  }
+  return s.trim().replace(/^\/+|\/+$/g, "").toLowerCase();
+}
+
 const bioQuery = (slug: string) =>
   queryOptions({
-    queryKey: ["public-bio", slug],
-    queryFn: () => fetchPublicBioPage(slug),
+    queryKey: ["public-bio", normalizeSlug(slug)],
+    queryFn: () => fetchPublicBioPage(normalizeSlug(slug)),
     // Always refetch so a freshly published change appears immediately on the
     // live URL — no stale window between publish and visible update.
     staleTime: 0,
-    gcTime: 0,
+    // Keep the SSR-hydrated payload around; gcTime 0 dropped it during
+    // hydration and forced a cold refetch that 404'd on flaky mobile networks.
+    gcTime: 5 * 60_000,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
+    retry: 2,
   });
 
 export const Route = createFileRoute("/$slug")({
@@ -42,9 +56,13 @@ export const Route = createFileRoute("/$slug")({
 
 function PublicBioPage() {
   const { slug } = Route.useParams();
+  const loaderData = Route.useLoaderData() as { page: PublicBioPage } | undefined;
   const { data } = useSuspenseQuery(bioQuery(slug));
-  if (!data) throw notFound();
-  return <PublicBioRenderer content={data.content} pageId={data.id} slug={slug} workspaceId={data.workspaceId} pageName={data.name} pageDescription={data.description} />;
+  // Never let a client-side refetch hiccup (flaky mobile radio, expired token,
+  // service-worker offline) erase a page the server already resolved.
+  const page = data ?? loaderData?.page;
+  if (!page) throw notFound();
+  return <PublicBioRenderer content={page.content} pageId={page.id} slug={slug} workspaceId={page.workspaceId} pageName={page.name} pageDescription={page.description} />;
 }
 
 function buildHead(page: PublicBioPage, slug: string) {

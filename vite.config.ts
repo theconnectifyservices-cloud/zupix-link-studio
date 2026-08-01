@@ -75,11 +75,18 @@ export default defineConfig({
                 !url.pathname.startsWith("/auth/"),
               handler: "NetworkFirst",
               options: {
-                cacheName: "zupix-pages",
-                networkTimeoutSeconds: 3,
+                // Renamed from "zupix-pages" to evict poisoned entries that
+                // could serve a pre-publish 404 shell to installed PWAs.
+                cacheName: "zupix-pages-v2",
+                // 3s was too aggressive on mobile radios: a slow-but-working
+                // network fell through to a stale/absent cache entry.
+                networkTimeoutSeconds: 12,
+                // Only ever store real successes — never a 404/5xx shell.
+                cacheableResponse: { statuses: [200] },
                 expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 },
               },
             },
+
 
             {
               urlPattern: ({ url, sameOrigin }) =>

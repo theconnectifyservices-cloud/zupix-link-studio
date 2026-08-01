@@ -24,14 +24,23 @@ export interface PublicBioPage {
  * RLS restricts anon to status='published' pages.
  */
 export async function fetchPublicBioPage(slug: string): Promise<PublicBioPage | null> {
+  let decoded = slug;
+  try {
+    decoded = decodeURIComponent(slug);
+  } catch {
+    /* malformed escape sequence — fall back to the raw value */
+  }
+  const clean = decoded.trim().replace(/^\/+|\/+$/g, "").toLowerCase();
+  if (!clean) return null;
   const { data, error } = await supabase
     .from("bio_pages")
     .select(
       "id,workspace_id,name,slug,description,published_content,updated_at,published_at,visibility,seo,favicon_url,apple_touch_icon_url",
     )
-    .eq("slug", slug.toLowerCase())
+    .eq("slug", clean)
     .is("deleted_at", null)
     .maybeSingle();
+
   if (error) throw error;
   if (!data) return null;
   const row = data as unknown as {
