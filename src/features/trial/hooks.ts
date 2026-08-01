@@ -62,7 +62,7 @@ export function useTrialCountdown() {
     minutes: Math.floor((s % 3600) / 60),
     seconds: s % 60,
     totalMs,
-    expired: totalMs === 0,
+    expired: now !== null && totalMs === 0,
   } satisfies Countdown;
 }
 
