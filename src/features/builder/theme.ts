@@ -64,6 +64,8 @@ export interface ThemeSpacing {
   pagePadding: number;
   pagePaddingY: number;
   blockGap: number;
+  /** Auto Layout — default bottom spacing applied to every section (px). */
+  sectionGap?: number;
   contentWidth: number;
   radius: number;
   /** LS-07C — per-viewport horizontal padding overrides. */
@@ -350,6 +352,7 @@ export const DEFAULT_SPACING: ThemeSpacing = {
   pagePadding: 20,
   pagePaddingY: 40,
   blockGap: 8,
+  sectionGap: 32,
   contentWidth: 480,
   radius: 12,
 };
@@ -961,6 +964,10 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
         ? s.pagePaddingTablet
         : s.pagePaddingDesktop) ?? s.pagePadding;
 
+  // Auto Layout — default section gap, scaled per viewport.
+  const gapScale = viewport === "mobile" ? 0.75 : viewport === "tablet" ? 0.875 : 1;
+  const sectionGap = Math.round((s.sectionGap ?? 32) * gapScale);
+
   // Base background painted on the outer container. Image/pattern layers
   // are painted by `ThemeBackgroundLayer` so they can be blurred + overlaid
   // without affecting the page content.
@@ -1009,6 +1016,7 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
     "--zx-page-pad-x": `${padX}px`,
     "--zx-page-pad-y": `${s.pagePaddingY}px`,
     "--zx-block-gap": `${s.blockGap}px`,
+    "--zx-section-gap": `${sectionGap}px`,
     "--zx-content-max": `${s.contentWidth}px`,
 
     // Typography
