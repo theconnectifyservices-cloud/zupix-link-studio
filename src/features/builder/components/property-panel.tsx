@@ -43,6 +43,12 @@ import { getBlockDef } from "../block-registry";
 import { ImageField } from "./image-field";
 import { HighlightCardsEditor } from "./highlight-cards-editor";
 import { SocialIconsEditor } from "./social-icons-editor";
+import {
+  ContactActionEditor,
+  FollowCardEditor,
+  QrContactEditor,
+  SocialButtonsEditor,
+} from "./social-contact-editors";
 import type { HighlightCardsBlock } from "../types";
 import { VideoSourceField } from "./video-source-field";
 import { MediaFileField } from "./media-file-field";
@@ -959,6 +965,14 @@ export function PropertyPanel() {
           </Field>
         </>
       )}
+      {block.type === "socialButtons" && <SocialButtonsEditor block={block} set={set} />}
+      {(block.type === "whatsappButton" ||
+        block.type === "callButton" ||
+        block.type === "emailButton" ||
+        block.type === "smsButton" ||
+        block.type === "telegramButton") && <ContactActionEditor block={block} set={set} />}
+      {block.type === "followCard" && <FollowCardEditor block={block} set={set} />}
+      {block.type === "qrContact" && <QrContactEditor block={block} set={set} />}
       {block.type === "embed" && <EmbedEditor block={block} set={set} />}
       {block.type === "customCode" && <CustomCodeEditor block={block} update={update} />}
       {block.type === "integration" && <IntegrationEditor block={block} update={update} />}
