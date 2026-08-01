@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, Grid3x3, List, FolderInput, Trash2, Download, Tag as TagIcon, Plus } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
@@ -36,7 +36,7 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { PageLoader } from "@/shared/ui/page-loader";
 import { useMediaAssets, useMediaFolders } from "../hooks";
 import { useCollections, useTags } from "../organization-hooks";
-import { moveAssets } from "../api";
+import { moveAssets, resyncWorkspaceUsages } from "../api";
 import {
   bulkDeleteAssets,
   bulkDownloadAssets,
@@ -77,6 +77,22 @@ export function MediaLibrary({ workspaceId, userId }: Props) {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [tagDialogOpen, setTagDialogOpen] = useState(false);
   const [tagInput, setTagInput] = useState("");
+
+  // One-time usage backfill per workspace so existing projects migrate
+  // automatically without breaking any image reference.
+  const resyncedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!workspaceId || resyncedRef.current === workspaceId) return;
+    resyncedRef.current = workspaceId;
+    void (async () => {
+      try {
+        await resyncWorkspaceUsages(workspaceId);
+        qc.invalidateQueries({ queryKey: ["media"] });
+      } catch {
+        /* best-effort */
+      }
+    })();
+  }, [workspaceId, qc]);
 
   const { data: folders = [] } = useMediaFolders(workspaceId);
   const { data: collections = [] } = useCollections(workspaceId);
@@ -370,8 +386,12 @@ export function MediaLibrary({ workspaceId, userId }: Props) {
                           <p className="text-[10px] text-white/70">{humanSize(a.size_bytes)}</p>
                         </div>
                         {a.usage_count > 0 && (
-                          <Badge className="absolute right-1 top-1" variant="secondary">
-                            ×{a.usage_count}
+                          <Badge
+                            className="absolute right-1 top-1"
+                            variant="secondary"
+                            title={`Used in ${a.usage_count} place${a.usage_count === 1 ? "" : "s"}`}
+                          >
+                            Used {a.usage_count}×
                           </Badge>
                         )}
                         <button

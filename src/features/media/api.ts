@@ -94,6 +94,8 @@ export async function listAssets(q: ListAssetsQuery): Promise<MediaAsset[]> {
     query = query.or(`file_name.ilike.${term},alt_text.ilike.${term}`);
   }
   if (q.onlyUnused) query = query.eq("usage_count", 0);
+  // Crops/derivatives are hidden — the library lists each original once.
+  query = query.is("metadata->>derived_from", null);
 
   const sort = q.sort ?? "recent";
   if (sort === "recent") query = query.order("created_at", { ascending: false });
@@ -164,6 +166,11 @@ export interface UploadInput {
   userId: string;
   folderId: string | null;
   onProgress?: (pct: number) => void;
+  /**
+   * Set when this upload is a crop/derivative of an existing asset. Derived
+   * files stay out of the library grid so the same photo is never listed twice.
+   */
+  derivedFrom?: string;
 }
 
 async function sha256Hex(file: File): Promise<string> {
@@ -192,7 +199,7 @@ async function imageDimensions(file: File): Promise<{ width: number; height: num
 }
 
 export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
-  const { file, workspaceId, userId, folderId, onProgress } = input;
+  const { file, workspaceId, userId, folderId, onProgress, derivedFrom } = input;
 
   if (file.size > MAX_FILE_SIZE) throw new Error(`File exceeds ${MAX_FILE_SIZE / 1024 / 1024} MB`);
   if (!ALLOWED_MIME[file.type]) throw new Error(`Unsupported file type: ${file.type || "unknown"}`);
@@ -244,6 +251,7 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
       width: dims?.width ?? null,
       height: dims?.height ?? null,
       sha256: hash,
+      metadata: derivedFrom ? { derived_from: derivedFrom } : {},
       processing_status: "pending",
     })
     .select()
@@ -380,4 +388,52 @@ export async function fetchStorageStats(workspaceId: string): Promise<StorageSta
     if (daysAgo >= 0 && daysAgo < 7) stats.uploadsLast7d[6 - daysAgo] += 1;
   }
   return stats;
+}
+
+/* -------------------- ASSET MANAGER (DAM) -------------------- */
+
+/** Human-friendly Media ID shown in the UI, derived from the asset UUID. */
+export function mediaDisplayId(assetId: string): string {
+  return `IMG-${assetId.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
+}
+
+/**
+ * Rebuild the usage graph for one bio page. Runs server-side against the
+ * page's saved content, so every section that references an asset's storage
+ * path is recorded exactly once — no image is ever duplicated on reuse.
+ */
+export async function syncPageUsages(bioPageId: string): Promise<number> {
+  const { data, error } = await supabase.rpc("media_sync_page_usages", {
+    _bio_page_id: bioPageId,
+  });
+  if (error) throw error;
+  return (data as number) ?? 0;
+}
+
+/** Backfill usage data for an existing workspace (automatic migration). */
+export async function resyncWorkspaceUsages(workspaceId: string): Promise<number> {
+  const { data, error } = await supabase.rpc("media_resync_workspace_usages", {
+    _workspace_id: workspaceId,
+  });
+  if (error) throw error;
+  return (data as number) ?? 0;
+}
+
+/**
+ * Replace an asset everywhere it is used. Every section pointing at the old
+ * asset is rewritten to the new one in a single server-side pass.
+ * Returns the number of pages updated.
+ */
+export async function replaceAssetEverywhere(
+  oldAssetId: string,
+  newAsset: MediaAsset,
+): Promise<number> {
+  const newUrl = await signedUrl(newAsset.path, 60 * 60 * 24 * 365);
+  const { data, error } = await supabase.rpc("media_replace_everywhere", {
+    _old_asset: oldAssetId,
+    _new_asset: newAsset.id,
+    _new_url: newUrl,
+  });
+  if (error) throw error;
+  return (data as number) ?? 0;
 }

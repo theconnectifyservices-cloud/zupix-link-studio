@@ -149,6 +149,7 @@ export function MediaPicker({
                 workspaceId,
                 userId,
                 folderId: null,
+                derivedFrom: pending.assetId,
               });
               return signedUrl(asset.path, LONG_TTL);
             }}
