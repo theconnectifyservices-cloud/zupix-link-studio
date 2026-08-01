@@ -69,6 +69,7 @@ import {
 import { useBuilderStore } from "./store";
 import { DEFAULT_PROFILE } from "./theme";
 import { HighlightCardsRender } from "./components/highlight-cards-render";
+import type { HighlightCardsBlock } from "./types";
 import { IntegrationRender } from "./integrations/integration-render";
 
 
@@ -521,7 +522,7 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
     case "integration":
       return <IntegrationRender block={block} />;
     case "highlightCards":
-      return <HighlightCardsRender block={block} viewport={viewport} />;
+      return <HighlightCardsRender block={block as HighlightCardsBlock} viewport={viewport} />;
     case "embed":
 
       return <EmbedRender block={block} />;

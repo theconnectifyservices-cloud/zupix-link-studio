@@ -42,6 +42,7 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { getBlockDef } from "../block-registry";
 import { ImageField } from "./image-field";
 import { HighlightCardsEditor } from "./highlight-cards-editor";
+import type { HighlightCardsBlock } from "../types";
 import { VideoSourceField } from "./video-source-field";
 import { MediaFileField } from "./media-file-field";
 
@@ -860,7 +861,7 @@ export function PropertyPanel() {
           onItems={(v) => set("items", v)}
         />
       )}
-      {block.type === "highlightCards" && <HighlightCardsEditor block={block} set={set} />}
+      {block.type === "highlightCards" && <HighlightCardsEditor block={block as HighlightCardsBlock} set={set} />}
       {block.type === "faq" && (
         <FaqEditor
           title={block.title ?? ""}
