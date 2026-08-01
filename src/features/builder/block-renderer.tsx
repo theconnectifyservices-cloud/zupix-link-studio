@@ -251,7 +251,9 @@ export function BlockRenderer({
 // Button effects live in the shared engine (./button-fx) so that every
 // button-like widget uses the exact same pipeline. Re-exported for
 // backward compatibility with existing imports.
+import { computeButtonFx, InteractiveFxWrapper, fxSettingsFromItem } from "./button-fx";
 export { computeButtonFx } from "./button-fx";
+
 
 
 
