@@ -119,7 +119,7 @@ function normalizeHighlightCardsBlock(raw: JsonObject, id: string): HighlightCar
     const title = stringValue(row.title) || stringValue(row.label);
     const emoji = stringValue(row.emoji);
     const svg = stringValue(row.svg);
-    const imageUrl = stringValue(row.imageUrl) || stringValue(row.url && !stringValue(row.link) ? "" : "");
+    const imageUrl = stringValue(row.imageUrl) || stringValue(row.image) || stringValue(row.icon);
     const iconKind =
       row.iconKind === "emoji" || row.iconKind === "svg" || row.iconKind === "image" || row.iconKind === "none"
         ? (row.iconKind as HighlightCard["iconKind"])
