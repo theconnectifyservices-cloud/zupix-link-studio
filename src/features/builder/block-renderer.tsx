@@ -1236,7 +1236,6 @@ function CountdownRender({ block }: { block: CountdownBlock }) {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
-  const diff = (now ?? target) - (now === null ? 0 : 0) - (now ?? target) + (target - (now ?? target));
 
   if (isNaN(target)) {
     return (
@@ -1245,17 +1244,22 @@ function CountdownRender({ block }: { block: CountdownBlock }) {
       </div>
     );
   }
-  if (diff <= 0) {
+
+  // Before mount, both server and client render the same neutral placeholder.
+  const diff = now === null ? null : Math.max(0, target - now);
+
+  if (diff !== null && diff <= 0) {
     return (
       <div className="rounded-xl border bg-card p-4 text-center">
         <div className="text-sm font-semibold">{block.finishedLabel || "We're live!"}</div>
       </div>
     );
   }
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff / 3600000) % 24);
-  const m = Math.floor((diff / 60000) % 60);
-  const s = Math.floor((diff / 1000) % 60);
+  const d = diff === null ? null : Math.floor(diff / 86400000);
+  const h = diff === null ? null : Math.floor((diff / 3600000) % 24);
+  const m = diff === null ? null : Math.floor((diff / 60000) % 60);
+  const s = diff === null ? null : Math.floor((diff / 1000) % 60);
+
   return (
     <div className="rounded-xl border bg-card p-4 text-center">
       {block.title && (
