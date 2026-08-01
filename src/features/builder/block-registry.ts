@@ -33,7 +33,7 @@ export interface BlockDef {
   label: string;
   description: string;
   icon: LucideIcon;
-  group: "essentials" | "media" | "advanced" | "commerce";
+  group: "essentials" | "media" | "advanced" | "commerce" | "integrations";
   available: boolean;
   create: () => Block;
 }
@@ -353,7 +353,23 @@ export const BLOCK_DEFS: BlockDef[] = [
       lazy: true,
     }),
   },
+  {
+    type: "integration",
+    label: "Integration",
+    description: "Connected app block",
+    icon: Code,
+    group: "integrations",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "integration",
+      provider: "whatsapp",
+      mode: "button",
+      config: {},
+    }),
+  },
   // Reserved / later phases
+
   {
     type: "html",
     label: "HTML",

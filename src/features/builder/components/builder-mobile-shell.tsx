@@ -45,6 +45,8 @@ import { saveBuilderContent } from "../api";
 import { usePropertySave } from "../use-property-save";
 import { BuilderPreview } from "./builder-preview";
 import { BlocksPanel } from "./blocks-panel";
+import { IntegrationsPanel } from "../integrations/integrations-panel";
+
 import { ThemePanel } from "./theme-panel";
 import { LayersPanel } from "./layers-panel";
 import { PagesPanel } from "./pages-panel";
@@ -206,6 +208,13 @@ export function BuilderMobileShell({ previewMode, onTogglePreview, viewport }: P
         description="Tap to insert or drag onto the canvas."
       >
         <BlocksPanel onAdded={() => setPanel("properties")} />
+        <div className="mt-5 border-t pt-4">
+          <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            Integrations
+          </div>
+          <IntegrationsPanel onAdded={() => setPanel("properties")} />
+        </div>
+
       </PanelSheet>
 
       <PanelSheet

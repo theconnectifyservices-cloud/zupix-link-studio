@@ -23,6 +23,8 @@ import type {
 } from "../types";
 import { newId } from "../types";
 import { CustomCodeEditor } from "./property-editors/custom-code-editor";
+import { IntegrationEditor } from "../integrations/integration-editor";
+
 import { FontFamilyField } from "./font-family-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -957,6 +959,8 @@ export function PropertyPanel() {
       )}
       {block.type === "embed" && <EmbedEditor block={block} set={set} />}
       {block.type === "customCode" && <CustomCodeEditor block={block} update={update} />}
+      {block.type === "integration" && <IntegrationEditor block={block} update={update} />}
+
 
 
       <SharedSettings settings={block.settings} onChange={setSettings} />

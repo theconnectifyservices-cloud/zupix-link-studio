@@ -68,6 +68,8 @@ import {
 } from "@/components/ui/accordion";
 import { useBuilderStore } from "./store";
 import { DEFAULT_PROFILE } from "./theme";
+import { IntegrationRender } from "./integrations/integration-render";
+
 
 const SOCIAL_ICON: Record<SocialPlatform, LucideIcon> = {
   instagram: Instagram,
@@ -488,7 +490,10 @@ function renderInner(block: Block, reduceMotion: boolean) {
       return <FileRender block={block} />;
     case "contact":
       return <ContactRender block={block} />;
+    case "integration":
+      return <IntegrationRender block={block} />;
     case "embed":
+
       return <EmbedRender block={block} />;
     case "customCode":
       return (
