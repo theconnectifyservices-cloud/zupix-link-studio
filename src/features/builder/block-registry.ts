@@ -33,7 +33,7 @@ export interface BlockDef {
   label: string;
   description: string;
   icon: LucideIcon;
-  group: "essentials" | "media" | "advanced" | "commerce";
+  group: "essentials" | "media" | "advanced" | "commerce" | "integrations";
   available: boolean;
   create: () => Block;
 }
