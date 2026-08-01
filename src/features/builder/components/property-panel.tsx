@@ -859,6 +859,7 @@ export function PropertyPanel() {
           onItems={(v) => set("items", v)}
         />
       )}
+      {block.type === "highlightCards" && <HighlightCardsEditor block={block} set={set} />}
       {block.type === "faq" && (
         <FaqEditor
           title={block.title ?? ""}

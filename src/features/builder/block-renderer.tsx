@@ -519,6 +519,8 @@ function renderInner(block: Block, reduceMotion: boolean) {
       return <ContactRender block={block} />;
     case "integration":
       return <IntegrationRender block={block} />;
+    case "highlightCards":
+      return <HighlightCardsRender block={block} viewport={viewport} />;
     case "embed":
 
       return <EmbedRender block={block} />;
