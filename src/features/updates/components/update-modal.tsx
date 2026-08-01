@@ -90,10 +90,17 @@ export function UpdateModal() {
       }}
     >
       <DialogContent
-        showCloseButton={!update.is_forced}
-        onInteractOutside={(e) => update.is_forced && e.preventDefault()}
-        onEscapeKeyDown={(e) => update.is_forced && e.preventDefault()}
-        className="max-w-lg gap-0 overflow-hidden p-0"
+        onInteractOutside={(e) => {
+          if (update.is_forced) e.preventDefault();
+        }}
+        onEscapeKeyDown={(e) => {
+          if (update.is_forced) e.preventDefault();
+        }}
+        className={cn(
+          "max-w-lg gap-0 overflow-hidden p-0",
+          // forced updates cannot be closed — hide the built-in close affordance
+          update.is_forced && "[&>button]:hidden",
+        )}
       >
         <UpdateHeader update={update} />
 
