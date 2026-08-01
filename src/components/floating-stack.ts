@@ -86,6 +86,7 @@ export function useFloatingStackOffset(
         needed = Math.max(needed, viewportH - rect.top + FLOATING_GAP);
       });
 
+      (window as any).__zxDbg = { self: !!self, needed };
       setOffset((prev) => (Math.abs(prev - needed) > 1 ? needed : prev));
     };
 
