@@ -68,6 +68,7 @@ import {
 } from "@/components/ui/accordion";
 import { useBuilderStore } from "./store";
 import { DEFAULT_PROFILE } from "./theme";
+import { HighlightCardsRender } from "./components/highlight-cards-render";
 import { IntegrationRender } from "./integrations/integration-render";
 
 
@@ -214,7 +215,7 @@ export function BlockRenderer({
     (fontScale && fontScale !== 1);
 
 
-  const inner = renderInner(block, reduceMotion);
+  const inner = renderInner(block, reduceMotion, viewport);
   const commonProps = {
     className: wrapCls,
     style,
@@ -398,7 +399,7 @@ function InteractiveFxWrapper({
 }
 
 
-function renderInner(block: Block, reduceMotion: boolean) {
+function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "mobile") {
   switch (block.type) {
     case "profile":
       return <ProfileRender block={block} />;
