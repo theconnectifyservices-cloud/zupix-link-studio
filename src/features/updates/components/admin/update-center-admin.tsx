@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Archive,
   BarChart3,
-  CalendarClock,
   Pencil,
   Plus,
   Rocket,
@@ -266,5 +265,3 @@ function IconButton({
     </Button>
   );
 }
-
-export { CalendarClock };
