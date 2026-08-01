@@ -95,6 +95,9 @@ function normalizeBlock(block: unknown, index: number): Block | null {
       return normalizeButtonGroupBlock(base, id) as Block;
     case "map":
       return normalizeMapBlock(base) as Block;
+    case "highlightCards":
+      return normalizeHighlightCardsBlock(base, id) as Block;
+
     default:
       return base as Block;
   }
