@@ -12,8 +12,9 @@ export const Route = createFileRoute("/_authenticated")({
     const { data } = await supabase.auth.getSession();
     if (!data.session) {
       throw redirect({
+        // Never bounce users back into settings/profile/password screens.
         to: "/auth",
-        search: { redirect: location.href },
+        search: { redirect: resolvePostAuthTarget(location.pathname + location.searchStr) },
       });
     }
   },
@@ -33,28 +34,33 @@ function AuthenticatedLayout() {
   }, [session.status, navigate]);
 
   useEffect(() => {
-    // Force a password change after an admin reset / temporary password.
+    // Force a password change ONLY while an admin-issued temporary password is
+    // still pending. A stale flag must never hijack normal dashboard entry.
+    if (session.status !== "authenticated" || !profile) return;
+    const p = profile as { force_password_change?: boolean; temp_password_expires_at?: string | null };
+    const tempActive =
+      !!p.temp_password_expires_at && new Date(p.temp_password_expires_at).getTime() > Date.now();
     if (
-      session.status === "authenticated" &&
-      profile &&
-      (profile as { force_password_change?: boolean }).force_password_change &&
+      p.force_password_change &&
+      tempActive &&
       !window.location.pathname.startsWith("/app/settings/password")
     ) {
-      navigate({ to: "/app/settings/password" });
+      navigate({ to: "/app/settings/password", replace: true });
     }
   }, [session.status, profile, navigate]);
 
   useEffect(() => {
-    // Redirect to onboarding if incomplete
+    // Redirect to onboarding if no workspace has been set up yet.
     if (
       session.status === "authenticated" &&
       profile &&
       !profile.onboarding_completed &&
       !window.location.pathname.startsWith("/onboarding")
     ) {
-      navigate({ to: "/onboarding" });
+      navigate({ to: "/onboarding", replace: true });
     }
   }, [session.status, profile, navigate]);
+
 
 
   if (session.status === "loading" || (userId && isLoading)) {
