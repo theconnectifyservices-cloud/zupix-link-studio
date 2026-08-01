@@ -1292,3 +1292,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .zi-glow, .zi-float { animation: none; }
 }
+
+/* ── Highlight Cards block ─────────────────────────────────────────── */
+.zx-hc-rail::-webkit-scrollbar {
+  display: none;
+}
+.zx-hc-svg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
