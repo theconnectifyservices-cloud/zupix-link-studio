@@ -10,3 +10,7 @@ export { BuilderLeftPanel } from "./components/builder-left-panel";
 export { BuilderRightPanel } from "./components/builder-right-panel";
 export { BuilderPreview } from "./components/builder-preview";
 export { BuilderDndProvider } from "./components/dnd-context";
+export { INTEGRATIONS, getIntegration } from "./integrations/registry";
+export { IntegrationsPanel } from "./integrations/integrations-panel";
+export { IntegrationRender } from "./integrations/integration-render";
+
