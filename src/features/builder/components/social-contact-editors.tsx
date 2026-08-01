@@ -336,9 +336,12 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
 
   return (
     <div className="space-y-4">
-      <Field label="Avatar">
-        <ImageField value={block.avatarUrl ?? ""} onChange={(v) => set("avatarUrl", v)} />
-      </Field>
+      <ImageField
+        label="Avatar"
+        value={block.avatarUrl ?? ""}
+        onChange={(v) => set("avatarUrl", v)}
+        circle
+      />
       <Field label="Name">
         <Input value={block.name ?? ""} onChange={(e) => set("name", e.target.value)} />
       </Field>
