@@ -160,7 +160,16 @@ export function BlockRenderer({
   // Button effects are applied INSIDE the button element (see ButtonRender),
   // never on the outer block wrapper — otherwise the effect layer paints the
   // full-width rectangle behind the pill.
-  const isButtonish = block.type === "button" || block.type === "buttonGroup";
+  const isButtonish =
+    block.type === "button" ||
+    block.type === "buttonGroup" ||
+    block.type === "socialButtons" ||
+    block.type === "followCard" ||
+    block.type === "whatsappButton" ||
+    block.type === "callButton" ||
+    block.type === "emailButton" ||
+    block.type === "smsButton" ||
+    block.type === "telegramButton";
 
   const wrapCls = cn(
     s.radius && !isButtonish && RADIUS_CLASS[s.radius],
@@ -359,15 +368,15 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
     case "contact":
       return <ContactRender block={block} />;
     case "socialButtons":
-      return <SocialButtonsRender block={block} />;
+      return <SocialButtonsRender block={block} reduceMotion={reduceMotion} />;
     case "whatsappButton":
     case "callButton":
     case "emailButton":
     case "smsButton":
     case "telegramButton":
-      return <ContactActionRender block={block} />;
+      return <ContactActionRender block={block} reduceMotion={reduceMotion} />;
     case "followCard":
-      return <FollowCardRender block={block} />;
+      return <FollowCardRender block={block} reduceMotion={reduceMotion} />;
     case "qrContact":
       return <QrContactRender block={block} />;
     case "integration":
