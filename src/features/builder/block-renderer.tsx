@@ -160,7 +160,16 @@ export function BlockRenderer({
   // Button effects are applied INSIDE the button element (see ButtonRender),
   // never on the outer block wrapper — otherwise the effect layer paints the
   // full-width rectangle behind the pill.
-  const isButtonish = block.type === "button" || block.type === "buttonGroup";
+  const isButtonish =
+    block.type === "button" ||
+    block.type === "buttonGroup" ||
+    block.type === "socialButtons" ||
+    block.type === "followCard" ||
+    block.type === "whatsappButton" ||
+    block.type === "callButton" ||
+    block.type === "emailButton" ||
+    block.type === "smsButton" ||
+    block.type === "telegramButton";
 
   const wrapCls = cn(
     s.radius && !isButtonish && RADIUS_CLASS[s.radius],
@@ -248,147 +257,13 @@ export function BlockRenderer({
 }
 
 
-/** Compute btn-fx className + CSS vars for a button-ish block.
- * Applied to the actual button/pill element so effects clip to the button
- * shape and never bleed to a wrapper rectangle. */
-export function computeButtonFx(
-  s: BlockSettings,
-  reduceMotion: boolean,
-): {
-  className: string;
-  style: CSSProperties;
-  needsInteractive: boolean;
-  effect: "magnetic" | "spotlight" | null;
-  intensity: number;
-  distance: number;
-} {
-  const raw = s.buttonEffect && s.buttonEffect !== "none" ? s.buttonEffect : null;
-  if (!raw) {
-    return {
-      className: "",
-      style: {},
-      needsInteractive: false,
-      effect: null,
-      intensity: 50,
-      distance: 20,
-    };
-  }
-  const disabled = s.buttonEffectEnabled === false;
-  const mode =
-    raw === "shine"
-      ? (s.buttonEffectMode ?? "hover")
-      : raw === "neon"
-        ? (s.buttonEffectMode ?? null)
-        : null;
-  const dir = s.buttonEffectDirection ?? null;
-  const className = cn(
-    `zx-btn-fx zx-btn-fx-${raw}`,
-    mode && `zx-btn-fx-mode-${mode}`,
-    dir && `zx-btn-fx-dir-${dir}`,
-    disabled && `zx-btn-fx-disabled`,
-  );
-  const style: CSSProperties = {};
-  const vars = style as Record<string, string>;
-  if (s.buttonEffectSpeed) vars["--zx-btn-fx-dur"] = `${s.buttonEffectSpeed}ms`;
-  if (s.buttonEffectDelay) vars["--zx-btn-fx-delay"] = `${s.buttonEffectDelay}ms`;
-  if (s.buttonEffectRepeat !== undefined)
-    vars["--zx-btn-fx-repeat"] = String(s.buttonEffectRepeat);
-  if (s.buttonEffectColor) vars["--zx-btn-fx-color"] = s.buttonEffectColor;
-  if (s.buttonEffectColor2) vars["--zx-btn-fx-color2"] = s.buttonEffectColor2;
-  if (typeof s.buttonEffectIntensity === "number")
-    vars["--zx-btn-fx-intensity"] = String(Math.max(0, s.buttonEffectIntensity) / 50);
-  if (typeof s.buttonEffectSize === "number") {
-    vars["--zx-btn-fx-size"] = `${s.buttonEffectSize}%`;
-    vars["--zx-btn-fx-size-px"] = `${s.buttonEffectSize}px`;
-  }
-  if (typeof s.buttonEffectOpacity === "number")
-    vars["--zx-btn-fx-opacity"] = String(s.buttonEffectOpacity);
-  if (typeof s.buttonEffectDistance === "number") {
-    vars["--zx-btn-fx-distance"] = `${s.buttonEffectDistance}px`;
-    vars["--zx-btn-fx-distance-scale"] = String(Math.max(10, s.buttonEffectDistance * 2));
-  }
-  if (typeof s.buttonEffectScale === "number")
-    vars["--zx-btn-fx-scale"] = String(s.buttonEffectScale);
-  if (s.buttonEffectGradient && s.buttonEffectGradient.length >= 2) {
-    const stops = s.buttonEffectGradient.join(", ");
-    vars["--zx-btn-fx-grad"] = `linear-gradient(90deg, ${stops}, ${s.buttonEffectGradient[0]})`;
-  }
-  const needsInteractive =
-    !disabled && !reduceMotion && (raw === "magnetic" || raw === "spotlight");
-  return {
-    className,
-    style,
-    needsInteractive,
-    effect: needsInteractive ? (raw as "magnetic" | "spotlight") : null,
-    intensity: s.buttonEffectIntensity ?? 50,
-    distance: s.buttonEffectDistance ?? 20,
-  };
-}
+// Button effects live in the shared engine (./button-fx) so that every
+// button-like widget uses the exact same pipeline. Re-exported for
+// backward compatibility with existing imports.
+import { computeButtonFx, InteractiveFxWrapper, fxSettingsFromItem } from "./button-fx";
+export { computeButtonFx } from "./button-fx";
 
-/** Lightweight JS layer for effects that depend on pointer position. */
-function InteractiveFxWrapper({
-  effect,
-  intensity,
-  distance,
-  children,
-  ...rest
-}: React.HTMLAttributes<HTMLDivElement> & {
-  effect: "magnetic" | "spotlight";
-  intensity: number;
-  distance: number;
-}) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (typeof window !== "undefined" && window.matchMedia?.("(hover: none)").matches) return;
-    let raf = 0;
-    const strength = Math.max(0, Math.min(1, intensity / 100));
-    const onMove = (e: PointerEvent) => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        const r = el.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        const dx = e.clientX - cx;
-        const dy = e.clientY - cy;
-        if (effect === "magnetic") {
-          const max = distance;
-          const nx = Math.max(-max, Math.min(max, dx * 0.35 * strength));
-          const ny = Math.max(-max, Math.min(max, dy * 0.35 * strength));
-          el.style.setProperty("--zx-mx", `${nx}px`);
-          el.style.setProperty("--zx-my", `${ny}px`);
-        } else {
-          const sx = ((e.clientX - r.left) / r.width) * 100;
-          const sy = ((e.clientY - r.top) / r.height) * 100;
-          el.style.setProperty("--zx-sx", `${sx}%`);
-          el.style.setProperty("--zx-sy", `${sy}%`);
-        }
-      });
-    };
-    const onLeave = () => {
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
-      if (effect === "magnetic") {
-        el.style.setProperty("--zx-mx", `0px`);
-        el.style.setProperty("--zx-my", `0px`);
-      }
-    };
-    el.addEventListener("pointermove", onMove, { passive: true });
-    el.addEventListener("pointerleave", onLeave, { passive: true });
-    return () => {
-      el.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [effect, intensity, distance]);
-  return (
-    <div ref={ref} {...rest}>
-      {children}
-    </div>
-  );
-}
+
 
 
 function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "mobile") {
@@ -493,15 +368,15 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
     case "contact":
       return <ContactRender block={block} />;
     case "socialButtons":
-      return <SocialButtonsRender block={block} />;
+      return <SocialButtonsRender block={block} reduceMotion={reduceMotion} />;
     case "whatsappButton":
     case "callButton":
     case "emailButton":
     case "smsButton":
     case "telegramButton":
-      return <ContactActionRender block={block} />;
+      return <ContactActionRender block={block} reduceMotion={reduceMotion} />;
     case "followCard":
-      return <FollowCardRender block={block} />;
+      return <FollowCardRender block={block} reduceMotion={reduceMotion} />;
     case "qrContact":
       return <QrContactRender block={block} />;
     case "integration":
@@ -870,15 +745,8 @@ function GroupItemRender({
   baseStyle.isolation = "isolate";
 
   // Effect layer via existing engine
-  const fxSettings: BlockSettings = {
-    buttonEffect: item.effect,
-    buttonEffectColor: item.effectColor,
-    buttonEffectColor2: item.effectColor2,
-    buttonEffectSpeed: item.effectSpeed,
-    buttonEffectIntensity: item.effectIntensity,
-    buttonEffectMode: item.effectMode,
-    buttonEffectEnabled: !!item.effect && item.effect !== "none",
-  };
+  const fxSettings: BlockSettings = fxSettingsFromItem(item);
+
   const fx = computeButtonFx(fxSettings, reduceMotion);
   const style: CSSProperties = { ...baseStyle, ...fx.style };
 
