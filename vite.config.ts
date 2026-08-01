@@ -4,8 +4,19 @@
 //     nitro (build-only using cloudflare as a default target), VITE_* env injection, @ path alias,
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
-import { VitePWA } from "vite-plugin-pwa";
+import { VitePWA, type ManifestOptions } from "vite-plugin-pwa";
+
+/**
+ * The web app manifest lives at public/manifest.webmanifest so the dev server
+ * serves it verbatim; the PWA plugin reuses the same document for the build.
+ */
+const pwaManifest = JSON.parse(
+  readFileSync(fileURLToPath(new URL("./public/manifest.webmanifest", import.meta.url)), "utf-8"),
+) as Partial<ManifestOptions>;
+
 
 export default defineConfig({
   tanstackStart: {
@@ -29,41 +40,39 @@ export default defineConfig({
           "apple-touch-icon.png",
           "pwa-192x192.png",
           "pwa-512x512.png",
+          "pwa-maskable-192x192.png",
           "pwa-maskable-512x512.png",
+          "splash/*.png",
+          "screenshots/*.png",
         ],
 
-        manifest: {
-          name: "ZUPIX Link Studio",
-          short_name: "ZUPIX",
-          description: "Premium enterprise bio link platform.",
-          theme_color: "#0a0a14",
-          background_color: "#0a0a14",
-          display: "standalone",
-          orientation: "portrait",
-          start_url: "/app",
-          scope: "/",
-          icons: [
-            { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
-            { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
-            {
-              src: "/pwa-maskable-512x512.png",
-              sizes: "512x512",
-              type: "image/png",
-              purpose: "maskable",
-            },
-          ],
-        },
+        // Single source of truth: public/manifest.webmanifest. The dev server
+        // serves that file directly (so /manifest.webmanifest never 404s in
+        // dev/preview), and the plugin re-emits the identical document into
+        // dist/client at build time.
+        manifest: pwaManifest,
+
         workbox: {
           globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff,woff2}"],
-          navigateFallback: "/",
-          navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//, /^\/auth\//],
+          // NOTE: no navigateFallback. This app is server-rendered, so the build
+          // emits zero HTML files — Workbox's createHandlerBoundToURL("/") would
+          // throw `non-precached-url: /` and abort service-worker installation.
+          // Navigations are served by the NetworkFirst runtime route below, which
+          // also provides the offline cache for previously visited pages.
+
           cleanupOutdatedCaches: true,
           clientsClaim: true,
           skipWaiting: false,
           runtimeCaching: [
             {
-              // HTML navigations — always NetworkFirst
-              urlPattern: ({ request }) => request.mode === "navigate",
+              // HTML navigations — always NetworkFirst. OAuth callbacks, API
+              // routes and auth pages are never cached.
+              urlPattern: ({ request, url, sameOrigin }) =>
+                request.mode === "navigate" &&
+                sameOrigin &&
+                !url.pathname.startsWith("/~oauth") &&
+                !url.pathname.startsWith("/api/") &&
+                !url.pathname.startsWith("/auth/"),
               handler: "NetworkFirst",
               options: {
                 cacheName: "zupix-pages",
@@ -71,6 +80,7 @@ export default defineConfig({
                 expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 },
               },
             },
+
             {
               urlPattern: ({ url, sameOrigin }) =>
                 sameOrigin && /\.(?:png|jpg|jpeg|svg|webp|gif|ico)$/i.test(url.pathname),
