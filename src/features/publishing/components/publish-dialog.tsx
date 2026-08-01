@@ -102,6 +102,42 @@ export function PublishDialog({ pageId, content, onRestoredContent }: Props) {
   );
 }
 
+/**
+ * Mobile publish surface — same lifecycle body as the desktop dialog,
+ * presented as a bottom sheet. Controlled by the caller.
+ */
+export function PublishSheet({
+  pageId,
+  content,
+  onRestoredContent,
+  open,
+  onOpenChange,
+}: Props & { open: boolean; onOpenChange: (o: boolean) => void }) {
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="bottom"
+        className="flex h-[92dvh] flex-col gap-3 rounded-t-2xl p-0"
+      >
+        <SheetHeader className="border-b px-5 pt-5 text-left">
+          <SheetTitle className="flex items-center gap-2">
+            <Rocket className="h-4 w-4" /> Publish
+          </SheetTitle>
+          <SheetDescription>
+            Push your latest changes live, manage versions, or share the public link.
+          </SheetDescription>
+        </SheetHeader>
+        <PublishDialogBody
+          pageId={pageId}
+          content={content}
+          onRestoredContent={onRestoredContent}
+          onClose={() => onOpenChange(false)}
+        />
+      </SheetContent>
+    </Sheet>
+  );
+}
+
 function PublishDialogBody({
   pageId,
   content,
