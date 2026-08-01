@@ -6967,6 +6967,19 @@ export type Database = {
         Returns: boolean
       }
       license_plan_prefix: { Args: { _plan: string }; Returns: string }
+      media_recount_assets: { Args: { _ids: string[] }; Returns: undefined }
+      media_replace_everywhere: {
+        Args: { _new_asset: string; _new_url: string; _old_asset: string }
+        Returns: number
+      }
+      media_resync_workspace_usages: {
+        Args: { _workspace_id: string }
+        Returns: number
+      }
+      media_sync_page_usages: {
+        Args: { _bio_page_id: string }
+        Returns: number
+      }
       next_invoice_number: { Args: never; Returns: string }
       org_role_of: {
         Args: { _org_id: string; _user_id: string }
