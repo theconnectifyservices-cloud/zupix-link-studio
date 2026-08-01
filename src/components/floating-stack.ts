@@ -102,7 +102,7 @@ export function useFloatingStackOffset(
     window.addEventListener("orientationchange", schedule, { passive: true });
     window.addEventListener("scroll", schedule, { passive: true });
     const observer = new MutationObserver(schedule);
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+    observer.observe(document.body, { childList: true, subtree: true });
     const interval = window.setInterval(schedule, 1000);
 
     return () => {
