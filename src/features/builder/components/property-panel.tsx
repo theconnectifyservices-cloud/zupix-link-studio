@@ -23,6 +23,8 @@ import type {
 } from "../types";
 import { newId } from "../types";
 import { CustomCodeEditor } from "./property-editors/custom-code-editor";
+import { IntegrationEditor } from "../integrations/integration-editor";
+
 import { FontFamilyField } from "./font-family-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
