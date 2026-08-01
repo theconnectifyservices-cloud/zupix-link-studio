@@ -791,9 +791,10 @@ export function extractFontFamilies(stack: string | undefined | null): string[] 
 }
 
 /**
- * Adds a Google Fonts <link> once per session. Accepts either a plain
- * family name ("Playfair Display") or a full CSS font stack — the first
- * non-generic family in the stack is loaded.
+ * Adds a Google Fonts <link> once per session (on demand, cached by family).
+ * Accepts a plain family name ("Playfair Display") or a full CSS font stack.
+ * The requested axis comes from `FONT_LIBRARY` when known so italics and
+ * weights match exactly what Google serves for that family.
  */
 export function ensureGoogleFont(familyOrStack: string) {
   if (!familyOrStack || typeof document === "undefined") return;
@@ -801,7 +802,9 @@ export function ensureGoogleFont(familyOrStack: string) {
     if (LOADED_FONTS.has(family)) continue;
     LOADED_FONTS.add(family);
     const enc = family.replace(/\s+/g, "+");
-    const href = `https://fonts.googleapis.com/css2?family=${enc}:wght@300;400;500;600;700;800;900&display=swap`;
+    const axis = fontMeta(family)?.axis ?? DEFAULT_AXIS;
+    const href = `https://fonts.googleapis.com/css2?family=${enc}:${axis}&display=swap`;
+    if (document.querySelector(`link[data-zx-font="${CSS.escape(family)}"]`)) continue;
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.href = href;
@@ -811,23 +814,98 @@ export function ensureGoogleFont(familyOrStack: string) {
 }
 
 
-export const GOOGLE_FONTS: string[] = [
+
+export type FontCategory =
+  | "Premium Serif"
+  | "Premium Sans"
+  | "Premium Display"
+  | "Classic"
+  | "Monospace";
+
+export interface FontMeta {
+  family: string;
+  category: FontCategory;
+  /** Google `css2` axis spec, e.g. `ital,wght@0,400..700;1,400..700`. */
+  axis: string;
+  /** Whether the family ships true italics. */
+  italic: boolean;
+  /** Selectable weights for this family. */
+  weights: number[];
+  /** Original name when the family is a fallback for a non-Google font. */
+  aliasFor?: string;
+}
+
+const W_ALL = [300, 400, 500, 600, 700, 800, 900];
+const DEFAULT_AXIS = "wght@300;400;500;600;700;800;900";
+
+/** Variable-range axis with italics. */
+const vi = (from: number, to: number) => `ital,wght@0,${from}..${to};1,${from}..${to}`;
+/** Variable-range axis, upright only. */
+const v = (from: number, to: number) => `wght@${from}..${to}`;
+const range = (from: number, to: number) => W_ALL.filter((w) => w >= from && w <= to);
+
+/**
+ * Premium font library. Every entry declares the exact axis Google serves —
+ * requesting a weight or italic a family does not ship makes the whole
+ * stylesheet 400 and the font silently fails, so specs are explicit.
+ */
+export const FONT_LIBRARY: FontMeta[] = [
+  // ── Premium Serif ────────────────────────────────────────────────
+  { family: "Playfair Display", category: "Premium Serif", axis: vi(400, 900), italic: true, weights: range(400, 900) },
+  { family: "Cormorant Garamond", category: "Premium Serif", axis: vi(300, 700), italic: true, weights: range(300, 700) },
+  { family: "DM Serif Display", category: "Premium Serif", axis: "ital@0;1", italic: true, weights: [400] },
+  { family: "Libre Baskerville", category: "Premium Serif", axis: "ital,wght@0,400;0,700;1,400", italic: true, weights: [400, 700] },
+  { family: "Bodoni Moda", category: "Premium Serif", axis: vi(400, 900), italic: true, weights: range(400, 900) },
+  { family: "EB Garamond", category: "Premium Serif", axis: vi(400, 800), italic: true, weights: range(400, 800) },
+  { family: "Lora", category: "Premium Serif", axis: vi(400, 700), italic: true, weights: range(400, 700) },
+
+  // ── Premium Sans ─────────────────────────────────────────────────
+  { family: "Poppins", category: "Premium Sans", axis: "ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700", italic: true, weights: W_ALL },
+  { family: "Manrope", category: "Premium Sans", axis: v(200, 800), italic: false, weights: range(300, 800) },
+  { family: "Outfit", category: "Premium Sans", axis: v(100, 900), italic: false, weights: W_ALL },
+  { family: "Sora", category: "Premium Sans", axis: v(100, 800), italic: false, weights: range(300, 800) },
+  { family: "Plus Jakarta Sans", category: "Premium Sans", axis: vi(200, 800), italic: true, weights: range(300, 800) },
+  { family: "Space Grotesk", category: "Premium Sans", axis: v(300, 700), italic: false, weights: range(300, 700) },
+  { family: "Urbanist", category: "Premium Sans", axis: vi(100, 900), italic: true, weights: W_ALL },
+  // "General Sans" is not on Google Fonts — Switzer-like fallback.
+  { family: "Be Vietnam Pro", category: "Premium Sans", axis: "ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700", italic: true, weights: range(300, 800), aliasFor: "General Sans" },
+
+  // ── Premium Display ──────────────────────────────────────────────
+  { family: "Syne", category: "Premium Display", axis: v(400, 800), italic: false, weights: range(400, 800) },
+  // "Clash Display" is not on Google Fonts — closest geometric display face.
+  { family: "Familjen Grotesk", category: "Premium Display", axis: vi(400, 700), italic: true, weights: range(400, 700), aliasFor: "Clash Display" },
+  { family: "Instrument Serif", category: "Premium Display", axis: "ital@0;1", italic: true, weights: [400] },
+  { family: "Fraunces", category: "Premium Display", axis: vi(300, 900), italic: true, weights: range(300, 900) },
+];
+
+const FONT_META = new Map(FONT_LIBRARY.map((f) => [f.family.toLowerCase(), f]));
+
+/** Metadata for a family (premium library entries only). */
+export function fontMeta(family: string): FontMeta | undefined {
+  return FONT_META.get(family.trim().toLowerCase());
+}
+
+/** True when the family ships real italics (unknown families assume yes). */
+export function fontSupportsItalic(family: string | undefined): boolean {
+  if (!family) return true;
+  const meta = fontMeta(family);
+  return meta ? meta.italic : true;
+}
+
+/** Selectable weights for a family. */
+export function fontWeights(family: string | undefined): number[] {
+  if (!family) return W_ALL;
+  return fontMeta(family)?.weights ?? W_ALL;
+}
+
+const LEGACY_GOOGLE_FONTS: string[] = [
   "Inter",
-  "Manrope",
-  "Poppins",
   "DM Sans",
-  "Space Grotesk",
-  "Playfair Display",
-  "Cormorant Garamond",
-  "Lora",
   "JetBrains Mono",
   "Fira Code",
   "Bebas Neue",
   "Anton",
   "Archivo",
-  "Outfit",
-  "Sora",
-  "Plus Jakarta Sans",
   "Roboto",
   "Open Sans",
   "Montserrat",
@@ -843,18 +921,21 @@ export const GOOGLE_FONTS: string[] = [
   "Karla",
   "Mulish",
   "Figtree",
-  "Urbanist",
   "Epilogue",
-  "Libre Baskerville",
   "Source Sans 3",
   "PT Serif",
   "Crimson Text",
   "Josefin Sans",
   "Barlow",
   "Cabin",
-  "Syne",
-  "Instrument Serif",
 ];
+
+/** Every loadable Google family (premium library + the classic set). */
+export const GOOGLE_FONTS: string[] = [
+  ...FONT_LIBRARY.map((f) => f.family),
+  ...LEGACY_GOOGLE_FONTS,
+];
+
 
 
 // ── Button variant → CSS ────────────────────────────────────────────────

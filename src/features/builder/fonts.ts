@@ -10,10 +10,12 @@
  * Values are stored as full CSS font stacks so they render even before the
  * Google font finishes loading.
  */
-import { GOOGLE_FONTS, extractFontFamilies } from "./theme";
+import { FONT_LIBRARY, GOOGLE_FONTS, extractFontFamilies, fontMeta } from "./theme";
 
 export interface FontOption {
   label: string;
+  /** Group heading in the picker. */
+  group?: string;
   /** Full CSS font stack persisted on the block. */
   value: string;
   /** Google family name to preload, when applicable. */
@@ -33,6 +35,10 @@ const SERIF_FAMILIES = new Set([
   "PT Serif",
   "Crimson Text",
   "Instrument Serif",
+  "DM Serif Display",
+  "Bodoni Moda",
+  "EB Garamond",
+  "Fraunces",
 ]);
 const MONO_FAMILIES = new Set(["JetBrains Mono", "Fira Code"]);
 
@@ -52,13 +58,38 @@ export const SYSTEM_FONT_OPTIONS: FontOption[] = [
   { label: "Monospace", value: MONO },
 ];
 
-/** All selectable fonts for per-element overrides. */
+const PREMIUM_FAMILIES = new Set(FONT_LIBRARY.map((f) => f.family));
+
+/** Premium library first (grouped), then the classic families. */
 export const FONT_OPTIONS: FontOption[] = [
-  ...SYSTEM_FONT_OPTIONS,
+  ...SYSTEM_FONT_OPTIONS.map((o) => ({ ...o, group: "System" })),
+  ...FONT_LIBRARY.map((f) => ({
+    // Fallback faces keep the requested name visible so users find them.
+    label: f.aliasFor ? `${f.aliasFor} (${f.family})` : f.family,
+    group: f.category,
+    value: fontStack(f.family),
+    google: f.family,
+  })),
   ...[...GOOGLE_FONTS]
+    .filter((g) => !PREMIUM_FAMILIES.has(g))
     .sort((a, b) => a.localeCompare(b))
-    .map((g) => ({ label: g, value: fontStack(g), google: g })),
+    .map((g) => ({ label: g, group: "Classic", value: fontStack(g), google: g })),
 ];
+
+/** Ordered group names present in FONT_OPTIONS. */
+export const FONT_GROUPS: string[] = FONT_OPTIONS.reduce<string[]>((acc, o) => {
+  const g = o.group ?? "Classic";
+  if (!acc.includes(g)) acc.push(g);
+  return acc;
+}, []);
+
+/** Resolves the Google family behind a stored stack, if any. */
+export function familyOf(stack: string | undefined): string | undefined {
+  const opt = findFontOption(stack);
+  if (opt?.google) return opt.google;
+  const [first] = extractFontFamilies(stack ?? "");
+  return first && fontMeta(first) ? first : first;
+}
 
 /** Finds the option matching a stored stack (tolerates hand-written values). */
 export function findFontOption(value: string | undefined): FontOption | undefined {

@@ -194,6 +194,30 @@ export function BlockRenderer({
     vars["--zx-heading-family"] = s.fontFamily;
     vars["--zx-btn-font"] = s.fontFamily;
   }
+  // Element typography overrides — inherited by every nested node, so they
+  // apply to any block type (hero, FAQ, testimonials, pricing, cards…).
+  const hasTypography =
+    !!s.fontStyle ||
+    s.fontWeightNum != null ||
+    s.letterSpacingEm != null ||
+    s.lineHeightNum != null ||
+    !!s.textTransformOverride ||
+    !!s.textDecoration;
+  if (hasTypography) {
+    const vars = style as Record<string, string>;
+    if (s.fontStyle) style.fontStyle = s.fontStyle;
+    if (s.fontWeightNum != null) {
+      style.fontWeight = s.fontWeightNum;
+      vars["--zx-heading-weight"] = String(s.fontWeightNum);
+    }
+    if (s.letterSpacingEm != null) style.letterSpacing = `${s.letterSpacingEm}em`;
+    if (s.lineHeightNum != null) style.lineHeight = s.lineHeightNum;
+    if (s.textTransformOverride) {
+      style.textTransform = s.textTransformOverride as CSSProperties["textTransform"];
+      vars["--zx-text-transform"] = s.textTransformOverride;
+    }
+    if (s.textDecoration) style.textDecoration = s.textDecoration;
+  }
   if (fontScale && fontScale !== 1) style.fontSize = `${fontScale}em`;
   if (anim !== "none") {
     (style as Record<string, string>)["--zx-anim-dur"] = `${s.animationDuration ?? 600}ms`;
@@ -206,6 +230,7 @@ export function BlockRenderer({
   const hasWrap =
     !!s.background ||
     !!s.fontFamily ||
+    hasTypography ||
     !!paddingX ||
     !!paddingY ||
     !!marginTop ||
@@ -214,6 +239,7 @@ export function BlockRenderer({
     anim !== "none" ||
     !!hover ||
     (fontScale && fontScale !== 1);
+
 
 
   const inner = renderInner(block, reduceMotion, viewport);

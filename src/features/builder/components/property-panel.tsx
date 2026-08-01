@@ -26,6 +26,7 @@ import { CustomCodeEditor } from "./property-editors/custom-code-editor";
 import { IntegrationEditor } from "../integrations/integration-editor";
 
 import { FontFamilyField } from "./font-family-field";
+import { TypographyControls } from "./typography-controls";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -2339,10 +2340,13 @@ function SharedSettings({
             />
           </Field>
         </div>
-        <FontFamilyField
-          value={s.fontFamily}
-          onChange={(v) => onChange({ fontFamily: v })}
-        />
+        <div className="space-y-3 rounded-md border p-3">
+          <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Typography
+          </div>
+          <FontFamilyField value={s.fontFamily} onChange={(v) => onChange({ fontFamily: v })} />
+          <TypographyControls settings={s} onChange={onChange} />
+        </div>
         <Field label="Border radius">
           <SelectSimple
             value={s.radius ?? "none"}
