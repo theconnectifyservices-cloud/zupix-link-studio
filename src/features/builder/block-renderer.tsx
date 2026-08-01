@@ -69,25 +69,10 @@ import {
 import { useBuilderStore } from "./store";
 import { DEFAULT_PROFILE } from "./theme";
 import { HighlightCardsRender } from "./components/highlight-cards-render";
+import { SocialIconsRender } from "./components/social-icons-render";
 import type { HighlightCardsBlock } from "./types";
 import { IntegrationRender } from "./integrations/integration-render";
 
-
-const SOCIAL_ICON: Record<SocialPlatform, LucideIcon> = {
-  instagram: Instagram,
-  facebook: Facebook,
-  youtube: Youtube,
-  tiktok: Music2,
-  threads: AtSign,
-  linkedin: Linkedin,
-  pinterest: ImageIcon,
-  telegram: Send,
-  whatsapp: MessageCircle,
-  github: Github,
-  twitter: Twitter,
-  website: Globe,
-  custom: LinkIcon,
-};
 
 const FONT_SIZE: Record<FontSize, string> = {
   xs: "text-xs",
@@ -480,26 +465,8 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
       return <div style={{ height: `${block.height ?? 24}px` }} aria-hidden />;
 
     case "social":
-      const links = block.links ?? [];
-      if (links.length === 0) {
-        return <div className="text-center text-xs text-muted-foreground">No social links yet</div>;
-      }
-      return (
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          {links.map((l) => {
-            const Icon = SOCIAL_ICON[l.platform] ?? Globe;
-            return (
-              <span
-                key={l.id}
-                className="grid h-9 w-9 place-items-center rounded-full bg-muted text-foreground"
-                aria-label={l.label || l.platform}
-              >
-                <Icon className="h-4 w-4" />
-              </span>
-            );
-          })}
-        </div>
-      );
+      return <SocialIconsRender block={block} />;
+
 
     case "video":
       return <VideoRender block={block} />;

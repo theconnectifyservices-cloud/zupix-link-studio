@@ -387,11 +387,47 @@ export interface SocialLink {
   platform: SocialPlatform;
   url: string;
   label?: string;
+  color?: string;
 }
+
+export type SocialIconStyle =
+  | "minimal"
+  | "glass"
+  | "gradient"
+  | "filled"
+  | "outline"
+  | "neon"
+  | "luxury"
+  | "corporate";
+export type SocialIconShape = "circle" | "rounded" | "square";
+export type SocialIconAnimation = "none" | "float" | "pulse" | "bounce" | "scale" | "rotate";
+export type SocialIconHover = "lift" | "glow" | "fill" | "rotate" | "scale" | "none";
+export type SocialIconLabels = "hidden" | "always" | "hover";
+export type SocialColorMode = "brand" | "custom";
+
 export interface SocialBlock extends BaseBlock {
   type: "social";
   links: SocialLink[];
+  /** Visual preset. Defaults to "minimal" for legacy blocks. */
+  iconStyle?: SocialIconStyle;
+  shape?: SocialIconShape;
+  /** Icon glyph size in px. */
+  iconSize?: number;
+  /** Gap between icons in px. */
+  spacing?: number;
+  /** Extra border radius in px (only used when shape = "rounded"). */
+  radius?: number;
+  shadow?: boolean;
+  glow?: boolean;
+  colorMode?: SocialColorMode;
+  customColor?: string;
+  iconColor?: string;
+  animation?: SocialIconAnimation;
+  labels?: SocialIconLabels;
+  hoverEffect?: SocialIconHover;
+  align?: TextAlign;
 }
+
 
 // ── Video ────────────────────────────────────────────────────────────────
 export type VideoProvider = "youtube" | "vimeo" | "mp4";

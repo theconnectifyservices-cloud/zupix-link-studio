@@ -42,6 +42,7 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { getBlockDef } from "../block-registry";
 import { ImageField } from "./image-field";
 import { HighlightCardsEditor } from "./highlight-cards-editor";
+import { SocialIconsEditor } from "./social-icons-editor";
 import type { HighlightCardsBlock } from "../types";
 import { VideoSourceField } from "./video-source-field";
 import { MediaFileField } from "./media-file-field";
@@ -831,9 +832,7 @@ export function PropertyPanel() {
         </Field>
       )}
 
-      {block.type === "social" && (
-        <SocialEditor links={block.links} onChange={(links) => set("links", links)} />
-      )}
+      {block.type === "social" && <SocialIconsEditor block={block} set={set} />}
 
       {block.type === "video" && <VideoEditor block={block} set={set} />}
       {block.type === "gallery" && (
@@ -1105,97 +1104,6 @@ function NamedColorField({
         />
       </div>
     </Field>
-  );
-}
-
-// ── Social links editor ─────────────────────────────────────────────────
-const PLATFORMS: SocialPlatform[] = [
-  "instagram",
-  "facebook",
-  "youtube",
-  "tiktok",
-  "threads",
-  "linkedin",
-  "pinterest",
-  "telegram",
-  "whatsapp",
-  "github",
-  "twitter",
-  "website",
-  "custom",
-];
-function SocialEditor({
-  links,
-  onChange,
-}: {
-  links: SocialLink[];
-  onChange: (v: SocialLink[]) => void;
-}) {
-  function move(i: number, dir: -1 | 1) {
-    const t = i + dir;
-    if (t < 0 || t >= links.length) return;
-    const next = [...links];
-    const [it] = next.splice(i, 1);
-    next.splice(t, 0, it);
-    onChange(next);
-  }
-  return (
-    <div className="space-y-2">
-      <Label className="text-xs">Social links</Label>
-      {links.map((l, i) => (
-        <div key={l.id} className="space-y-1.5 rounded-md border p-2">
-          <div className="flex items-center gap-1.5">
-            <Select
-              value={l.platform}
-              onValueChange={(v) => {
-                const next = [...links];
-                next[i] = { ...l, platform: v as SocialPlatform };
-                onChange(next);
-              }}
-            >
-              <SelectTrigger className="w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PLATFORMS.map((p) => (
-                  <SelectItem key={p} value={p}>
-                    {p}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Input
-              value={l.url}
-              placeholder="https://…"
-              onChange={(e) => {
-                const next = [...links];
-                next[i] = { ...l, url: e.target.value };
-                onChange(next);
-              }}
-            />
-          </div>
-          <div className="flex items-center justify-end gap-0.5">
-            <IconBtn label="Move up" onClick={() => move(i, -1)}>
-              <ArrowUp className="h-3.5 w-3.5" />
-            </IconBtn>
-            <IconBtn label="Move down" onClick={() => move(i, 1)}>
-              <ArrowDown className="h-3.5 w-3.5" />
-            </IconBtn>
-            <IconBtn label="Remove" onClick={() => onChange(links.filter((_, j) => j !== i))}>
-              <Trash2 className="h-3.5 w-3.5 text-destructive" />
-            </IconBtn>
-          </div>
-        </div>
-      ))}
-      <Button
-        variant="outline"
-        size="sm"
-        className="w-full"
-        onClick={() => onChange([...links, { id: newId(), platform: "instagram", url: "" }])}
-      >
-        <Plus className="mr-2 h-3.5 w-3.5" /> Add link
-      </Button>
-    </div>
   );
 }
 

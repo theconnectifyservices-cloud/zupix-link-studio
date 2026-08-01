@@ -223,7 +223,44 @@ function normalizeSocialBlock(raw: JsonObject, id: string): SocialBlock {
       return acc;
     }, []);
 
-  return { ...raw, type: "social", links } as SocialBlock;
+  const num = (v: unknown, fallback: number, min: number, max: number) =>
+    typeof v === "number" && Number.isFinite(v) ? Math.max(min, Math.min(max, v)) : fallback;
+  const pick = <T extends string>(v: unknown, allowed: readonly T[], fallback: T): T =>
+    typeof v === "string" && (allowed as readonly string[]).includes(v) ? (v as T) : fallback;
+
+  // Legacy blocks carry only { links }; every style option falls back to a
+  // premium-safe default so existing pages keep rendering without edits.
+  return {
+    ...raw,
+    type: "social",
+    links,
+    iconStyle: pick(
+      raw.iconStyle,
+      ["minimal", "glass", "gradient", "filled", "outline", "neon", "luxury", "corporate"] as const,
+      "minimal",
+    ),
+    shape: pick(raw.shape, ["circle", "rounded", "square"] as const, "circle"),
+    iconSize: num(raw.iconSize, 18, 12, 48),
+    spacing: num(raw.spacing, 12, 0, 48),
+    radius: num(raw.radius, 14, 0, 32),
+    shadow: raw.shadow !== false,
+    glow: raw.glow === true,
+    colorMode: pick(raw.colorMode, ["brand", "custom"] as const, "brand"),
+    customColor: stringValue(raw.customColor) || undefined,
+    iconColor: stringValue(raw.iconColor) || undefined,
+    animation: pick(
+      raw.animation,
+      ["none", "float", "pulse", "bounce", "scale", "rotate"] as const,
+      "none",
+    ),
+    labels: pick(raw.labels, ["hidden", "always", "hover"] as const, "hidden"),
+    hoverEffect: pick(
+      raw.hoverEffect,
+      ["lift", "glow", "fill", "rotate", "scale", "none"] as const,
+      "lift",
+    ),
+    align: pick(raw.align, ["left", "center", "right"] as const, "center"),
+  } as SocialBlock;
 }
 
 function normalizeTestimonialsBlock(raw: JsonObject, id: string): TestimonialsBlock {
