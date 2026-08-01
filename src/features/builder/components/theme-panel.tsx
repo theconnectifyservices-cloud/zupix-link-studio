@@ -963,6 +963,31 @@ export function ThemePanel() {
             suffix="px"
             onChange={(v) => patchSpace({ pagePaddingY: v })}
           />
+          <Field label="Default section gap">
+            <div className="flex flex-wrap gap-1.5">
+              {[16, 24, 32, 40].map((g) => (
+                <Button
+                  key={g}
+                  type="button"
+                  size="sm"
+                  variant={(theme.spacing.sectionGap ?? 32) === g ? "default" : "outline"}
+                  className="h-7 px-2 text-xs"
+                  onClick={() => patchSpace({ sectionGap: g })}
+                >
+                  {g}
+                </Button>
+              ))}
+            </div>
+          </Field>
+          <NumField
+            label="Custom section gap"
+            min={0}
+            max={160}
+            step={2}
+            value={theme.spacing.sectionGap ?? 32}
+            suffix="px"
+            onChange={(v) => patchSpace({ sectionGap: v })}
+          />
           <NumField
             label="Block gap"
             min={0}
