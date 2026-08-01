@@ -74,22 +74,6 @@ import type { HighlightCardsBlock } from "./types";
 import { IntegrationRender } from "./integrations/integration-render";
 
 
-const SOCIAL_ICON: Record<SocialPlatform, LucideIcon> = {
-  instagram: Instagram,
-  facebook: Facebook,
-  youtube: Youtube,
-  tiktok: Music2,
-  threads: AtSign,
-  linkedin: Linkedin,
-  pinterest: ImageIcon,
-  telegram: Send,
-  whatsapp: MessageCircle,
-  github: Github,
-  twitter: Twitter,
-  website: Globe,
-  custom: LinkIcon,
-};
-
 const FONT_SIZE: Record<FontSize, string> = {
   xs: "text-xs",
   sm: "text-sm",
