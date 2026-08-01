@@ -20,6 +20,18 @@ import { ErrorBoundary } from "@/shared/error/error-boundary";
 import { InstallBanner, UpdateBanner, OfflineIndicator } from "@/features/pwa";
 import { RecoveryLinkRedirect } from "@/features/auth/recovery-redirect";
 
+/** iOS launch-image variants: [device px width, device px height, DPR]. */
+const APPLE_SPLASH: { w: number; h: number; r: number }[] = [
+  { w: 1290, h: 2796, r: 3 },
+  { w: 1179, h: 2556, r: 3 },
+  { w: 1284, h: 2778, r: 3 },
+  { w: 1170, h: 2532, r: 3 },
+  { w: 1125, h: 2436, r: 3 },
+  { w: 828, h: 1792, r: 2 },
+  { w: 750, h: 1334, r: 2 },
+  { w: 1536, h: 2048, r: 2 },
+];
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
@@ -96,9 +108,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#0a0a14" },
+      // Chrome deprecated apple-mobile-web-app-capable and logs a console warning
+      // unless the standard name is present alongside it.
+      { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: APP_CONFIG.shortName },
+
       // Security hardening meta (LS-16A) — response headers are the source of truth,
       // these are defense-in-depth for browsers that honour them.
       { name: "referrer", content: "strict-origin-when-cross-origin" },
@@ -111,8 +127,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/pwa-192x192.png", type: "image/png", sizes: "192x192" },
       { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
+      // iOS launch images — without these the installed app shows a blank flash.
+      ...APPLE_SPLASH.map(({ w, h, r }) => ({
+        rel: "apple-touch-startup-image",
+        href: `/splash/apple-splash-${w}-${h}.png`,
+        media: `(device-width: ${w / r}px) and (device-height: ${h / r}px) and (-webkit-device-pixel-ratio: ${r}) and (orientation: portrait)`,
+      })),
+
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
