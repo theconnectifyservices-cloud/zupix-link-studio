@@ -4,11 +4,13 @@ import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FONT_OPTIONS, findFontOption } from "../fonts";
+import { FONT_GROUPS, FONT_OPTIONS, findFontOption } from "../fonts";
 import { ensureGoogleFont } from "../theme";
 
 /**
@@ -16,6 +18,8 @@ import { ensureGoogleFont } from "../theme";
  *
  * `undefined` = inherit the global theme font. Toggling the switch off
  * reveals the dropdown and applies the chosen family to this element only.
+ * Options are grouped (Premium Serif / Sans / Display / Classic) and each
+ * family is previewed in its own face; the webfont is fetched on demand.
  */
 export function FontFamilyField({
   label = "Font family",
@@ -28,6 +32,10 @@ export function FontFamilyField({
 }) {
   const inherit = !value;
   const current = useMemo(() => findFontOption(value), [value]);
+  const groups = useMemo(
+    () => FONT_GROUPS.map((g) => ({ group: g, items: FONT_OPTIONS.filter((o) => (o.group ?? "Classic") === g) })),
+    [],
+  );
 
   return (
     <div className="space-y-2">
@@ -59,10 +67,22 @@ export function FontFamilyField({
             <SelectValue placeholder="Select font" />
           </SelectTrigger>
           <SelectContent className="max-h-72">
-            {FONT_OPTIONS.map((f) => (
-              <SelectItem key={f.value} value={f.value} style={{ fontFamily: f.value }}>
-                {f.label}
-              </SelectItem>
+            {groups.map(({ group, items }) => (
+              <SelectGroup key={group}>
+                <SelectLabel className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  {group}
+                </SelectLabel>
+                {items.map((f) => (
+                  <SelectItem
+                    key={f.value}
+                    value={f.value}
+                    style={{ fontFamily: f.value }}
+                    onMouseEnter={() => f.google && ensureGoogleFont(f.google)}
+                  >
+                    {f.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
             ))}
           </SelectContent>
         </Select>

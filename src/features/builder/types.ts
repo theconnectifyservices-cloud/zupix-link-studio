@@ -178,7 +178,18 @@ export interface BlockSettings {
    * `undefined` = inherit the global theme typography.
    */
   fontFamily?: string;
+  /**
+   * Element-level typography overrides. All optional — `undefined` inherits
+   * the theme / parent value, so existing blocks are unaffected.
+   */
+  fontStyle?: "normal" | "italic";
+  fontWeightNum?: number; // 100–900
+  letterSpacingEm?: number; // em
+  lineHeightNum?: number; // unitless
+  textTransformOverride?: TextTransform;
+  textDecoration?: "none" | "underline" | "line-through" | "overline";
 }
+
 
 
 export interface BaseBlock {
