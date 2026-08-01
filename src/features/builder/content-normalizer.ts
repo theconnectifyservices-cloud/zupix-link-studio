@@ -9,6 +9,9 @@ import type {
   FaqItem,
   GalleryBlock,
   GalleryImage,
+  HighlightCard,
+  HighlightCardsBlock,
+
   MapBlock,
   SocialBlock,
   SocialLink,
