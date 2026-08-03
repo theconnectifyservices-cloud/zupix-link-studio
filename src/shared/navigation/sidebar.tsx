@@ -5,6 +5,8 @@ import {
   LayoutTemplate,
   BarChart3,
   Target,
+  Inbox,
+  CalendarClock,
   Megaphone,
   Globe,
   Puzzle,
