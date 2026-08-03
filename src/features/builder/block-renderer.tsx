@@ -407,6 +407,12 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
       return <QrContactRender block={block} />;
     case "integration":
       return <IntegrationRender block={block} />;
+    case "form":
+      return <ContactFormRender block={block} />;
+    case "store":
+      return <MiniStoreRender block={block} />;
+    case "booking":
+      return <BookingRender block={block} />;
     case "highlightCards":
       return <HighlightCardsRender block={block as HighlightCardsBlock} viewport={viewport} />;
     case "embed":
