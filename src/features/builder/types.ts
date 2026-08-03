@@ -824,6 +824,8 @@ export type FormFieldType =
   | "subject"
   | "message"
   | "text"
+  | "textarea"
+  | "website"
   | "dropdown"
   | "checkbox"
   | "radio"
@@ -837,8 +839,18 @@ export interface FormFieldDef {
   required?: boolean;
   /** dropdown / radio / checkbox choices */
   options?: string[];
+  /** Legacy: equivalent to width "full". */
   fullWidth?: boolean;
+  /** Field width inside a 2-column layout. */
+  width?: "half" | "full";
+  /** Hidden fields are not rendered on the live page. */
+  hidden?: boolean;
+  helpText?: string;
+  defaultValue?: string;
+  maxLength?: number;
 }
+
+export type FormButtonStyle = "solid" | "gradient" | "outline" | "soft";
 
 /** Contact Form block — submissions land in Dashboard → Leads. */
 export interface ContactFormBlock extends BaseBlock {
@@ -848,6 +860,7 @@ export interface ContactFormBlock extends BaseBlock {
   fields: FormFieldDef[];
   submitLabel?: string;
   successMessage?: string;
+  errorMessage?: string;
   redirectUrl?: string;
   /** Email notification target (future delivery hook). */
   notifyEmail?: string;
@@ -856,6 +869,14 @@ export interface ContactFormBlock extends BaseBlock {
   cardStyle?: BusinessCardStyle;
   radius?: number;
   columns?: 1 | 2;
+  /** Design controls */
+  shadow?: "none" | "sm" | "md" | "lg";
+  padding?: number;
+  fontFamily?: string;
+  buttonStyle?: FormButtonStyle;
+  buttonRadius?: number;
+  /** Prevent the same visitor submitting the same content twice. */
+  preventDuplicates?: boolean;
 }
 
 export type StoreItemKind =
