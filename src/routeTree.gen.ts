@@ -29,6 +29,8 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.ap
 import { Route as SlugPageRouteImport } from './routes/$slug.$page'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
+import { Route as ApiPublicLeadsRouteImport } from './routes/api/public/leads'
+import { Route as ApiPublicBookingsRouteImport } from './routes/api/public/bookings'
 import { Route as ApiAiGenerateRouteImport } from './routes/api/ai.generate'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai.chat'
 import { Route as AdminBuilderIdRouteImport } from './routes/admin.builder.$id'
@@ -194,6 +196,16 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
 const ApiPublicTrackRoute = ApiPublicTrackRouteImport.update({
   id: '/api/public/track',
   path: '/api/public/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicLeadsRoute = ApiPublicLeadsRouteImport.update({
+  id: '/api/public/leads',
+  path: '/api/public/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBookingsRoute = ApiPublicBookingsRouteImport.update({
+  id: '/api/public/bookings',
+  path: '/api/public/bookings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAiGenerateRoute = ApiAiGenerateRouteImport.update({
@@ -645,6 +657,8 @@ export interface FileRoutesByFullPath {
   '/admin/builder/$id': typeof AdminBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/public/bookings': typeof ApiPublicBookingsRoute
+  '/api/public/leads': typeof ApiPublicLeadsRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
@@ -731,6 +745,8 @@ export interface FileRoutesByTo {
   '/admin/builder/$id': typeof AdminBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/public/bookings': typeof ApiPublicBookingsRoute
+  '/api/public/leads': typeof ApiPublicLeadsRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
@@ -821,6 +837,8 @@ export interface FileRoutesById {
   '/admin/builder/$id': typeof AdminBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/public/bookings': typeof ApiPublicBookingsRoute
+  '/api/public/leads': typeof ApiPublicLeadsRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
@@ -911,6 +929,8 @@ export interface FileRouteTypes {
     | '/admin/builder/$id'
     | '/api/ai/chat'
     | '/api/ai/generate'
+    | '/api/public/bookings'
+    | '/api/public/leads'
     | '/api/public/track'
     | '/app/'
     | '/app/ai/$conversationId'
@@ -997,6 +1017,8 @@ export interface FileRouteTypes {
     | '/admin/builder/$id'
     | '/api/ai/chat'
     | '/api/ai/generate'
+    | '/api/public/bookings'
+    | '/api/public/leads'
     | '/api/public/track'
     | '/app'
     | '/app/ai/$conversationId'
@@ -1086,6 +1108,8 @@ export interface FileRouteTypes {
     | '/admin/builder/$id'
     | '/api/ai/chat'
     | '/api/ai/generate'
+    | '/api/public/bookings'
+    | '/api/public/leads'
     | '/api/public/track'
     | '/_authenticated/app/'
     | '/_authenticated/app/ai/$conversationId'
@@ -1130,6 +1154,8 @@ export interface RootRouteChildren {
   AdminBuilderIdRoute: typeof AdminBuilderIdRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAiGenerateRoute: typeof ApiAiGenerateRoute
+  ApiPublicBookingsRoute: typeof ApiPublicBookingsRoute
+  ApiPublicLeadsRoute: typeof ApiPublicLeadsRoute
   ApiPublicTrackRoute: typeof ApiPublicTrackRoute
   ApiPublicWebhooksCashfreeRoute: typeof ApiPublicWebhooksCashfreeRoute
   ApiPublicWebhooksPayuRoute: typeof ApiPublicWebhooksPayuRoute
@@ -1276,6 +1302,20 @@ declare module '@tanstack/react-router' {
       path: '/api/public/track'
       fullPath: '/api/public/track'
       preLoaderRoute: typeof ApiPublicTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/leads': {
+      id: '/api/public/leads'
+      path: '/api/public/leads'
+      fullPath: '/api/public/leads'
+      preLoaderRoute: typeof ApiPublicLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/bookings': {
+      id: '/api/public/bookings'
+      path: '/api/public/bookings'
+      fullPath: '/api/public/bookings'
+      preLoaderRoute: typeof ApiPublicBookingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ai/generate': {
@@ -1970,6 +2010,8 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBuilderIdRoute: AdminBuilderIdRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAiGenerateRoute: ApiAiGenerateRoute,
+  ApiPublicBookingsRoute: ApiPublicBookingsRoute,
+  ApiPublicLeadsRoute: ApiPublicLeadsRoute,
   ApiPublicTrackRoute: ApiPublicTrackRoute,
   ApiPublicWebhooksCashfreeRoute: ApiPublicWebhooksCashfreeRoute,
   ApiPublicWebhooksPayuRoute: ApiPublicWebhooksPayuRoute,
@@ -1978,13 +2020,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

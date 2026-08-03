@@ -806,11 +806,132 @@ export interface GenericBlock extends BaseBlock {
     | "telegramButton"
     | "followCard"
     | "qrContact"
-
-
+    | "form"
+    | "store"
+    | "booking"
   >;
   [key: string]: unknown;
 }
+
+// ── Business Tools (lightweight, bio-link scoped — NOT eCommerce) ────────
+export type BusinessCardStyle = "glass" | "solid" | "outline";
+
+export type FormFieldType =
+  | "name"
+  | "email"
+  | "phone"
+  | "company"
+  | "subject"
+  | "message"
+  | "text"
+  | "dropdown"
+  | "checkbox"
+  | "radio"
+  | "file";
+
+export interface FormFieldDef {
+  id: string;
+  type: FormFieldType;
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+  /** dropdown / radio / checkbox choices */
+  options?: string[];
+  fullWidth?: boolean;
+}
+
+/** Contact Form block — submissions land in Dashboard → Leads. */
+export interface ContactFormBlock extends BaseBlock {
+  type: "form";
+  title?: string;
+  description?: string;
+  fields: FormFieldDef[];
+  submitLabel?: string;
+  successMessage?: string;
+  redirectUrl?: string;
+  /** Email notification target (future delivery hook). */
+  notifyEmail?: string;
+  /** WhatsApp notification target — future-ready, stored only. */
+  notifyWhatsapp?: string;
+  cardStyle?: BusinessCardStyle;
+  radius?: number;
+  columns?: 1 | 2;
+}
+
+export type StoreItemKind =
+  | "digital"
+  | "service"
+  | "payment_link"
+  | "buy_now"
+  | "whatsapp"
+  | "upi_qr"
+  | "razorpay";
+
+export type StoreBadge = "none" | "new" | "popular" | "limited";
+
+export interface StoreItem {
+  id: string;
+  kind: StoreItemKind;
+  title: string;
+  description?: string;
+  image?: string;
+  coverImage?: string;
+  price?: number;
+  oldPrice?: number;
+  buttonLabel?: string;
+  /** Buy Now / Payment Link / Razorpay link / external URL */
+  url?: string;
+  /** Digital delivery link (PDF, ZIP, course…) */
+  downloadUrl?: string;
+  whatsappNumber?: string;
+  whatsappMessage?: string;
+  upiId?: string;
+  upiQrImage?: string;
+  payeeName?: string;
+  badge?: StoreBadge;
+}
+
+/** Mini Store — a few products/services, no cart/checkout/inventory. */
+export interface MiniStoreBlock extends BaseBlock {
+  type: "store";
+  title?: string;
+  description?: string;
+  layout?: "grid" | "list";
+  columns?: 1 | 2 | 3;
+  cardStyle?: BusinessCardStyle;
+  radius?: number;
+  showPrice?: boolean;
+  currency?: string;
+  items: StoreItem[];
+}
+
+export type BookingKind = "appointment" | "meeting" | "consultation";
+
+/** Lightweight 1:1 booking block — requests land in Dashboard → Bookings. */
+export interface BookingBlock extends BaseBlock {
+  type: "booking";
+  title?: string;
+  description?: string;
+  kind?: BookingKind;
+  durationMin?: number;
+  /** 0 = Sunday … 6 = Saturday */
+  days?: number[];
+  /** "HH:MM" 24h slots */
+  slots?: string[];
+  timezone?: string;
+  locationType?: "online" | "offline";
+  meetingProvider?: "google_meet" | "zoom" | "whatsapp" | "custom";
+  meetingLink?: string;
+  address?: string;
+  requirePhone?: boolean;
+  confirmationMessage?: string;
+  emailConfirmation?: boolean;
+  notifyEmail?: string;
+  submitLabel?: string;
+  cardStyle?: BusinessCardStyle;
+  radius?: number;
+}
+
 
 // ── Social & Contact blocks ──────────────────────────────────────────────
 export type SocialSurfaceStyle = "filled" | "outline" | "soft" | "glass";
@@ -926,6 +1047,9 @@ export type Block =
   | ContactActionBlock
   | FollowCardBlock
   | QrContactBlock
+  | ContactFormBlock
+  | MiniStoreBlock
+  | BookingBlock
   | GenericBlock;
 
 
