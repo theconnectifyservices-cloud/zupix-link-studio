@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { ThemeBackgroundLayer } from "@/features/builder/components/theme-background-layer";
 import { BlockRenderer } from "@/features/builder/block-renderer";
 import { RendererModeProvider } from "@/features/builder/renderer-mode";
+import { PublicPageProvider } from "@/features/business/page-context";
 import {
   DEFAULT_MOTION,
   bgEffectClasses,
@@ -128,16 +129,20 @@ export function PublicBioRenderer({
           </div>
         ) : (
           <RendererModeProvider mode="public">
-            {blocks.map((b, i) => (
-              <BlockRenderer
-                key={b.id}
-                block={b}
-                index={i}
-                viewport={viewport}
-                staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
-                reduceMotion={!!motion.reduce}
-              />
-            ))}
+            <PublicPageProvider
+              value={pageId && slug ? { pageId, slug, workspaceId } : null}
+            >
+              {blocks.map((b, i) => (
+                <BlockRenderer
+                  key={b.id}
+                  block={b}
+                  index={i}
+                  viewport={viewport}
+                  staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
+                  reduceMotion={!!motion.reduce}
+                />
+              ))}
+            </PublicPageProvider>
           </RendererModeProvider>
         )}
         <BrandingLayer
