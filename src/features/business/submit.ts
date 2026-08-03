@@ -7,13 +7,28 @@
  */
 import { getTracker } from "@/features/analytics/tracker";
 
+export interface LeadAttachment {
+  name: string;
+  type: string;
+  size: number;
+  /** base64 (no data-url prefix) */
+  data: string;
+}
+
 export interface LeadPayload {
   pageId: string;
   slug: string;
   blockId: string;
   formName: string;
   values: Record<string, string | string[] | boolean>;
+  /** Honeypot — must stay empty; bots fill it. */
+  hp?: string;
+  /** ms between form render and submit; sub-second submits are bots. */
+  elapsedMs?: number;
+  pageUrl?: string;
+  attachments?: LeadAttachment[];
 }
+
 
 export interface BookingPayload {
   pageId: string;
