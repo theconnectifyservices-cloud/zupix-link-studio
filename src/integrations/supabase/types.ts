@@ -1627,16 +1627,22 @@ export type Database = {
       }
       bio_leads: {
         Row: {
+          attachments: Json
           bio_page_id: string | null
           block_id: string | null
+          browser: string | null
           company: string | null
           created_at: string
+          dedupe_hash: string | null
+          device_type: string | null
           email: string | null
           fields: Json
           form_name: string
           id: string
+          ip_address: string | null
           message: string | null
           name: string | null
+          page_url: string | null
           phone: string | null
           referrer: string | null
           source_url: string | null
@@ -1646,16 +1652,22 @@ export type Database = {
           workspace_id: string
         }
         Insert: {
+          attachments?: Json
           bio_page_id?: string | null
           block_id?: string | null
+          browser?: string | null
           company?: string | null
           created_at?: string
+          dedupe_hash?: string | null
+          device_type?: string | null
           email?: string | null
           fields?: Json
           form_name?: string
           id?: string
+          ip_address?: string | null
           message?: string | null
           name?: string | null
+          page_url?: string | null
           phone?: string | null
           referrer?: string | null
           source_url?: string | null
@@ -1665,16 +1677,22 @@ export type Database = {
           workspace_id: string
         }
         Update: {
+          attachments?: Json
           bio_page_id?: string | null
           block_id?: string | null
+          browser?: string | null
           company?: string | null
           created_at?: string
+          dedupe_hash?: string | null
+          device_type?: string | null
           email?: string | null
           fields?: Json
           form_name?: string
           id?: string
+          ip_address?: string | null
           message?: string | null
           name?: string | null
+          page_url?: string | null
           phone?: string | null
           referrer?: string | null
           source_url?: string | null
@@ -7477,6 +7495,10 @@ export type Database = {
       workspace_has_feature: {
         Args: { _feature_key: string; _workspace_id: string }
         Returns: boolean
+      }
+      workspace_leads_this_month: {
+        Args: { _workspace_id: string }
+        Returns: number
       }
       workspace_permissions_of: {
         Args: { _user_id: string; _workspace_id: string }
