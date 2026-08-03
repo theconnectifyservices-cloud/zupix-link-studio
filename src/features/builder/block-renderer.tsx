@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { ContactFormRender } from "@/features/business/components/contact-form-render";
+import { MiniStoreRender } from "@/features/business/components/mini-store-render";
+import { BookingRender } from "@/features/business/components/booking-render";
 import type {
   Block,
   BlockSettings,
