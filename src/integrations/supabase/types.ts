@@ -1922,6 +1922,92 @@ export type Database = {
           },
         ]
       }
+      bio_store_items: {
+        Row: {
+          action: string
+          badge: string
+          button_label: string | null
+          cover_image: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          download_url: string | null
+          gallery: Json
+          hidden: boolean
+          id: string
+          kind: string
+          long_description: string | null
+          old_price: number | null
+          price: number | null
+          sort_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+          url: string | null
+          whatsapp_message: string | null
+          whatsapp_number: string | null
+          workspace_id: string
+        }
+        Insert: {
+          action?: string
+          badge?: string
+          button_label?: string | null
+          cover_image?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          download_url?: string | null
+          gallery?: Json
+          hidden?: boolean
+          id?: string
+          kind?: string
+          long_description?: string | null
+          old_price?: number | null
+          price?: number | null
+          sort_order?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+          url?: string | null
+          whatsapp_message?: string | null
+          whatsapp_number?: string | null
+          workspace_id: string
+        }
+        Update: {
+          action?: string
+          badge?: string
+          button_label?: string | null
+          cover_image?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          download_url?: string | null
+          gallery?: Json
+          hidden?: boolean
+          id?: string
+          kind?: string
+          long_description?: string | null
+          old_price?: number | null
+          price?: number | null
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+          url?: string | null
+          whatsapp_message?: string | null
+          whatsapp_number?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bio_store_items_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brand_kits: {
         Row: {
           brand_asset_ids: string[]
