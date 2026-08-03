@@ -293,15 +293,14 @@ export function PricingCards({
 export function PricingSection({
   id = "pricing",
   withHeader = true,
-  defaultCycle = "yearly",
   className,
 }: {
   id?: string;
   withHeader?: boolean;
-  defaultCycle?: BillingCycle;
   className?: string;
 }) {
-  const [cycle, setCycle] = useState<BillingCycle>(defaultCycle);
+  const [cycle, setCycle] = useBillingCycle();
+
   const { handleCta, launcher } = usePlanCta(cycle);
   const tejasSavings = PLANS.tejas.priceMonthlyMinor * 12 - PLANS.tejas.priceYearlyMinor;
 
