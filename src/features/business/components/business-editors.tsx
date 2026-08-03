@@ -2,7 +2,26 @@
  * Property-panel editors for the three Business Tools blocks.
  * Kept in the business feature so the builder panel stays thin.
  */
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Plus, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -96,6 +115,8 @@ const FIELD_TYPES: [string, string][] = [
   ["subject", "Subject"],
   ["message", "Message"],
   ["text", "Short text"],
+  ["textarea", "Long text"],
+  ["website", "Website"],
   ["dropdown", "Dropdown"],
   ["checkbox", "Checkbox"],
   ["radio", "Radio"],
@@ -104,28 +125,33 @@ const FIELD_TYPES: [string, string][] = [
 
 export function ContactFormEditor({ block, set }: { block: ContactFormBlock; set: Set }) {
   const fields = block.fields ?? [];
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
   const patch = (id: string, p: Partial<FormFieldDef>) =>
     set(
       "fields",
       fields.map((f) => (f.id === id ? { ...f, ...p } : f)),
     );
-  const move = (i: number, dir: -1 | 1) => {
-    const next = [...fields];
-    const j = i + dir;
-    if (j < 0 || j >= next.length) return;
-    const a = next[i]!;
-    next[i] = next[j]!;
-    next[j] = a;
-    set("fields", next);
+  const remove = (id: string) =>
+    set("fields", fields.filter((x) => x.id !== id));
+  const onDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const from = fields.findIndex((f) => f.id === active.id);
+    const to = fields.findIndex((f) => f.id === over.id);
+    if (from < 0 || to < 0) return;
+    set("fields", arrayMove(fields, from, to));
   };
 
   return (
     <div className="space-y-3">
       <Section>Content</Section>
-      <Field label="Title">
+      <Field label="Form title">
         <Input value={block.title ?? ""} onChange={(e) => set("title", e.target.value)} />
       </Field>
-      <Field label="Description">
+      <Field label="Subtitle">
         <Textarea
           rows={2}
           value={block.description ?? ""}
@@ -134,102 +160,61 @@ export function ContactFormEditor({ block, set }: { block: ContactFormBlock; set
       </Field>
 
       <Section>Fields</Section>
-      <div className="space-y-2">
-        {fields.map((f, i) => (
-          <div key={f.id} className="rounded-lg border p-2.5 space-y-2">
-            <div className="flex items-center gap-1.5">
-              <GripVertical className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-              <Input
-                className="h-8"
-                value={f.label}
-                onChange={(e) => patch(f.id, { label: e.target.value })}
-                placeholder="Label"
+      <p className="text-[11px] text-muted-foreground">Drag the handle to reorder fields.</p>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis]}
+        onDragEnd={onDragEnd}
+      >
+        <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-2">
+            {fields.map((f) => (
+              <SortableFieldRow
+                key={f.id}
+                field={f}
+                onPatch={(p) => patch(f.id, p)}
+                onRemove={() => remove(f.id)}
               />
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => move(i, -1)}>
-                ↑
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => move(i, 1)}>
-                ↓
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-destructive"
-                onClick={() =>
-                  set(
-                    "fields",
-                    fields.filter((x) => x.id !== f.id),
-                  )
-                }
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Select
-                value={f.type}
-                onChange={(v) => patch(f.id, { type: v as FormFieldType })}
-                options={FIELD_TYPES}
-              />
-              <Input
-                className="h-9"
-                value={f.placeholder ?? ""}
-                onChange={(e) => patch(f.id, { placeholder: e.target.value })}
-                placeholder="Placeholder"
-              />
-            </div>
-            {(f.type === "dropdown" || f.type === "radio" || f.type === "checkbox") && (
-              <Input
-                className="h-9"
-                value={(f.options ?? []).join(", ")}
-                onChange={(e) =>
-                  patch(f.id, {
-                    options: e.target.value
-                      .split(",")
-                      .map((s) => s.trim())
-                      .filter(Boolean),
-                  })
-                }
-                placeholder="Option 1, Option 2, Option 3"
-              />
-            )}
-            <div className="flex items-center gap-4">
-              <Toggle
-                label="Required"
-                checked={!!f.required}
-                onChange={(v) => patch(f.id, { required: v })}
-              />
-              <Toggle
-                label="Full width"
-                checked={!!f.fullWidth}
-                onChange={(v) => patch(f.id, { fullWidth: v })}
-              />
-            </div>
+            ))}
           </div>
-        ))}
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full"
-          onClick={() =>
-            set("fields", [
-              ...fields,
-              { id: uid(), type: "text", label: "New field", required: false } as FormFieldDef,
-            ])
-          }
-        >
-          <Plus className="mr-1 h-3.5 w-3.5" /> Add field
-        </Button>
-      </div>
+        </SortableContext>
+      </DndContext>
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full"
+        onClick={() =>
+          set("fields", [
+            ...fields,
+            {
+              id: uid(),
+              type: "text",
+              label: "New field",
+              required: false,
+              width: "full",
+            } as FormFieldDef,
+          ])
+        }
+      >
+        <Plus className="mr-1 h-3.5 w-3.5" /> Add field
+      </Button>
 
       <Section>After submit</Section>
-      <Field label="Button label">
+      <Field label="Submit button text">
         <Input value={block.submitLabel ?? ""} onChange={(e) => set("submitLabel", e.target.value)} />
       </Field>
       <Field label="Success message">
         <Input
           value={block.successMessage ?? ""}
           onChange={(e) => set("successMessage", e.target.value)}
+        />
+      </Field>
+      <Field label="Error message">
+        <Input
+          value={block.errorMessage ?? ""}
+          onChange={(e) => set("errorMessage", e.target.value)}
+          placeholder="Something went wrong. Please try again."
         />
       </Field>
       <Field label="Redirect URL (optional)">
@@ -256,6 +241,13 @@ export function ContactFormEditor({ block, set }: { block: ContactFormBlock; set
         />
       </Field>
 
+      <Section>Spam protection</Section>
+      <Toggle
+        label="Prevent duplicate submissions"
+        checked={block.preventDuplicates !== false}
+        onChange={(v) => set("preventDuplicates", v)}
+      />
+
       <Section>Design</Section>
       <Field label="Card style">
         <Select
@@ -281,6 +273,169 @@ export function ContactFormEditor({ block, set }: { block: ContactFormBlock; set
           onChange={(e) => set("radius", Number(e.target.value))}
         />
       </Field>
+      <Field label="Shadow">
+        <Select
+          value={block.shadow ?? "md"}
+          onChange={(v) => set("shadow", v)}
+          options={[
+            ["none", "None"],
+            ["sm", "Soft"],
+            ["md", "Medium"],
+            ["lg", "Large"],
+          ]}
+        />
+      </Field>
+      <Field label="Padding">
+        <Input
+          type="number"
+          value={block.padding ?? 18}
+          onChange={(e) => set("padding", Number(e.target.value))}
+        />
+      </Field>
+      <Field label="Font family (optional)">
+        <Input
+          value={block.fontFamily ?? ""}
+          onChange={(e) => set("fontFamily", e.target.value)}
+          placeholder="Inherit from theme"
+        />
+      </Field>
+      <Field label="Button style">
+        <Select
+          value={block.buttonStyle ?? "solid"}
+          onChange={(v) => set("buttonStyle", v)}
+          options={[
+            ["solid", "Solid"],
+            ["gradient", "Gradient"],
+            ["outline", "Outline"],
+            ["soft", "Soft"],
+          ]}
+        />
+      </Field>
+      <Field label="Button radius">
+        <Input
+          type="number"
+          value={block.buttonRadius ?? 10}
+          onChange={(e) => set("buttonRadius", Number(e.target.value))}
+        />
+      </Field>
+    </div>
+  );
+}
+
+function SortableFieldRow({
+  field: f,
+  onPatch,
+  onRemove,
+}: {
+  field: FormFieldDef;
+  onPatch: (p: Partial<FormFieldDef>) => void;
+  onRemove: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: f.id,
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn("space-y-2 rounded-lg border p-2.5", isDragging && "opacity-70 shadow-lg")}
+    >
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          className="cursor-grab touch-none text-muted-foreground active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+        <Input
+          className="h-8"
+          value={f.label}
+          onChange={(e) => onPatch({ label: e.target.value })}
+          placeholder="Label"
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-destructive"
+          onClick={onRemove}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </Button>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        <Select
+          value={f.type}
+          onChange={(v) => onPatch({ type: v as FormFieldType })}
+          options={FIELD_TYPES}
+        />
+        <Input
+          className="h-9"
+          value={f.placeholder ?? ""}
+          onChange={(e) => onPatch({ placeholder: e.target.value })}
+          placeholder="Placeholder"
+        />
+      </div>
+      {(f.type === "dropdown" || f.type === "radio" || f.type === "checkbox") && (
+        <Input
+          className="h-9"
+          value={(f.options ?? []).join(", ")}
+          onChange={(e) =>
+            onPatch({
+              options: e.target.value
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean),
+            })
+          }
+          placeholder="Option 1, Option 2, Option 3"
+        />
+      )}
+      <div className="grid grid-cols-2 gap-2">
+        <Input
+          className="h-9"
+          value={f.defaultValue ?? ""}
+          onChange={(e) => onPatch({ defaultValue: e.target.value })}
+          placeholder="Default value"
+        />
+        <Input
+          className="h-9"
+          type="number"
+          value={f.maxLength ?? ""}
+          onChange={(e) =>
+            onPatch({ maxLength: e.target.value ? Number(e.target.value) : undefined })
+          }
+          placeholder="Character limit"
+        />
+      </div>
+      <Input
+        className="h-9"
+        value={f.helpText ?? ""}
+        onChange={(e) => onPatch({ helpText: e.target.value })}
+        placeholder="Help text"
+      />
+      <Select
+        value={f.width ?? (f.fullWidth ? "full" : "half")}
+        onChange={(v) => onPatch({ width: v as "half" | "full", fullWidth: v === "full" })}
+        options={[
+          ["half", "Width 50%"],
+          ["full", "Width 100%"],
+        ]}
+      />
+      <div className="flex items-center gap-4">
+        <Toggle
+          label="Required"
+          checked={!!f.required}
+          onChange={(v) => onPatch({ required: v })}
+        />
+        <Toggle
+          label="Visible"
+          checked={!f.hidden}
+          onChange={(v) => onPatch({ hidden: !v })}
+        />
+      </div>
     </div>
   );
 }
