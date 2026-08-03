@@ -15,7 +15,7 @@ import {
 import { SubscriptionCheckoutLauncher } from "@/features/billing/components/subscription-checkout-launcher";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
-import { CycleToggle, PricingCards } from "@/features/pricing";
+import { CycleToggle, PricingCards, useBillingCycle } from "@/features/pricing";
 
 const TITLE = "Pricing — ZUPIX Link Studio | Plans from Free to Enterprise";
 const DESC = "Choose the right plan for your business. Start free with Udaan, upgrade to Tejas (₹299/mo) for pro tools, or reach the summit with Shikhar. 3-day free trial, no hidden charges.";
@@ -65,7 +65,7 @@ export const Route = createFileRoute("/pricing")({
 });
 
 function PricingPage() {
-  const [cycle, setCycle] = useState<"monthly" | "yearly">("yearly");
+  const [cycle, setCycle] = useBillingCycle();
   const [checkout, setCheckout] = useState<{ planCode: PlanCode } | null>(null);
   const session = useSession();
   const { workspace } = useCurrentWorkspace();

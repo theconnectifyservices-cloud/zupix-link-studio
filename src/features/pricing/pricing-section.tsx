@@ -13,6 +13,8 @@ import {
   PLANS, PLAN_ORDER, formatPlanPrice, yearlySavingsPct, BIO_LINK_ADDON_NOTE, type PlanCode,
 } from "@/features/subscription/plans";
 import { WaitlistForm } from "@/features/subscription/components/waitlist-form";
+import { AnimatedPrice } from "./animated-price";
+import { useBillingCycle } from "./use-billing-cycle";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
 
@@ -176,10 +178,12 @@ export function PricingCard({
         </div>
       </div>
 
-      <div className="mt-6 flex items-end gap-2">
+      <div className="mt-6 flex min-h-[3.5rem] items-end gap-2">
         {priceMinor > 0 ? (
           <>
-            <span className="text-5xl font-bold tracking-tight">{formatPlanPrice(priceMinor)}</span>
+            <span className="text-5xl font-bold tracking-tight">
+              <AnimatedPrice value={priceMinor} format={formatPlanPrice} />
+            </span>
             <span className="mb-1 text-sm text-muted-foreground">/ {cycle === "monthly" ? "month" : "year"}</span>
           </>
         ) : (
@@ -188,11 +192,35 @@ export function PricingCard({
           </span>
         )}
       </div>
-      {monthEquiv !== null && (
-        <div className="mt-1 text-xs text-muted-foreground">
-          ≈ ₹{monthEquiv}/mo · save {savings}%
+      <div className="mt-1 min-h-[1.25rem] text-xs text-muted-foreground">
+        <AnimatePresence mode="wait" initial={false}>
+          {monthEquiv !== null ? (
+            <motion.span
+              key="equiv"
+              initial={{ opacity: 0, y: -3 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 3 }}
+              transition={{ duration: 0.2 }}
+              className="block"
+            >
+              ≈ ₹{monthEquiv}/month · billed yearly
+            </motion.span>
+          ) : null}
+        </AnimatePresence>
+      </div>
+      {cycle === "yearly" && savings > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-600 ring-1 ring-emerald-500/25 dark:text-emerald-400">
+            🔥 Save {savings}%
+          </span>
+          {isFeatured && (
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary ring-1 ring-primary/25">
+              Best Value
+            </span>
+          )}
         </div>
       )}
+
       {isShikhar && (
         <div className="mt-1 text-xs font-medium text-amber-600 dark:text-amber-400">
           Launching soon · join the waitlist
@@ -266,15 +294,14 @@ export function PricingCards({
 export function PricingSection({
   id = "pricing",
   withHeader = true,
-  defaultCycle = "yearly",
   className,
 }: {
   id?: string;
   withHeader?: boolean;
-  defaultCycle?: BillingCycle;
   className?: string;
 }) {
-  const [cycle, setCycle] = useState<BillingCycle>(defaultCycle);
+  const [cycle, setCycle] = useBillingCycle();
+
   const { handleCta, launcher } = usePlanCta(cycle);
   const tejasSavings = PLANS.tejas.priceMonthlyMinor * 12 - PLANS.tejas.priceYearlyMinor;
 
