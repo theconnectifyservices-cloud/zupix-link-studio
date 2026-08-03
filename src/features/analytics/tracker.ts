@@ -368,7 +368,7 @@ export function initTracker(pageId: string, slug: string, rootEl: HTMLElement): 
   document.addEventListener("visibilitychange", onHide);
   window.addEventListener("pagehide", onHide);
 
-  return {
+  const handle: TrackerHandle = {
     trackClick: (opts) => {
       session.linkClicks += 1;
       session.lastSeenAt = Date.now();
@@ -387,11 +387,26 @@ export function initTracker(pageId: string, slug: string, rootEl: HTMLElement): 
       void send({ envelope, event: { type: "qr_scan", qrSource: source ?? envelope.qrSource ?? undefined } });
     },
     end: () => {
+      if (activeTracker === handle) activeTracker = null;
       rootEl.removeEventListener("click", onClick, { capture: true } as EventListenerOptions);
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onHide);
       window.removeEventListener("pagehide", onHide);
     },
   };
+  activeTracker = handle;
+  return handle;
+}
+
+/** Live tracker for the current public page, when one is mounted. */
+let activeTracker: TrackerHandle | null = null;
+
+/**
+ * Access the current page tracker from anywhere (business blocks fire
+ * non-anchor events such as form submits and booking requests).
+ * Returns null in the builder or before the tracker mounts.
+ */
+export function getTracker(): TrackerHandle | null {
+  return activeTracker;
 }
 

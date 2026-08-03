@@ -29,6 +29,8 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.ap
 import { Route as SlugPageRouteImport } from './routes/$slug.$page'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
+import { Route as ApiPublicLeadsRouteImport } from './routes/api/public/leads'
+import { Route as ApiPublicBookingsRouteImport } from './routes/api/public/bookings'
 import { Route as ApiAiGenerateRouteImport } from './routes/api/ai.generate'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai.chat'
 import { Route as AdminBuilderIdRouteImport } from './routes/admin.builder.$id'
@@ -51,6 +53,7 @@ import { Route as AuthenticatedAppMySubscriptionRouteImport } from './routes/_au
 import { Route as AuthenticatedAppMonetizationRouteImport } from './routes/_authenticated.app.monetization'
 import { Route as AuthenticatedAppMediaRouteImport } from './routes/_authenticated.app.media'
 import { Route as AuthenticatedAppLicenseRouteImport } from './routes/_authenticated.app.license'
+import { Route as AuthenticatedAppLeadsRouteImport } from './routes/_authenticated.app.leads'
 import { Route as AuthenticatedAppLaunchRouteImport } from './routes/_authenticated.app.launch'
 import { Route as AuthenticatedAppIntegrationsRouteImport } from './routes/_authenticated.app.integrations'
 import { Route as AuthenticatedAppInfrastructureRouteImport } from './routes/_authenticated.app.infrastructure'
@@ -61,6 +64,7 @@ import { Route as AuthenticatedAppConversionsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAppCommunicationsRouteImport } from './routes/_authenticated.app.communications'
 import { Route as AuthenticatedAppChangelogRouteImport } from './routes/_authenticated/app/changelog'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated.app.campaigns'
+import { Route as AuthenticatedAppBookingsRouteImport } from './routes/_authenticated.app.bookings'
 import { Route as AuthenticatedAppBillingRouteImport } from './routes/_authenticated.app.billing'
 import { Route as AuthenticatedAppAutomationRouteImport } from './routes/_authenticated.app.automation'
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated.app.analytics'
@@ -196,6 +200,16 @@ const ApiPublicTrackRoute = ApiPublicTrackRouteImport.update({
   path: '/api/public/track',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicLeadsRoute = ApiPublicLeadsRouteImport.update({
+  id: '/api/public/leads',
+  path: '/api/public/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBookingsRoute = ApiPublicBookingsRouteImport.update({
+  id: '/api/public/bookings',
+  path: '/api/public/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAiGenerateRoute = ApiAiGenerateRouteImport.update({
   id: '/api/ai/generate',
   path: '/api/ai/generate',
@@ -319,6 +333,11 @@ const AuthenticatedAppLicenseRoute = AuthenticatedAppLicenseRouteImport.update({
   path: '/license',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppLeadsRoute = AuthenticatedAppLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppLaunchRoute = AuthenticatedAppLaunchRouteImport.update({
   id: '/launch',
   path: '/launch',
@@ -374,6 +393,12 @@ const AuthenticatedAppCampaignsRoute =
   AuthenticatedAppCampaignsRouteImport.update({
     id: '/campaigns',
     path: '/campaigns',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppBookingsRoute =
+  AuthenticatedAppBookingsRouteImport.update({
+    id: '/bookings',
+    path: '/bookings',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppBillingRoute = AuthenticatedAppBillingRouteImport.update({
@@ -613,6 +638,7 @@ export interface FileRoutesByFullPath {
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
   '/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
+  '/app/bookings': typeof AuthenticatedAppBookingsRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
@@ -623,6 +649,7 @@ export interface FileRoutesByFullPath {
   '/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/launch': typeof AuthenticatedAppLaunchRoute
+  '/app/leads': typeof AuthenticatedAppLeadsRoute
   '/app/license': typeof AuthenticatedAppLicenseRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
@@ -645,6 +672,8 @@ export interface FileRoutesByFullPath {
   '/admin/builder/$id': typeof AdminBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/public/bookings': typeof ApiPublicBookingsRoute
+  '/api/public/leads': typeof ApiPublicLeadsRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
@@ -699,6 +728,7 @@ export interface FileRoutesByTo {
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
   '/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
+  '/app/bookings': typeof AuthenticatedAppBookingsRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
@@ -709,6 +739,7 @@ export interface FileRoutesByTo {
   '/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/launch': typeof AuthenticatedAppLaunchRoute
+  '/app/leads': typeof AuthenticatedAppLeadsRoute
   '/app/license': typeof AuthenticatedAppLicenseRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
@@ -731,6 +762,8 @@ export interface FileRoutesByTo {
   '/admin/builder/$id': typeof AdminBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/public/bookings': typeof ApiPublicBookingsRoute
+  '/api/public/leads': typeof ApiPublicLeadsRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
@@ -789,6 +822,7 @@ export interface FileRoutesById {
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/_authenticated/app/automation': typeof AuthenticatedAppAutomationRoute
   '/_authenticated/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
+  '/_authenticated/app/bookings': typeof AuthenticatedAppBookingsRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/_authenticated/app/communications': typeof AuthenticatedAppCommunicationsRoute
@@ -799,6 +833,7 @@ export interface FileRoutesById {
   '/_authenticated/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/_authenticated/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/_authenticated/app/launch': typeof AuthenticatedAppLaunchRoute
+  '/_authenticated/app/leads': typeof AuthenticatedAppLeadsRoute
   '/_authenticated/app/license': typeof AuthenticatedAppLicenseRoute
   '/_authenticated/app/media': typeof AuthenticatedAppMediaRoute
   '/_authenticated/app/monetization': typeof AuthenticatedAppMonetizationRoute
@@ -821,6 +856,8 @@ export interface FileRoutesById {
   '/admin/builder/$id': typeof AdminBuilderIdRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/public/bookings': typeof ApiPublicBookingsRoute
+  '/api/public/leads': typeof ApiPublicLeadsRoute
   '/api/public/track': typeof ApiPublicTrackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/ai/$conversationId': typeof AuthenticatedAppAiConversationIdRoute
@@ -879,6 +916,7 @@ export interface FileRouteTypes {
     | '/app/analytics'
     | '/app/automation'
     | '/app/billing'
+    | '/app/bookings'
     | '/app/campaigns'
     | '/app/changelog'
     | '/app/communications'
@@ -889,6 +927,7 @@ export interface FileRouteTypes {
     | '/app/infrastructure'
     | '/app/integrations'
     | '/app/launch'
+    | '/app/leads'
     | '/app/license'
     | '/app/media'
     | '/app/monetization'
@@ -911,6 +950,8 @@ export interface FileRouteTypes {
     | '/admin/builder/$id'
     | '/api/ai/chat'
     | '/api/ai/generate'
+    | '/api/public/bookings'
+    | '/api/public/leads'
     | '/api/public/track'
     | '/app/'
     | '/app/ai/$conversationId'
@@ -965,6 +1006,7 @@ export interface FileRouteTypes {
     | '/app/analytics'
     | '/app/automation'
     | '/app/billing'
+    | '/app/bookings'
     | '/app/campaigns'
     | '/app/changelog'
     | '/app/communications'
@@ -975,6 +1017,7 @@ export interface FileRouteTypes {
     | '/app/infrastructure'
     | '/app/integrations'
     | '/app/launch'
+    | '/app/leads'
     | '/app/license'
     | '/app/media'
     | '/app/monetization'
@@ -997,6 +1040,8 @@ export interface FileRouteTypes {
     | '/admin/builder/$id'
     | '/api/ai/chat'
     | '/api/ai/generate'
+    | '/api/public/bookings'
+    | '/api/public/leads'
     | '/api/public/track'
     | '/app'
     | '/app/ai/$conversationId'
@@ -1054,6 +1099,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/analytics'
     | '/_authenticated/app/automation'
     | '/_authenticated/app/billing'
+    | '/_authenticated/app/bookings'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/changelog'
     | '/_authenticated/app/communications'
@@ -1064,6 +1110,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/infrastructure'
     | '/_authenticated/app/integrations'
     | '/_authenticated/app/launch'
+    | '/_authenticated/app/leads'
     | '/_authenticated/app/license'
     | '/_authenticated/app/media'
     | '/_authenticated/app/monetization'
@@ -1086,6 +1133,8 @@ export interface FileRouteTypes {
     | '/admin/builder/$id'
     | '/api/ai/chat'
     | '/api/ai/generate'
+    | '/api/public/bookings'
+    | '/api/public/leads'
     | '/api/public/track'
     | '/_authenticated/app/'
     | '/_authenticated/app/ai/$conversationId'
@@ -1130,6 +1179,8 @@ export interface RootRouteChildren {
   AdminBuilderIdRoute: typeof AdminBuilderIdRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAiGenerateRoute: typeof ApiAiGenerateRoute
+  ApiPublicBookingsRoute: typeof ApiPublicBookingsRoute
+  ApiPublicLeadsRoute: typeof ApiPublicLeadsRoute
   ApiPublicTrackRoute: typeof ApiPublicTrackRoute
   ApiPublicWebhooksCashfreeRoute: typeof ApiPublicWebhooksCashfreeRoute
   ApiPublicWebhooksPayuRoute: typeof ApiPublicWebhooksPayuRoute
@@ -1276,6 +1327,20 @@ declare module '@tanstack/react-router' {
       path: '/api/public/track'
       fullPath: '/api/public/track'
       preLoaderRoute: typeof ApiPublicTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/leads': {
+      id: '/api/public/leads'
+      path: '/api/public/leads'
+      fullPath: '/api/public/leads'
+      preLoaderRoute: typeof ApiPublicLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/bookings': {
+      id: '/api/public/bookings'
+      path: '/api/public/bookings'
+      fullPath: '/api/public/bookings'
+      preLoaderRoute: typeof ApiPublicBookingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ai/generate': {
@@ -1432,6 +1497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppLicenseRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/leads': {
+      id: '/_authenticated/app/leads'
+      path: '/leads'
+      fullPath: '/app/leads'
+      preLoaderRoute: typeof AuthenticatedAppLeadsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/launch': {
       id: '/_authenticated/app/launch'
       path: '/launch'
@@ -1500,6 +1572,13 @@ declare module '@tanstack/react-router' {
       path: '/campaigns'
       fullPath: '/app/campaigns'
       preLoaderRoute: typeof AuthenticatedAppCampaignsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/bookings': {
+      id: '/_authenticated/app/bookings'
+      path: '/bookings'
+      fullPath: '/app/bookings'
+      preLoaderRoute: typeof AuthenticatedAppBookingsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/billing': {
@@ -1843,6 +1922,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
   AuthenticatedAppAutomationRoute: typeof AuthenticatedAppAutomationRoute
   AuthenticatedAppBillingRoute: typeof AuthenticatedAppBillingRouteWithChildren
+  AuthenticatedAppBookingsRoute: typeof AuthenticatedAppBookingsRoute
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppChangelogRoute: typeof AuthenticatedAppChangelogRoute
   AuthenticatedAppCommunicationsRoute: typeof AuthenticatedAppCommunicationsRoute
@@ -1853,6 +1933,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppInfrastructureRoute: typeof AuthenticatedAppInfrastructureRoute
   AuthenticatedAppIntegrationsRoute: typeof AuthenticatedAppIntegrationsRoute
   AuthenticatedAppLaunchRoute: typeof AuthenticatedAppLaunchRoute
+  AuthenticatedAppLeadsRoute: typeof AuthenticatedAppLeadsRoute
   AuthenticatedAppLicenseRoute: typeof AuthenticatedAppLicenseRoute
   AuthenticatedAppMediaRoute: typeof AuthenticatedAppMediaRoute
   AuthenticatedAppMonetizationRoute: typeof AuthenticatedAppMonetizationRoute
@@ -1880,6 +1961,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
   AuthenticatedAppAutomationRoute: AuthenticatedAppAutomationRoute,
   AuthenticatedAppBillingRoute: AuthenticatedAppBillingRouteWithChildren,
+  AuthenticatedAppBookingsRoute: AuthenticatedAppBookingsRoute,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppChangelogRoute: AuthenticatedAppChangelogRoute,
   AuthenticatedAppCommunicationsRoute: AuthenticatedAppCommunicationsRoute,
@@ -1890,6 +1972,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppInfrastructureRoute: AuthenticatedAppInfrastructureRoute,
   AuthenticatedAppIntegrationsRoute: AuthenticatedAppIntegrationsRoute,
   AuthenticatedAppLaunchRoute: AuthenticatedAppLaunchRoute,
+  AuthenticatedAppLeadsRoute: AuthenticatedAppLeadsRoute,
   AuthenticatedAppLicenseRoute: AuthenticatedAppLicenseRoute,
   AuthenticatedAppMediaRoute: AuthenticatedAppMediaRoute,
   AuthenticatedAppMonetizationRoute: AuthenticatedAppMonetizationRoute,
@@ -1970,6 +2053,8 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBuilderIdRoute: AdminBuilderIdRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAiGenerateRoute: ApiAiGenerateRoute,
+  ApiPublicBookingsRoute: ApiPublicBookingsRoute,
+  ApiPublicLeadsRoute: ApiPublicLeadsRoute,
   ApiPublicTrackRoute: ApiPublicTrackRoute,
   ApiPublicWebhooksCashfreeRoute: ApiPublicWebhooksCashfreeRoute,
   ApiPublicWebhooksPayuRoute: ApiPublicWebhooksPayuRoute,
@@ -1978,13 +2063,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

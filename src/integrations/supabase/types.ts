@@ -1535,6 +1535,171 @@ export type Database = {
           },
         ]
       }
+      bio_bookings: {
+        Row: {
+          admin_note: string | null
+          bio_page_id: string | null
+          block_id: string | null
+          booking_date: string
+          booking_kind: string
+          booking_time: string
+          created_at: string
+          customer_name: string
+          duration_min: number
+          email: string | null
+          id: string
+          location_address: string | null
+          location_type: string
+          meeting_link: string | null
+          notes: string | null
+          phone: string | null
+          service_title: string
+          source_url: string | null
+          status: Database["public"]["Enums"]["bio_booking_status"]
+          timezone: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          bio_page_id?: string | null
+          block_id?: string | null
+          booking_date: string
+          booking_kind?: string
+          booking_time: string
+          created_at?: string
+          customer_name: string
+          duration_min?: number
+          email?: string | null
+          id?: string
+          location_address?: string | null
+          location_type?: string
+          meeting_link?: string | null
+          notes?: string | null
+          phone?: string | null
+          service_title?: string
+          source_url?: string | null
+          status?: Database["public"]["Enums"]["bio_booking_status"]
+          timezone?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          bio_page_id?: string | null
+          block_id?: string | null
+          booking_date?: string
+          booking_kind?: string
+          booking_time?: string
+          created_at?: string
+          customer_name?: string
+          duration_min?: number
+          email?: string | null
+          id?: string
+          location_address?: string | null
+          location_type?: string
+          meeting_link?: string | null
+          notes?: string | null
+          phone?: string | null
+          service_title?: string
+          source_url?: string | null
+          status?: Database["public"]["Enums"]["bio_booking_status"]
+          timezone?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bio_bookings_bio_page_id_fkey"
+            columns: ["bio_page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bio_bookings_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bio_leads: {
+        Row: {
+          bio_page_id: string | null
+          block_id: string | null
+          company: string | null
+          created_at: string
+          email: string | null
+          fields: Json
+          form_name: string
+          id: string
+          message: string | null
+          name: string | null
+          phone: string | null
+          referrer: string | null
+          source_url: string | null
+          status: Database["public"]["Enums"]["bio_lead_status"]
+          subject: string | null
+          user_agent: string | null
+          workspace_id: string
+        }
+        Insert: {
+          bio_page_id?: string | null
+          block_id?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          fields?: Json
+          form_name?: string
+          id?: string
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          referrer?: string | null
+          source_url?: string | null
+          status?: Database["public"]["Enums"]["bio_lead_status"]
+          subject?: string | null
+          user_agent?: string | null
+          workspace_id: string
+        }
+        Update: {
+          bio_page_id?: string | null
+          block_id?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          fields?: Json
+          form_name?: string
+          id?: string
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          referrer?: string | null
+          source_url?: string | null
+          status?: Database["public"]["Enums"]["bio_lead_status"]
+          subject?: string | null
+          user_agent?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bio_leads_bio_page_id_fkey"
+            columns: ["bio_page_id"]
+            isOneToOne: false
+            referencedRelation: "bio_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bio_leads_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bio_page_publish_events: {
         Row: {
           action: string
@@ -7380,6 +7545,14 @@ export type Database = {
         | "seo"
         | "viewer"
       billing_cycle: "monthly" | "quarterly" | "yearly" | "lifetime"
+      bio_booking_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "rescheduled"
+        | "completed"
+        | "cancelled"
+      bio_lead_status: "new" | "read" | "replied" | "archived"
       bio_page_status:
         | "draft"
         | "published"
@@ -7759,6 +7932,15 @@ export const Constants = {
         "viewer",
       ],
       billing_cycle: ["monthly", "quarterly", "yearly", "lifetime"],
+      bio_booking_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "rescheduled",
+        "completed",
+        "cancelled",
+      ],
+      bio_lead_status: ["new", "read", "replied", "archived"],
       bio_page_status: [
         "draft",
         "published",

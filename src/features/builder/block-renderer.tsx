@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { ContactFormRender } from "@/features/business/components/contact-form-render";
+import { MiniStoreRender } from "@/features/business/components/mini-store-render";
+import { BookingRender } from "@/features/business/components/booking-render";
 import type {
   Block,
   BlockSettings,
@@ -407,6 +410,12 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
       return <QrContactRender block={block} />;
     case "integration":
       return <IntegrationRender block={block} />;
+    case "form":
+      return <ContactFormRender block={block} />;
+    case "store":
+      return <MiniStoreRender block={block} />;
+    case "booking":
+      return <BookingRender block={block} />;
     case "highlightCards":
       return <HighlightCardsRender block={block as HighlightCardsBlock} viewport={viewport} />;
     case "embed":

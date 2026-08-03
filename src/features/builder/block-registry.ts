@@ -41,7 +41,7 @@ export interface BlockDef {
   label: string;
   description: string;
   icon: LucideIcon;
-  group: "essentials" | "social" | "media" | "advanced" | "commerce" | "integrations";
+  group: "essentials" | "social" | "media" | "advanced" | "business" | "commerce" | "integrations";
   available: boolean;
   create: () => Block;
 }
@@ -603,8 +603,103 @@ export const BLOCK_DEFS: BlockDef[] = [
       downloadable: true,
     }),
   },
+  // ── Business Tools (lightweight, bio-link focused) ──────────────────
+  {
+    type: "form",
+    label: "Contact Form",
+    description: "Collect leads with custom fields",
+    icon: ClipboardList,
+    group: "business",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "form",
+      title: "Get in touch",
+      description: "Fill the form and we'll get back to you shortly.",
+      submitLabel: "Send message",
+      successMessage: "Thanks! We've received your message.",
+      cardStyle: "glass",
+      radius: 18,
+      columns: 1,
+      fields: [
+        { id: newId(), type: "name", label: "Name", placeholder: "Your name", required: true },
+        { id: newId(), type: "email", label: "Email", placeholder: "you@example.com", required: true },
+        { id: newId(), type: "phone", label: "Mobile number", placeholder: "+91 90000 00000" },
+        { id: newId(), type: "message", label: "Message", placeholder: "How can we help?", required: true, fullWidth: true },
+      ],
+    }),
+  },
+  {
+    type: "store",
+    label: "Mini Store",
+    description: "Sell a few products or services",
+    icon: ShoppingBag,
+    group: "business",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "store",
+      title: "Shop & services",
+      layout: "grid",
+      columns: 2,
+      cardStyle: "glass",
+      radius: 18,
+      showPrice: true,
+      currency: "₹",
+      items: [
+        {
+          id: newId(),
+          kind: "digital",
+          title: "Starter eBook",
+          description: "Instant PDF download.",
+          price: 499,
+          oldPrice: 999,
+          badge: "new",
+          buttonLabel: "Download",
+          downloadUrl: "",
+        },
+        {
+          id: newId(),
+          kind: "service",
+          title: "Logo Design",
+          description: "Custom logo with 3 concepts.",
+          price: 4999,
+          badge: "popular",
+          buttonLabel: "Enquire on WhatsApp",
+          whatsappNumber: "",
+          whatsappMessage: "Hi! I'm interested in Logo Design.",
+        },
+      ],
+    }),
+  },
+  {
+    type: "booking",
+    label: "Booking",
+    description: "1:1 appointments & consultations",
+    icon: CalendarClock,
+    group: "business",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "booking",
+      title: "Book a slot",
+      description: "Pick a day and time that works for you.",
+      kind: "appointment",
+      durationMin: 30,
+      days: [1, 2, 3, 4, 5],
+      slots: ["10:00", "11:00", "12:00", "15:00", "16:00", "17:00"],
+      timezone: "Asia/Kolkata",
+      locationType: "online",
+      meetingProvider: "google_meet",
+      requirePhone: true,
+      emailConfirmation: true,
+      submitLabel: "Request booking",
+      confirmationMessage: "Thanks! Your booking request has been received.",
+      cardStyle: "glass",
+      radius: 18,
+    }),
+  },
   // Reserved / later phases
-
   {
     type: "html",
     label: "HTML",
@@ -614,34 +709,8 @@ export const BLOCK_DEFS: BlockDef[] = [
     available: false,
     create: () => ({ id: newId(), type: "html" }),
   },
-  {
-    type: "form",
-    label: "Form",
-    description: "Coming soon",
-    icon: ClipboardList,
-    group: "advanced",
-    available: false,
-    create: () => ({ id: newId(), type: "form" }),
-  },
-  {
-    type: "store",
-    label: "Store",
-    description: "Coming soon",
-    icon: ShoppingBag,
-    group: "commerce",
-    available: false,
-    create: () => ({ id: newId(), type: "store" }),
-  },
-  {
-    type: "booking",
-    label: "Booking",
-    description: "Coming soon",
-    icon: CalendarClock,
-    group: "commerce",
-    available: false,
-    create: () => ({ id: newId(), type: "booking" }),
-  },
 ];
+
 
 // (Code icon now used by customCode block above)
 

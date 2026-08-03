@@ -1,3 +1,8 @@
+import {
+  ContactFormEditor,
+  MiniStoreEditor,
+  BookingEditor,
+} from "@/features/business/components/business-editors";
 import { useState } from "react";
 import { Plus, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -977,6 +982,9 @@ export function PropertyPanel() {
       {block.type === "embed" && <EmbedEditor block={block} set={set} />}
       {block.type === "customCode" && <CustomCodeEditor block={block} update={update} />}
       {block.type === "integration" && <IntegrationEditor block={block} update={update} />}
+      {block.type === "form" && <ContactFormEditor block={block} set={set} />}
+      {block.type === "store" && <MiniStoreEditor block={block} set={set} />}
+      {block.type === "booking" && <BookingEditor block={block} set={set} />}
 
 
 

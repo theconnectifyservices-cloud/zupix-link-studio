@@ -16,6 +16,7 @@ export function BlocksPanel({ onAdded }: { onAdded?: () => void } = {}) {
     { key: "social", label: "Social & Contact" },
     { key: "media", label: "Media" },
     { key: "advanced", label: "Advanced" },
+    { key: "business", label: "Business Tools" },
     { key: "commerce", label: "Commerce" },
   ] as const;
 
