@@ -46,7 +46,7 @@ export function BlocksPanel({ onAdded }: { onAdded?: () => void } = {}) {
 function PaletteTile({ def, onAdded }: { def: BlockDef; onAdded?: () => void }) {
 
   const addBlock = useBuilderStore((s) => s.addBlock);
-  const blocks = useBuilderStore((s) => s.blocks);
+  const blocks = useBuilderStore((s) => s.content.blocks);
   const { code: planCode } = usePlan();
   const access = useBlockAccess(def.type);
   const requiredPlan = requiredPlanForBlock(def.type);
@@ -76,7 +76,7 @@ function PaletteTile({ def, onAdded }: { def: BlockDef; onAdded?: () => void }) 
         if (
           def.type === "form" &&
           planCode === "udaan" &&
-          blocks.some((b) => b.type === "form")
+          (blocks ?? []).some((b) => b.type === "form")
         ) {
           toast.error("UDAAN includes 1 contact form. Upgrade to TEJAS for unlimited forms.");
           access.requestUpgrade();
