@@ -888,17 +888,40 @@ export type StoreItemKind =
   | "upi_qr"
   | "razorpay";
 
-export type StoreBadge = "none" | "new" | "popular" | "limited";
+export type StoreBadge =
+  | "none"
+  | "new"
+  | "hot"
+  | "best_seller"
+  | "limited"
+  | "sale"
+  | "popular";
+
+/** What the card's action button does when tapped. */
+export type StoreItemAction =
+  | "buy_now"
+  | "payment_link"
+  | "whatsapp"
+  | "download"
+  | "external";
 
 export interface StoreItem {
   id: string;
   kind: StoreItemKind;
   title: string;
+  /** Short description shown on the card. */
   description?: string;
+  /** Full description shown in the detail popup. */
+  longDescription?: string;
   image?: string;
   coverImage?: string;
+  /** Extra images shown in the detail popup. */
+  gallery?: string[];
   price?: number;
   oldPrice?: number;
+  /** Per-item currency symbol; falls back to the block currency. */
+  currency?: string;
+  action?: StoreItemAction;
   buttonLabel?: string;
   /** Buy Now / Payment Link / Razorpay link / external URL */
   url?: string;
@@ -910,21 +933,55 @@ export interface StoreItem {
   upiQrImage?: string;
   payeeName?: string;
   badge?: StoreBadge;
+  hidden?: boolean;
+  /** Catalog row this card was imported from (Dashboard → Mini Store). */
+  catalogId?: string;
 }
+
+export type StoreLayout =
+  | "grid"
+  | "list"
+  | "featured"
+  | "carousel"
+  | "modern"
+  | "glass"
+  | "compact";
 
 /** Mini Store — a few products/services, no cart/checkout/inventory. */
 export interface MiniStoreBlock extends BaseBlock {
   type: "store";
   title?: string;
+  subtitle?: string;
   description?: string;
-  layout?: "grid" | "list";
+  layout?: StoreLayout;
   columns?: 1 | 2 | 3;
   cardStyle?: BusinessCardStyle;
   radius?: number;
-  showPrice?: boolean;
+  /** Gap between cards, px. */
+  gap?: number;
+  /** Section padding, px. */
+  spacing?: number;
+  /** Section background (CSS colour or gradient). */
+  background?: string;
+  /** Divider under the section header. */
+  divider?: boolean;
   currency?: string;
+  showPrice?: boolean;
+  showOldPrice?: boolean;
+  showBadge?: boolean;
+  showDescription?: boolean;
+  showButton?: boolean;
+  showImage?: boolean;
+  shadow?: "none" | "sm" | "md" | "lg";
+  hoverAnimation?: "none" | "lift" | "zoom" | "glow";
+  entranceAnimation?: "none" | "fade" | "rise";
+  /** Open the product detail popup when a card is tapped. */
+  detailPopup?: boolean;
+  /** Show related products inside the popup. */
+  showRelated?: boolean;
   items: StoreItem[];
 }
+
 
 export type BookingKind = "appointment" | "meeting" | "consultation";
 
