@@ -88,7 +88,8 @@ export function trackBusiness(
     | "booking_request"
     | "form_submit"
     | "form_view"
-    | "form_open",
+    | "form_open"
+    | "product_view",
   opts: { blockId: string; blockType: string; label?: string },
 ) {
   getTracker()?.trackClick({
