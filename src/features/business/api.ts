@@ -23,9 +23,30 @@ export interface Lead {
   subject: string | null;
   message: string | null;
   fields: Record<string, unknown> | null;
+  attachments: LeadAttachmentRef[] | null;
   status: LeadStatus;
   source_url: string | null;
+  page_url: string | null;
+  ip_address: string | null;
+  browser: string | null;
+  device_type: string | null;
   created_at: string;
+}
+
+export interface LeadAttachmentRef {
+  name: string;
+  path: string;
+  type: string;
+  size: number;
+}
+
+/** Signed, short-lived URL for a visitor-uploaded attachment. */
+export async function attachmentUrl(path: string): Promise<string | null> {
+  const { data, error } = await supabase.storage
+    .from("form-uploads")
+    .createSignedUrl(path, 300);
+  if (error) return null;
+  return data?.signedUrl ?? null;
 }
 
 export interface Booking {

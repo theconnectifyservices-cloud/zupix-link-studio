@@ -5,7 +5,8 @@ import { BLOCK_DEFS, type BlockDef } from "../block-registry";
 import { useBuilderStore } from "../store";
 import { paletteDragId } from "./dnd-context";
 import { cn } from "@/lib/utils";
-import { useBlockAccess } from "@/features/subscription/hooks";
+import { toast } from "sonner";
+import { useBlockAccess, usePlan } from "@/features/subscription/hooks";
 import { PlanBadge } from "@/features/subscription/components/plan-badge";
 import { requiredPlanForBlock } from "@/features/subscription/plans";
 
@@ -45,6 +46,8 @@ export function BlocksPanel({ onAdded }: { onAdded?: () => void } = {}) {
 function PaletteTile({ def, onAdded }: { def: BlockDef; onAdded?: () => void }) {
 
   const addBlock = useBuilderStore((s) => s.addBlock);
+  const blocks = useBuilderStore((s) => s.content.blocks);
+  const { code: planCode } = usePlan();
   const access = useBlockAccess(def.type);
   const requiredPlan = requiredPlanForBlock(def.type);
   const isComingSoon = !def.available;
@@ -66,6 +69,16 @@ function PaletteTile({ def, onAdded }: { def: BlockDef; onAdded?: () => void }) 
       onClick={() => {
         if (isComingSoon) return;
         if (isLocked) {
+          access.requestUpgrade();
+          return;
+        }
+        // UDAAN allows a single Contact Form per page.
+        if (
+          def.type === "form" &&
+          planCode === "udaan" &&
+          (blocks ?? []).some((b) => b.type === "form")
+        ) {
+          toast.error("UDAAN includes 1 contact form. Upgrade to TEJAS for unlimited forms.");
           access.requestUpgrade();
           return;
         }

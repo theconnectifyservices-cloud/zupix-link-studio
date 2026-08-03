@@ -1,6 +1,15 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Download, Inbox, Mail, Phone, Search, Trash2 } from "lucide-react";
+import {
+  Download,
+  Inbox,
+  Mail,
+  MessageCircle,
+  Paperclip,
+  Phone,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -9,11 +18,13 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { PageLoader } from "@/shared/ui/page-loader";
 import { toast } from "sonner";
 import {
+  attachmentUrl,
   deleteLead,
   downloadCsv,
   listLeads,
   setLeadStatus,
   type Lead,
+  type LeadAttachmentRef,
   type LeadStatus,
 } from "../api";
 
@@ -111,6 +122,10 @@ export function LeadsDashboard({ workspaceId }: { workspaceId: string }) {
                   subject: l.subject,
                   message: l.message,
                   status: l.status,
+                  page_url: l.page_url ?? l.source_url,
+                  device: l.device_type,
+                  browser: l.browser,
+                  ip: l.ip_address,
                   extra: l.fields,
                 })),
               )
@@ -222,6 +237,15 @@ function LeadRow({
               ))}
             </div>
           )}
+          <Attachments items={lead.attachments ?? []} />
+          <div className="flex flex-wrap gap-3 text-[11px] text-muted-foreground">
+            {lead.device_type && <span>Device: {lead.device_type}</span>}
+            {lead.browser && <span>Browser: {lead.browser}</span>}
+            {lead.ip_address && <span>IP: {lead.ip_address}</span>}
+            {(lead.page_url || lead.source_url) && (
+              <span className="truncate">Page: {lead.page_url || lead.source_url}</span>
+            )}
+          </div>
           <div className="flex flex-wrap gap-1.5 pt-1">
             {(["new", "read", "replied", "archived"] as LeadStatus[]).map((s) => (
               <Button
@@ -234,6 +258,33 @@ function LeadRow({
                 {s}
               </Button>
             ))}
+            {lead.email && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  onStatus("replied");
+                  window.location.href = `mailto:${lead.email}?subject=${encodeURIComponent(
+                    `Re: ${lead.subject || lead.form_name || "Your enquiry"}`,
+                  )}`;
+                }}
+              >
+                <Mail className="mr-1 h-3.5 w-3.5" /> Email
+              </Button>
+            )}
+            {lead.phone && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  onStatus("replied");
+                  const num = lead.phone!.replace(/[^0-9]/g, "");
+                  window.open(`https://wa.me/${num}`, "_blank", "noopener,noreferrer");
+                }}
+              >
+                <MessageCircle className="mr-1 h-3.5 w-3.5" /> WhatsApp
+              </Button>
+            )}
             <Button size="sm" variant="ghost" className="text-destructive" onClick={onDelete}>
               <Trash2 className="mr-1 h-3.5 w-3.5" /> Delete
             </Button>
@@ -241,5 +292,31 @@ function LeadRow({
         </div>
       )}
     </Card>
+  );
+}
+
+function Attachments({ items }: { items: LeadAttachmentRef[] }) {
+  if (!items || items.length === 0) return null;
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {items.map((a) => (
+        <Button
+          key={a.path}
+          size="sm"
+          variant="outline"
+          onClick={async () => {
+            const url = await attachmentUrl(a.path);
+            if (!url) {
+              toast.error("Could not open the file");
+              return;
+            }
+            window.open(url, "_blank", "noopener,noreferrer");
+          }}
+        >
+          <Paperclip className="mr-1 h-3.5 w-3.5" />
+          {a.name}
+        </Button>
+      ))}
+    </div>
   );
 }
