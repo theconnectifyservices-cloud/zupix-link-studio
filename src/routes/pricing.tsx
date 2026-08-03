@@ -65,7 +65,7 @@ export const Route = createFileRoute("/pricing")({
 });
 
 function PricingPage() {
-  const [cycle, setCycle] = useState<"monthly" | "yearly">("yearly");
+  const [cycle, setCycle] = useBillingCycle();
   const [checkout, setCheckout] = useState<{ planCode: PlanCode } | null>(null);
   const session = useSession();
   const { workspace } = useCurrentWorkspace();
