@@ -451,13 +451,56 @@ const ITEM_KINDS: [string, string][] = [
   ["razorpay", "Razorpay payment"],
 ];
 
+const ITEM_ACTIONS: [string, string][] = [
+  ["buy_now", "Buy Now"],
+  ["payment_link", "Payment Link"],
+  ["whatsapp", "WhatsApp Order"],
+  ["download", "Download"],
+  ["external", "External URL"],
+];
+
+const ITEM_BADGES: [string, string][] = [
+  ["none", "No badge"],
+  ["new", "NEW"],
+  ["hot", "HOT"],
+  ["best_seller", "BEST SELLER"],
+  ["limited", "LIMITED"],
+  ["sale", "SALE"],
+  ["popular", "POPULAR"],
+];
+
 export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Set }) {
   const items = block.items ?? [];
+  const { code: plan, workspaceId } = usePlan();
+  const limit = maxStoreItems(plan);
+  const kindOptions = ITEM_KINDS.filter(([v]) => storeKindAllowed(plan, v as StoreItemKind));
+  const [importOpen, setImportOpen] = useState(false);
+
+  const catalogQ = useQuery({
+    queryKey: ["store", "items", workspaceId],
+    queryFn: () => listStoreItems(workspaceId!),
+    enabled: !!workspaceId && importOpen,
+  });
+
   const patch = (id: string, p: Partial<StoreItem>) =>
     set(
       "items",
       items.map((it) => (it.id === id ? { ...it, ...p } : it)),
     );
+
+  const move = (index: number, dir: -1 | 1) => {
+    const target = index + dir;
+    if (target < 0 || target >= items.length) return;
+    set("items", arrayMove(items, index, target));
+  };
+
+  const addItem = (item: StoreItem) => {
+    if (items.length >= limit) {
+      toast.error(`Your plan includes ${limit} store items. Upgrade to add more.`);
+      return;
+    }
+    set("items", [...items, item]);
+  };
 
   return (
     <div className="space-y-3">
@@ -474,9 +517,16 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
       </Field>
 
       <Section>Items</Section>
+      <p className="text-[11px] text-muted-foreground">
+        {items.length}
+        {Number.isFinite(limit) ? ` / ${limit}` : ""} items · {storeLimitLabel(plan)}
+      </p>
       <div className="space-y-3">
-        {items.map((it) => (
-          <div key={it.id} className="space-y-2 rounded-lg border p-2.5">
+        {items.map((it, index) => (
+          <div
+            key={it.id}
+            className={cn("space-y-2 rounded-lg border p-2.5", it.hidden && "opacity-60")}
+          >
             <div className="flex items-center gap-1.5">
               <Input
                 className="h-8"
@@ -487,7 +537,46 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
               <Button
                 variant="ghost"
                 size="icon"
+                className="h-8 w-8"
+                aria-label="Move up"
+                disabled={index === 0}
+                onClick={() => move(index, -1)}
+              >
+                <ArrowUp className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                aria-label="Move down"
+                disabled={index === items.length - 1}
+                onClick={() => move(index, 1)}
+              >
+                <ArrowDown className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                aria-label={it.hidden ? "Show item" : "Hide item"}
+                onClick={() => patch(it.id, { hidden: !it.hidden })}
+              >
+                {it.hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                aria-label="Duplicate item"
+                onClick={() => addItem({ ...it, id: uid(), title: `${it.title} (copy)` })}
+              >
+                <Copy className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
                 className="h-8 w-8 text-destructive"
+                aria-label="Delete item"
                 onClick={() =>
                   set(
                     "items",
@@ -501,7 +590,7 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
             <Select
               value={it.kind}
               onChange={(v) => patch(it.id, { kind: v as StoreItemKind })}
-              options={ITEM_KINDS}
+              options={kindOptions}
             />
             <Textarea
               rows={2}
@@ -509,10 +598,16 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
               onChange={(e) => patch(it.id, { description: e.target.value })}
               placeholder="Short description"
             />
+            <Textarea
+              rows={3}
+              value={it.longDescription ?? ""}
+              onChange={(e) => patch(it.id, { longDescription: e.target.value })}
+              placeholder="Full description (product popup)"
+            />
             <ImageField
               label="Image"
-              value={it.image}
-              onChange={(url) => patch(it.id, { image: url })}
+              value={it.coverImage ?? it.image}
+              onChange={(url) => patch(it.id, { coverImage: url, image: url })}
               previewAspect="4 / 3"
             />
             <div className="grid grid-cols-2 gap-2">
@@ -547,16 +642,18 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
               <Select
                 value={it.badge ?? "none"}
                 onChange={(v) => patch(it.id, { badge: v as StoreItem["badge"] })}
-                options={[
-                  ["none", "No badge"],
-                  ["new", "NEW"],
-                  ["popular", "POPULAR"],
-                  ["limited", "LIMITED"],
-                ]}
+                options={ITEM_BADGES}
               />
             </div>
+            <Field label="Action">
+              <Select
+                value={it.action ?? "buy_now"}
+                onChange={(v) => patch(it.id, { action: v as StoreItem["action"] })}
+                options={ITEM_ACTIONS}
+              />
+            </Field>
 
-            {it.kind === "digital" && (
+            {(it.action ?? "buy_now") === "download" && (
               <Input
                 className="h-9"
                 value={it.downloadUrl ?? ""}
@@ -564,7 +661,7 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
                 placeholder="Download link (PDF, ZIP, course…)"
               />
             )}
-            {it.kind === "whatsapp" && (
+            {(it.action ?? "buy_now") === "whatsapp" && (
               <>
                 <Input
                   className="h-9"
@@ -602,35 +699,83 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
                 />
               </>
             )}
-            {(it.kind === "payment_link" ||
-              it.kind === "buy_now" ||
-              it.kind === "razorpay" ||
-              it.kind === "service") && (
+            {["buy_now", "payment_link", "external"].includes(it.action ?? "buy_now") && (
               <Input
                 className="h-9"
                 value={it.url ?? ""}
                 onChange={(e) => patch(it.id, { url: e.target.value })}
-                placeholder={
-                  it.kind === "razorpay" ? "Razorpay payment link" : "Destination / payment URL"
-                }
+                placeholder="Destination / payment URL"
               />
             )}
           </div>
         ))}
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full"
-          onClick={() =>
-            set("items", [
-              ...items,
-              { id: uid(), kind: "digital", title: "New item", badge: "none" } as StoreItem,
-            ])
-          }
-        >
-          <Plus className="mr-1 h-3.5 w-3.5" /> Add item
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              addItem({
+                id: uid(),
+                kind: kindOptions[0]?.[0] as StoreItemKind,
+                title: "New item",
+                badge: "none",
+                action: "buy_now",
+              } as StoreItem)
+            }
+          >
+            <Plus className="mr-1 h-3.5 w-3.5" /> Add item
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setImportOpen(true)}>
+            <ShoppingBag className="mr-1 h-3.5 w-3.5" /> From catalog
+          </Button>
+        </div>
       </div>
+
+      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+        <DialogContent className="max-h-[80vh] max-w-md overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add from your catalog</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2">
+            {(catalogQ.data ?? []).length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No catalog items yet. Create them in Dashboard → Mini Store to reuse them across
+                bio pages.
+              </p>
+            ) : (
+              (catalogQ.data ?? []).map((row) => (
+                <button
+                  key={row.id}
+                  type="button"
+                  className="flex w-full items-center gap-3 rounded-lg border p-2 text-left hover:bg-accent"
+                  onClick={() => {
+                    addItem(catalogToBlockItem(row));
+                    setImportOpen(false);
+                  }}
+                >
+                  <div className="h-10 w-10 shrink-0 overflow-hidden rounded bg-muted">
+                    {row.cover_image && (
+                      <img
+                        src={row.cover_image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{row.title}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {row.price != null ? `${row.currency}${row.price}` : row.kind}
+                    </p>
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Section>Design</Section>
       <Field label="Layout">
@@ -640,6 +785,11 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
           options={[
             ["grid", "Grid"],
             ["list", "List"],
+            ["featured", "Featured"],
+            ["carousel", "Carousel"],
+            ["modern", "Modern"],
+            ["glass", "Glass"],
+            ["compact", "Compact"],
           ]}
         />
       </Field>
@@ -664,21 +814,103 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
       <Field label="Currency symbol">
         <Input value={block.currency ?? "₹"} onChange={(e) => set("currency", e.target.value)} />
       </Field>
+      <div className="grid grid-cols-2 gap-2">
+        <Field label="Corner radius">
+          <Input
+            type="number"
+            value={block.radius ?? 18}
+            onChange={(e) => set("radius", Number(e.target.value))}
+          />
+        </Field>
+        <Field label="Card gap">
+          <Input
+            type="number"
+            value={block.gap ?? 12}
+            onChange={(e) => set("gap", Number(e.target.value))}
+          />
+        </Field>
+      </div>
+      <Field label="Shadow">
+        <Select
+          value={block.shadow ?? "md"}
+          onChange={(v) => set("shadow", v)}
+          options={[
+            ["none", "None"],
+            ["sm", "Soft"],
+            ["md", "Medium"],
+            ["lg", "Large"],
+          ]}
+        />
+      </Field>
+      <Field label="Hover animation">
+        <Select
+          value={block.hoverAnimation ?? "lift"}
+          onChange={(v) => set("hoverAnimation", v)}
+          options={[
+            ["none", "None"],
+            ["lift", "Lift"],
+            ["zoom", "Zoom"],
+            ["glow", "Glow"],
+          ]}
+        />
+      </Field>
+      <Field label="Entrance animation">
+        <Select
+          value={block.entranceAnimation ?? "rise"}
+          onChange={(v) => set("entranceAnimation", v)}
+          options={[
+            ["none", "None"],
+            ["fade", "Fade"],
+            ["rise", "Rise"],
+          ]}
+        />
+      </Field>
+
+      <Section>Display</Section>
+      <Toggle
+        label="Show images"
+        checked={block.showImage !== false}
+        onChange={(v) => set("showImage", v)}
+      />
       <Toggle
         label="Show prices"
         checked={block.showPrice !== false}
         onChange={(v) => set("showPrice", v)}
       />
-      <Field label="Corner radius">
-        <Input
-          type="number"
-          value={block.radius ?? 18}
-          onChange={(e) => set("radius", Number(e.target.value))}
-        />
-      </Field>
+      <Toggle
+        label="Show old price"
+        checked={block.showOldPrice !== false}
+        onChange={(v) => set("showOldPrice", v)}
+      />
+      <Toggle
+        label="Show badges"
+        checked={block.showBadge !== false}
+        onChange={(v) => set("showBadge", v)}
+      />
+      <Toggle
+        label="Show descriptions"
+        checked={block.showDescription !== false}
+        onChange={(v) => set("showDescription", v)}
+      />
+      <Toggle
+        label="Show buttons"
+        checked={block.showButton !== false}
+        onChange={(v) => set("showButton", v)}
+      />
+      <Toggle
+        label="Product detail popup"
+        checked={block.detailPopup !== false}
+        onChange={(v) => set("detailPopup", v)}
+      />
+      <Toggle
+        label="Related products in popup"
+        checked={block.showRelated !== false}
+        onChange={(v) => set("showRelated", v)}
+      />
     </div>
   );
 }
+
 
 // ── Booking ─────────────────────────────────────────────────────────────
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
