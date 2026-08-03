@@ -58,7 +58,7 @@ async function post(url: string, body: unknown): Promise<{ ok: boolean; error?: 
       credentials: "omit",
       cache: "no-store",
     });
-    if (!res.ok) return { ok: false, error: await res.text() };
+    if (!res.ok) return { ok: false, error: (await res.text()).trim() };
     return { ok: true };
   } catch (e) {
     return { ok: false, error: (e as Error).message };
@@ -86,7 +86,9 @@ export function trackBusiness(
     | "payment_link_click"
     | "whatsapp_order"
     | "booking_request"
-    | "form_submit",
+    | "form_submit"
+    | "form_view"
+    | "form_open",
   opts: { blockId: string; blockType: string; label?: string },
 ) {
   getTracker()?.trackClick({
