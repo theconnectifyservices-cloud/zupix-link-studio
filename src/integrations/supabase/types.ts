@@ -6621,6 +6621,7 @@ export type Database = {
       }
       user_preferences: {
         Row: {
+          billing_cycle: string
           created_at: string
           date_format: string
           language: string
@@ -6634,6 +6635,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          billing_cycle?: string
           created_at?: string
           date_format?: string
           language?: string
@@ -6647,6 +6649,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          billing_cycle?: string
           created_at?: string
           date_format?: string
           language?: string
