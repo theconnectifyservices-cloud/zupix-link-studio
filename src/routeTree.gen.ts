@@ -53,6 +53,7 @@ import { Route as AuthenticatedAppMySubscriptionRouteImport } from './routes/_au
 import { Route as AuthenticatedAppMonetizationRouteImport } from './routes/_authenticated.app.monetization'
 import { Route as AuthenticatedAppMediaRouteImport } from './routes/_authenticated.app.media'
 import { Route as AuthenticatedAppLicenseRouteImport } from './routes/_authenticated.app.license'
+import { Route as AuthenticatedAppLeadsRouteImport } from './routes/_authenticated.app.leads'
 import { Route as AuthenticatedAppLaunchRouteImport } from './routes/_authenticated.app.launch'
 import { Route as AuthenticatedAppIntegrationsRouteImport } from './routes/_authenticated.app.integrations'
 import { Route as AuthenticatedAppInfrastructureRouteImport } from './routes/_authenticated.app.infrastructure'
@@ -63,6 +64,7 @@ import { Route as AuthenticatedAppConversionsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAppCommunicationsRouteImport } from './routes/_authenticated.app.communications'
 import { Route as AuthenticatedAppChangelogRouteImport } from './routes/_authenticated/app/changelog'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated.app.campaigns'
+import { Route as AuthenticatedAppBookingsRouteImport } from './routes/_authenticated.app.bookings'
 import { Route as AuthenticatedAppBillingRouteImport } from './routes/_authenticated.app.billing'
 import { Route as AuthenticatedAppAutomationRouteImport } from './routes/_authenticated.app.automation'
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated.app.analytics'
@@ -331,6 +333,11 @@ const AuthenticatedAppLicenseRoute = AuthenticatedAppLicenseRouteImport.update({
   path: '/license',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppLeadsRoute = AuthenticatedAppLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppLaunchRoute = AuthenticatedAppLaunchRouteImport.update({
   id: '/launch',
   path: '/launch',
@@ -386,6 +393,12 @@ const AuthenticatedAppCampaignsRoute =
   AuthenticatedAppCampaignsRouteImport.update({
     id: '/campaigns',
     path: '/campaigns',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppBookingsRoute =
+  AuthenticatedAppBookingsRouteImport.update({
+    id: '/bookings',
+    path: '/bookings',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppBillingRoute = AuthenticatedAppBillingRouteImport.update({
@@ -625,6 +638,7 @@ export interface FileRoutesByFullPath {
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
   '/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
+  '/app/bookings': typeof AuthenticatedAppBookingsRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
@@ -635,6 +649,7 @@ export interface FileRoutesByFullPath {
   '/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/launch': typeof AuthenticatedAppLaunchRoute
+  '/app/leads': typeof AuthenticatedAppLeadsRoute
   '/app/license': typeof AuthenticatedAppLicenseRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
@@ -713,6 +728,7 @@ export interface FileRoutesByTo {
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/automation': typeof AuthenticatedAppAutomationRoute
   '/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
+  '/app/bookings': typeof AuthenticatedAppBookingsRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
@@ -723,6 +739,7 @@ export interface FileRoutesByTo {
   '/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/app/launch': typeof AuthenticatedAppLaunchRoute
+  '/app/leads': typeof AuthenticatedAppLeadsRoute
   '/app/license': typeof AuthenticatedAppLicenseRoute
   '/app/media': typeof AuthenticatedAppMediaRoute
   '/app/monetization': typeof AuthenticatedAppMonetizationRoute
@@ -805,6 +822,7 @@ export interface FileRoutesById {
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/_authenticated/app/automation': typeof AuthenticatedAppAutomationRoute
   '/_authenticated/app/billing': typeof AuthenticatedAppBillingRouteWithChildren
+  '/_authenticated/app/bookings': typeof AuthenticatedAppBookingsRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/_authenticated/app/communications': typeof AuthenticatedAppCommunicationsRoute
@@ -815,6 +833,7 @@ export interface FileRoutesById {
   '/_authenticated/app/infrastructure': typeof AuthenticatedAppInfrastructureRoute
   '/_authenticated/app/integrations': typeof AuthenticatedAppIntegrationsRoute
   '/_authenticated/app/launch': typeof AuthenticatedAppLaunchRoute
+  '/_authenticated/app/leads': typeof AuthenticatedAppLeadsRoute
   '/_authenticated/app/license': typeof AuthenticatedAppLicenseRoute
   '/_authenticated/app/media': typeof AuthenticatedAppMediaRoute
   '/_authenticated/app/monetization': typeof AuthenticatedAppMonetizationRoute
@@ -897,6 +916,7 @@ export interface FileRouteTypes {
     | '/app/analytics'
     | '/app/automation'
     | '/app/billing'
+    | '/app/bookings'
     | '/app/campaigns'
     | '/app/changelog'
     | '/app/communications'
@@ -907,6 +927,7 @@ export interface FileRouteTypes {
     | '/app/infrastructure'
     | '/app/integrations'
     | '/app/launch'
+    | '/app/leads'
     | '/app/license'
     | '/app/media'
     | '/app/monetization'
@@ -985,6 +1006,7 @@ export interface FileRouteTypes {
     | '/app/analytics'
     | '/app/automation'
     | '/app/billing'
+    | '/app/bookings'
     | '/app/campaigns'
     | '/app/changelog'
     | '/app/communications'
@@ -995,6 +1017,7 @@ export interface FileRouteTypes {
     | '/app/infrastructure'
     | '/app/integrations'
     | '/app/launch'
+    | '/app/leads'
     | '/app/license'
     | '/app/media'
     | '/app/monetization'
@@ -1076,6 +1099,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/analytics'
     | '/_authenticated/app/automation'
     | '/_authenticated/app/billing'
+    | '/_authenticated/app/bookings'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/changelog'
     | '/_authenticated/app/communications'
@@ -1086,6 +1110,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/infrastructure'
     | '/_authenticated/app/integrations'
     | '/_authenticated/app/launch'
+    | '/_authenticated/app/leads'
     | '/_authenticated/app/license'
     | '/_authenticated/app/media'
     | '/_authenticated/app/monetization'
@@ -1472,6 +1497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppLicenseRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/leads': {
+      id: '/_authenticated/app/leads'
+      path: '/leads'
+      fullPath: '/app/leads'
+      preLoaderRoute: typeof AuthenticatedAppLeadsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/launch': {
       id: '/_authenticated/app/launch'
       path: '/launch'
@@ -1540,6 +1572,13 @@ declare module '@tanstack/react-router' {
       path: '/campaigns'
       fullPath: '/app/campaigns'
       preLoaderRoute: typeof AuthenticatedAppCampaignsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/bookings': {
+      id: '/_authenticated/app/bookings'
+      path: '/bookings'
+      fullPath: '/app/bookings'
+      preLoaderRoute: typeof AuthenticatedAppBookingsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/billing': {
@@ -1883,6 +1922,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
   AuthenticatedAppAutomationRoute: typeof AuthenticatedAppAutomationRoute
   AuthenticatedAppBillingRoute: typeof AuthenticatedAppBillingRouteWithChildren
+  AuthenticatedAppBookingsRoute: typeof AuthenticatedAppBookingsRoute
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppChangelogRoute: typeof AuthenticatedAppChangelogRoute
   AuthenticatedAppCommunicationsRoute: typeof AuthenticatedAppCommunicationsRoute
@@ -1893,6 +1933,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppInfrastructureRoute: typeof AuthenticatedAppInfrastructureRoute
   AuthenticatedAppIntegrationsRoute: typeof AuthenticatedAppIntegrationsRoute
   AuthenticatedAppLaunchRoute: typeof AuthenticatedAppLaunchRoute
+  AuthenticatedAppLeadsRoute: typeof AuthenticatedAppLeadsRoute
   AuthenticatedAppLicenseRoute: typeof AuthenticatedAppLicenseRoute
   AuthenticatedAppMediaRoute: typeof AuthenticatedAppMediaRoute
   AuthenticatedAppMonetizationRoute: typeof AuthenticatedAppMonetizationRoute
@@ -1920,6 +1961,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
   AuthenticatedAppAutomationRoute: AuthenticatedAppAutomationRoute,
   AuthenticatedAppBillingRoute: AuthenticatedAppBillingRouteWithChildren,
+  AuthenticatedAppBookingsRoute: AuthenticatedAppBookingsRoute,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppChangelogRoute: AuthenticatedAppChangelogRoute,
   AuthenticatedAppCommunicationsRoute: AuthenticatedAppCommunicationsRoute,
@@ -1930,6 +1972,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppInfrastructureRoute: AuthenticatedAppInfrastructureRoute,
   AuthenticatedAppIntegrationsRoute: AuthenticatedAppIntegrationsRoute,
   AuthenticatedAppLaunchRoute: AuthenticatedAppLaunchRoute,
+  AuthenticatedAppLeadsRoute: AuthenticatedAppLeadsRoute,
   AuthenticatedAppLicenseRoute: AuthenticatedAppLicenseRoute,
   AuthenticatedAppMediaRoute: AuthenticatedAppMediaRoute,
   AuthenticatedAppMonetizationRoute: AuthenticatedAppMonetizationRoute,

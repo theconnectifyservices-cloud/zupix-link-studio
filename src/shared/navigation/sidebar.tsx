@@ -66,6 +66,8 @@ const appItems: Item[] = [
   { icon: LayoutTemplate, label: "Templates", href: "/app/templates", soon: true },
   { icon: BarChart3, label: "Analytics", href: "/app/analytics", soon: true },
   { icon: Target, label: "Conversions", href: "/app/conversions" },
+  { icon: Inbox, label: "Leads", href: "/app/leads" },
+  { icon: CalendarClock, label: "Bookings", href: "/app/bookings" },
   { icon: Megaphone, label: "Campaigns", href: "/app/campaigns" },
   { icon: Globe, label: "Domains", href: "/app/domains" },
   { icon: Radar, label: "Tracking Center", href: "/app/tracking" },
