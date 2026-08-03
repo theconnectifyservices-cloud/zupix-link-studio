@@ -20,14 +20,36 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Plus, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Copy,
+  Eye,
+  EyeOff,
+  GripVertical,
+  Plus,
+  ShoppingBag,
+  Trash2,
+} from "lucide-react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ImageField } from "@/features/builder/components/image-field";
+import { usePlan } from "@/features/subscription/hooks";
+import { catalogToBlockItem, listStoreItems } from "../store-api";
+import { maxStoreItems, storeKindAllowed, storeLimitLabel } from "../store-plans";
 import type {
   BookingBlock,
   ContactFormBlock,
