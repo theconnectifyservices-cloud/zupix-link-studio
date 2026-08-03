@@ -40,6 +40,7 @@ import { Route as AuthenticatedAppWhatsNewRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppTrackingRouteImport } from './routes/_authenticated.app.tracking'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated.app.templates'
 import { Route as AuthenticatedAppTeamRouteImport } from './routes/_authenticated.app.team'
+import { Route as AuthenticatedAppStoreRouteImport } from './routes/_authenticated.app.store'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated.app.settings'
 import { Route as AuthenticatedAppSecurityRouteImport } from './routes/_authenticated.app.security'
 import { Route as AuthenticatedAppResellerRouteImport } from './routes/_authenticated.app.reseller'
@@ -257,6 +258,11 @@ const AuthenticatedAppTemplatesRoute =
 const AuthenticatedAppTeamRoute = AuthenticatedAppTeamRouteImport.update({
   id: '/team',
   path: '/team',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppStoreRoute = AuthenticatedAppStoreRouteImport.update({
+  id: '/store',
+  path: '/store',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
 const AuthenticatedAppSettingsRoute =
@@ -663,6 +669,7 @@ export interface FileRoutesByFullPath {
   '/app/reseller': typeof AuthenticatedAppResellerRoute
   '/app/security': typeof AuthenticatedAppSecurityRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
+  '/app/store': typeof AuthenticatedAppStoreRoute
   '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
@@ -753,6 +760,7 @@ export interface FileRoutesByTo {
   '/app/reseller': typeof AuthenticatedAppResellerRoute
   '/app/security': typeof AuthenticatedAppSecurityRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
+  '/app/store': typeof AuthenticatedAppStoreRoute
   '/app/team': typeof AuthenticatedAppTeamRoute
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/tracking': typeof AuthenticatedAppTrackingRoute
@@ -847,6 +855,7 @@ export interface FileRoutesById {
   '/_authenticated/app/reseller': typeof AuthenticatedAppResellerRoute
   '/_authenticated/app/security': typeof AuthenticatedAppSecurityRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
+  '/_authenticated/app/store': typeof AuthenticatedAppStoreRoute
   '/_authenticated/app/team': typeof AuthenticatedAppTeamRoute
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/tracking': typeof AuthenticatedAppTrackingRoute
@@ -941,6 +950,7 @@ export interface FileRouteTypes {
     | '/app/reseller'
     | '/app/security'
     | '/app/settings'
+    | '/app/store'
     | '/app/team'
     | '/app/templates'
     | '/app/tracking'
@@ -1031,6 +1041,7 @@ export interface FileRouteTypes {
     | '/app/reseller'
     | '/app/security'
     | '/app/settings'
+    | '/app/store'
     | '/app/team'
     | '/app/templates'
     | '/app/tracking'
@@ -1124,6 +1135,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/reseller'
     | '/_authenticated/app/security'
     | '/_authenticated/app/settings'
+    | '/_authenticated/app/store'
     | '/_authenticated/app/team'
     | '/_authenticated/app/templates'
     | '/_authenticated/app/tracking'
@@ -1404,6 +1416,13 @@ declare module '@tanstack/react-router' {
       path: '/team'
       fullPath: '/app/team'
       preLoaderRoute: typeof AuthenticatedAppTeamRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/store': {
+      id: '/_authenticated/app/store'
+      path: '/store'
+      fullPath: '/app/store'
+      preLoaderRoute: typeof AuthenticatedAppStoreRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/settings': {
@@ -1947,6 +1966,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppResellerRoute: typeof AuthenticatedAppResellerRoute
   AuthenticatedAppSecurityRoute: typeof AuthenticatedAppSecurityRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRouteWithChildren
+  AuthenticatedAppStoreRoute: typeof AuthenticatedAppStoreRoute
   AuthenticatedAppTeamRoute: typeof AuthenticatedAppTeamRoute
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppTrackingRoute: typeof AuthenticatedAppTrackingRoute
@@ -1986,6 +2006,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppResellerRoute: AuthenticatedAppResellerRoute,
   AuthenticatedAppSecurityRoute: AuthenticatedAppSecurityRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRouteWithChildren,
+  AuthenticatedAppStoreRoute: AuthenticatedAppStoreRoute,
   AuthenticatedAppTeamRoute: AuthenticatedAppTeamRoute,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppTrackingRoute: AuthenticatedAppTrackingRoute,
