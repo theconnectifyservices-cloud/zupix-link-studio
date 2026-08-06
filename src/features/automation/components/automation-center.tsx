@@ -131,7 +131,12 @@ export function AutomationCenter({ workspaceId, userId }: Props) {
         <TabsTrigger value="timeline"><History className="mr-2 h-4 w-4" />Timeline</TabsTrigger>
         <TabsTrigger value="keys"><KeyRound className="mr-2 h-4 w-4" />API Keys</TabsTrigger>
         <TabsTrigger value="webhooks"><WebhookIcon className="mr-2 h-4 w-4" />Webhooks</TabsTrigger>
+        <TabsTrigger value="deliveries"><Send className="mr-2 h-4 w-4" />Deliveries</TabsTrigger>
+        <TabsTrigger value="logs"><ScrollText className="mr-2 h-4 w-4" />API Logs</TabsTrigger>
+        <TabsTrigger value="providers"><Plug className="mr-2 h-4 w-4" />Providers</TabsTrigger>
+        <TabsTrigger value="docs"><BookOpen className="mr-2 h-4 w-4" />Docs</TabsTrigger>
         <TabsTrigger value="settings"><Settings className="mr-2 h-4 w-4" />Settings</TabsTrigger>
+
 
       </TabsList>
 
