@@ -30,7 +30,8 @@ export type Permission =
   | "can_manage_qa"
   | "can_manage_operations"
   | "can_manage_launch"
-  | "can_manage_billing";
+  | "can_manage_billing"
+  | "can_manage_monitoring";
 
 const CUSTOMER_PERMS: Permission[] = [
   "can_view_dashboard",
