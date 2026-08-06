@@ -24,6 +24,13 @@ export function useActivityLogs(filters: any) {
   });
 }
 
+export function useSecurityEvents(filters: any) {
+  return useQuery({
+    queryKey: ["admin", "security-events", filters],
+    queryFn: () => adminMonitoringApi.getSecurityEvents(filters),
+  });
+}
+
 export function useBackupHistory() {
   return useQuery({
     queryKey: ["admin", "backup-history"],
