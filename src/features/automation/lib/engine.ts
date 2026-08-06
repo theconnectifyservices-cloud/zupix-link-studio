@@ -33,6 +33,28 @@ export async function processTrigger(payload: TriggerPayload): Promise<void> {
     created_at: new Date().toISOString()
   });
 
+  // 1.5. Auto-collect customer if applicable
+  if (trigger === "form_submission" || trigger === "booking_created" || trigger === "payment_success" || trigger === "store_order_new") {
+    const customerName = metadata.name || metadata.customer_name || "Visitor";
+    const customerEmail = metadata.email;
+    const customerPhone = metadata.phone;
+    
+    await trackCustomerActivity({
+      workspaceId: workspace_id,
+      name: customerName,
+      email: customerEmail,
+      phone: customerPhone,
+      source: trigger.split('_')[0].replace(/\./g, ' '),
+      activity: {
+        type: trigger,
+        title: title,
+        description: description,
+        metadata: metadata
+      }
+    });
+  }
+
+
   // 2. Find active rules for this trigger
   const { data: rules } = await supabase
     .from("automation_rules" as any)

@@ -17,8 +17,11 @@ import {
   History,
   Tag as TagIcon,
   ChevronRight,
-  FileText
+  FileText,
+  Gem,
+  Activity
 } from "lucide-react";
+
 import { format } from "date-fns";
 
 import {
@@ -91,8 +94,48 @@ export function CustomerCenter({ workspaceId }: { workspaceId: string }) {
             </div>
           </CardContent>
         </Card>
-        {/* Other stat cards... */}
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">New (30d)</p>
+                <h3 className="text-2xl font-bold">{stats?.new_customers || 0}</h3>
+              </div>
+              <TrendingUp className="h-8 w-8 text-green-500 opacity-20" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Top Buyers</p>
+                <h3 className="text-2xl font-bold">{stats?.top_buyers?.length || 0}</h3>
+              </div>
+              <Gem className="h-8 w-8 text-amber-500 opacity-20" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Recent Activity</p>
+                <h3 className="text-2xl font-bold">{customers.filter(c => {
+                  const activityDate = new Date(c.latest_activity).getTime();
+                  const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+                  return activityDate > oneDayAgo;
+                }).length}</h3>
+              </div>
+              <Activity className="h-8 w-8 text-blue-500 opacity-20" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
