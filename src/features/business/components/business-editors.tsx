@@ -964,7 +964,7 @@ export function BookingEditor({ block, set }: { block: BookingBlock; set: Set })
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7 text-destructive"
-                onClick={() => set("services", services.filter((x) => x.id !== s.id))}
+                onClick={() => set("services", services.filter((x: any) => x.id !== s.id))}
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
@@ -975,7 +975,7 @@ export function BookingEditor({ block, set }: { block: BookingBlock; set: Set })
                 onChange={(e) =>
                   set(
                     "services",
-                    services.map((x) => (x.id === s.id ? { ...x, title: e.target.value } : x))
+                    services.map((x: any) => (x.id === s.id ? { ...x, title: e.target.value } : x))
                   )
                 }
               />
@@ -987,7 +987,7 @@ export function BookingEditor({ block, set }: { block: BookingBlock; set: Set })
                 onChange={(e) =>
                   set(
                     "services",
-                    services.map((x) => (x.id === s.id ? { ...x, durationMin: Number(e.target.value) } : x))
+                    services.map((x: any) => (x.id === s.id ? { ...x, durationMin: Number(e.target.value) } : x))
                   )
                 }
               />
