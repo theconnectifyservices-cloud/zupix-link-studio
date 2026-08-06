@@ -8,7 +8,6 @@ export const adminCenterApi = {
     if (filters.query) {
       query = query.or(`full_name.ilike.%${filters.query}%,email.ilike.%${filters.query}%`);
     }
-    // Plan filtering logic depends on how plans are stored, assuming they are in profiles for now
     if (filters.plan) query = query.eq("subscription_plan", filters.plan);
     if (filters.status) query = query.eq("status", filters.status);
     
@@ -85,8 +84,6 @@ export const adminCenterApi = {
   },
 
   getSubscriptions: async (filters: { query?: string; status?: string; limit?: number; offset?: number }) => {
-    // Assuming subscriptions are tracked in profiles or a dedicated table. 
-    // If profiles has the data:
     let query = (supabase as any).from("profiles").select("id, full_name, email, subscription_plan, subscription_status, subscription_expiry, last_payment_amount", { count: "exact" });
     
     if (filters.query) {

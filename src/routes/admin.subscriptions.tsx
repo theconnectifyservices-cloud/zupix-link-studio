@@ -4,7 +4,7 @@ import { useAdminSubscriptions } from "@/features/admin/hooks/use-admin-center";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, CreditCard, Clock, CheckCircle2, AlertCircle, Loader2 } from "lucide-range-lucide-react";
+import { Search, CreditCard, Clock, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/admin/subscriptions")({
