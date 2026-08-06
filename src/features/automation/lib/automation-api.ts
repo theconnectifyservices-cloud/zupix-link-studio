@@ -7,7 +7,8 @@ import {
   AutomationTrigger,
   AutomationAction,
   NotificationType
-} from "./types";
+} from "../types";
+
 
 // --- Rules ---
 
