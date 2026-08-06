@@ -16,7 +16,18 @@ import {
   Send,
   Check,
   X,
+  Bell,
+  Zap,
+  History,
+  Settings,
+  Mail,
+  MessageSquare,
+  AlertCircle,
+  ExternalLink,
+  ChevronRight,
+  Filter,
 } from "lucide-react";
+
 import {
   Card,
   CardHeader,
