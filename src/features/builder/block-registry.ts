@@ -215,10 +215,10 @@ export const BLOCK_DEFS: BlockDef[] = [
   {
     type: "socialFeed",
     label: "Social feed",
-    description: "Coming soon",
+    description: "Instagram & TikTok feeds",
     icon: Rss,
     group: "social",
-    available: false,
+    available: true,
     create: () => ({
       id: newId(),
       type: "socialFeed",
@@ -638,7 +638,7 @@ export const BLOCK_DEFS: BlockDef[] = [
   {
     type: "store",
     label: "Mini Store",
-    description: "Sell a few products or services",
+    description: "Sell products & services",
     icon: ShoppingBag,
     group: "business",
     available: true,
@@ -681,7 +681,7 @@ export const BLOCK_DEFS: BlockDef[] = [
   {
     type: "booking",
     label: "Bookings Pro",
-    description: "Enterprise appointment system",
+    description: "Appointment system",
     icon: CalendarClock,
     group: "business",
     available: true,
@@ -718,11 +718,11 @@ export const BLOCK_DEFS: BlockDef[] = [
   // Reserved / later phases
   {
     type: "customCode",
-    label: "HTML",
-    description: "Coming soon",
+    label: "HTML Builder",
+    description: "Visual HTML & CSS",
     icon: FileCode,
     group: "advanced",
-    available: false,
+    available: true,
     create: () => ({ id: newId(), type: "customCode" } as CustomCodeBlock),
   },
 ];

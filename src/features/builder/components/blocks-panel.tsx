@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useBlockAccess, usePlan } from "@/features/subscription/hooks";
 import { PlanBadge } from "@/features/subscription/components/plan-badge";
-import { requiredPlanForBlock } from "@/features/subscription/plans";
+import { requiredPlanForBlock, PLANS } from "@/features/subscription/plans";
 
 /** Add-blocks palette. Click to append, or drag onto the canvas. */
 export function BlocksPanel({ onAdded }: { onAdded?: () => void } = {}) {
@@ -105,15 +105,14 @@ function PaletteTile({ def, onAdded }: { def: BlockDef; onAdded?: () => void }) 
         >
           {isLocked ? <Lock className="h-3.5 w-3.5" /> : <Icon className="h-4 w-4" />}
         </div>
-        {requiredPlan && requiredPlan !== "udaan" && !isComingSoon && (
+        {requiredPlan && requiredPlan !== "udaan" && (
           <PlanBadge plan={requiredPlan} />
         )}
-        {isComingSoon && <PlanBadge plan="shikhar" />}
       </div>
       <div className="min-w-0">
         <div className="truncate text-sm font-medium">{def.label}</div>
         <div className="truncate text-[11px] text-muted-foreground">
-          {isComingSoon ? "Coming soon" : def.description}
+          {isLocked ? `Available in ${PLANS[requiredPlan || "shikhar"].name} Plan` : def.description}
         </div>
       </div>
     </button>

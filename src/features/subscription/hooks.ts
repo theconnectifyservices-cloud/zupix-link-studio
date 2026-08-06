@@ -70,11 +70,11 @@ export function useFeature(feature: FeatureKey): FeatureAccess {
       const defaults: Record<string, { name: string; benefits: string[] }> = {
         "block.store": { 
           name: "Mini Store", 
-          benefits: ["Sell digital products & services", "Accept payments via UPI & Razorpay", "Inventory management", "Order tracking"] 
+          benefits: ["Sell digital products & services", "Accept payments via UPI & Razorpay", "Inventory management", "Order tracking", "WhatsApp order automation", "Direct payment links"] 
         },
         "block.bookings": { 
           name: "Bookings Pro", 
-          benefits: ["Schedule appointments", "Google Calendar sync", "Automated reminders", "Pre-payment for sessions"] 
+          benefits: ["Schedule appointments", "Google Calendar sync", "Automated reminders", "Pre-payment for sessions", "Professional booking widget"] 
         },
         "remove_branding": { 
           name: "Remove ZUPIX Branding", 
