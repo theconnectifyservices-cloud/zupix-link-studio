@@ -63,8 +63,7 @@ import type { Template, TemplateCategoryId, TemplateStyle, TemplateTier } from "
 import { templateTier } from "../types";
 import { MiniPreview } from "./mini-preview";
 import { PreviewDialog } from "./preview-dialog";
-import { PremiumLockModal } from "./premium-lock-modal";
-import { usePlan } from "@/features/subscription/hooks";
+import { usePlan, useUpgradeModal } from "@/features/subscription/hooks";
 import { canAccessTemplate } from "../access";
 
 type Mode = "browse" | "apply";
@@ -83,6 +82,7 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
   const favs = useFavorites();
   const recent = useRecent();
   const { code: planCode } = usePlan();
+  const { openFeatureDialog } = useUpgradeModal();
 
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<"all" | TemplateCategoryId>("all");
@@ -135,7 +135,19 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
   function handleApply(t: Template, replaceContent: boolean) {
     if (!onApply) return;
     if (!canAccessTemplate(planCode, t)) {
-      setLockFor({ name: t.name, tier: templateTier(t) });
+      const tier = templateTier(t);
+      openFeatureDialog({
+        feature: tier === "enterprise" ? "block.store" : "remove_branding", // Using existing keys for plan mapping
+        suggestedPlan: tier === "enterprise" ? "shikhar" : "tejas",
+        featureName: `${t.name} Premium Template`,
+        reason: `The ${t.name} template is part of our ${tier === "enterprise" ? "Shikhar" : "Tejas"} collection.`,
+        benefits: [
+          "Professional high-conversion design",
+          "Advanced layout & animations",
+          "Premium typography included",
+          "Mobile-first responsive optimization"
+        ]
+      });
       return;
     }
     onApply(t, { replaceContent });
@@ -144,7 +156,18 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
 
   function handleCardClick(t: Template) {
     if (!canAccessTemplate(planCode, t)) {
-      setLockFor({ name: t.name, tier: templateTier(t) });
+      const tier = templateTier(t);
+      openFeatureDialog({
+        feature: tier === "enterprise" ? "block.store" : "remove_branding",
+        suggestedPlan: tier === "enterprise" ? "shikhar" : "tejas",
+        featureName: `${t.name} Premium Template`,
+        benefits: [
+          "Professional high-conversion design",
+          "Advanced layout & animations",
+          "Premium typography included",
+          "Mobile-first responsive optimization"
+        ]
+      });
       return;
     }
     setPreviewId(t.id);
@@ -290,7 +313,20 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
                 favorite={favs.has(t.id)}
                 onToggleFavorite={() => favs.toggle(t.id)}
                 onOpen={() => handleCardClick(t)}
-                onLocked={() => setLockFor({ name: t.name, tier: templateTier(t) })}
+                onLocked={() => {
+                  const tier = templateTier(t);
+                  openFeatureDialog({
+                    feature: tier === "enterprise" ? "block.store" : "remove_branding",
+                    suggestedPlan: tier === "enterprise" ? "shikhar" : "tejas",
+                    featureName: `${t.name} Premium Template`,
+                    benefits: [
+                      "Professional high-conversion design",
+                      "Advanced layout & animations",
+                      "Premium typography included",
+                      "Mobile-first responsive optimization"
+                    ]
+                  });
+                }}
                 onDelete={
                   t.isCustom
                     ? () => {
@@ -331,12 +367,6 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
         />
       )}
 
-      <PremiumLockModal
-        open={!!lockFor}
-        onOpenChange={(v) => !v && setLockFor(null)}
-        templateName={lockFor?.name}
-        tier={lockFor?.tier ?? "premium"}
-      />
     </div>
   );
 }
