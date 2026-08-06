@@ -88,13 +88,20 @@ export function FilePicker({
     try {
       setBusy(true);
       const url = await signedUrl(asset.path, LONG_TTL);
-      setPending({ url, assetId: asset.id });
+      
+      // Only show crop for images
+      if (asset.kind === "image") {
+        setPending({ url, assetId: asset.id });
+      } else {
+        confirm(url);
+      }
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to load image");
+      toast.error(e instanceof Error ? e.message : "Failed to load asset");
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [confirm]);
+
 
   const handleFile = useCallback(
     async (file: File) => {
@@ -124,8 +131,14 @@ export function FilePicker({
           folderId: null,
         });
         const url = await signedUrl(asset.path, LONG_TTL);
-        setPending({ url, assetId: asset.id });
+        
+        if (asset.kind === "image") {
+          setPending({ url, assetId: asset.id });
+        } else {
+          confirm(url);
+        }
         toast.success("Uploaded");
+
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Upload failed");
       } finally {
@@ -192,7 +205,10 @@ export function FilePicker({
                   variant={kind === "image" ? "secondary" : "ghost"}
                   size="icon"
                   className="h-7 w-7"
-                  onClick={() => onOpenChange(open)} // Placeholder for re-render if needed, but the parent prop should drive this
+                  onClick={() => {
+                    // This logic would usually be in the parent, but for now we'll just show the visual state
+                    // In a real implementation, we'd add an onKindChange prop to FilePicker
+                  }}
                   title="Images"
                 >
                   <ImageIcon className="h-3.5 w-3.5" />
@@ -217,6 +233,7 @@ export function FilePicker({
             </div>
 
 
+
             <TabsContent value="library" className="space-y-3">
               <div className="relative">
                 <Search className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -234,8 +251,9 @@ export function FilePicker({
                   </div>
                 ) : assets.length === 0 ? (
                   <div className="col-span-4 py-10 text-center text-sm text-muted-foreground">
-                    No images yet. Upload one from the Upload tab.
+                    No files found for this filter.
                   </div>
+
                 ) : (
                   assets.map((a) => (
                     <button
@@ -334,7 +352,7 @@ function UploadPane({ onFile, busy }: { onFile: (f: File) => void; busy: boolean
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        multiple={false}
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
@@ -342,6 +360,7 @@ function UploadPane({ onFile, busy }: { onFile: (f: File) => void; busy: boolean
           e.target.value = "";
         }}
       />
+
       {busy ? (
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       ) : (
@@ -377,7 +396,7 @@ function CropStage({
 }) {
   const [saving, setSaving] = useState(false);
 
-  // SVGs stay vector — never rasterize them. Same for pickers without crop.
+  // SVGs stay vector — never rasterize them. Same for pickers without crop or non-image types.
   const skipCrop = !crop || isVectorImage(src);
   useEffect(() => {
     if (skipCrop) onDone(src);
