@@ -477,7 +477,7 @@ function WebhookDialog({
           <div>
             <Label>Events</Label>
             <div className="mt-2 grid grid-cols-2 gap-2">
-              {WEBHOOK_EVENTS.map((e) => (
+              {WEBHOOK_EVENTS.map((e: WebhookEvent) => (
                 <label key={e} className="flex items-center gap-2 text-sm">
                   <Checkbox
                     checked={events.includes(e)}
