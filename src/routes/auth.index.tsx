@@ -45,7 +45,7 @@ const searchSchema = z.object({
   plan: z.string().optional().catch(undefined),
 });
 
-export const Route = createFileRoute("/auth")({
+export const Route = createFileRoute("/auth/")({
   ssr: false,
   validateSearch: searchSchema,
   component: AuthPage,
@@ -54,7 +54,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const search = useSearch({ from: "/auth" });
+  const search = useSearch({ from: "/auth/" });
   const [tab, setTab] = useState<"login" | "signup">(search.mode ?? "login");
   const [activating, setActivating] = useState(false);
 
