@@ -191,6 +191,6 @@ const SUGGESTIONS = [
   },
 ];
 
-export const Route = createFileRoute("/_authenticated/app/ai")({
+export const Route = createFileRoute("/_authenticated/app/ai/")({
   component: AiHome,
 });
