@@ -269,6 +269,7 @@ export interface ThemeProfile {
   avatarBorderWidth: number; // px
   avatarBorderColor: string;
   avatarRadius?: number; // px, for "rounded" shape
+  avatarStatus?: "online" | "away" | "busy" | "offline" | "none";
   coverHeight: number; // px
   nameWeight: 400 | 500 | 600 | 700 | 800 | 900;
   nameSize: number; // px
