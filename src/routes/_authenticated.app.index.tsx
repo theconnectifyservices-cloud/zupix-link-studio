@@ -108,9 +108,8 @@ function Overview() {
           <QuickTile
             icon={BarChart3}
             title="Analytics"
-            description="Coming soon"
+            description="Traffic & Conversion analytics"
             to="/app/analytics"
-            soon
           />
         </div>
       </section>

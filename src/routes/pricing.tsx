@@ -250,9 +250,9 @@ const COMPARISON: Group[] = [
   {
     name: "Commerce",
     rows: [
-      { label: "UPI payments", udaan: "no", tejas: "no", shikhar: "soon" },
-      { label: "Products & store", udaan: "no", tejas: "no", shikhar: "soon" },
-      { label: "Bookings & memberships", udaan: "no", tejas: "no", shikhar: "soon" },
+      { label: "UPI payments", udaan: "no", tejas: "no", shikhar: "yes" },
+      { label: "Products & store", udaan: "no", tejas: "no", shikhar: "yes" },
+      { label: "Bookings & memberships", udaan: "no", tejas: "no", shikhar: "yes" },
     ],
   },
   {
@@ -268,7 +268,7 @@ const COMPARISON: Group[] = [
     rows: [
       { label: "AI copy assistant", udaan: "Trial", tejas: "yes", shikhar: "yes" },
       { label: "AI design coach", udaan: "no", tejas: "yes", shikhar: "yes" },
-      { label: "Growth workflows", udaan: "no", tejas: "no", shikhar: "soon" },
+      { label: "Growth workflows", udaan: "no", tejas: "no", shikhar: "yes" },
     ],
   },
   {
@@ -367,7 +367,7 @@ function FeatureShowcase() {
   const items = [
     { icon: Crown, title: "Custom Domain", body: "Publish on yourbrand.com with automatic HTTPS and DNS wizard.", plan: "Tejas" },
     { icon: Sparkles, title: "Motion Studio", body: "GPU-accelerated animations, glassmorphism and entrance effects.", plan: "Tejas" },
-    { icon: IndianRupee, title: "UPI Storefront", body: "Sell products, digital downloads and bookings with instant UPI.", plan: "Shikhar", soon: true },
+    { icon: IndianRupee, title: "UPI Storefront", body: "Sell products, digital downloads and bookings with instant UPI.", plan: "Shikhar" },
     { icon: Rocket, title: "AI Growth Coach", body: "Personalised recommendations that grow clicks and conversions.", plan: "Tejas" },
   ];
   return (
@@ -392,7 +392,7 @@ function FeatureShowcase() {
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/10 to-transparent blur-sm" />
                 <div className="absolute inset-0 grid place-items-center backdrop-blur-md">
                   <div className="flex items-center gap-1.5 rounded-full border bg-background/70 px-3 py-1 text-[11px] font-medium">
-                    <Lock className="h-3 w-3" /> {f.soon ? "Coming soon" : `Unlock with ${f.plan}`}
+                    <Lock className="h-3 w-3" /> {`Unlock with ${f.plan}`}
                   </div>
                 </div>
               </div>
