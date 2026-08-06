@@ -43,7 +43,7 @@ function AiContentStudioPage() {
         <Button 
           size="lg" 
           onClick={() => openUpgrade({ 
-            feature: "advanced_builder", 
+            feature: "ai_studio", 
             suggestedPlan: "shikhar",
             reason: "AI Studio is exclusive to SHIKHAR plan."
           })} 
