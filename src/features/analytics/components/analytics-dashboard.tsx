@@ -303,8 +303,8 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
 
       {/* KPI Grid */}
       {loading ? (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
+          {Array.from({ length: 10 }).map((_, i) => (
             <Skeleton key={i} className="h-24 w-full" />
           ))}
         </div>
@@ -459,13 +459,6 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
         <RankedList title="Operating systems" data={oses} />
       </div>
 
-      {/* Location */}
-      <div className="grid gap-4 lg:grid-cols-3">
-        <RankedList title="Top countries" data={countries} />
-        <RankedList title="Top regions" data={regions} />
-        <RankedList title="Top cities" data={cities} />
-      </div>
-
       {/* Traffic sources + Links */}
       <div className="grid gap-4 lg:grid-cols-2">
         <RankedList title="Traffic sources" data={sourceStats} />
@@ -498,6 +491,88 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
             )}
           </CardContent>
         </Card>
+      </div>
+
+      {/* Visual Reports */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Visitor Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DonutChart data={sourceStats.map(s => ({ label: s.label, count: s.count }))} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Engagement Trends</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TrendChart data={useMemo(() => computeTimePoints(events, range), [events, range])} metric="views" />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Location */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <RankedList title="Top countries" data={countries} />
+        <RankedList title="Top regions" data={regions} />
+        <RankedList title="Top cities" data={cities} />
+      </div>
+
+      {/* Store & Payment Analytics (Placeholder for next phase) */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+         <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Store Analytics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Digital Products</span>
+                <span className="font-medium">0</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Services</span>
+                <span className="font-medium">0</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">WhatsApp Orders</span>
+                <span className="font-medium">0</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Payment Analytics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">UPI QR</span>
+                <span className="font-medium">0</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Razorpay</span>
+                <span className="font-medium">0</span>
+              </div>
+              <div className="pt-2 border-t">
+                 <div className="flex items-center justify-between text-xs">
+                    <span className="text-emerald-600 font-medium">Successful</span>
+                    <span>0</span>
+                 </div>
+                 <div className="flex items-center justify-between text-xs mt-1">
+                    <span className="text-rose-600 font-medium">Failed</span>
+                    <span>0</span>
+                 </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <BlockPerformanceCard stats={useMemo(() => blockPerformance(events), [events])} />
       </div>
 
       {/* Business Analytics: Bookings & Leads */}
