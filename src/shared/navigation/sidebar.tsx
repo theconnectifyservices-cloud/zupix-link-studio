@@ -33,6 +33,7 @@ import {
   KeyRound,
   Rocket,
   Bell,
+  Wallet,
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
@@ -69,6 +70,7 @@ const appItems: Item[] = [
   { icon: LayoutTemplate, label: "Templates", href: "/app/templates", soon: true },
   { icon: BarChart3, label: "Analytics", href: "/app/analytics", soon: true },
   { icon: Target, label: "Conversions", href: "/app/conversions" },
+  { icon: Wallet, label: "Payments", href: "/app/payments" },
   { icon: Inbox, label: "Leads", href: "/app/leads" },
   { icon: CalendarClock, label: "Bookings", href: "/app/bookings" },
   { icon: ShoppingBag, label: "Mini Store", href: "/app/store" },

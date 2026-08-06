@@ -48,6 +48,7 @@ import { Route as AuthenticatedAppReleaseRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppQaRouteImport } from './routes/_authenticated.app.qa'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
 import { Route as AuthenticatedAppPerformanceRouteImport } from './routes/_authenticated.app.performance'
+import { Route as AuthenticatedAppPaymentsRouteImport } from './routes/_authenticated.app.payments'
 import { Route as AuthenticatedAppPartnerCommerceRouteImport } from './routes/_authenticated.app.partner-commerce'
 import { Route as AuthenticatedAppOperationsRouteImport } from './routes/_authenticated.app.operations'
 import { Route as AuthenticatedAppMySubscriptionRouteImport } from './routes/_authenticated.app.my-subscription'
@@ -303,6 +304,12 @@ const AuthenticatedAppPerformanceRoute =
   AuthenticatedAppPerformanceRouteImport.update({
     id: '/performance',
     path: '/performance',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppPaymentsRoute =
+  AuthenticatedAppPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppPartnerCommerceRoute =
@@ -662,6 +669,7 @@ export interface FileRoutesByFullPath {
   '/app/my-subscription': typeof AuthenticatedAppMySubscriptionRoute
   '/app/operations': typeof AuthenticatedAppOperationsRoute
   '/app/partner-commerce': typeof AuthenticatedAppPartnerCommerceRoute
+  '/app/payments': typeof AuthenticatedAppPaymentsRoute
   '/app/performance': typeof AuthenticatedAppPerformanceRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/qa': typeof AuthenticatedAppQaRoute
@@ -753,6 +761,7 @@ export interface FileRoutesByTo {
   '/app/my-subscription': typeof AuthenticatedAppMySubscriptionRoute
   '/app/operations': typeof AuthenticatedAppOperationsRoute
   '/app/partner-commerce': typeof AuthenticatedAppPartnerCommerceRoute
+  '/app/payments': typeof AuthenticatedAppPaymentsRoute
   '/app/performance': typeof AuthenticatedAppPerformanceRoute
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/qa': typeof AuthenticatedAppQaRoute
@@ -848,6 +857,7 @@ export interface FileRoutesById {
   '/_authenticated/app/my-subscription': typeof AuthenticatedAppMySubscriptionRoute
   '/_authenticated/app/operations': typeof AuthenticatedAppOperationsRoute
   '/_authenticated/app/partner-commerce': typeof AuthenticatedAppPartnerCommerceRoute
+  '/_authenticated/app/payments': typeof AuthenticatedAppPaymentsRoute
   '/_authenticated/app/performance': typeof AuthenticatedAppPerformanceRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/qa': typeof AuthenticatedAppQaRoute
@@ -943,6 +953,7 @@ export interface FileRouteTypes {
     | '/app/my-subscription'
     | '/app/operations'
     | '/app/partner-commerce'
+    | '/app/payments'
     | '/app/performance'
     | '/app/projects'
     | '/app/qa'
@@ -1034,6 +1045,7 @@ export interface FileRouteTypes {
     | '/app/my-subscription'
     | '/app/operations'
     | '/app/partner-commerce'
+    | '/app/payments'
     | '/app/performance'
     | '/app/projects'
     | '/app/qa'
@@ -1128,6 +1140,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/my-subscription'
     | '/_authenticated/app/operations'
     | '/_authenticated/app/partner-commerce'
+    | '/_authenticated/app/payments'
     | '/_authenticated/app/performance'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/qa'
@@ -1472,6 +1485,13 @@ declare module '@tanstack/react-router' {
       path: '/performance'
       fullPath: '/app/performance'
       preLoaderRoute: typeof AuthenticatedAppPerformanceRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/payments': {
+      id: '/_authenticated/app/payments'
+      path: '/payments'
+      fullPath: '/app/payments'
+      preLoaderRoute: typeof AuthenticatedAppPaymentsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/partner-commerce': {
@@ -1959,6 +1979,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppMySubscriptionRoute: typeof AuthenticatedAppMySubscriptionRoute
   AuthenticatedAppOperationsRoute: typeof AuthenticatedAppOperationsRoute
   AuthenticatedAppPartnerCommerceRoute: typeof AuthenticatedAppPartnerCommerceRoute
+  AuthenticatedAppPaymentsRoute: typeof AuthenticatedAppPaymentsRoute
   AuthenticatedAppPerformanceRoute: typeof AuthenticatedAppPerformanceRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
   AuthenticatedAppQaRoute: typeof AuthenticatedAppQaRoute
@@ -1999,6 +2020,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppMySubscriptionRoute: AuthenticatedAppMySubscriptionRoute,
   AuthenticatedAppOperationsRoute: AuthenticatedAppOperationsRoute,
   AuthenticatedAppPartnerCommerceRoute: AuthenticatedAppPartnerCommerceRoute,
+  AuthenticatedAppPaymentsRoute: AuthenticatedAppPaymentsRoute,
   AuthenticatedAppPerformanceRoute: AuthenticatedAppPerformanceRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
   AuthenticatedAppQaRoute: AuthenticatedAppQaRoute,
@@ -2084,13 +2106,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
