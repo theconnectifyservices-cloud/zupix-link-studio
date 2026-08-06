@@ -19,6 +19,7 @@ import {
   RotateCcw,
   LayoutTemplate,
   BookmarkPlus,
+  Lock,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useFeature, usePlan } from "@/features/subscription/hooks";
