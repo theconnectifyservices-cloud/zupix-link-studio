@@ -91,6 +91,14 @@ export function useFeature(feature: FeatureKey): FeatureAccess {
         "block.analytics": { 
           name: "Advanced Analytics", 
           benefits: ["Real-time traffic tracking", "Source & Device breakdown", "Conversion tracking", "Export data"] 
+        },
+        "block.automation": {
+          name: "Automation & Webhooks",
+          benefits: ["Connect to Zapier/Make", "Custom Webhooks", "API Access", "Automated Workflows"]
+        },
+        "advanced_builder": {
+          name: "Enterprise Studio Features",
+          benefits: ["Advanced Layout Controls", "Version History", "Bulk Duplication", "Premium Presets"]
         }
       };
 
