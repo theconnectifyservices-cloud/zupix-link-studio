@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useFeature } from "@/features/subscription/hooks";
 import { format } from "date-fns";
 import {
   BarChart3,
@@ -16,6 +17,9 @@ import {
   ShoppingBag,
   Smartphone,
   Users,
+  Lock,
+  Sparkles,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
