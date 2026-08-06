@@ -260,7 +260,7 @@ export const BACKGROUND_PATTERNS: { id: string; label: string; url: string }[] =
 // ── Profile (LS-07B) ────────────────────────────────────────────────────
 
 export type AvatarShape = "circle" | "rounded" | "square";
-export type AvatarSize = "sm" | "md" | "lg" | "xl";
+export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl" | number;
 export type BadgePosition = "inline" | "top-right" | "bottom-right";
 
 export interface ThemeProfile {
@@ -304,12 +304,14 @@ export const DEFAULT_PROFILE: ThemeProfile = {
   badgeAnimation: false,
 };
 
-const AVATAR_PX: Record<AvatarSize, number> = { sm: 64, md: 80, lg: 96, xl: 128 };
-const AVATAR_RADIUS_MAP: Record<AvatarShape, string> = {
-  circle: "9999px",
-  rounded: "20px",
-  square: "0px",
-};
+const AVATAR_PX: Record<string, number> = { xs: 48, sm: 64, md: 80, lg: 96, xl: 128 };
+
+// Helper to determine the radius string from shape and custom value
+export function getAvatarRadius(shape: AvatarShape, customRadius?: number): string {
+  if (shape === "circle") return "50%";
+  if (shape === "square") return "0px";
+  return `${customRadius ?? 20}px`;
+}
 
 export type ThemePresetId =
   | "minimal"
@@ -1187,11 +1189,8 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
     "--zx-btn-extra": btnCss.extra,
 
     // Profile
-    "--zx-avatar-size": `${AVATAR_PX[prof.avatarSize]}px`,
-    "--zx-avatar-radius":
-      prof.avatarShape === "rounded"
-        ? `${prof.avatarRadius ?? 20}px`
-        : AVATAR_RADIUS_MAP[prof.avatarShape],
+    "--zx-avatar-size": typeof prof.avatarSize === 'number' ? `${prof.avatarSize}px` : `${AVATAR_PX[prof.avatarSize] ?? 80}px`,
+    "--zx-avatar-radius": getAvatarRadius(prof.avatarShape, prof.avatarRadius),
     "--zx-avatar-border-w": `${prof.avatarBorderWidth}px`,
     "--zx-avatar-border-c": prof.avatarBorderColor,
     "--zx-avatar-glow-c": c.primary,

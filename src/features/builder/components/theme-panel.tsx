@@ -1072,14 +1072,10 @@ export function ThemePanel() {
           </Field>
           <Field label="Avatar size">
             <Select
-              value={profile.avatarSize}
+              value={typeof profile.avatarSize === 'number' ? 'custom' : profile.avatarSize}
               onValueChange={(v) =>
                 patchProfile({
-                  avatarSize: v as PageTheme["profile"] extends infer P
-                    ? P extends { avatarSize: infer S }
-                      ? S
-                      : never
-                    : never,
+                  avatarSize: v === 'custom' ? 120 : v as any
                 })
               }
             >
@@ -1087,13 +1083,26 @@ export function ThemePanel() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="xs">Extra small (48)</SelectItem>
                 <SelectItem value="sm">Small (64)</SelectItem>
                 <SelectItem value="md">Medium (80)</SelectItem>
                 <SelectItem value="lg">Large (96)</SelectItem>
                 <SelectItem value="xl">Extra large (128)</SelectItem>
+                <SelectItem value="custom">Custom</SelectItem>
               </SelectContent>
             </Select>
           </Field>
+          {typeof profile.avatarSize === 'number' && (
+            <NumField
+              label="Custom size"
+              min={40}
+              max={240}
+              step={1}
+              value={profile.avatarSize}
+              suffix="px"
+              onChange={(v) => patchProfile({ avatarSize: v })}
+            />
+          )}
           <NumField
             label="Avatar border"
             min={0}
