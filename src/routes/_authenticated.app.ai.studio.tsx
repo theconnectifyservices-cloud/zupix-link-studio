@@ -6,21 +6,20 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
 import { useSession } from "@/features/auth/hooks/use-session";
 import { ContentStudio } from "@/features/ai/content-studio";
-import { usePlanLimit } from "@/features/subscription/hooks";
-import { FeatureUpgradeDialog } from "@/features/subscription/components/feature-upgrade-dialog";
-import { useState } from "react";
+import { usePlan } from "@/features/subscription/hooks";
+import { useSubscriptionUI } from "@/features/subscription/store";
 import { Button } from "@/components/ui/button";
 
 function AiContentStudioPage() {
-  const { workspace, isLoading } = useCurrentWorkspace();
+  const { workspace, isLoading: workspaceLoading } = useCurrentWorkspace();
   const session = useSession();
-  const { plan } = usePlanLimit();
-  const [showUpgrade, setShowUpgrade] = useState(false);
+  const { code: planCode, isLoading: planLoading } = usePlan();
+  const { openUpgrade } = useSubscriptionUI();
   const userId = session.status === "authenticated" ? session.session.user.id : undefined;
 
-  const isLocked = plan?.code !== "shikhar";
+  const isLocked = planCode !== "shikhar";
 
-  if (isLoading || !userId) return <PageLoader label="Initializing AI Studio" />;
+  if (workspaceLoading || planLoading || !userId) return <PageLoader label="Initializing AI Studio" />;
   if (!workspace)
     return (
       <EmptyState
@@ -41,15 +40,17 @@ function AiContentStudioPage() {
           The AI Studio is an enterprise assistant that helps you build better Bio Pages faster. 
           Available only for SHIKHAR plan subscribers.
         </p>
-        <Button size="lg" onClick={() => setShowUpgrade(true)} className="bg-amber-500 hover:bg-amber-600">
+        <Button 
+          size="lg" 
+          onClick={() => openUpgrade({ 
+            feature: "advanced_builder", 
+            suggestedPlan: "shikhar",
+            reason: "AI Studio is exclusive to SHIKHAR plan."
+          })} 
+          className="bg-amber-500 hover:bg-amber-600"
+        >
           Upgrade to SHIKHAR
         </Button>
-        <FeatureUpgradeDialog 
-          open={showUpgrade} 
-          onOpenChange={setShowUpgrade}
-          title="Upgrade to SHIKHAR"
-          description="Unlock the full AI Studio, unlimited AI generations, and premium commerce features."
-        />
       </div>
     );
   }
@@ -65,7 +66,9 @@ function AiContentStudioPage() {
           { label: "AI Studio" },
         ]}
       />
-      <ContentStudio workspaceId={workspace.id} userId={userId} />
+      <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+        <ContentStudio workspaceId={workspace.id} userId={userId} />
+      </div>
     </div>
   );
 }
