@@ -1110,10 +1110,11 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
   // are painted by `ThemeBackgroundLayer` so they can be blurred + overlaid
   // without affecting the page content.
   let finalBg = c.background;
-  // If the background kind is not a simple solid color or gradient string,
-  // we paint the solid fallback on the outer container, and let 
-  // ThemeBackgroundLayer paint the actual asset (image, video, pattern, glass).
-  if (bg.kind !== "color" && bg.kind !== "gradient") {
+  // If the background kind is anything other than a solid color,
+  // we let ThemeBackgroundLayer handle the rendering (including gradients)
+  // so that filters (blur, brightness) and overlays can be applied to the
+  // background layer itself without affecting the page content.
+  if (bg.kind !== "color") {
     finalBg = c.backgroundSolid;
   }
 
