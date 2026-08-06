@@ -500,7 +500,7 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
             <CardTitle className="text-sm font-semibold">Visitor Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <DonutChart data={sourceStats.map(s => ({ label: s.label, count: s.count }))} />
+            <DonutChart data={sourceStats} />
           </CardContent>
         </Card>
         <Card>
@@ -508,7 +508,10 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
             <CardTitle className="text-sm font-semibold">Engagement Trends</CardTitle>
           </CardHeader>
           <CardContent>
-            <TrendChart data={useMemo(() => computeTimePoints(events, range), [events, range])} metric="views" />
+            <TrendChart 
+              data={useMemo(() => bucketTimeseries(events, sessions, range, pickBucket(range)), [events, sessions, range])} 
+              metric="views" 
+            />
           </CardContent>
         </Card>
       </div>
