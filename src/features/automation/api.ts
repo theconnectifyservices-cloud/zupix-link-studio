@@ -237,7 +237,7 @@ type DeliveryRow = {
   id: string;
   webhook_id: string;
   event: string;
-  status: DeliveryRow["status_code"] extends never ? never : "pending" | "success" | "failed" | "retrying";
+  status: "pending" | "success" | "failed" | "retrying";
   status_code: number | null;
   response_body: string | null;
   error_message: string | null;
