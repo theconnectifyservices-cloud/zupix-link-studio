@@ -201,7 +201,7 @@ function ApiKeysTab({ workspaceId, userId }: { workspaceId: string; userId: stri
                   <TableCell><code className="text-xs">{k.keyPrefix}…</code></TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      {k.permissions.map((p) => <Badge key={p} variant="secondary">{p}</Badge>)}
+                      {k.permissions.map((p: ApiPermission) => <Badge key={p} variant="secondary">{p}</Badge>)}
                     </div>
                   </TableCell>
                   <TableCell>
