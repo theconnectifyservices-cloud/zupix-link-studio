@@ -67,7 +67,7 @@ export function StorageDashboard({ workspaceId }: { workspaceId: string }) {
             {humanSize(stats.savedBytes)}
           </p>
           <p className="mb-3 text-xs text-muted-foreground">
-            Saved by WebP · {savingsPct}% smaller
+            Saved by WebP & SHA256 deduplication · {savingsPct}% smaller
           </p>
           <dl className="space-y-1 text-xs text-muted-foreground">
             <div className="flex justify-between">
