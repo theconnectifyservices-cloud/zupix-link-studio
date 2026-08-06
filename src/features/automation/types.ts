@@ -1,14 +1,63 @@
-import { LucideIcon } from "lucide-react";
+// Automation Platform types - API Keys, Webhooks, Deliveries, API Logs.
 
-export type AutomationTrigger =
-  | "form_submission"
-  | "booking_created"
-  | "booking_cancelled"
-  | "booking_rescheduled"
-  | "payment_success"
-  | "payment_failed"
-  | "store_order_new"
-  | "store_order_digital";
+export type ApiKeyStatus = "active" | "disabled" | "revoked";
+export type ApiPermission = "read" | "write" | "admin";
+
+export interface ApiKey {
+  id: string;
+  workspaceId: string;
+  createdBy: string;
+  name: string;
+  keyPrefix: string;
+  permissions: ApiPermission[];
+  status: ApiKeyStatus;
+  lastUsedAt: string | null;
+  expiresAt: string | null;
+  revokedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type WebhookStatus = "active" | "paused" | "disabled";
+
+export const WEBHOOK_EVENTS = [
+  "bio.published",
+  "bio.updated",
+  "bio.deleted",
+  "project.created",
+  "project.deleted",
+  "qr.generated",
+  "asset.uploaded",
+  "template.applied",
+  "goal.completed",
+  "form_submission",
+  "booking_created",
+  "booking_cancelled",
+  "booking_rescheduled",
+  "payment_success",
+  "payment_failed",
+  "store_order_new",
+  "store_order_digital",
+] as const;
+
+export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
+
+export interface Webhook {
+  id: string;
+  workspaceId: string;
+  name: string;
+  url: string;
+  events: WebhookEvent[];
+  status: WebhookStatus;
+  headers: Record<string, string>;
+  lastDeliveryAt: string | null;
+  lastStatusCode: number | null;
+  failureCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type AutomationTrigger = WebhookEvent;
 
 export type AutomationAction =
   | "send_email"
@@ -56,3 +105,4 @@ export interface UserAutomationSettings {
   whatsapp_enabled: boolean;
   dashboard_enabled: boolean;
 }
+
