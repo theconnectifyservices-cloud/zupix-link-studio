@@ -614,8 +614,8 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
         >
           <Plus className="mr-1 h-3.5 w-3.5" /> Add link
         </Button>
+        </div>
       </div>
-    </div>
   );
 }
 
