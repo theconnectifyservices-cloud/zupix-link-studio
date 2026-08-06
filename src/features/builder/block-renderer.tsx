@@ -1501,18 +1501,23 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
         prof.badgeAnimation && "zx-badge-anim",
         fx.badgeClass,
         badgePos !== "inline" && "absolute z-[1]",
-        badgePos === "top-right" && (avatarShape === "circle" ? "right-[5%] top-[5%]" : "right-[-5%] top-[-5%]"),
-        badgePos === "bottom-right" && (avatarShape === "circle" ? "bottom-[5%] right-[5%]" : "bottom-[-5%] right-[-5%]"),
+        badgePos === "top-right" && (avatarShape === "circle" ? "right-[8%] top-[8%]" : "right-[-4px] top-[-4px]"),
+        badgePos === "bottom-right" && (avatarShape === "circle" ? "bottom-[8%] right-[8%]" : "bottom-[-4px] right-[-4px]"),
       )}
       style={{
-        width: badgeSize + 4,
-        height: badgeSize + 4,
+        width: "calc(var(--zx-avatar-size, 80px) * 0.22)",
+        height: "calc(var(--zx-avatar-size, 80px) * 0.22)",
+        minWidth: 14,
+        minHeight: 14,
+        maxWidth: 32,
+        maxHeight: 32,
+        padding: "calc(var(--zx-avatar-size, 80px) * 0.03)",
         color: block.badgeColor ?? "hsl(var(--primary))",
-        background: block.badgeBgColor,
-        border: block.badgeBorderColor ? `2px solid ${block.badgeBorderColor}` : undefined,
+        background: block.badgeBgColor ?? "hsl(var(--background))",
+        border: block.badgeBorderColor ? `2px solid ${block.badgeBorderColor}` : "2px solid hsl(var(--background))",
       }}
     >
-      <BadgeCheck style={{ width: badgeSize, height: badgeSize }} />
+      <BadgeCheck style={{ width: "100%", height: "100%" }} />
     </span>
   ) : null;
   
