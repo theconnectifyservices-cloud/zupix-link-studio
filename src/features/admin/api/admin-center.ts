@@ -1,4 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
+
+type UserStatus = Database["public"]["Enums"]["account_status"];
+type LicenseStatus = Database["public"]["Enums"]["product_license_status"];
+type PaymentStatus = Database["public"]["Enums"]["payment_status"];
+type SubscriptionStatus = Database["public"]["Enums"]["subscription_status"];
 
 const logAdminError = (table: string, query: any, error: any) => {
   console.error(`[Admin API Error] Table: ${table}`, {
@@ -27,7 +33,7 @@ export const adminCenterApi = {
       }
       
       if (filters.plan) query = query.eq("subscription_tier", filters.plan);
-      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.status) query = query.eq("status", filters.status as UserStatus);
       
       const { data, error, count } = await (query as any)
         .order("created_at", { ascending: false })
@@ -65,7 +71,7 @@ export const adminCenterApi = {
     try {
       let query = supabase.from("product_licenses").select("*", { count: "exact" });
       if (filters.query) query = query.ilike("license_key", `%${filters.query}%`);
-      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.status) query = query.eq("status", filters.status as LicenseStatus);
       
       const { data, error, count } = await query
         .order("created_at", { ascending: false })
@@ -88,7 +94,7 @@ export const adminCenterApi = {
     const keys = Array.from({ length: count }).map(() => ({
       license_key: `ZUP-${Math.random().toString(36).substring(2, 10).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
       plan: plan.toLowerCase() as any,
-      status: 'unused' as any,
+      status: 'unused' as LicenseStatus,
       expires_at: expiresAt.toISOString(),
       max_devices: 1
     }));
@@ -116,7 +122,7 @@ export const adminCenterApi = {
         supabase.from("profiles").select("*", { count: "exact", head: true }),
         supabase.from("bio_pages").select("*", { count: "exact", head: true }),
         supabase.from("activity_logs").select("*", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 86400000).toISOString()),
-        supabase.from("billing_payments").select("amount_minor").eq("status", "captured"),
+        supabase.from("billing_payments").select("amount_minor").eq("status", "succeeded"),
         supabase.from("bio_store_items").select("*", { count: "exact", head: true }),
         supabase.from("bio_bookings").select("*", { count: "exact", head: true }),
         supabase.from("domains").select("*", { count: "exact", head: true })
@@ -154,10 +160,10 @@ export const adminCenterApi = {
           current_period_end, 
           unit_amount_minor,
           billing_plans(name, tier),
-          workspaces(owner_id)
+          workspaces(id, owner_id)
         `, { count: "exact" });
       
-      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.status) query = query.eq("status", filters.status as SubscriptionStatus);
 
       const { data, error, count } = await (query as any)
         .order("created_at", { ascending: false })
@@ -168,18 +174,14 @@ export const adminCenterApi = {
         throw error;
       }
 
-      // We need to fetch owner profile details separately or via a join if possible
-      // Profiles are linked to workspaces via profiles.active_workspace_id OR workspace_members
-      // For simplicity in this structure, let's assume we can join profiles if they were members or owners
-      // But based on the schema, workspace has no direct owner_id column, it's usually in workspace_members or profiles.active_workspace_id
-      
       const flattenedData = data?.map((sub: any) => ({
         id: sub.id,
         subscription_plan: sub.billing_plans?.tier || sub.billing_plans?.name,
         subscription_status: sub.status,
         subscription_expiry: sub.current_period_end || sub.trial_end,
         last_payment_amount: (sub.unit_amount_minor || 0) / 100,
-        workspace_id: sub.workspaces?.id
+        workspace_id: sub.workspaces?.id,
+        owner_id: sub.workspaces?.owner_id
       }));
 
       return { data: flattenedData, count };
