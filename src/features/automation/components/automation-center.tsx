@@ -803,5 +803,425 @@ X-Zupix-Event: bio.published</pre>
   );
 }
 
+// ============ NOTIFICATIONS ============
+
+function NotificationsTab({ workspaceId }: { workspaceId: string }) {
+  const queryClient = useQueryClient();
+  const { data: notifications, isLoading } = useQuery({
+    queryKey: ["notifications", workspaceId],
+    queryFn: () => listNotifications(workspaceId),
+  });
+
+  const markReadMutation = useMutation({
+    mutationFn: ({ id, read }: { id: string; read: boolean }) => markNotificationRead(id, read),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications", workspaceId] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteNotification(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications", workspaceId] });
+      toast.success("Notification deleted");
+    },
+  });
+
+  if (isLoading) return <div className="flex h-40 items-center justify-center">Loading notifications...</div>;
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle>Notifications</CardTitle>
+          <CardDescription>System updates, form submissions, and business alerts.</CardDescription>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => queryClient.invalidateQueries({ queryKey: ["notifications", workspaceId] })}>
+          <RefreshCcw className="mr-2 h-3 w-3" /> Refresh
+        </Button>
+      </CardHeader>
+      <CardContent>
+        {notifications?.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <Bell className="mb-4 h-12 w-12 text-muted-foreground opacity-20" />
+            <h3 className="text-lg font-medium">No notifications yet</h3>
+            <p className="text-sm text-muted-foreground">We'll notify you here when important events happen.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {notifications?.map((n: DashboardNotification) => (
+              <div 
+                key={n.id} 
+                className={`flex items-start gap-4 rounded-lg border p-4 transition-colors ${!n.read ? "bg-muted/50 border-primary/20" : ""}`}
+              >
+                <div className={`mt-1 rounded-full p-2 ${!n.read ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                  <Bell className="h-4 w-4" />
+                </div>
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-semibold">{n.title}</h4>
+                    <span className="text-xs text-muted-foreground">
+                      {format(new Date(n.created_at), "MMM d, h:mm a")}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{n.message}</p>
+                  <div className="flex items-center gap-2 pt-2">
+                    {!n.read && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-7 text-xs px-2"
+                        onClick={() => markReadMutation.mutate({ id: n.id, read: true })}
+                      >
+                        Mark as read
+                      </Button>
+                    )}
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-7 text-xs px-2 text-destructive"
+                      onClick={() => deleteMutation.mutate(n.id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ============ WORKFLOWS ============
+
+function WorkflowsTab({ workspaceId }: { workspaceId: string }) {
+  const queryClient = useQueryClient();
+  const [isAdding, setIsAdding] = useState(false);
+  
+  const { data: rules, isLoading } = useQuery({
+    queryKey: ["automation-rules", workspaceId],
+    queryFn: () => listAutomationRules(workspaceId),
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: ({ id, is_active }: { id: string; is_active: boolean }) => 
+      updateAutomationRule(id, { is_active }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["automation-rules", workspaceId] });
+      toast.success("Workflow updated");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteAutomationRule(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["automation-rules", workspaceId] });
+      toast.success("Workflow deleted");
+    },
+  });
+
+  if (isLoading) return <div className="flex h-40 items-center justify-center">Loading workflows...</div>;
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Business Workflows</CardTitle>
+            <CardDescription>Automate repetitive tasks and customer notifications.</CardDescription>
+          </div>
+          <Button onClick={() => setIsAdding(true)}>
+            <Plus className="mr-2 h-4 w-4" /> Create Workflow
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {!rules?.length ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Zap className="mb-4 h-12 w-12 text-muted-foreground opacity-20" />
+              <h3 className="text-lg font-medium">No workflows configured</h3>
+              <p className="text-sm text-muted-foreground">Create your first automation to streamline your business.</p>
+              <Button variant="outline" className="mt-4" onClick={() => setIsAdding(true)}>
+                Get Started
+              </Button>
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              {rules?.map((rule: AutomationRule) => (
+                <Card key={rule.id} className="overflow-hidden">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-4 w-4 text-primary" />
+                        <CardTitle className="text-base">{rule.name}</CardTitle>
+                      </div>
+                      <Switch 
+                        checked={rule.is_active} 
+                        onCheckedChange={(checked) => toggleMutation.mutate({ id: rule.id, is_active: checked })}
+                      />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pb-3">
+                    <div className="flex flex-col gap-2 text-sm">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Badge variant="outline" className="h-5 px-1.5 font-normal">Trigger</Badge>
+                        <span className="capitalize">{rule.trigger.replace(/_/g, " ")}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Badge variant="outline" className="h-5 px-1.5 font-normal">Action</Badge>
+                        <span className="capitalize">{rule.action.replace(/_/g, " ")}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="bg-muted/30 pt-3 flex justify-between">
+                    <Button variant="ghost" size="sm" className="h-8">
+                      <Settings className="mr-2 h-3 w-3" /> Configure
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 text-destructive"
+                      onClick={() => deleteMutation.mutate(rule.id)}
+                    >
+                      <Trash2 className="mr-2 h-3 w-3" /> Delete
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <AddWorkflowDialog 
+        isOpen={isAdding} 
+        onClose={() => setIsAdding(false)} 
+        workspaceId={workspaceId} 
+      />
+    </div>
+  );
+}
+
+function AddWorkflowDialog({ isOpen, onClose, workspaceId }: { isOpen: boolean, onClose: () => void, workspaceId: string }) {
+  const queryClient = useQueryClient();
+  const [name, setName] = useState("");
+  const [trigger, setTrigger] = useState<any>("form_submission");
+  const [action, setAction] = useState<any>("dashboard_notification");
+
+  const createMutation = useMutation({
+    mutationFn: () => createAutomationRule({
+      workspace_id: workspaceId,
+      name,
+      trigger,
+      action,
+      config: {},
+      is_active: true
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["automation-rules", workspaceId] });
+      toast.success("Workflow created successfully");
+      onClose();
+      setName("");
+    },
+  });
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create New Workflow</DialogTitle>
+          <DialogDescription>Define a trigger and an action for your automation.</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Label htmlFor="name">Workflow Name</Label>
+            <Input 
+              id="name" 
+              placeholder="e.g. New Lead Welcome" 
+              value={name} 
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label>When this happens (Trigger)</Label>
+            <select 
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              value={trigger}
+              onChange={(e) => setTrigger(e.target.value)}
+            >
+              {WEBHOOK_EVENTS.map(e => (
+                <option key={e} value={e}>{e.replace(/\./g, " ").replace(/_/g, " ").toUpperCase()}</option>
+              ))}
+            </select>
+          </div>
+          <div className="grid gap-2">
+            <Label>Do this (Action)</Label>
+            <select 
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              value={action}
+              onChange={(e) => setAction(e.target.value)}
+            >
+              <option value="dashboard_notification">Show Dashboard Notification</option>
+              <option value="activity_log">Create Activity Log</option>
+              <option value="send_email">Send Email (SMTP)</option>
+              <option value="send_whatsapp">Send WhatsApp Message</option>
+              <option value="redirect_customer">Redirect to URL</option>
+            </select>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button onClick={() => createMutation.mutate()} disabled={!name}>Create Workflow</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ============ TIMELINE ============
+
+function TimelineTab({ workspaceId }: { workspaceId: string }) {
+  const { data: logs, isLoading } = useQuery({
+    queryKey: ["activity-logs", workspaceId],
+    queryFn: () => listActivityLogs(workspaceId),
+  });
+
+  if (isLoading) return <div className="flex h-40 items-center justify-center">Loading activity log...</div>;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Activity Timeline</CardTitle>
+        <CardDescription>A complete history of business events in your workspace.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {!logs?.length ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <History className="mb-4 h-12 w-12 text-muted-foreground opacity-20" />
+            <h3 className="text-lg font-medium">No activity recorded</h3>
+            <p className="text-sm text-muted-foreground">Business events will appear here in chronological order.</p>
+          </div>
+        ) : (
+          <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-primary/20 before:to-transparent">
+            {logs?.map((log: ActivityLogEntry) => (
+              <div key={log.id} className="relative flex items-center gap-6 pl-2">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-background ring-2 ring-primary/20">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
+                </div>
+                <div className="flex-1 rounded-lg border bg-card p-4 shadow-sm">
+                  <div className="flex items-center justify-between mb-1">
+                    <h4 className="text-sm font-semibold">{log.title}</h4>
+                    <span className="flex items-center text-xs text-muted-foreground">
+                      <Clock className="mr-1 h-3 w-3" />
+                      {format(new Date(log.created_at), "MMM d, HH:mm")}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{log.description}</p>
+                  {log.metadata && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {Object.entries(log.metadata).slice(0, 3).map(([k, v]) => (
+                        <Badge key={k} variant="secondary" className="text-[10px] font-normal">
+                          {k}: {String(v)}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ============ SETTINGS ============
+
+function SettingsTab({ workspaceId }: { workspaceId: string }) {
+  const queryClient = useQueryClient();
+  const { data: settings, isLoading } = useQuery({
+    queryKey: ["automation-settings", workspaceId],
+    queryFn: () => getAutomationSettings(workspaceId),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (patch: Partial<UserAutomationSettings>) => 
+      updateAutomationSettings(workspaceId, { ...settings!, ...patch }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["automation-settings", workspaceId] });
+      toast.success("Settings updated");
+    },
+  });
+
+  if (isLoading) return <div className="flex h-40 items-center justify-center">Loading settings...</div>;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Automation Settings</CardTitle>
+        <CardDescription>Control how you receive notifications and business alerts.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="flex items-center justify-between space-x-2">
+          <div className="flex flex-col space-y-1">
+            <Label className="flex items-center gap-2">
+              <Bell className="h-4 w-4" /> Dashboard Notifications
+            </Label>
+            <p className="text-sm text-muted-foreground">Show alerts in the in-app notification center.</p>
+          </div>
+          <Switch 
+            checked={settings?.dashboard_enabled} 
+            onCheckedChange={(checked) => updateMutation.mutate({ dashboard_enabled: checked })}
+          />
+        </div>
+        
+        <DropdownMenuSeparator />
+        
+        <div className="flex items-center justify-between space-x-2">
+          <div className="flex flex-col space-y-1">
+            <Label className="flex items-center gap-2">
+              <Mail className="h-4 w-4" /> Email Alerts
+            </Label>
+            <p className="text-sm text-muted-foreground">Receive important business notifications via email.</p>
+          </div>
+          <Switch 
+            checked={settings?.email_enabled} 
+            onCheckedChange={(checked) => updateMutation.mutate({ email_enabled: checked })}
+          />
+        </div>
+
+        <DropdownMenuSeparator />
+
+        <div className="flex items-center justify-between space-x-2 opacity-50">
+          <div className="flex flex-col space-y-1">
+            <Label className="flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" /> WhatsApp Notifications
+            </Label>
+            <p className="text-sm text-muted-foreground">Get real-time booking alerts on WhatsApp (Requires API Setup).</p>
+          </div>
+          <Switch 
+            checked={settings?.whatsapp_enabled} 
+            disabled
+          />
+        </div>
+        
+        <Alert className="mt-6">
+          <AlertCircle className="h-4 w-4" />
+          <div className="ml-2">
+            <h5 className="font-medium text-sm">Enterprise Add-on</h5>
+            <p className="text-xs text-muted-foreground mt-1">
+              WhatsApp notifications require a business API configuration. Contact support to enable this feature.
+            </p>
+          </div>
+        </Alert>
+      </CardContent>
+    </Card>
+  );
+}
+
+
 // unused import guard
 export const _sink = { useEffect, useMemo };
