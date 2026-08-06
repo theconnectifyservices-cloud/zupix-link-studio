@@ -226,7 +226,7 @@ function VersionHistoryDialog() {
         <DialogHeader>
           <DialogTitle>Version history</DialogTitle>
           <DialogDescription>
-            Snapshot the current state so you can restore it later. Up to 20 versions per page.
+            Snapshot the current state so you can restore it later. Up to 10 versions per page.
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center gap-2">
