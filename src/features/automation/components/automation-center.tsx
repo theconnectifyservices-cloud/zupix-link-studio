@@ -31,6 +31,7 @@ import {
   Clock,
   ArrowRight,
   User,
+  Sparkles,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -127,7 +128,40 @@ export function AutomationCenter({ workspaceId, userId }: Props) {
   const { enabled, requestUpgrade } = useFeature("block.automation" as any);
 
   if (!enabled) {
+  const { enabled, requestUpgrade } = useFeature("block.automation" as any);
+
+  if (!enabled) {
     return (
+      <div className="flex h-[500px] flex-col items-center justify-center gap-6 rounded-2xl border border-dashed bg-muted/10 p-12 text-center">
+        <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-inner">
+          <Zap className="h-10 w-10" />
+        </div>
+        <div className="max-w-md space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight">Automation & Notifications</h2>
+          <p className="text-muted-foreground">
+            Connect your bio link to the world. Set up webhooks, custom API integrations, 
+            automated email notifications, and cross-platform workflows.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
+          <div className="rounded-lg border bg-background p-3 text-left">
+            <div className="text-xs font-bold text-primary mb-1">WEBHOOKS</div>
+            <div className="text-[11px] text-muted-foreground line-clamp-2">Real-time HTTP callbacks for bookings and leads.</div>
+          </div>
+          <div className="rounded-lg border bg-background p-3 text-left">
+            <div className="text-xs font-bold text-primary mb-1">API ACCESS</div>
+            <div className="text-[11px] text-muted-foreground line-clamp-2">Programmatic control over your link data.</div>
+          </div>
+        </div>
+        <Button size="lg" onClick={requestUpgrade} className="h-12 px-8 font-bold shadow-lg shadow-primary/20">
+          <Sparkles className="mr-2 h-4 w-4" />
+          Unlock Automation Pro
+        </Button>
+      </div>
+    );
+  }
+
+  return (
       <div className="flex h-[500px] flex-col items-center justify-center gap-6 rounded-2xl border border-dashed bg-muted/10 p-12 text-center">
         <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-inner">
           <Zap className="h-10 w-10" />

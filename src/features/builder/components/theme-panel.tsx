@@ -16,8 +16,10 @@ import {
   X,
   Zap,
   MessageCircle,
+  Lock,
 } from "lucide-react";
 import { ContactWidgetPanel } from "@/features/contact-widget";
+import { useFeature } from "@/features/subscription/hooks";
 
 import { useBuilderStore } from "../store";
 import {
@@ -1273,8 +1275,8 @@ export function ThemePanel() {
 
 function SpacingPanel() {
   const theme = useBuilderStore((s) => s.content.theme) ?? DEFAULT_THEME;
-  const patchSpace = useBuilderStore((s) => s.patchSpace);
-  const resetSpace = useBuilderStore((s) => s.resetSpace);
+  const patchSpace = useBuilderStore((s) => s.patchThemeSpacing);
+  const resetSpace = useBuilderStore((s) => s.resetThemeSpacing);
   const { enabled, requestUpgrade } = useFeature("advanced_builder" as any);
 
   return (
