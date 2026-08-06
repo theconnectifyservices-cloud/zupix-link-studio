@@ -28,7 +28,7 @@ export function UpgradeModal() {
   const { upgradeOpen, upgradeContext, closeUpgrade } = useSubscriptionUI();
   const { code: currentPlan } = usePlan();
   const { workspace } = useCurrentWorkspace();
-  const [cycle, setCycle] = useState<"monthly" | "yearly">("yearly");
+  const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
   const [checkout, setCheckout] = useState<{ planCode: PlanCode } | null>(null);
 
   return (
@@ -51,7 +51,7 @@ export function UpgradeModal() {
                 Choose your plan
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Start free with Udaan. Grow with Tejas. Reach the summit with Shikhar.
+                Start free with Udaan. Grow with Tejas. Dominate with Shikhar.
               </p>
 
               <div className="mt-6 inline-flex items-center gap-1 rounded-full border bg-card p-1">
@@ -69,7 +69,7 @@ export function UpgradeModal() {
                     {c}
                     {c === "yearly" && (
                       <span className="ml-1.5 rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400">
-                        SAVE 27%
+                        SAVE UP TO 27%
                       </span>
                     )}
                   </button>
@@ -183,9 +183,14 @@ function PlanCard({
               <span className="text-sm text-muted-foreground">/{cycle === "monthly" ? "mo" : "yr"}</span>
             )}
             {cycle === "yearly" && savings > 0 && (
-              <span className="ml-2 rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                Save {savings}%
-              </span>
+              <div className="flex flex-col ml-2">
+                <span className="rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                  SAVE {code === "shikhar" ? "23" : savings}%
+                </span>
+                {code === "shikhar" && (
+                  <span className="text-[10px] font-bold text-emerald-500 mt-0.5 whitespace-nowrap">Save ₹1,389</span>
+                )}
+              </div>
             )}
           </div>
         )}

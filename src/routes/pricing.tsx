@@ -18,7 +18,7 @@ import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-work
 import { CycleToggle, PricingCards, useBillingCycle } from "@/features/pricing";
 
 const TITLE = "Pricing — ZUPIX Link Studio | Plans from Free to Enterprise";
-const DESC = "Choose the right plan for your business. Start free with Udaan, upgrade to Tejas (₹299/mo) for pro tools, or reach the summit with Shikhar. 3-day free trial, no hidden charges.";
+const DESC = "Choose the right plan for your business. Start free with Udaan, upgrade to Tejas (₹299/mo) or Shikhar (₹499/mo) for pro tools. 3-day free trial, no hidden charges.";
 const URL = "https://zupixlink.lovable.app/pricing";
 
 function track(event: string, props?: Record<string, unknown>) {
@@ -56,7 +56,8 @@ export const Route = createFileRoute("/pricing")({
           { "@type": "Offer", name: "Udaan", price: "0", priceCurrency: "INR", availability: "https://schema.org/InStock" },
           { "@type": "Offer", name: "Tejas Monthly", price: "299", priceCurrency: "INR", availability: "https://schema.org/InStock" },
           { "@type": "Offer", name: "Tejas Yearly", price: "2599", priceCurrency: "INR", availability: "https://schema.org/InStock" },
-          { "@type": "Offer", name: "Shikhar", price: "499", priceCurrency: "INR", availability: "https://schema.org/PreOrder" },
+          { "@type": "Offer", name: "Shikhar Monthly", price: "499", priceCurrency: "INR", availability: "https://schema.org/InStock" },
+          { "@type": "Offer", name: "Shikhar Yearly", price: "4599", priceCurrency: "INR", availability: "https://schema.org/InStock" },
         ],
       }),
     }],
@@ -188,7 +189,7 @@ function Hero({
         <CycleToggle
           cycle={cycle}
           onChange={(c) => { setCycle(c); track("toggle_usage", { cycle: c }); }}
-          savingsHint={`Save ₹${(tejasSavings / 100).toFixed(0)} per year`}
+          savingsHint={`Save \u20b9${(tejasSavings / 100).toFixed(0)} on Tejas / \u20b91,389 on Shikhar`}
         />
       </div>
     </section>
