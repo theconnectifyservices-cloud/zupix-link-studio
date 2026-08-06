@@ -793,6 +793,7 @@ export function ThemePanel() {
                 label="Tint Color"
                 value={bg.glassTint || "rgba(255,255,255,1)"}
                 brands={brands}
+                onSaveBrand={addBrand}
                 onChange={(v) => patchBg({ glassTint: v })}
               />
               <div className="grid grid-cols-2 gap-2">
