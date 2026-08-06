@@ -143,29 +143,66 @@ export type BackgroundBlendMode =
   | "darken"
   | "lighten";
 
+export interface GradientStop {
+  color: string;
+  position: number; // 0..100
+}
+
 export interface ThemeBackground {
   kind: BackgroundKind;
+  /** Primary color or gradient string. Used for "color" and "gradient" kinds. */
+  background?: string;
+  /** Fallback color. */
+  backgroundSolid?: string;
+
+  // ── Gradient overrides ──────────────────────────────────────────
+  gradientType?: "linear" | "radial";
+  gradientAngle?: number; // deg
+  gradientStops?: GradientStop[];
+
+  // ── Assets ─────────────────────────────────────────────────────
   imageUrl?: string;
   videoUrl?: string;
   posterUrl?: string; // poster frame for video backgrounds
+
+  // ── Pattern ────────────────────────────────────────────────────
   patternId?: string; // key into BACKGROUND_PATTERNS
+  patternColor?: string;
+  patternSize?: number; // px
+  patternOpacity?: number; // 0..1
+  patternSvg?: string; // custom SVG path data or full SVG
+
+  // ── Layout & Transform ─────────────────────────────────────────
   size?: BackgroundSize;
   position?: BackgroundPosition;
   /** Tile the image instead of painting a single copy. */
   repeat?: boolean;
-  /** 0..1 opacity of the image layer itself (not the overlay). */
+  /** 0..1 opacity of the image/video layer itself. */
   imageOpacity?: number;
-  /** Parallax-style fixed attachment (disabled on touch devices). */
+  /** Parallax-style fixed attachment. */
   fixed?: boolean;
-  blur?: number; // px, background blur (applied to bg layer only)
+
+  // ── Effects ────────────────────────────────────────────────────
+  blur?: number; // px, background blur (applied to bg layer)
+  brightness?: number; // 0..2 (1 is normal)
   overlay?: string; // css overlay color (rgba/hex/hsl)
   overlayOpacity?: number; // 0..1
-  blendMode?: BackgroundBlendMode; // mix-blend-mode on the bg layer
-  /** LS-07C — background effects. */
+  blendMode?: BackgroundBlendMode;
+
+  // ── Glassmorphism ──────────────────────────────────────────────
+  glassBlur?: number; // px
+  glassOpacity?: number; // 0..1
+  glassTint?: string;
+  glassSaturation?: number; // 0..2
+  glassBorder?: boolean;
+  glassBorderGlow?: boolean;
+  glassShadow?: boolean;
+
+  // ── Legacy / Extra ─────────────────────────────────────────────
   noise?: boolean;
   noiseOpacity?: number; // 0..1, default 0.08
-  animatedGradient?: boolean; // shift gradient position over time
-  meshGradient?: boolean; // soft blurred radial mesh overlay
+  animatedGradient?: boolean;
+  meshGradient?: boolean;
 }
 
 export const DEFAULT_BACKGROUND: ThemeBackground = {
@@ -176,6 +213,7 @@ export const DEFAULT_BACKGROUND: ThemeBackground = {
   imageOpacity: 1,
   fixed: false,
   blur: 0,
+  brightness: 1,
   overlay: "#000000",
   overlayOpacity: 0,
   blendMode: "normal",
@@ -183,6 +221,15 @@ export const DEFAULT_BACKGROUND: ThemeBackground = {
   noiseOpacity: 0.08,
   animatedGradient: false,
   meshGradient: false,
+  gradientType: "linear",
+  gradientAngle: 180,
+  gradientStops: [
+    { color: "#3b82f6", position: 0 },
+    { color: "#8b5cf6", position: 100 },
+  ],
+  glassBlur: 20,
+  glassOpacity: 0.1,
+  glassSaturation: 1.2,
 };
 
 
@@ -1063,7 +1110,11 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
   // are painted by `ThemeBackgroundLayer` so they can be blurred + overlaid
   // without affecting the page content.
   let finalBg = c.background;
-  if (bg.kind === "image" || bg.kind === "pattern") {
+  // If the background kind is anything other than a solid color,
+  // we let ThemeBackgroundLayer handle the rendering (including gradients)
+  // so that filters (blur, brightness) and overlays can be applied to the
+  // background layer itself without affecting the page content.
+  if (bg.kind !== "color") {
     finalBg = c.backgroundSolid;
   }
 
@@ -1158,6 +1209,8 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
     letterSpacing: `${t.letterSpacing}em`,
     fontWeight: t.bodyWeight,
     position: "relative",
+    // Ensure filters/blurs on the inner background layer are contained
+    isolation: "isolate",
   };
   return style;
 }
