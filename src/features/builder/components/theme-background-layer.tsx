@@ -147,9 +147,14 @@ export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
   // ── Pattern Branch ──────────────────────────────────────────────
   let patternLayer: CSSProperties | null = null;
   if (bg.kind === "pattern") {
-    const url = bg.patternSvg 
-      ? `url("data:image/svg+xml;utf8,${bg.patternSvg}")`
-      : backgroundPatternUrl(bg.patternId);
+    let url = backgroundPatternUrl(bg.patternId);
+    
+    if (bg.patternSvg) {
+      const svg = bg.patternSvg.trim().startsWith("<svg") 
+        ? bg.patternSvg 
+        : `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='${bg.patternSvg}' fill='currentColor'/></svg>`;
+      url = `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+    }
     
     if (url) {
       patternLayer = {
@@ -157,10 +162,8 @@ export function ThemeBackgroundLayer({ theme }: { theme: PageTheme }) {
         backgroundRepeat: "repeat",
         backgroundSize: bg.patternSize ? `${bg.patternSize}px` : undefined,
         opacity: bg.patternOpacity ?? 0.1,
+        color: bg.patternColor,
       };
-      
-      // If we have a pattern color, we might need a mask-image approach or filter
-      // For now, assume the SVG has the color or we use opacity.
     }
   }
 
