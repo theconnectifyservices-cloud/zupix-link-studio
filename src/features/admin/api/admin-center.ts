@@ -1,4 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
+
+type UserStatus = Database["public"]["Enums"]["account_status"];
+type LicenseStatus = Database["public"]["Enums"]["product_license_status"];
+type PaymentStatus = Database["public"]["Enums"]["payment_status"];
+type SubscriptionStatus = Database["public"]["Enums"]["subscription_status"];
 
 const logAdminError = (table: string, query: any, error: any) => {
   console.error(`[Admin API Error] Table: ${table}`, {
@@ -14,19 +20,22 @@ export const adminCenterApi = {
   // User Management
   getUsers: async (filters: { query?: string; plan?: string; status?: string; limit?: number; offset?: number }) => {
     try {
-      // Joining bio_pages and assets using foreign key relationships defined in types.ts
-      let query = (supabase as any)
+      let query = supabase
         .from("profiles")
-        .select("*, bio_pages(count), assets(count)", { count: "exact" });
+        .select(`
+          *,
+          bio_pages:bio_pages(count),
+          media:media_assets(count)
+        `, { count: "exact" });
       
       if (filters.query) {
         query = query.or(`display_name.ilike.%${filters.query}%,email.ilike.%${filters.query}%`);
       }
       
       if (filters.plan) query = query.eq("subscription_tier", filters.plan);
-      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.status) query = query.eq("status", filters.status as UserStatus);
       
-      const { data, error, count } = await query
+      const { data, error, count } = await (query as any)
         .order("created_at", { ascending: false })
         .range(filters.offset || 0, (filters.offset || 0) + (filters.limit || 10) - 1);
         
@@ -34,7 +43,15 @@ export const adminCenterApi = {
         logAdminError("profiles", filters, error);
         throw error;
       }
-      return { data, count };
+
+      // Map counts back to flatter format for UI
+      const mappedData = data?.map((user: any) => ({
+        ...user,
+        bio_pages_count: user.bio_pages?.[0]?.count || 0,
+        media_count: user.media?.[0]?.count || 0
+      }));
+
+      return { data: mappedData, count };
     } catch (e) {
       console.error("Failed to fetch users:", e);
       return { data: [], count: 0 };
@@ -52,9 +69,9 @@ export const adminCenterApi = {
   // License Manager
   getLicenses: async (filters: { query?: string; status?: string; limit?: number; offset?: number }) => {
     try {
-      let query = (supabase as any).from("product_licenses").select("*", { count: "exact" });
+      let query = supabase.from("product_licenses").select("*", { count: "exact" });
       if (filters.query) query = query.ilike("license_key", `%${filters.query}%`);
-      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.status) query = query.eq("status", filters.status as LicenseStatus);
       
       const { data, error, count } = await query
         .order("created_at", { ascending: false })
@@ -76,12 +93,13 @@ export const adminCenterApi = {
 
     const keys = Array.from({ length: count }).map(() => ({
       license_key: `ZUP-${Math.random().toString(36).substring(2, 10).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
-      plan: plan.toLowerCase(),
-      status: 'active',
-      expires_at: expiresAt.toISOString()
+      plan: plan.toLowerCase() as any,
+      status: 'unused' as LicenseStatus,
+      expires_at: expiresAt.toISOString(),
+      max_devices: 1
     }));
     
-    const { data, error } = await (supabase as any).from("product_licenses").insert(keys).select();
+    const { data, error } = await supabase.from("product_licenses").insert(keys).select();
     if (error) {
       logAdminError("product_licenses", { count, plan }, error);
       throw error;
@@ -103,11 +121,11 @@ export const adminCenterApi = {
       ] = await Promise.all([
         supabase.from("profiles").select("*", { count: "exact", head: true }),
         supabase.from("bio_pages").select("*", { count: "exact", head: true }),
-        (supabase as any).from("activity_logs").select("*", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 86400000).toISOString()),
-        (supabase as any).from("billing_payments").select("amount_minor").eq("status", "captured"),
-        (supabase as any).from("bio_store_items").select("*", { count: "exact", head: true }),
-        (supabase as any).from("bio_bookings").select("*", { count: "exact", head: true }),
-        (supabase as any).from("domains").select("*", { count: "exact", head: true })
+        supabase.from("activity_logs").select("*", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 86400000).toISOString()),
+        supabase.from("billing_payments").select("amount_minor").eq("status", "succeeded"),
+        supabase.from("bio_store_items").select("*", { count: "exact", head: true }),
+        supabase.from("bio_bookings").select("*", { count: "exact", head: true }),
+        supabase.from("domains").select("*", { count: "exact", head: true })
       ]);
 
       const totalRevenue = (revenueData || []).reduce((acc: number, curr: any) => acc + (curr.amount_minor || 0), 0) / 100;
@@ -133,8 +151,7 @@ export const adminCenterApi = {
 
   getSubscriptions: async (filters: { query?: string; status?: string; limit?: number; offset?: number }) => {
     try {
-      // In this schema, billing_subscriptions is the source of truth
-      let query = (supabase as any)
+      let query = supabase
         .from("billing_subscriptions")
         .select(`
           id, 
@@ -143,12 +160,12 @@ export const adminCenterApi = {
           current_period_end, 
           unit_amount_minor,
           billing_plans(name, tier),
-          workspaces(profiles(email, display_name))
+          workspaces(id, owner_id)
         `, { count: "exact" });
       
-      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.status) query = query.eq("status", filters.status as SubscriptionStatus);
 
-      const { data, error, count } = await query
+      const { data, error, count } = await (query as any)
         .order("created_at", { ascending: false })
         .range(filters.offset || 0, (filters.offset || 0) + (filters.limit || 10) - 1);
         
@@ -157,19 +174,19 @@ export const adminCenterApi = {
         throw error;
       }
 
-      // Flatten the joined data for the UI
       const flattenedData = data?.map((sub: any) => ({
         id: sub.id,
-        email: sub.workspaces?.profiles?.email,
-        full_name: sub.workspaces?.profiles?.display_name,
         subscription_plan: sub.billing_plans?.tier || sub.billing_plans?.name,
         subscription_status: sub.status,
         subscription_expiry: sub.current_period_end || sub.trial_end,
-        last_payment_amount: (sub.unit_amount_minor || 0) / 100
+        last_payment_amount: (sub.unit_amount_minor || 0) / 100,
+        workspace_id: sub.workspaces?.id,
+        owner_id: sub.workspaces?.owner_id
       }));
 
       return { data: flattenedData, count };
     } catch (e) {
+      console.error("Failed to fetch subscriptions:", e);
       return { data: [], count: 0 };
     }
   }

@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useActivityLogs } from "@/features/admin/hooks/use-monitoring";
+import { useAuditLogs } from "@/features/admin/hooks/use-monitoring";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Clock, User, Shield, Terminal, Loader2 } from "lucide-react";
+import { Search, User, Terminal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/admin/audit-logs")({
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/audit-logs")({
 
 function AdminAuditLogs() {
   const [query, setQuery] = useState("");
-  const { data, isLoading } = useActivityLogs({ query });
+  const { data, isLoading } = useAuditLogs({ query });
 
   return (
     <div className="space-y-6">
@@ -25,7 +25,7 @@ function AdminAuditLogs() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
-            placeholder="Search logs by action or user..." 
+            placeholder="Search logs by action or actor..." 
             className="pl-9"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -38,9 +38,9 @@ function AdminAuditLogs() {
           <TableHeader>
             <TableRow className="bg-muted/30">
               <TableHead>Time</TableHead>
-              <TableHead>User</TableHead>
+              <TableHead>Actor</TableHead>
+              <TableHead>Entity</TableHead>
               <TableHead>Action</TableHead>
-              <TableHead>Target/Metadata</TableHead>
               <TableHead>IP Address</TableHead>
             </TableRow>
           </TableHeader>
@@ -58,19 +58,19 @@ function AdminAuditLogs() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    {log.user_id ? <User className="h-3 w-3" /> : <Terminal className="h-3 w-3" />}
-                    <span className="text-sm font-medium">{log.user_id || 'System'}</span>
+                    {log.actor_id ? <User className="h-3 w-3" /> : <Terminal className="h-3 w-3" />}
+                    <span className="text-sm font-medium">{log.actor_id || 'System'}</span>
                   </div>
+                </TableCell>
+                <TableCell className="text-xs font-mono">
+                  {log.entity_type}
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary" className="font-mono text-[10px] uppercase">
                     {log.action}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-xs text-muted-foreground font-mono">
-                  {typeof log.metadata === 'object' ? JSON.stringify(log.metadata) : log.target_id || '-'}
-                </TableCell>
-                <TableCell className="text-xs text-muted-foreground">{log.ip_address || "Unknown"}</TableCell>
+                <TableCell className="text-xs text-muted-foreground">{log.ip_address || "Internal"}</TableCell>
               </TableRow>
             ))}
             {!isLoading && data?.data?.length === 0 && (
