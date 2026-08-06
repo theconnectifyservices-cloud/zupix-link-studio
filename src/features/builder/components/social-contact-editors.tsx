@@ -375,7 +375,6 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
       <Row label="Show icons">
         <Switch checked={block.showIcons !== false} onCheckedChange={(v) => set("showIcons", v)} />
       </Row>
-      <div className="space-y-4 pt-4 border-t">
         <Label className="text-sm font-semibold">Button Settings</Label>
         
         <Field label="Button style">
