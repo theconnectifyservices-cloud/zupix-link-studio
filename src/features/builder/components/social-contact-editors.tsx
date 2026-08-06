@@ -447,18 +447,6 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
             onValueChange={([v]) => set("buttonFontSize", v)} 
           />
         </Field>
-              <SelectItem value="lg">Large</SelectItem>
-            </SelectContent>
-          </Select>
-        </Field>
-
-        <Field label={`Font size (${block.buttonFontSize ?? 12}px)`}>
-          <Slider 
-            min={8} max={24} step={1} 
-            value={[block.buttonFontSize ?? 12]} 
-            onValueChange={([v]) => set("buttonFontSize", v)} 
-          />
-        </Field>
 
         <Field label="Font weight">
           <Select value={block.buttonFontWeight ?? "medium"} onValueChange={(v) => set("buttonFontWeight", v)}>
