@@ -214,6 +214,7 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
   }, [leadsQ.data]);
 
   const referrers = sourceStats;
+  const links = useMemo(() => linkPerformance(events), [events]);
   const publishedCount = pages.filter((p) => p.status === "published").length;
   const qrByPage = useMemo(
     () =>
