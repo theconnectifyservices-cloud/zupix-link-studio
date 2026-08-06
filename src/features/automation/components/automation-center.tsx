@@ -656,7 +656,7 @@ function ProvidersTab() {
       </CardHeader>
       <CardContent>
         <div className="grid gap-3 md:grid-cols-2">
-          {AUTOMATION_PROVIDERS.map((p) => (
+          {AUTOMATION_PROVIDERS.map((p: any) => (
             <div key={p.id} className="flex items-center justify-between rounded-md border p-4">
               <div>
                 <div className="flex items-center gap-2">
