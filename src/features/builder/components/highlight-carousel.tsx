@@ -125,13 +125,17 @@ export function HighlightCarousel({
       // Marks the whole carousel as interactive so the builder's click guard
       // lets drag / arrows / dots through inside the editor canvas.
       data-zx-interactive=""
-      className="relative"
+      className="relative isolate"
       role="region"
       aria-roledescription="carousel"
       aria-label={block.title || "Highlight cards"}
       tabIndex={block.carouselKeyboard === false ? -1 : 0}
       onKeyDown={onKeyDown}
-      onPointerDownCapture={() => {
+      onPointerDownCapture={(e) => {
+        // Stop propagation to prevent dnd-kit or parent editor guards from 
+        // capturing the start of a drag interaction.
+        e.stopPropagation();
+        
         if (block.carouselPauseOnTouch === false) return;
         const ap = embla?.plugins()?.autoplay;
         ap?.stop?.();
