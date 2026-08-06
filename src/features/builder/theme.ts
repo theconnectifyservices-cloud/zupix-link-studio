@@ -304,7 +304,7 @@ export const DEFAULT_PROFILE: ThemeProfile = {
   badgeAnimation: false,
 };
 
-const AVATAR_PX: Record<AvatarSize, number> = { sm: 64, md: 80, lg: 96, xl: 128 };
+const AVATAR_PX: Record<string, number> = { xs: 48, sm: 64, md: 80, lg: 96, xl: 128 };
 
 // Helper to determine the radius string from shape and custom value
 export function getAvatarRadius(shape: AvatarShape, customRadius?: number): string {
