@@ -43,7 +43,7 @@ export async function processTrigger(payload: TriggerPayload): Promise<void> {
 
   // 3. Execute actions
   for (const rule of rules) {
-    const r = rule as AutomationRule;
+    const r = rule as any as AutomationRule;
     try {
       await executeAction(r, metadata);
     } catch (err) {
