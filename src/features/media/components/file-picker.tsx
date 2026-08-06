@@ -328,7 +328,7 @@ function CropStage({
   uploadCropped,
 }: {
   src: string;
-  crop?: MediaPickerProps["crop"];
+  crop?: FilePickerProps["crop"];
   onCancel: () => void;
   onDone: (url: string) => void;
   uploadCropped: (b: Blob, ext: string, mime: string) => Promise<string>;
