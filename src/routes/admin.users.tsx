@@ -69,17 +69,17 @@ function AdminUsers() {
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold">
-                      {user.full_name?.charAt(0) || user.email?.charAt(0)}
+                      {user.display_name?.charAt(0) || user.email?.charAt(0)}
                     </div>
                     <div>
-                      <div className="font-medium">{user.full_name || "Unnamed User"}</div>
+                      <div className="font-medium">{user.display_name || "Unnamed User"}</div>
                       <div className="text-xs text-muted-foreground">{user.email}</div>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline" className="capitalize">
-                    {user.subscription_plan || "Udaan"}
+                    {user.subscription_tier || "Udaan"}
                   </Badge>
                 </TableCell>
                 <TableCell>
