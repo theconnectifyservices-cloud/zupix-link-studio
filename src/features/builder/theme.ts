@@ -305,11 +305,13 @@ export const DEFAULT_PROFILE: ThemeProfile = {
 };
 
 const AVATAR_PX: Record<AvatarSize, number> = { sm: 64, md: 80, lg: 96, xl: 128 };
-const AVATAR_RADIUS_MAP: Record<AvatarShape, string> = {
-  circle: "9999px",
-  rounded: "20px",
-  square: "0px",
-};
+
+// Helper to determine the radius string from shape and custom value
+export function getAvatarRadius(shape: AvatarShape, customRadius?: number): string {
+  if (shape === "circle") return "50%";
+  if (shape === "square") return "0px";
+  return `${customRadius ?? 20}px`;
+}
 
 export type ThemePresetId =
   | "minimal"

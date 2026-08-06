@@ -1394,16 +1394,11 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
     ) : null;
 
   // Avatar
-  const avatarSize = block.avatarSize ?? 80;
+  const avatarSize = block.avatarSize ?? "var(--zx-avatar-size, 80px)";
   const avatarShape = prof.avatarShape ?? "circle";
-  const avatarRadius =
-    avatarShape === "circle"
-      ? "50%"
-      : avatarShape === "square"
-        ? "0px"
-        : `${prof.avatarRadius ?? 20}px`;
-  const avatarBorderW = block.avatarBorderWidth ?? 4;
-  const avatarBorderC = block.avatarBorderColor ?? "#ffffff";
+  const avatarRadius = "var(--zx-avatar-radius, 50%)";
+  const avatarBorderW = block.avatarBorderWidth ?? prof.avatarBorderWidth ?? 4;
+  const avatarBorderC = block.avatarBorderColor ?? prof.avatarBorderColor ?? "#ffffff";
   const avatarShadow = SHADOW_MAP[block.avatarShadow ?? "none"];
   const legacyRing = block.avatarRing ?? "none";
   const legacyRingColor = block.avatarRingColor ?? "#6366f1";
@@ -1532,11 +1527,15 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
     <span
       className={cn(
         "absolute z-[1] rounded-full border-2 border-background",
-        avatarShape === "circle" ? "bottom-[8%] left-[8%]" : "bottom-[-4px] left-[-4px]"
+        avatarShape === "circle" ? "bottom-[8%] left-[8%]" : "bottom-[-2px] left-[-2px]"
       )}
       style={{
-        width: 12,
-        height: 12,
+        width: "calc(var(--zx-avatar-size, 80px) * 0.15)",
+        height: "calc(var(--zx-avatar-size, 80px) * 0.15)",
+        minWidth: 10,
+        minHeight: 10,
+        maxWidth: 24,
+        maxHeight: 24,
         background: statusColor,
       }}
     />
