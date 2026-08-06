@@ -57,6 +57,42 @@ export interface Webhook {
   updatedAt: string;
 }
 
+export type DeliveryStatus = "pending" | "success" | "failed" | "retrying";
+
+export interface WebhookDelivery {
+  id: string;
+  webhookId: string;
+  event: string;
+  status: DeliveryStatus;
+  statusCode: number | null;
+  responseBody: string | null;
+  errorMessage: string | null;
+  attempt: number;
+  durationMs: number | null;
+  createdAt: string;
+  completedAt: string | null;
+}
+
+export interface ApiRequestLog {
+  id: string;
+  workspaceId: string;
+  apiKeyId: string | null;
+  requestId: string;
+  method: string;
+  endpoint: string;
+  statusCode: number;
+  durationMs: number;
+  errorMessage: string | null;
+  createdAt: string;
+}
+
+export const AUTOMATION_PROVIDERS = [
+  { id: "zapier", name: "Zapier", status: "ready", docs: "https://zapier.com/apps" },
+  { id: "make", name: "Make (Integromat)", status: "ready", docs: "https://www.make.com" },
+  { id: "n8n", name: "n8n", status: "coming_soon", docs: "https://n8n.io" },
+  { id: "pipedream", name: "Pipedream", status: "coming_soon", docs: "https://pipedream.com" },
+] as const;
+
 export type AutomationTrigger = WebhookEvent;
 
 export type AutomationAction =
@@ -105,4 +141,3 @@ export interface UserAutomationSettings {
   whatsapp_enabled: boolean;
   dashboard_enabled: boolean;
 }
-
