@@ -100,12 +100,13 @@ export function AutomationCenter({ workspaceId, userId }: Props) {
   return (
     <Tabs defaultValue="keys" className="w-full">
       <TabsList className="mb-4 flex flex-wrap">
+        <TabsTrigger value="notifications"><Bell className="mr-2 h-4 w-4" />Notifications</TabsTrigger>
+        <TabsTrigger value="workflows"><Zap className="mr-2 h-4 w-4" />Workflows</TabsTrigger>
+        <TabsTrigger value="timeline"><History className="mr-2 h-4 w-4" />Timeline</TabsTrigger>
         <TabsTrigger value="keys"><KeyRound className="mr-2 h-4 w-4" />API Keys</TabsTrigger>
         <TabsTrigger value="webhooks"><WebhookIcon className="mr-2 h-4 w-4" />Webhooks</TabsTrigger>
-        <TabsTrigger value="deliveries"><Send className="mr-2 h-4 w-4" />Deliveries</TabsTrigger>
-        <TabsTrigger value="logs"><ScrollText className="mr-2 h-4 w-4" />API Logs</TabsTrigger>
-        <TabsTrigger value="providers"><Plug className="mr-2 h-4 w-4" />Providers</TabsTrigger>
-        <TabsTrigger value="docs"><BookOpen className="mr-2 h-4 w-4" />Docs</TabsTrigger>
+        <TabsTrigger value="settings"><Settings className="mr-2 h-4 w-4" />Settings</TabsTrigger>
+
       </TabsList>
 
       <TabsContent value="keys"><ApiKeysTab workspaceId={workspaceId} userId={userId} /></TabsContent>
