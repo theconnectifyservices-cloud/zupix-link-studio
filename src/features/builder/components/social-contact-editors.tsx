@@ -440,14 +440,13 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
           <AlignSelect value={block.buttonAlign ?? "center"} onChange={(v) => set("buttonAlign", v)} />
         </Row>
 
-        <Field label="Button height">
-          <Select value={block.buttonSize ?? "md"} onValueChange={(v) => set("buttonSize", v)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="sm">Small</SelectItem>
-              <SelectItem value="md">Medium</SelectItem>
+        <Field label={`Font size (${block.buttonFontSize ?? 12}px)`}>
+          <Slider 
+            min={8} max={24} step={1} 
+            value={[block.buttonFontSize ?? 12]} 
+            onValueChange={([v]) => set("buttonFontSize", v)} 
+          />
+        </Field>
               <SelectItem value="lg">Large</SelectItem>
             </SelectContent>
           </Select>
