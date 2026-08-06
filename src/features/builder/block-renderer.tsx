@@ -446,7 +446,7 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
     default:
       return (
         <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">
-          {block.type} · coming soon
+          {(block as any).type} · coming soon
         </div>
       );
   }

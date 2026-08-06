@@ -984,30 +984,74 @@ export interface MiniStoreBlock extends BaseBlock {
 
 
 export type BookingKind = "appointment" | "meeting" | "consultation";
+export type BookingLocationType = "online" | "offline";
+export type BookingMeetingProvider = "google_meet" | "zoom" | "microsoft_teams" | "whatsapp" | "custom";
+export type BookingLayout = "card" | "list" | "compact" | "carousel" | "grid";
 
-/** Lightweight 1:1 booking block — requests land in Dashboard → Bookings. */
+export interface BookingService {
+  id: string;
+  kind: BookingKind;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  coverImage?: string;
+  durationMin: number;
+  price?: number;
+  currency?: string;
+  isFree?: boolean;
+  category?: string;
+  locationType: BookingLocationType;
+  meetingProvider?: BookingMeetingProvider;
+  meetingLink?: string;
+  address?: string;
+  googleMapsLink?: string;
+  confirmationMessage?: string;
+  thankYouMessage?: string;
+  /** Buffer time in minutes */
+  bufferTime?: number;
+  /** Per-service availability overrides (if any) */
+  availability?: BookingAvailability;
+  hidden?: boolean;
+}
+
+export interface BookingAvailability {
+  /** 0-6 (Sun-Sat) */
+  workingDays: number[];
+  /** HH:mm format */
+  workingHoursStart: string;
+  workingHoursEnd: string;
+  lunchBreakStart?: string;
+  lunchBreakEnd?: string;
+  unavailableDates?: string[]; // ISO dates
+  minimumNoticeMin?: number;
+  maximumAdvanceDays?: number;
+  bookingIntervalMin: 15 | 30 | 45 | 60;
+}
+
 export interface BookingBlock extends BaseBlock {
   type: "booking";
   title?: string;
   description?: string;
-  kind?: BookingKind;
-  durationMin?: number;
-  /** 0 = Sunday … 6 = Saturday */
-  days?: number[];
-  /** "HH:MM" 24h slots */
-  slots?: string[];
-  timezone?: string;
-  locationType?: "online" | "offline";
-  meetingProvider?: "google_meet" | "zoom" | "whatsapp" | "custom";
-  meetingLink?: string;
-  address?: string;
-  requirePhone?: boolean;
-  confirmationMessage?: string;
-  emailConfirmation?: boolean;
-  notifyEmail?: string;
-  submitLabel?: string;
+  services: BookingService[];
+  layout?: BookingLayout;
+  columns?: number;
+  gap?: number;
+  
+  /** Global availability for all services (can be overridden per service) */
+  availability?: BookingAvailability;
+
+  /** Visuals */
   cardStyle?: BusinessCardStyle;
   radius?: number;
+  shadow?: "none" | "sm" | "md" | "lg";
+  padding?: number;
+  fontFamily?: string;
+  buttonStyle?: "solid" | "gradient" | "outline" | "soft";
+  buttonRadius?: number;
+
+  /** Contact Fields */
+  requirePhone?: boolean;
+  requireNotes?: boolean;
 }
 
 

@@ -151,34 +151,34 @@ function BookingRow({
               <span className="text-[11px] text-muted-foreground">{b.service_title}</span>
             )}
           </div>
-          <div className="mt-1 flex flex-wrap gap-3 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
+          <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1 shrink-0">
               <CalendarClock className="h-3 w-3" />
               {b.booking_date} · {b.booking_time}
             </span>
-            <span className="inline-flex items-center gap-1">
+            <span className="inline-flex items-center gap-1 shrink-0">
               <Clock className="h-3 w-3" />
               {b.duration_min ?? 30} min
             </span>
             {b.email && (
-              <span className="inline-flex items-center gap-1">
-                <Mail className="h-3 w-3" />
+              <span className="inline-flex items-center gap-1 truncate max-w-[160px] sm:max-w-none">
+                <Mail className="h-3 w-3 shrink-0" />
                 {b.email}
               </span>
             )}
             {b.phone && (
-              <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1 shrink-0">
                 <Phone className="h-3 w-3" />
                 {b.phone}
               </span>
             )}
-            <span className="inline-flex items-center gap-1">
+            <span className="inline-flex items-center gap-1 truncate max-w-[120px] sm:max-w-none">
               {b.location_type === "offline" ? (
-                <MapPin className="h-3 w-3" />
+                <MapPin className="h-3 w-3 shrink-0" />
               ) : (
-                <Video className="h-3 w-3" />
+                <Video className="h-3 w-3 shrink-0" />
               )}
-              {b.location_type === "offline" ? b.location_address || "In person" : "Online"}
+              <span className="truncate">{b.location_type === "offline" ? b.location_address || "In person" : "Online"}</span>
             </span>
           </div>
           {b.notes && <p className="mt-1 text-xs">{b.notes}</p>}

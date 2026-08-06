@@ -33,7 +33,7 @@ import {
   UserPlus,
   QrCode,
 } from "lucide-react";
-import type { Block, BlockType } from "./types";
+import type { Block, BlockType, CustomCodeBlock } from "./types";
 import { newId } from "./types";
 
 export interface BlockDef {
@@ -680,40 +680,50 @@ export const BLOCK_DEFS: BlockDef[] = [
   },
   {
     type: "booking",
-    label: "Booking",
-    description: "1:1 appointments & consultations",
+    label: "Bookings Pro",
+    description: "Enterprise appointment system",
     icon: CalendarClock,
     group: "business",
     available: true,
     create: () => ({
       id: newId(),
       type: "booking",
-      title: "Book a slot",
-      description: "Pick a day and time that works for you.",
-      kind: "appointment",
-      durationMin: 30,
-      days: [1, 2, 3, 4, 5],
-      slots: ["10:00", "11:00", "12:00", "15:00", "16:00", "17:00"],
-      timezone: "Asia/Kolkata",
-      locationType: "online",
-      meetingProvider: "google_meet",
-      requirePhone: true,
-      emailConfirmation: true,
-      submitLabel: "Request booking",
-      confirmationMessage: "Thanks! Your booking request has been received.",
+      title: "Book an Appointment",
+      description: "Select a service below to schedule a time.",
+      layout: "grid",
+      columns: 2,
+      services: [
+        {
+          id: newId(),
+          kind: "appointment",
+          title: "1:1 Strategy Call",
+          subtitle: "30-minute deep dive",
+          description: "A focused session to discuss your project and goals.",
+          durationMin: 30,
+          isFree: true,
+          locationType: "online",
+          meetingProvider: "google_meet",
+        },
+      ],
+      availability: {
+        workingDays: [1, 2, 3, 4, 5],
+        workingHoursStart: "09:00",
+        workingHoursEnd: "17:00",
+        bookingIntervalMin: 30,
+      },
       cardStyle: "glass",
       radius: 18,
     }),
   },
   // Reserved / later phases
   {
-    type: "html",
+    type: "customCode",
     label: "HTML",
     description: "Coming soon",
     icon: FileCode,
     group: "advanced",
     available: false,
-    create: () => ({ id: newId(), type: "html" }),
+    create: () => ({ id: newId(), type: "customCode" } as CustomCodeBlock),
   },
 ];
 
