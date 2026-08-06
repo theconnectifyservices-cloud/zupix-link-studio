@@ -203,6 +203,24 @@ export function FollowCardRender({
   const links = block.links ?? [];
   const align = block.align ?? "center";
   const minimal = block.layout === "minimal";
+  const blockId = block.id;
+
+  // Generate unique class for this block to handle custom hover colors
+  const customStyles = (
+    <style>
+      {`
+        .follow-btn-${blockId} {
+          transition: all 0.2s ease;
+        }
+        .follow-btn-${blockId}:hover {
+          ${block.buttonHoverBgColor ? `background-color: ${block.buttonHoverBgColor} !important;` : ""}
+          ${block.buttonHoverTextColor ? `color: ${block.buttonHoverTextColor} !important;` : ""}
+          ${block.buttonHoverBorderColor ? `border-color: ${block.buttonHoverBorderColor} !important;` : ""}
+        }
+      `}
+    </style>
+  );
+
   return (
     <div
       className={cn(
