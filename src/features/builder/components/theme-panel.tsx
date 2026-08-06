@@ -545,10 +545,11 @@ export function ThemePanel() {
                 {(bg.gradientStops ?? []).map((stop, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <div className="flex-1">
-                      <ColorField
+                    <ColorField
                         label=""
                         value={stop.color}
                         brands={brands}
+                        onSaveBrand={addBrand}
                         onChange={(v) => {
                           const stops = [...(bg.gradientStops ?? [])];
                           stops[i] = { ...stop, color: v };
