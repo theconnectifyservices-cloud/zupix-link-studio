@@ -62,6 +62,7 @@ import { Route as AuthenticatedAppInfrastructureRouteImport } from './routes/_au
 import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated.app.help'
 import { Route as AuthenticatedAppEnterpriseRouteImport } from './routes/_authenticated.app.enterprise'
 import { Route as AuthenticatedAppDomainsRouteImport } from './routes/_authenticated.app.domains'
+import { Route as AuthenticatedAppCustomersRouteImport } from './routes/_authenticated/app/customers'
 import { Route as AuthenticatedAppConversionsRouteImport } from './routes/_authenticated.app.conversions'
 import { Route as AuthenticatedAppCommunicationsRouteImport } from './routes/_authenticated.app.communications'
 import { Route as AuthenticatedAppChangelogRouteImport } from './routes/_authenticated/app/changelog'
@@ -384,6 +385,12 @@ const AuthenticatedAppDomainsRoute = AuthenticatedAppDomainsRouteImport.update({
   path: '/domains',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppCustomersRoute =
+  AuthenticatedAppCustomersRouteImport.update({
+    id: '/customers',
+    path: '/customers',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppConversionsRoute =
   AuthenticatedAppConversionsRouteImport.update({
     id: '/conversions',
@@ -656,6 +663,7 @@ export interface FileRoutesByFullPath {
   '/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
+  '/app/customers': typeof AuthenticatedAppCustomersRoute
   '/app/domains': typeof AuthenticatedAppDomainsRoute
   '/app/enterprise': typeof AuthenticatedAppEnterpriseRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -748,6 +756,7 @@ export interface FileRoutesByTo {
   '/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/app/conversions': typeof AuthenticatedAppConversionsRoute
+  '/app/customers': typeof AuthenticatedAppCustomersRoute
   '/app/domains': typeof AuthenticatedAppDomainsRoute
   '/app/enterprise': typeof AuthenticatedAppEnterpriseRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -844,6 +853,7 @@ export interface FileRoutesById {
   '/_authenticated/app/changelog': typeof AuthenticatedAppChangelogRoute
   '/_authenticated/app/communications': typeof AuthenticatedAppCommunicationsRoute
   '/_authenticated/app/conversions': typeof AuthenticatedAppConversionsRoute
+  '/_authenticated/app/customers': typeof AuthenticatedAppCustomersRoute
   '/_authenticated/app/domains': typeof AuthenticatedAppDomainsRoute
   '/_authenticated/app/enterprise': typeof AuthenticatedAppEnterpriseRoute
   '/_authenticated/app/help': typeof AuthenticatedAppHelpRoute
@@ -940,6 +950,7 @@ export interface FileRouteTypes {
     | '/app/changelog'
     | '/app/communications'
     | '/app/conversions'
+    | '/app/customers'
     | '/app/domains'
     | '/app/enterprise'
     | '/app/help'
@@ -1032,6 +1043,7 @@ export interface FileRouteTypes {
     | '/app/changelog'
     | '/app/communications'
     | '/app/conversions'
+    | '/app/customers'
     | '/app/domains'
     | '/app/enterprise'
     | '/app/help'
@@ -1127,6 +1139,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/changelog'
     | '/_authenticated/app/communications'
     | '/_authenticated/app/conversions'
+    | '/_authenticated/app/customers'
     | '/_authenticated/app/domains'
     | '/_authenticated/app/enterprise'
     | '/_authenticated/app/help'
@@ -1585,6 +1598,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppDomainsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/customers': {
+      id: '/_authenticated/app/customers'
+      path: '/customers'
+      fullPath: '/app/customers'
+      preLoaderRoute: typeof AuthenticatedAppCustomersRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/conversions': {
       id: '/_authenticated/app/conversions'
       path: '/conversions'
@@ -1966,6 +1986,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppChangelogRoute: typeof AuthenticatedAppChangelogRoute
   AuthenticatedAppCommunicationsRoute: typeof AuthenticatedAppCommunicationsRoute
   AuthenticatedAppConversionsRoute: typeof AuthenticatedAppConversionsRoute
+  AuthenticatedAppCustomersRoute: typeof AuthenticatedAppCustomersRoute
   AuthenticatedAppDomainsRoute: typeof AuthenticatedAppDomainsRoute
   AuthenticatedAppEnterpriseRoute: typeof AuthenticatedAppEnterpriseRoute
   AuthenticatedAppHelpRoute: typeof AuthenticatedAppHelpRoute
@@ -2007,6 +2028,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppChangelogRoute: AuthenticatedAppChangelogRoute,
   AuthenticatedAppCommunicationsRoute: AuthenticatedAppCommunicationsRoute,
   AuthenticatedAppConversionsRoute: AuthenticatedAppConversionsRoute,
+  AuthenticatedAppCustomersRoute: AuthenticatedAppCustomersRoute,
   AuthenticatedAppDomainsRoute: AuthenticatedAppDomainsRoute,
   AuthenticatedAppEnterpriseRoute: AuthenticatedAppEnterpriseRoute,
   AuthenticatedAppHelpRoute: AuthenticatedAppHelpRoute,
@@ -2106,13 +2128,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
