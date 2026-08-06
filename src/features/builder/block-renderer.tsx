@@ -1520,6 +1520,27 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
       <BadgeCheck style={{ width: badgeSize, height: badgeSize }} />
     </span>
   ) : null;
+  
+  const statusColor = 
+    prof.avatarStatus === "online" ? "#22c55e" : 
+    prof.avatarStatus === "away" ? "#f59e0b" : 
+    prof.avatarStatus === "busy" ? "#ef4444" : 
+    prof.avatarStatus === "offline" ? "#9ca3af" : 
+    null;
+
+  const statusEl = statusColor ? (
+    <span
+      className={cn(
+        "absolute z-[1] rounded-full border-2 border-background",
+        avatarShape === "circle" ? "bottom-[8%] left-[8%]" : "bottom-[-4px] left-[-4px]"
+      )}
+      style={{
+        width: 12,
+        height: 12,
+        background: statusColor,
+      }}
+    />
+  ) : null;
 
   const nameStyle: CSSProperties = {
     fontSize: block.nameFontSizePx ? `${block.nameFontSizePx}px` : "var(--zx-name-size, 18px)",

@@ -295,6 +295,7 @@ export const DEFAULT_PROFILE: ThemeProfile = {
   bioSize: 12,
   bioWeight: 400,
   verifiedPosition: "inline",
+  avatarStatus: "none",
   avatarGlow: false,
   avatarRing: false,
   avatarRotatingRing: false,
