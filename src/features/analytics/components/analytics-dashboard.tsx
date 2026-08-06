@@ -43,7 +43,6 @@ import {
   fetchWorkspacePages,
   resolveRange,
   type RangeKey,
-  fetchRecentEvents,
 } from "../api";
 import { listLeads, listBookings } from "@/features/business/api";
 import {
