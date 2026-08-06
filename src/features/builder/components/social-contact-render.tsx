@@ -253,7 +253,7 @@ export function FollowCardRender({
             // Base styles from the block or legacy defaults
             const baseColor = l.color ?? BRAND_COLOR[l.platform] ?? "#6366F1";
             const textColor = block.buttonColor ?? (block.buttonStyle === "filled" ? "#ffffff" : baseColor);
-            const bgColor = block.buttonBgColor ?? (block.buttonStyle === "filled" ? baseColor : "transparent");
+            const bgColor = block.buttonBgColor ?? (block.buttonStyle === "filled" ? baseColor : block.buttonStyle === "gradient" ? `linear-gradient(135deg, ${baseColor}, ${baseColor}dd)` : "transparent");
             const borderColor = block.buttonBorderColor ?? (block.buttonStyle === "outline" ? baseColor : "transparent");
 
             const shadowSize = block.buttonShadowSize ?? "none";
