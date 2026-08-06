@@ -12,4 +12,4 @@
  * Enterprise, Agency onboarding, etc.).
  */
 export { ImageField as MediaField } from "@/features/builder/components/image-field";
-export type { CropShape } from "@/features/media/components/media-picker";
+export type { CropShape } from "@/features/media/components/file-picker";
