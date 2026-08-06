@@ -638,7 +638,7 @@ export const BLOCK_DEFS: BlockDef[] = [
   {
     type: "store",
     label: "Mini Store",
-    description: "Sell a few products or services",
+    description: "Sell products & services",
     icon: ShoppingBag,
     group: "business",
     available: true,
@@ -681,7 +681,7 @@ export const BLOCK_DEFS: BlockDef[] = [
   {
     type: "booking",
     label: "Bookings Pro",
-    description: "Enterprise appointment system",
+    description: "Appointment system",
     icon: CalendarClock,
     group: "business",
     available: true,

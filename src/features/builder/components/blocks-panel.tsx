@@ -105,10 +105,9 @@ function PaletteTile({ def, onAdded }: { def: BlockDef; onAdded?: () => void }) 
         >
           {isLocked ? <Lock className="h-3.5 w-3.5" /> : <Icon className="h-4 w-4" />}
         </div>
-        {requiredPlan && requiredPlan !== "udaan" && !isComingSoon && (
+        {requiredPlan && requiredPlan !== "udaan" && (
           <PlanBadge plan={requiredPlan} />
         )}
-        {isComingSoon && <PlanBadge plan="shikhar" />}
       </div>
       <div className="min-w-0">
         <div className="truncate text-sm font-medium">{def.label}</div>
