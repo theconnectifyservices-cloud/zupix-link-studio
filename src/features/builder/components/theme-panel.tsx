@@ -1042,6 +1042,17 @@ export function ThemePanel() {
               </SelectContent>
             </Select>
           </Field>
+          {profile.avatarShape === "rounded" && (
+            <NumField
+              label="Corner radius"
+              min={0}
+              max={40}
+              step={1}
+              value={profile.avatarRadius ?? 20}
+              suffix="px"
+              onChange={(v) => patchProfile({ avatarRadius: v })}
+            />
+          )}
           <Field label="Avatar size">
             <Select
               value={profile.avatarSize}

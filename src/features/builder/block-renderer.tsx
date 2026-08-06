@@ -1395,7 +1395,13 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
 
   // Avatar
   const avatarSize = block.avatarSize ?? 80;
-  const avatarRadius = block.avatarRadius ?? 9999;
+  const avatarShape = prof.avatarShape ?? "circle";
+  const avatarRadius =
+    avatarShape === "circle"
+      ? "50%"
+      : avatarShape === "square"
+        ? "0px"
+        : `${prof.avatarRadius ?? 20}px`;
   const avatarBorderW = block.avatarBorderWidth ?? 4;
   const avatarBorderC = block.avatarBorderColor ?? "#ffffff";
   const avatarShadow = SHADOW_MAP[block.avatarShadow ?? "none"];
