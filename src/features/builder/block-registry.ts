@@ -723,7 +723,7 @@ export const BLOCK_DEFS: BlockDef[] = [
     icon: FileCode,
     group: "advanced",
     available: false,
-    create: () => ({ id: newId(), type: "html" }),
+    create: () => ({ id: newId(), type: "customCode" } as CustomCodeBlock),
   },
 ];
 
