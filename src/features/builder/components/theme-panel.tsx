@@ -1053,6 +1053,23 @@ export function ThemePanel() {
               onChange={(v) => patchProfile({ avatarRadius: v })}
             />
           )}
+          <Field label="Status indicator">
+            <Select
+              value={profile.avatarStatus ?? "none"}
+              onValueChange={(v) => patchProfile({ avatarStatus: v as any })}
+            >
+              <SelectTrigger className="h-8">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="online">Online</SelectItem>
+                <SelectItem value="away">Away</SelectItem>
+                <SelectItem value="busy">Busy</SelectItem>
+                <SelectItem value="offline">Offline</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
           <Field label="Avatar size">
             <Select
               value={profile.avatarSize}
