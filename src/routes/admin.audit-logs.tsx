@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useActivityLogs } from "@/features/admin/hooks/use-monitoring";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Clock, User, Shield, Terminal } from "lucide-react";
+import { Search, Clock, User, Shield, Terminal, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/admin/audit-logs")({
@@ -9,12 +11,8 @@ export const Route = createFileRoute("/admin/audit-logs")({
 });
 
 function AdminAuditLogs() {
-  const mockLogs = [
-    { id: 1, user: "admin@zupix.site", action: "update_plan", target: "user:123", time: "2026-08-06 14:20:05", ip: "192.168.1.1" },
-    { id: 2, user: "system", action: "generate_license", target: "batch:45", time: "2026-08-06 14:15:22", ip: "127.0.0.1" },
-    { id: 3, user: "moderator@zupix.site", action: "suspend_user", target: "user:99", time: "2026-08-06 13:50:11", ip: "192.168.1.5" },
-    { id: 4, user: "admin@zupix.site", action: "change_settings", target: "system:config", time: "2026-08-06 12:30:00", ip: "192.168.1.1" },
-  ];
+  const [query, setQuery] = useState("");
+  const { data, isLoading } = useActivityLogs({ query });
 
   return (
     <div className="space-y-6">
@@ -26,7 +24,12 @@ function AdminAuditLogs() {
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search logs by action or user..." className="pl-9" />
+          <Input 
+            placeholder="Search logs by action or user..." 
+            className="pl-9"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
         </div>
       </div>
 
@@ -37,18 +40,26 @@ function AdminAuditLogs() {
               <TableHead>Time</TableHead>
               <TableHead>User</TableHead>
               <TableHead>Action</TableHead>
-              <TableHead>Target</TableHead>
+              <TableHead>Target/Metadata</TableHead>
               <TableHead>IP Address</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockLogs.map((log) => (
+            {isLoading ? (
+              [1, 2, 3, 4, 5].map(i => (
+                <TableRow key={i}>
+                  <TableCell colSpan={5} className="h-16 animate-pulse bg-muted/20" />
+                </TableRow>
+              ))
+            ) : data?.data?.map((log: any) => (
               <TableRow key={log.id}>
-                <TableCell className="text-xs font-mono text-muted-foreground">{log.time}</TableCell>
+                <TableCell className="text-xs font-mono text-muted-foreground">
+                  {new Date(log.created_at).toLocaleString()}
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    {log.user === 'system' ? <Terminal className="h-3 w-3" /> : <User className="h-3 w-3" />}
-                    <span className="text-sm font-medium">{log.user}</span>
+                    {log.user_id ? <User className="h-3 w-3" /> : <Terminal className="h-3 w-3" />}
+                    <span className="text-sm font-medium">{log.user_id || 'System'}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -56,10 +67,19 @@ function AdminAuditLogs() {
                     {log.action}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-xs text-muted-foreground font-mono">{log.target}</TableCell>
-                <TableCell className="text-xs text-muted-foreground">{log.ip}</TableCell>
+                <TableCell className="text-xs text-muted-foreground font-mono">
+                  {typeof log.metadata === 'object' ? JSON.stringify(log.metadata) : log.target_id || '-'}
+                </TableCell>
+                <TableCell className="text-xs text-muted-foreground">{log.ip_address || "Unknown"}</TableCell>
               </TableRow>
             ))}
+            {!isLoading && data?.data?.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                  No audit logs found.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
