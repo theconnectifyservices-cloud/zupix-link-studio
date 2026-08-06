@@ -1,22 +1,40 @@
-/** Pure aggregators over EventRow / SessionRow. */
+/** Pure aggregators over EventRow / SessionRow / Business data. */
 import type { EventRow, SessionRow, DateRange } from "./api";
+import type { Lead, Booking } from "@/features/business/api";
 
-export interface Kpis {
+export interface BusinessKpis {
   totalViews: number;
   uniqueVisitors: number;
   returningVisitors: number;
   totalClicks: number;
   ctr: number;
   qrScans: number;
+  // Business specific
+  leads: number;
+  bookings: number;
+  conversionRate: number;
+  revenue: number;
+  successfulPayments: number;
 }
 
-export function computeKpis(events: EventRow[], sessions: SessionRow[]): Kpis {
+export function computeKpis(
+  events: EventRow[], 
+  sessions: SessionRow[], 
+  leads: Lead[] = [], 
+  bookings: Booking[] = []
+): BusinessKpis {
   const totalViews = events.filter((e) => e.event_type === "page_view").length;
   const totalClicks = events.filter((e) => e.event_type === "link_click").length;
   const qrScans = events.filter((e) => e.event_type === "qr_scan").length;
   const visitors = new Set(sessions.map((s) => s.visitor_hash));
   const returning = new Set(sessions.filter((s) => s.is_returning).map((s) => s.visitor_hash));
   const ctr = totalViews > 0 ? (totalClicks / totalViews) * 100 : 0;
+  
+  const leadCount = leads.length;
+  const bookingCount = bookings.length;
+  const totalConversions = leadCount + bookingCount;
+  const conversionRate = totalViews > 0 ? (totalConversions / totalViews) * 100 : 0;
+
   return {
     totalViews,
     uniqueVisitors: visitors.size,
@@ -24,6 +42,11 @@ export function computeKpis(events: EventRow[], sessions: SessionRow[]): Kpis {
     totalClicks,
     ctr,
     qrScans,
+    leads: leadCount,
+    bookings: bookingCount,
+    conversionRate,
+    revenue: 0, // Placeholder for payment integration
+    successfulPayments: 0, // Placeholder
   };
 }
 
@@ -147,15 +170,36 @@ export interface LinkStat {
   url: string;
   host: string;
   clicks: number;
+  ctr: number;
 }
 
 export function linkPerformance(events: EventRow[]): LinkStat[] {
-  const map = new Map<string, LinkStat>();
+  const viewsByBlock = new Map<string, number>();
+  const clicksByUrl = new Map<string, { url: string; host: string; clicks: number }>();
+  
   for (const e of events) {
-    if (e.event_type !== "link_click" || !e.link_url) continue;
-    const cur = map.get(e.link_url) ?? { url: e.link_url, host: e.link_host ?? "", clicks: 0 };
-    cur.clicks += 1;
-    map.set(e.link_url, cur);
+    if (e.event_type === "page_view") {
+      // In a real scenario, we'd need page-level view data or block-level view impressions
+      // For now, we'll use total page views as the denominator for rough CTR if blockId is missing
+    }
+    if (e.event_type === "link_click" && e.link_url) {
+      const cur = clicksByUrl.get(e.link_url) ?? { url: e.link_url, host: e.link_host ?? "", clicks: 0 };
+      cur.clicks += 1;
+      clicksByUrl.set(e.link_url, cur);
+    }
   }
-  return Array.from(map.values()).sort((a, b) => b.clicks - a.clicks);
+
+  const totalViews = events.filter(e => e.event_type === "page_view").length || 1;
+
+  return Array.from(clicksByUrl.values())
+    .map(c => ({
+      ...c,
+      ctr: (c.clicks / totalViews) * 100
+    }))
+    .sort((a, b) => b.clicks - a.clicks);
+}
+
+export function trafficSources(events: EventRow[]): Slice[] {
+  const views = events.filter(e => e.event_type === "page_view");
+  return groupCount(views, (e) => e.referrer_source || "Direct");
 }

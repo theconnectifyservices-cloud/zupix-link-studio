@@ -3,14 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
   BarChart3,
+  CalendarCheck,
   Download,
   Eye,
   Globe2,
   Link2,
+  MessageSquare,
   MousePointerClick,
   QrCode,
   RefreshCw,
   Repeat,
+  ShoppingBag,
   Smartphone,
   Users,
 } from "lucide-react";
@@ -41,6 +44,7 @@ import {
   resolveRange,
   type RangeKey,
 } from "../api";
+import { listLeads, listBookings } from "@/features/business/api";
 import {
   bucketTimeseries,
   computeKpis,
@@ -119,6 +123,14 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
     refetchInterval: 30_000,
     staleTime: 15_000,
   });
+  const leadsQ = useQuery({
+    queryKey: ["business.leads", workspaceId],
+    queryFn: () => listLeads(workspaceId),
+  });
+  const bookingsQ = useQuery({
+    queryKey: ["business.bookings", workspaceId],
+    queryFn: () => listBookings(workspaceId),
+  });
   const recentQ = useQuery({
     queryKey: ["analytics.recent", workspaceId],
     queryFn: () => fetchRecentEvents(workspaceId, 15),
@@ -135,7 +147,7 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
     return (id: string | null | undefined) => (id && map.get(id)) || "Unknown page";
   }, [pages]);
 
-  const kpis = useMemo(() => computeKpis(events, sessions), [events, sessions]);
+  const kpis = useMemo(() => computeKpis(events, sessions, leadsQ.data, bookingsQ.data), [events, sessions, leadsQ.data, bookingsQ.data]);
   const bucket = useMemo(() => pickBucket(range), [range]);
   const series = useMemo(
     () => bucketTimeseries(events, sessions, range, bucket),
@@ -153,14 +165,55 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
   const countries = useMemo(() => groupCount(sessions, (s) => s.country ?? "Unknown"), [sessions]);
   const regions = useMemo(() => groupCount(sessions, (s) => s.region ?? "Unknown"), [sessions]);
   const cities = useMemo(() => groupCount(sessions, (s) => s.city ?? "Unknown"), [sessions]);
-  const referrers = useMemo(
-    () =>
-      groupCount(
-        events.filter((e) => e.event_type === "page_view"),
-        (e) => e.referrer_source ?? "direct",
-      ),
-    [events],
-  );
+  const sourceStats = useMemo(() => {
+    const views = events.filter((e) => e.event_type === "page_view");
+    const total = views.length || 1;
+    const map = new Map<string, number>();
+    const SOCIAL_SOURCES = [
+      "Instagram",
+      "Facebook",
+      "WhatsApp",
+      "LinkedIn",
+      "YouTube",
+      "Telegram",
+      "X",
+      "Twitter",
+      "Google",
+    ];
+
+    for (const v of views) {
+      let src = v.referrer_source || "Direct";
+      const matched = SOCIAL_SOURCES.find((s) => src.toLowerCase().includes(s.toLowerCase()));
+      if (matched) src = matched;
+      map.set(src, (map.get(src) ?? 0) + 1);
+    }
+    return Array.from(map, ([key, count]) => ({
+      key,
+      label: key,
+      count,
+      pct: (count / total) * 100,
+    })).sort((a, b) => b.count - a.count);
+  }, [events]);
+
+  const bookingStats = useMemo(() => {
+    const data = bookingsQ.data ?? [];
+    return {
+      upcoming: data.filter((b) => b.status === "pending" || b.status === "approved").length,
+      completed: data.filter((b) => b.status === "completed").length,
+      cancelled: data.filter((b) => b.status === "cancelled").length,
+      mostBooked: groupCount(data, (b) => b.service_title)[0]?.label || "None",
+    };
+  }, [bookingsQ.data]);
+
+  const leadStats = useMemo(() => {
+    const data = leadsQ.data ?? [];
+    return {
+      total: data.length,
+      latest: data.slice(0, 5),
+    };
+  }, [leadsQ.data]);
+
+  const referrers = sourceStats;
   const links = useMemo(() => linkPerformance(events), [events]);
   const publishedCount = pages.filter((p) => p.status === "published").length;
   const qrByPage = useMemo(
@@ -250,13 +303,13 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
 
       {/* KPI Grid */}
       {loading ? (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
+          {Array.from({ length: 10 }).map((_, i) => (
             <Skeleton key={i} className="h-24 w-full" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
           <KpiCard label="Total Views" value={formatNumber(kpis.totalViews)} icon={Eye} />
           <KpiCard
             label="Unique Visitors"
@@ -264,25 +317,27 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
             icon={Users}
           />
           <KpiCard
-            label="Returning"
-            value={formatNumber(kpis.returningVisitors)}
-            icon={Repeat}
-            hint={
-              kpis.uniqueVisitors > 0
-                ? `${((kpis.returningVisitors / kpis.uniqueVisitors) * 100).toFixed(1)}% of visitors`
-                : undefined
-            }
+            label="Total Clicks"
+            value={formatNumber(kpis.totalClicks)}
+            icon={MousePointerClick}
           />
-          <KpiCard label="Total Clicks" value={formatNumber(kpis.totalClicks)} icon={MousePointerClick} />
           <KpiCard
             label="CTR"
             value={`${kpis.ctr.toFixed(1)}%`}
             icon={BarChart3}
             hint="Clicks ÷ views"
           />
-          <KpiCard label="QR Scans" value={formatNumber(kpis.qrScans)} icon={QrCode} />
-          <KpiCard label="Active Pages" value={pages.length} icon={Link2} />
-          <KpiCard label="Published" value={publishedCount} icon={Globe2} />
+          <KpiCard label="Leads" value={kpis.leads} icon={MessageSquare} />
+          <KpiCard label="Bookings" value={kpis.bookings} icon={CalendarCheck} />
+          <KpiCard label="Store Orders" value={0} icon={ShoppingBag} />
+          <KpiCard
+            label="Conv. Rate"
+            value={`${kpis.conversionRate.toFixed(1)}%`}
+            icon={RefreshCw}
+            hint="Leads + Bookings ÷ Views"
+          />
+          <KpiCard label="Payments" value={0} icon={RefreshCw} />
+          <KpiCard label="Revenue" value="₹0" icon={RefreshCw} />
         </div>
       )}
 
@@ -404,16 +459,9 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
         <RankedList title="Operating systems" data={oses} />
       </div>
 
-      {/* Location */}
-      <div className="grid gap-4 lg:grid-cols-3">
-        <RankedList title="Top countries" data={countries} />
-        <RankedList title="Top regions" data={regions} />
-        <RankedList title="Top cities" data={cities} />
-      </div>
-
       {/* Traffic sources + Links */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <RankedList title="Traffic sources" data={referrers} />
+        <RankedList title="Traffic sources" data={sourceStats} />
         <Card className="h-full">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-semibold">Top performing links</CardTitle>
@@ -427,13 +475,149 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
               <ul className="space-y-3 text-sm">
                 {links.slice(0, 10).map((l) => (
                   <li key={l.url} className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="truncate font-medium">{l.host || l.url}</p>
-                      <p className="truncate text-xs text-muted-foreground">{l.url}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <p className="truncate text-[10px] text-muted-foreground">{l.url}</p>
+                        <Badge variant="secondary" className="h-4 text-[9px] px-1">{l.ctr.toFixed(1)}% CTR</Badge>
+                      </div>
                     </div>
                     <span className="shrink-0 tabular-nums text-muted-foreground">
                       {l.clicks.toLocaleString()}
                     </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Visual Reports */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Visitor Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DonutChart data={sourceStats.map(s => ({ ...s, key: s.key || s.label }))} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Engagement Trends</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TrendChart 
+              data={useMemo(() => bucketTimeseries(events, sessions, range, pickBucket(range)), [events, sessions, range])} 
+              metric="views" 
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Location */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <RankedList title="Top countries" data={countries} />
+        <RankedList title="Top regions" data={regions} />
+        <RankedList title="Top cities" data={cities} />
+      </div>
+
+      {/* Store & Payment Analytics (Placeholder for next phase) */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+         <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Store Analytics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Digital Products</span>
+                <span className="font-medium">0</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Services</span>
+                <span className="font-medium">0</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">WhatsApp Orders</span>
+                <span className="font-medium">0</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Payment Analytics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">UPI QR</span>
+                <span className="font-medium">0</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Razorpay</span>
+                <span className="font-medium">0</span>
+              </div>
+              <div className="pt-2 border-t">
+                 <div className="flex items-center justify-between text-xs">
+                    <span className="text-emerald-600 font-medium">Successful</span>
+                    <span>0</span>
+                 </div>
+                 <div className="flex items-center justify-between text-xs mt-1">
+                    <span className="text-rose-600 font-medium">Failed</span>
+                    <span>0</span>
+                 </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <BlockPerformanceCard stats={useMemo(() => blockPerformance(events), [events])} />
+      </div>
+
+      {/* Business Analytics: Bookings & Leads */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Booking Analytics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Upcoming</p>
+                <p className="text-xl font-bold">{bookingStats.upcoming}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Completed</p>
+                <p className="text-xl font-bold">{bookingStats.completed}</p>
+              </div>
+              <div className="col-span-2 pt-2 border-t">
+                <p className="text-[10px] uppercase text-muted-foreground font-medium mb-1">Most Booked Service</p>
+                <p className="text-sm font-medium truncate">{bookingStats.mostBooked}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Latest Leads</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {leadStats.latest.length === 0 ? (
+              <p className="py-4 text-center text-xs text-muted-foreground">No leads yet</p>
+            ) : (
+              <ul className="space-y-2">
+                {leadStats.latest.map(l => (
+                  <li key={l.id} className="flex items-center justify-between text-xs border-b pb-2 last:border-0 last:pb-0">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{l.name || 'Anonymous'}</p>
+                      <p className="text-[10px] text-muted-foreground">{l.email || l.phone || 'No contact'}</p>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground shrink-0">{format(new Date(l.created_at), 'MMM d')}</span>
                   </li>
                 ))}
               </ul>
