@@ -80,7 +80,7 @@ import {
   SocialButtonsRender,
 } from "./components/social-contact-render";
 import type { HighlightCardsBlock } from "./types";
-import { IntegrationRender } from "./integrations/integration-render";
+import { IntegrationRender, IntegrationStack } from "./integrations/integration-render";
 
 
 const FONT_SIZE: Record<FontSize, string> = {
@@ -281,6 +281,7 @@ export function BlockRenderer({
       data-hide-desktop={vis.desktop === false || undefined}
     >
       {content}
+      {renderStack && <IntegrationStack blocks={blocks} />}
     </div>
   );
 }
