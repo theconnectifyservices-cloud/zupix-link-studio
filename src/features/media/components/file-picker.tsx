@@ -74,7 +74,6 @@ export function FilePicker({
     limit: 60,
   });
 
-
   useEffect(() => {
     if (!open) {
       setPending(null);
@@ -83,6 +82,14 @@ export function FilePicker({
       setTab("library");
     }
   }, [open]);
+
+  const confirm = useCallback(
+    (finalUrl: string) => {
+      onSelect(finalUrl);
+      onOpenChange(false);
+    },
+    [onSelect, onOpenChange],
+  );
 
   const handleAsset = useCallback(async (asset: MediaAsset) => {
     try {
@@ -101,7 +108,6 @@ export function FilePicker({
       setBusy(false);
     }
   }, [confirm]);
-
 
   const handleFile = useCallback(
     async (file: File) => {
@@ -145,96 +151,84 @@ export function FilePicker({
         setBusy(false);
       }
     },
-    [workspaceId, userId],
-  );
-
-  const confirm = useCallback(
-    (finalUrl: string) => {
-      onSelect(finalUrl);
-      onOpenChange(false);
-    },
-    [onSelect, onOpenChange],
+    [workspaceId, userId, confirm],
   );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] max-w-3xl overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="max-h-[92dvh] max-w-3xl overflow-y-auto p-0 gap-0">
+        <DialogHeader className="p-4 border-b">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
 
         {pending ? (
-          <CropStage
-            src={pending.url}
-            crop={crop}
-            onCancel={() => setPending(null)}
-            onDone={confirm}
-            uploadCropped={async (blob, ext, mime) => {
-              if (!workspaceId || !userId) return pending.url;
-              const file = new File([blob], `crop-${Date.now()}.${ext}`, { type: mime });
-              const asset = await uploadAsset({
-                file,
-                workspaceId,
-                userId,
-                folderId: null,
-                derivedFrom: pending.assetId,
-              });
-              return signedUrl(asset.path, LONG_TTL);
-            }}
-          />
+          <div className="p-4">
+            <CropStage
+              src={pending.url}
+              crop={crop}
+              onCancel={() => setPending(null)}
+              onDone={confirm}
+              uploadCropped={async (blob, ext, mime) => {
+                if (!workspaceId || !userId) return pending.url;
+                const file = new File([blob], `crop-${Date.now()}.${ext}`, { type: mime });
+                const asset = await uploadAsset({
+                  file,
+                  workspaceId,
+                  userId,
+                  folderId: null,
+                  derivedFrom: pending.assetId,
+                });
+                return signedUrl(asset.path, LONG_TTL);
+              }}
+            />
+          </div>
         ) : (
           <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
-            <div className="flex items-center justify-between border-b px-1">
-              <TabsList className="bg-transparent border-none">
-                <TabsTrigger value="library" className="data-[state=active]:bg-muted">
+            <div className="flex items-center justify-between border-b px-2">
+              <TabsList className="bg-transparent border-none h-12">
+                <TabsTrigger value="library" className="data-[state=active]:bg-muted h-9">
                   <ImageIcon className="mr-1 h-4 w-4" />
                   Library
                 </TabsTrigger>
-                <TabsTrigger value="upload" className="data-[state=active]:bg-muted">
+                <TabsTrigger value="upload" className="data-[state=active]:bg-muted h-9">
                   <Upload className="mr-1 h-4 w-4" />
                   Upload
                 </TabsTrigger>
-                <TabsTrigger value="url" className="data-[state=active]:bg-muted">
+                <TabsTrigger value="url" className="data-[state=active]:bg-muted h-9">
                   <LinkIcon className="mr-1 h-4 w-4" />
                   URL
                 </TabsTrigger>
               </TabsList>
 
-              <div className="flex gap-1 pr-1">
+              <div className="flex gap-1">
                 <Button
                   variant={kind === "image" ? "secondary" : "ghost"}
                   size="icon"
-                  className="h-7 w-7"
-                  onClick={() => {
-                    // This logic would usually be in the parent, but for now we'll just show the visual state
-                    // In a real implementation, we'd add an onKindChange prop to FilePicker
-                  }}
+                  className="h-8 w-8"
                   title="Images"
                 >
-                  <ImageIcon className="h-3.5 w-3.5" />
+                  <ImageIcon className="h-4 w-4" />
                 </Button>
                 <Button
                   variant={kind === "video" ? "secondary" : "ghost"}
                   size="icon"
-                  className="h-7 w-7"
+                  className="h-8 w-8"
                   title="Videos"
                 >
-                  <Film className="h-3.5 w-3.5" />
+                  <Film className="h-4 w-4" />
                 </Button>
                 <Button
                   variant={kind === "document" ? "secondary" : "ghost"}
                   size="icon"
-                  className="h-7 w-7"
+                  className="h-8 w-8"
                   title="Documents"
                 >
-                  <FileText className="h-3.5 w-3.5" />
+                  <FileText className="h-4 w-4" />
                 </Button>
               </div>
             </div>
 
-
-
-            <TabsContent value="library" className="space-y-3">
+            <TabsContent value="library" className="m-0 p-4 space-y-4">
               <div className="relative">
                 <Search className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -244,16 +238,15 @@ export function FilePicker({
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-              <div className="grid max-h-[420px] grid-cols-4 gap-2 overflow-y-auto rounded-md border p-2">
+              <div className="grid max-h-[420px] grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 overflow-y-auto rounded-md border p-3">
                 {isLoading ? (
-                  <div className="col-span-4 flex items-center justify-center py-10">
-                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  <div className="col-span-full flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                   </div>
                 ) : assets.length === 0 ? (
-                  <div className="col-span-4 py-10 text-center text-sm text-muted-foreground">
+                  <div className="col-span-full py-12 text-center text-sm text-muted-foreground">
                     No files found for this filter.
                   </div>
-
                 ) : (
                   assets.map((a) => (
                     <button
@@ -264,36 +257,39 @@ export function FilePicker({
                       className="group relative aspect-square overflow-hidden rounded-md border transition hover:ring-2 hover:ring-primary disabled:opacity-50"
                     >
                       <MediaThumbnail asset={a} width={200} />
+                      <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/10" />
                     </button>
                   ))
                 )}
               </div>
             </TabsContent>
 
-            <TabsContent value="upload">
+            <TabsContent value="upload" className="m-0 p-4">
               <UploadPane onFile={handleFile} busy={busy} />
             </TabsContent>
 
-            <TabsContent value="url" className="space-y-3">
-              <Label className="text-xs">Image URL</Label>
-              <Input
-                placeholder="https://…"
-                value={externalUrl}
-                onChange={(e) => setExternalUrl(e.target.value)}
-              />
-              <p className="text-xs text-muted-foreground">
-                Advanced: link an external image. For best performance, upload to the Library
-                instead.
-              </p>
+            <TabsContent value="url" className="m-0 p-4 space-y-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">External URL</Label>
+                <Input
+                  placeholder="https://example.com/image.png"
+                  value={externalUrl}
+                  onChange={(e) => setExternalUrl(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Linking external assets may cause performance issues. For best results, upload to the Library.
+                </p>
+              </div>
               <DialogFooter>
                 <Button
-                  disabled={!externalUrl.trim()}
+                  disabled={!externalUrl.trim() || busy}
                   onClick={() => {
                     const url = externalUrl.trim();
                     if (crop) setPending({ url });
                     else confirm(url);
                   }}
                 >
+                  {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Use URL
                 </Button>
               </DialogFooter>
@@ -311,19 +307,17 @@ function UploadPane({ onFile, busy }: { onFile: (f: File) => void; busy: boolean
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
-  // Paste from clipboard while pane is mounted
+  // Paste from clipboard
   useEffect(() => {
     const handler = (e: ClipboardEvent) => {
       const items = e.clipboardData?.items;
       if (!items) return;
       for (const it of Array.from(items)) {
-        if (it.type.startsWith("image/")) {
-          const f = it.getAsFile();
-          if (f) {
-            onFile(f);
-            e.preventDefault();
-            return;
-          }
+        const f = it.getAsFile();
+        if (f) {
+          onFile(f);
+          e.preventDefault();
+          return;
         }
       }
     };
@@ -344,10 +338,10 @@ function UploadPane({ onFile, busy }: { onFile: (f: File) => void; busy: boolean
         const f = e.dataTransfer.files?.[0];
         if (f) onFile(f);
       }}
-      onClick={() => inputRef.current?.click()}
-      className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-10 text-center transition ${
+      onClick={() => !busy && inputRef.current?.click()}
+      className={`flex min-h-[300px] cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed p-10 text-center transition ${
         dragOver ? "border-primary bg-primary/5" : "border-border hover:bg-muted/40"
-      }`}
+      } ${busy ? "pointer-events-none opacity-50" : ""}`}
     >
       <input
         ref={inputRef}
@@ -362,25 +356,33 @@ function UploadPane({ onFile, busy }: { onFile: (f: File) => void; busy: boolean
       />
 
       {busy ? (
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
       ) : (
-        <Upload className="h-8 w-8 text-muted-foreground" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <Upload className="h-6 w-6" />
+        </div>
       )}
-      <div className="text-sm font-medium">Drop image here, click to browse, or paste (⌘V)</div>
-      <div className="text-xs text-muted-foreground">
-        Images, PDF, ZIP, Video, Audio, Documents, SVG
+      
+      <div className="space-y-1">
+        <p className="text-sm font-semibold">
+          {busy ? "Processing file..." : "Click to upload or drag and drop"}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          Images, PDF, ZIP, Video, Audio, Documents, SVG
+        </p>
       </div>
-
+      
+      {!busy && (
+        <div className="mt-2 text-[10px] uppercase tracking-wider text-muted-foreground/60">
+          OR PASTE (⌘V)
+        </div>
+      )}
     </div>
   );
 }
 
 /* -------------------- Crop stage -------------------- */
 
-/**
- * Thin wrapper around the shared <ImageCropper/>: handles the "no crop
- * configured" and vector (SVG) shortcuts, then uploads the cropped result.
- */
 function CropStage({
   src,
   crop,
@@ -396,12 +398,13 @@ function CropStage({
 }) {
   const [saving, setSaving] = useState(false);
 
-  // SVGs stay vector — never rasterize them. Same for pickers without crop or non-image types.
+  // SVGs stay vector. Non-image types or no crop config also skip.
   const skipCrop = !crop || isVectorImage(src);
+  
   useEffect(() => {
     if (skipCrop) onDone(src);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skipCrop, src]);
+  }, [skipCrop, src, onDone]);
+
   if (skipCrop) return null;
 
   return (
