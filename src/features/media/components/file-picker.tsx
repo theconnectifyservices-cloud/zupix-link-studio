@@ -43,7 +43,7 @@ export interface FilePickerProps {
   onSelect: (url: string) => void;
   title?: string;
   /** Kind filter for library tab. */
-  kind?: "image" | "video" | "audio" | "document" | "archive" | "all";
+  kind?: "image" | "video" | "audio" | "document" | "all";
   /** Crop config; omit to skip cropping. Only applies if selected asset is an image. */
   crop?: { shape: CropShape; aspect: AspectValue; lockAspect?: boolean };
 }
@@ -102,10 +102,19 @@ export function FilePicker({
         toast.error("Workspace not ready");
         return;
       }
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please choose an image file");
+      // Allow any of our supported types
+      const isAllowed = file.type.startsWith("image/") || 
+                        file.type.startsWith("video/") || 
+                        file.type.startsWith("audio/") || 
+                        file.type === "application/pdf" ||
+                        file.type.includes("zip") ||
+                        file.type.includes("document");
+      
+      if (!isAllowed) {
+        toast.error("Unsupported file type");
         return;
       }
+
       try {
         setBusy(true);
         const asset = await uploadAsset({
@@ -162,20 +171,51 @@ export function FilePicker({
           />
         ) : (
           <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
-            <TabsList>
-              <TabsTrigger value="library">
-                <ImageIcon className="mr-1 h-4 w-4" />
-                Library
-              </TabsTrigger>
-              <TabsTrigger value="upload">
-                <Upload className="mr-1 h-4 w-4" />
-                Upload
-              </TabsTrigger>
-              <TabsTrigger value="url">
-                <LinkIcon className="mr-1 h-4 w-4" />
-                URL
-              </TabsTrigger>
-            </TabsList>
+            <div className="flex items-center justify-between border-b px-1">
+              <TabsList className="bg-transparent border-none">
+                <TabsTrigger value="library" className="data-[state=active]:bg-muted">
+                  <ImageIcon className="mr-1 h-4 w-4" />
+                  Library
+                </TabsTrigger>
+                <TabsTrigger value="upload" className="data-[state=active]:bg-muted">
+                  <Upload className="mr-1 h-4 w-4" />
+                  Upload
+                </TabsTrigger>
+                <TabsTrigger value="url" className="data-[state=active]:bg-muted">
+                  <LinkIcon className="mr-1 h-4 w-4" />
+                  URL
+                </TabsTrigger>
+              </TabsList>
+
+              <div className="flex gap-1 pr-1">
+                <Button
+                  variant={kind === "image" ? "secondary" : "ghost"}
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={() => onOpenChange(open)} // Placeholder for re-render if needed, but the parent prop should drive this
+                  title="Images"
+                >
+                  <ImageIcon className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant={kind === "video" ? "secondary" : "ghost"}
+                  size="icon"
+                  className="h-7 w-7"
+                  title="Videos"
+                >
+                  <Film className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant={kind === "document" ? "secondary" : "ghost"}
+                  size="icon"
+                  className="h-7 w-7"
+                  title="Documents"
+                >
+                  <FileText className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
+
 
             <TabsContent value="library" className="space-y-3">
               <div className="relative">
@@ -309,8 +349,9 @@ function UploadPane({ onFile, busy }: { onFile: (f: File) => void; busy: boolean
       )}
       <div className="text-sm font-medium">Drop image here, click to browse, or paste (⌘V)</div>
       <div className="text-xs text-muted-foreground">
-        PNG · JPG · WebP · GIF · SVG — auto-compressed to WebP with responsive variants
+        Images, PDF, ZIP, Video, Audio, Documents, SVG
       </div>
+
     </div>
   );
 }
