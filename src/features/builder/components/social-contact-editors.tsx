@@ -566,6 +566,8 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
           <Field label="Shadow color">
             <Input type="color" value={block.buttonShadowColor ?? "#000000"} onChange={(e) => set("buttonShadowColor", e.target.value)} />
           </Field>
+        </div>
+      </div>
 
       <div className="space-y-2">
         <Label className="text-xs text-muted-foreground">Follow links</Label>
