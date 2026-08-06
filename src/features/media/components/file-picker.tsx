@@ -68,11 +68,12 @@ export function FilePicker({
 
   const { data: assets = [], isLoading } = useMediaAssets({
     workspaceId,
-    kind: "image",
+    kind: kind === "all" ? undefined : kind,
     search: search || undefined,
     sort: "recent",
     limit: 60,
   });
+
 
   useEffect(() => {
     if (!open) {
