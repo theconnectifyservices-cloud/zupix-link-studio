@@ -22,6 +22,7 @@ const ROUTE_GUARDS: Array<{ prefix: string; permission: Permission | Permission[
   { prefix: "/app/qa", permission: "can_manage_qa" },
   { prefix: "/app/operations", permission: "can_manage_operations" },
   { prefix: "/app/launch", permission: "can_manage_launch" },
+  { prefix: "/admin/monitoring", permission: "can_manage_monitoring" },
 ];
 
 function AppShell() {
