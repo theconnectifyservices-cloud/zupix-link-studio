@@ -305,6 +305,7 @@ export function PricingSection({
   const { handleCta, launcher } = usePlanCta(cycle);
   const tejasSavings = PLANS.tejas.priceMonthlyMinor * 12 - PLANS.tejas.priceYearlyMinor;
   const shikharSavings = PLANS.shikhar.priceMonthlyMinor * 12 - PLANS.shikhar.priceYearlyMinor;
+  const shikharSavings = PLANS.shikhar.priceMonthlyMinor * 12 - PLANS.shikhar.priceYearlyMinor;
 
   return (
     <section id={id} className={cn("relative scroll-mt-24 py-20 sm:py-28", className)}>
