@@ -149,6 +149,7 @@ export function BuilderPreview({
                           viewport={viewport}
                           staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
                           reduceMotion={!!motion.reduce}
+                          allBlocks={blocks}
                         />
                       ) : (
                         <SortableCanvasBlock
@@ -158,6 +159,7 @@ export function BuilderPreview({
                           viewport={viewport}
                           staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
                           reduceMotion={!!motion.reduce}
+                          allBlocks={blocks}
                         />
                       ),
                     )
@@ -183,12 +185,14 @@ function SortableCanvasBlock({
   viewport = "mobile",
   staggerStep = 0,
   reduceMotion = false,
+  allBlocks,
 }: {
   block: Block;
   index?: number;
   viewport?: Viewport;
   staggerStep?: number;
   reduceMotion?: boolean;
+  allBlocks?: Block[];
 }) {
   const selectedId = useBuilderStore((s) => s.selectedId);
   const selectedIds = useBuilderStore((s) => s.selectedIds);
@@ -350,6 +354,7 @@ function SortableCanvasBlock({
                     viewport={viewport}
                     staggerStep={staggerStep}
                     reduceMotion={reduceMotion}
+                    allBlocks={allBlocks}
                   />
                 </EditorInteractionGuard>
               )}

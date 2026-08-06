@@ -80,7 +80,7 @@ import {
   SocialButtonsRender,
 } from "./components/social-contact-render";
 import type { HighlightCardsBlock } from "./types";
-import { IntegrationRender } from "./integrations/integration-render";
+import { IntegrationRender, IntegrationStack } from "./integrations/integration-render";
 
 
 const FONT_SIZE: Record<FontSize, string> = {
@@ -131,6 +131,8 @@ interface RenderProps {
   staggerStep?: number;
   /** Force-disable animations regardless of block settings. */
   reduceMotion?: boolean;
+  /** Optional reference to all blocks for global stacks (FABs). */
+  allBlocks?: Block[];
 }
 
 export function BlockRenderer({
@@ -139,6 +141,7 @@ export function BlockRenderer({
   index = 0,
   staggerStep = 0,
   reduceMotion = false,
+  allBlocks,
 }: RenderProps) {
   if (block.hidden) return null;
   const s = block.settings ?? {};
@@ -281,6 +284,7 @@ export function BlockRenderer({
       data-hide-desktop={vis.desktop === false || undefined}
     >
       {content}
+      {allBlocks && <IntegrationStack blocks={allBlocks} />}
     </div>
   );
 }

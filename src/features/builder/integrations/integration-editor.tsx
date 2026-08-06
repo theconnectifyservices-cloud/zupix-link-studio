@@ -80,7 +80,7 @@ export function IntegrationEditor({
       </div>
 
       {visibleFields(def, mode).map((f) => (
-        <FieldRow key={f.key} field={f} value={cfg[f.key]} onChange={(v) => setCfg(f.key, v)} />
+        <FieldRow key={f.key} field={f} value={cfg[f.key]} onChange={(v) => setCfg(f.key, v)} integrationMode={mode} />
       ))}
 
       <div className="space-y-2 rounded-lg border p-3">
@@ -97,10 +97,12 @@ function FieldRow({
   field,
   value,
   onChange,
+  integrationMode,
 }: {
   field: IntegrationField;
   value: string | number | boolean | undefined;
   onChange: (v: string | number | boolean) => void;
+  integrationMode: IntegrationDisplayMode;
 }) {
   if (field.type === "switch") {
     return (
@@ -142,14 +144,14 @@ function FieldRow({
         <div className="flex items-center gap-2">
           <input
             type="color"
-            value={String(value ?? "#000000")}
+            value={String(value ?? (field.key === "textColor" ? "#ffffff" : "#000000"))}
             onChange={(e) => onChange(e.target.value)}
             className="h-9 w-12 cursor-pointer rounded border bg-background"
           />
           <Input
             value={String(value ?? "")}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="#25D366"
+            placeholder={field.key === "textColor" ? "#ffffff" : "#25D366"}
           />
         </div>
       ) : field.type === "number" ? (
