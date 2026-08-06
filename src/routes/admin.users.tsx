@@ -90,7 +90,7 @@ function AdminUsers() {
                 <TableCell>
                   <div className="text-xs space-y-1">
                     <div>{user.bio_pages?.[0]?.count || 0} Bio Pages</div>
-                    <div>{Math.round((user.storage_used || 0) / 1024 / 1024)} MB Used</div>
+                    <div>{Math.round((user.storage_usage || 0) / 1024 / 1024)} MB Used</div>
                   </div>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
