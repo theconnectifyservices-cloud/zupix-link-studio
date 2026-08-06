@@ -583,7 +583,9 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
           </Field>
         </div>
 
-        <div className="space-y-2">
+      </div>
+
+      <div className="space-y-2">
         <Label className="text-xs text-muted-foreground">Follow links</Label>
         {links.map((l) => (
           <div key={l.id} className="space-y-2 rounded-lg border p-2">
