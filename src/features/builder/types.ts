@@ -1076,6 +1076,31 @@ export interface FollowCardBlock extends BaseBlock {
   align?: TextAlign;
   radius?: number;
   showIcons?: boolean;
+  /** Button customization */
+  buttonStyle?: import("./types").ButtonStyle;
+  buttonWidthMode?: "auto" | "full" | "custom";
+  buttonWidthCustom?: number;
+  buttonHeightMode?: "sm" | "md" | "lg" | "custom";
+  buttonHeightCustom?: number;
+  buttonAlign?: "left" | "center" | "right";
+  buttonSize?: "sm" | "md" | "lg";
+  buttonRadius?: number;
+  buttonPaddingX?: number;
+  buttonPaddingY?: number;
+  buttonFontSize?: number;
+  buttonFontWeight?: import("./types").FontWeight;
+  buttonGap?: number;
+  buttonIconSize?: number;
+  buttonIconPosition?: "left" | "right";
+  buttonColor?: string;
+  buttonBgColor?: string;
+  buttonBorderColor?: string;
+  buttonHoverBgColor?: string;
+  buttonHoverTextColor?: string;
+  buttonHoverBorderColor?: string;
+  buttonShadowSize?: "none" | "sm" | "md" | "lg" | "xl";
+  buttonShadowBlur?: number;
+  buttonShadowColor?: string;
 }
 
 /** Scannable vCard / link QR code with contact details. */

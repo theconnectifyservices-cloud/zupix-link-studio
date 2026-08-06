@@ -203,16 +203,35 @@ export function FollowCardRender({
   const links = block.links ?? [];
   const align = block.align ?? "center";
   const minimal = block.layout === "minimal";
+  const blockId = block.id;
+
+  // Generate unique class for this block to handle custom hover colors
+  const customStyles = (
+    <style>
+      {`
+        .follow-btn-${blockId} {
+          transition: all 0.2s ease;
+        }
+        .follow-btn-${blockId}:hover {
+          ${block.buttonHoverBgColor ? `background-color: ${block.buttonHoverBgColor} !important;` : ""}
+          ${block.buttonHoverTextColor ? `color: ${block.buttonHoverTextColor} !important;` : ""}
+          ${block.buttonHoverBorderColor ? `border-color: ${block.buttonHoverBorderColor} !important;` : ""}
+        }
+      `}
+    </style>
+  );
+
   return (
     <div
       className={cn(
-        "w-full p-4",
+        "w-full p-4 relative isolate",
         !minimal && "border bg-card shadow-sm",
         align === "center" && "text-center",
         align === "right" && "text-right",
       )}
       style={{ borderRadius: block.radius ?? 16 }}
     >
+      {customStyles}
       <div
         className={cn(
           "flex items-center gap-3",
@@ -242,10 +261,50 @@ export function FollowCardRender({
         <p className="mt-2 text-xs text-muted-foreground">{block.description}</p>
       )}
       {links.length > 0 && (
-        <div className={cn("mt-3 flex flex-wrap gap-2", ALIGN_CLASS[align])}>
+        <div 
+          className={cn("mt-4 flex flex-wrap", ALIGN_CLASS[block.buttonAlign ?? align])}
+          style={{ gap: block.buttonGap ?? 8 }}
+        >
           {links.map((l) => {
             const Icon = SOCIAL_ICON[l.platform] ?? SOCIAL_ICON.custom;
-            const color = l.color ?? BRAND_COLOR[l.platform] ?? "#6366F1";
+            const isCustom = block.buttonStyle !== undefined;
+            
+            // Base styles from the block or legacy defaults
+            const baseColor = l.color ?? BRAND_COLOR[l.platform] ?? "#6366F1";
+            const textColor = block.buttonColor ?? (block.buttonStyle === "filled" ? "#ffffff" : baseColor);
+            const bgColor = block.buttonBgColor ?? (block.buttonStyle === "filled" ? baseColor : block.buttonStyle === "gradient" ? `linear-gradient(135deg, ${baseColor}, ${baseColor}dd)` : "transparent");
+            const borderColor = block.buttonBorderColor ?? (block.buttonStyle === "outline" ? baseColor : "transparent");
+
+            const shadowSize = block.buttonShadowSize ?? "none";
+            const shadowBlur = block.buttonShadowBlur ?? (shadowSize === "none" ? 0 : 4);
+            const shadowColor = block.buttonShadowColor ?? "rgba(0,0,0,0.1)";
+            
+            const shadowMap = {
+              none: "none",
+              sm: `0 1px 2px 0 ${shadowColor}`,
+              md: `0 4px 6px -1px ${shadowColor}`,
+              lg: `0 10px 15px -3px ${shadowColor}`,
+              xl: `0 20px 25px -5px ${shadowColor}`,
+            };
+
+            const btnStyle: CSSProperties = isCustom ? {
+              color: textColor,
+              backgroundColor: bgColor,
+              borderColor: borderColor,
+              borderRadius: block.buttonRadius ?? 100,
+              paddingLeft: block.buttonPaddingX ?? 12,
+              paddingRight: block.buttonPaddingX ?? 12,
+              paddingTop: block.buttonPaddingY ?? 6,
+              paddingBottom: block.buttonPaddingY ?? 6,
+              fontSize: block.buttonFontSize ?? 12,
+              fontWeight: block.buttonFontWeight === "bold" ? 700 : block.buttonFontWeight === "semibold" ? 600 : block.buttonFontWeight === "medium" ? 500 : 400,
+              boxShadow: shadowMap[shadowSize as keyof typeof shadowMap] || `0 ${shadowBlur}px ${shadowBlur * 2}px ${shadowColor}`,
+              borderWidth: block.buttonStyle === "outline" ? 1.5 : 0,
+              borderStyle: "solid",
+              width: block.buttonWidthMode === "full" ? "100%" : block.buttonWidthMode === "custom" ? `${block.buttonWidthCustom ?? 100}%` : "auto",
+              height: block.buttonHeightMode === "custom" ? `${block.buttonHeightCustom ?? 40}px` : undefined,
+            } : surfaceStyle("soft", baseColor);
+
             return (
               <ButtonFxSurface
                 key={l.id}
@@ -255,11 +314,29 @@ export function FollowCardRender({
                 href={l.url || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-transform hover:-translate-y-0.5"
-                style={surfaceStyle("soft", color)}
+                className={cn(
+                  "inline-flex items-center transition-all",
+                  `follow-btn-${blockId}`,
+                  block.buttonIconPosition === "right" && "flex-row-reverse",
+                  block.buttonSize === "sm" && !isCustom && "px-3 py-1.5 text-xs",
+                  block.buttonSize === "md" && !isCustom && "px-4 py-2 text-sm",
+                  block.buttonSize === "lg" && !isCustom && "px-5 py-2.5 text-base",
+                  isCustom && "justify-center"
+                )}
+                style={btnStyle}
               >
-                {block.showIcons !== false && <Icon className="h-3.5 w-3.5" />}
-                <span>{l.label || l.platform}</span>
+                {block.showIcons !== false && (
+                  <Icon 
+                    className="shrink-0" 
+                    style={{ 
+                      width: block.buttonIconSize ?? (isCustom ? 14 : 14), 
+                      height: block.buttonIconSize ?? (isCustom ? 14 : 14),
+                      marginRight: block.buttonIconPosition === "right" ? 0 : 6,
+                      marginLeft: block.buttonIconPosition === "right" ? 6 : 0,
+                    }} 
+                  />
+                )}
+                <span className="truncate" style={{ fontSize: block.buttonFontSize ?? (isCustom ? 12 : undefined) }}>{l.label || l.platform}</span>
               </ButtonFxSurface>
             );
           })}
