@@ -203,7 +203,7 @@ export function PricingCard({
               transition={{ duration: 0.2 }}
               className="block"
             >
-              ≈ ₹{monthEquiv}/month · billed yearly
+              ≈ ₹{monthEquiv}/month · Save ₹{code === "shikhar" ? "1,389" : (savings * 12 / 10).toFixed(0)} /yr
             </motion.span>
           ) : null}
         </AnimatePresence>
@@ -211,7 +211,7 @@ export function PricingCard({
       {cycle === "yearly" && savings > 0 && (
         <div className="mt-2 flex flex-wrap gap-1.5">
           <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-600 ring-1 ring-emerald-500/25 dark:text-emerald-400">
-            🔥 Save {savings}%
+            🔥 SAVE {code === "shikhar" ? "23" : savings}%
           </span>
           {isFeatured && (
             <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary ring-1 ring-primary/25">
@@ -221,9 +221,9 @@ export function PricingCard({
         </div>
       )}
 
-      {isShikhar && (
-        <div className="mt-1 text-xs font-medium text-amber-600 dark:text-amber-400">
-          Launching soon · join the waitlist
+      {isShikhar && cycle === "yearly" && (
+        <div className="mt-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+          Save ₹1,389 compared to monthly
         </div>
       )}
 
@@ -244,7 +244,7 @@ export function PricingCard({
       )}
 
       <div className="mt-6 pt-2">
-        {isShikhar ? (
+        {false ? (
           <WaitlistForm planCode="shikhar" />
         ) : (
           <Button
@@ -304,6 +304,7 @@ export function PricingSection({
 
   const { handleCta, launcher } = usePlanCta(cycle);
   const tejasSavings = PLANS.tejas.priceMonthlyMinor * 12 - PLANS.tejas.priceYearlyMinor;
+  const shikharSavings = PLANS.shikhar.priceMonthlyMinor * 12 - PLANS.shikhar.priceYearlyMinor;
 
   return (
     <section id={id} className={cn("relative scroll-mt-24 py-20 sm:py-28", className)}>
@@ -330,7 +331,7 @@ export function PricingSection({
           <CycleToggle
             cycle={cycle}
             onChange={(c) => { setCycle(c); trackPricing("toggle_usage", { cycle: c }); }}
-            savingsHint={`Save ₹${(tejasSavings / 100).toFixed(0)} per year`}
+            savingsHint={`Save \u20b9${(tejasSavings / 100).toFixed(0)} on Tejas / \u20b91,389 on Shikhar`}
           />
         </div>
 

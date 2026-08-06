@@ -28,7 +28,7 @@ export function UpgradeModal() {
   const { upgradeOpen, upgradeContext, closeUpgrade } = useSubscriptionUI();
   const { code: currentPlan } = usePlan();
   const { workspace } = useCurrentWorkspace();
-  const [cycle, setCycle] = useState<"monthly" | "yearly">("yearly");
+  const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
   const [checkout, setCheckout] = useState<{ planCode: PlanCode } | null>(null);
 
   return (
@@ -69,7 +69,7 @@ export function UpgradeModal() {
                     {c}
                     {c === "yearly" && (
                       <span className="ml-1.5 rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400">
-                        SAVE 27%
+                        SAVE UP TO 27%
                       </span>
                     )}
                   </button>
@@ -184,7 +184,7 @@ function PlanCard({
             )}
             {cycle === "yearly" && savings > 0 && (
               <span className="ml-2 rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                Save {savings}%
+                SAVE {code === "shikhar" ? "23" : savings}%
               </span>
             )}
           </div>
