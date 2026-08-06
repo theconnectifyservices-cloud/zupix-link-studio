@@ -225,7 +225,16 @@ export function FilePicker({
                 >
                   <FileText className="h-4 w-4" />
                 </Button>
+                <Button
+                  variant={kind === "other" ? "secondary" : "ghost"}
+                  size="icon"
+                  className="h-8 w-8"
+                  title="Other (ZIP, etc.)"
+                >
+                  <FileIcon className="h-4 w-4" />
+                </Button>
               </div>
+
             </div>
 
             <TabsContent value="library" className="m-0 p-4 space-y-4">
