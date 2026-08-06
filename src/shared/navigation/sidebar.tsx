@@ -99,13 +99,14 @@ const appItems: Item[] = [
   { icon: CloudCog, label: "Operations", href: "/app/operations", requires: ["can_manage_operations"] },
   { icon: Puzzle, label: "Integrations", href: "/app/integrations", soon: true },
   { icon: Award, label: "Launch Center", href: "/app/launch", requires: ["can_manage_launch"] },
-  { icon: Shield, label: "Subscription Management", href: "/admin/subscription-management", requiresRole: ["admin", "super_admin"] },
-  { icon: Shield, label: "Payment Hub", href: "/admin/payment-gateways", requiresRole: ["admin", "super_admin"] },
+  { icon: Shield, label: "Subscription Management", href: "/admin/subscriptions", requiresRole: ["admin", "super_admin"] },
+  { icon: Shield, label: "Payment Hub", href: "/admin/settings", requiresRole: ["admin", "super_admin"] },
   { icon: KeyRound, label: "License Manager", href: "/admin/licenses", requiresRole: ["admin", "super_admin"] },
   { icon: Users, label: "User Management", href: "/admin/users", requiresRole: ["admin", "super_admin"] },
-  { icon: Bell, label: "Communication Center", href: "/admin/communication-center", requiresRole: ["admin", "super_admin"] },
-  { icon: Rocket, label: "App Update Center", href: "/admin/update-center", requiresRole: ["admin", "super_admin"] },
+  { icon: Bell, label: "Communication Center", href: "/admin/communications", requiresRole: ["admin", "super_admin"] },
+  { icon: Rocket, label: "App Update Center", href: "/admin/updates", requiresRole: ["admin", "super_admin"] },
   { icon: Activity, label: "Monitoring Center", href: "/admin/monitoring", requiresRole: ["admin", "super_admin"] },
+  { icon: ClipboardCheck, label: "Audit Logs", href: "/admin/audit-logs", requiresRole: ["admin", "super_admin"] },
 
 ];
 
