@@ -6,7 +6,7 @@ import { listIndexableSlugs } from "@/features/public/api";
  * Base URL is derived from the request host, so this works on preview,
  * production, and custom domains without hard-coding.
  */
-export const Route = createFileRoute("/sitemap.xml")({
+export const Route = createFileRoute("/sitemap/xml")({
   server: {
     handlers: {
       GET: async ({ request }) => {

@@ -137,15 +137,15 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
     if (!canAccessTemplate(planCode, t)) {
       const tier = templateTier(t);
       openFeatureDialog({
-        feature: tier === "enterprise" ? "block.store" : "remove_branding", // Using existing keys for plan mapping
+        feature: tier === "enterprise" ? "templates.all" : "templates.premium",
         suggestedPlan: tier === "enterprise" ? "shikhar" : "tejas",
-        featureName: `${t.name} Premium Template`,
+        featureName: `${t.name} ${tier === "enterprise" ? "Exclusive" : "Premium"} Template`,
         reason: `The ${t.name} template is part of our ${tier === "enterprise" ? "Shikhar" : "Tejas"} collection.`,
         benefits: [
           "Professional high-conversion design",
           "Advanced layout & animations",
           "Premium typography included",
-          "Mobile-first responsive optimization"
+          "One-click professional setup"
         ]
       });
       return;
@@ -158,14 +158,14 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
     if (!canAccessTemplate(planCode, t)) {
       const tier = templateTier(t);
       openFeatureDialog({
-        feature: tier === "enterprise" ? "block.store" : "remove_branding",
+        feature: tier === "enterprise" ? "templates.all" : "templates.premium",
         suggestedPlan: tier === "enterprise" ? "shikhar" : "tejas",
-        featureName: `${t.name} Premium Template`,
+        featureName: `${t.name} ${tier === "enterprise" ? "Exclusive" : "Premium"} Template`,
         benefits: [
           "Professional high-conversion design",
           "Advanced layout & animations",
           "Premium typography included",
-          "Mobile-first responsive optimization"
+          "One-click professional setup"
         ]
       });
       return;
@@ -316,14 +316,14 @@ export function TemplateGallery({ mode = "browse", onApply, className }: Props) 
                 onLocked={() => {
                   const tier = templateTier(t);
                   openFeatureDialog({
-                    feature: tier === "enterprise" ? "block.store" : "remove_branding",
+                    feature: tier === "enterprise" ? "templates.all" : "templates.premium",
                     suggestedPlan: tier === "enterprise" ? "shikhar" : "tejas",
-                    featureName: `${t.name} Premium Template`,
+                    featureName: `${t.name} ${tier === "enterprise" ? "Exclusive" : "Premium"} Template`,
                     benefits: [
                       "Professional high-conversion design",
                       "Advanced layout & animations",
                       "Premium typography included",
-                      "Mobile-first responsive optimization"
+                      "One-click professional setup"
                     ]
                   });
                 }}

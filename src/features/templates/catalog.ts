@@ -44,6 +44,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
   { id: "ai", label: "AI" },
   { id: "personal", label: "Personal" },
   { id: "doctor", label: "Doctor" },
+  { id: "freelancer", label: "Freelancer" },
+  { id: "lawyer", label: "Lawyer" },
+  { id: "ca", label: "CA" },
+  { id: "salon", label: "Salon" },
+  { id: "gym", label: "Gym" },
+  { id: "student", label: "Student" },
+  { id: "digital-products", label: "Digital Products" },
 ];
 
 export const BUILTIN_TEMPLATES: Template[] = REGISTRY_TEMPLATES;
