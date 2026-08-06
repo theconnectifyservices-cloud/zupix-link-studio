@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SystemHealthDashboard } from "@/features/admin/components/system-health";
 import { StorageAnalytics } from "@/features/admin/components/storage-analytics";
 import { ErrorLogsViewer } from "@/features/admin/components/error-logs";
+import { ActivityLogsViewer } from "@/features/admin/components/activity-logs";
+import { SecurityEventsViewer } from "@/features/admin/components/security-events";
 import { BackupCenter } from "@/features/admin/components/backup-center";
 import { Activity, ShieldAlert, FileOutput, Bell } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,24 +60,10 @@ function MonitoringCenterPage() {
               <ErrorLogsViewer />
             </TabsContent>
             <TabsContent value="activity" className="mt-4">
-              <Card className="border-border/50 bg-background/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-lg">Activity Log</CardTitle>
-                </CardHeader>
-                <CardContent className="h-[400px] flex items-center justify-center text-muted-foreground">
-                  Activity log content will be rendered here.
-                </CardContent>
-              </Card>
+              <ActivityLogsViewer />
             </TabsContent>
             <TabsContent value="security" className="mt-4">
-              <Card className="border-border/50 bg-background/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-lg">Security Events</CardTitle>
-                </CardHeader>
-                <CardContent className="h-[400px] flex items-center justify-center text-muted-foreground">
-                  Security events content will be rendered here.
-                </CardContent>
-              </Card>
+              <SecurityEventsViewer />
             </TabsContent>
           </Tabs>
 
