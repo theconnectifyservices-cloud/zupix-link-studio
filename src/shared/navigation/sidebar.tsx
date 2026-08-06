@@ -116,7 +116,17 @@ const bottomItems: Item[] = [
   { icon: LifeBuoy, label: "Help & Support", href: "/app/help" },
 ];
 
-const adminItems: Item[] = [{ icon: Shield, label: "Admin", href: "/app" }];
+const adminItems: Item[] = [
+  { icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin/dashboard", exact: true },
+  { icon: Users, label: "User Management", href: "/admin/users" },
+  { icon: KeyRound, label: "License Manager", href: "/admin/licenses" },
+  { icon: Crown, label: "Subscriptions", href: "/admin/subscriptions" },
+  { icon: Bell, label: "Communications", href: "/admin/communications" },
+  { icon: Rocket, label: "App Updates", href: "/admin/updates" },
+  { icon: Activity, label: "Monitoring", href: "/admin/monitoring" },
+  { icon: ClipboardCheck, label: "Audit Logs", href: "/admin/audit-logs" },
+  { icon: Settings, label: "Settings", href: "/admin/settings" },
+];
 
 /** Modules kept available on mobile (<768px) — everything else is desktop-only. */
 const MOBILE_ALLOWED_HREFS = new Set(["/app", "/app/projects", "/app/settings/profile"]);
