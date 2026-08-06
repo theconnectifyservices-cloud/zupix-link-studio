@@ -45,7 +45,9 @@ const RESERVED_SLUGS = new Set([
   "api",
   "auth",
   "index",
+  "",
 ]);
+
 
 
 export const Route = createFileRoute("/$slug")({
