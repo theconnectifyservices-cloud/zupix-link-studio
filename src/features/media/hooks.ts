@@ -30,9 +30,14 @@ export function useMediaAssets(q: Omit<ListAssetsQuery, "workspaceId"> & { works
 }
 
 export function useStorageStats(workspaceId: string | undefined) {
+  const { code: planCode } = usePlan();
   return useQuery({
-    queryKey: ["media", "stats", workspaceId],
-    queryFn: () => fetchStorageStats(workspaceId!),
+    queryKey: ["media", "stats", workspaceId, planCode],
+    queryFn: async () => {
+      const stats = await fetchStorageStats(workspaceId!);
+      const quota = PLAN_STORAGE_LIMITS[planCode] || PLAN_STORAGE_LIMITS.udaan;
+      return { ...stats, quota };
+    },
     enabled: !!workspaceId,
     staleTime: 30_000,
   });
