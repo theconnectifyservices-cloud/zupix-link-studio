@@ -45,7 +45,14 @@ export type TemplateCategoryId =
   | "ai"
   | "corporate"
   | "personal"
-  | "doctor";
+  | "doctor"
+  | "freelancer"
+  | "lawyer"
+  | "ca"
+  | "salon"
+  | "gym"
+  | "student"
+  | "digital-products";
 
 export interface TemplateCategory {
   id: TemplateCategoryId;

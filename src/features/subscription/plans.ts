@@ -43,7 +43,9 @@ export type FeatureKey =
   | "block.payments"
   // Platform features
   | "remove_branding"
-  | "custom_domain";
+  | "custom_domain"
+  | "templates.premium"
+  | "templates.all";
 
 /** Map builder BlockType → subscription feature key. */
 export const BLOCK_FEATURE_KEY: Partial<Record<BlockType, FeatureKey>> = {
@@ -117,6 +119,7 @@ const TEJAS_ADDITIONS: FeatureKey[] = [
   "block.form",
   "remove_branding",
   "custom_domain",
+  "templates.premium",
 ];
 
 const SHIKHAR_ADDITIONS: FeatureKey[] = [
@@ -127,6 +130,7 @@ const SHIKHAR_ADDITIONS: FeatureKey[] = [
   "block.subscriptions",
   "block.donations",
   "block.payments",
+  "templates.all",
 ];
 
 export const PLANS: Record<PlanCode, PlanDefinition> = {
