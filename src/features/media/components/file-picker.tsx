@@ -37,22 +37,26 @@ const LONG_TTL = 60 * 60 * 24 * 365; // 1 year
 
 export type { CropShape } from "../crop";
 
-export interface MediaPickerProps {
+export interface FilePickerProps {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   onSelect: (url: string) => void;
   title?: string;
-  /** Crop config; omit to skip cropping. */
+  /** Kind filter for library tab. */
+  kind?: "image" | "video" | "audio" | "document" | "archive" | "all";
+  /** Crop config; omit to skip cropping. Only applies if selected asset is an image. */
   crop?: { shape: CropShape; aspect: AspectValue; lockAspect?: boolean };
 }
 
-export function MediaPicker({
+export function FilePicker({
   open,
   onOpenChange,
   onSelect,
-  title = "Select image",
+  title = "Select file",
+  kind = "image",
   crop,
-}: MediaPickerProps) {
+}: FilePickerProps) {
+
   const { workspace, userId } = useCurrentWorkspace();
   const workspaceId = workspace?.id;
 
