@@ -4,7 +4,8 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 import type { MediaAsset, MediaFolder, MediaUsage, MediaKind } from "./types";
-import { kindFromMime, ALLOWED_MIME, MAX_FILE_SIZE } from "./types";
+import { kindFromMime, ALLOWED_MIME, MAX_FILE_SIZE, humanSize } from "./types";
+
 
 export const BUCKET = "media";
 
