@@ -1,10 +1,19 @@
 /**
- * AI Content Studio — generator catalog (LS-12B).
- * Declarative definitions used by the studio UI. Each generator
- * produces a system prompt and a user prompt from typed inputs.
+ * AI Content Studio — generator catalog (LS-13).
+ * Expanded suite of AI tools for Bio Pages, Store, Bookings, and Social.
  */
 
-export type GeneratorCategory = "bio" | "cta" | "social" | "seo" | "button" | "rewrite";
+export type GeneratorCategory = 
+  | "bio" 
+  | "cta" 
+  | "section" 
+  | "store" 
+  | "booking" 
+  | "seo" 
+  | "social" 
+  | "design" 
+  | "image"
+  | "rewrite";
 
 export interface GeneratorField {
   id: string;
@@ -34,238 +43,214 @@ const TONE_OPTIONS = [
   { label: "Empathetic", value: "empathetic" },
 ];
 
-const LENGTH_OPTIONS = [
-  { label: "Short", value: "short" },
-  { label: "Medium", value: "medium" },
-  { label: "Long", value: "long" },
-];
-
 const commonBrandSystem = (brand: string) =>
   [
-    "You are ZUPIX AI Content Studio, an elite bio-page copywriter.",
+    "You are ZUPIX AI Studio, an elite bio-page architect and conversion copywriter.",
     "Return only the requested content — no preamble, no markdown fences, no explanations.",
     "Match the brand voice exactly. Never invent facts about the brand.",
     "",
     brand,
   ].join("\n");
 
-// ── BIO WRITER ─────────────────────────────────────────────────────
+// ── BIO GENERATORS ────────────────────────────────────────────────
 const BIO_TYPES = [
   { label: "Professional Bio", value: "professional" },
-  { label: "Creator Bio", value: "creator" },
-  { label: "Business Bio", value: "business" },
-  { label: "Agency Bio", value: "agency" },
-  { label: "Startup Bio", value: "startup" },
-  { label: "Personal Bio", value: "personal" },
+  { label: "Instagram Bio", value: "instagram" },
+  { label: "LinkedIn Bio", value: "linkedin" },
+  { label: "Company Bio", value: "company" },
+  { label: "Brand Bio", value: "brand" },
+  { label: "Short Bio", value: "short" },
+  { label: "Long Bio", value: "long" },
 ];
 
-const bioWriter: GeneratorDef = {
-  id: "bio-writer",
+const bioGenerator: GeneratorDef = {
+  id: "bio-gen",
   category: "bio",
-  name: "Bio Writer",
-  description: "Generate professional, creator, business, agency, startup, or personal bios.",
+  name: "AI Bio Generator",
+  description: "Generate professional, social, or brand-specific bios.",
   fields: [
-    { id: "bioType", label: "Bio type", kind: "select", options: BIO_TYPES },
+    { id: "bioType", label: "Bio Type", kind: "select", options: BIO_TYPES },
     { id: "subject", label: "Name or brand", kind: "text", placeholder: "e.g. Aarav Mehta" },
-    { id: "role", label: "Role / niche", kind: "text", placeholder: "e.g. Wedding photographer" },
-    {
-      id: "highlights",
-      label: "Highlights or achievements",
-      kind: "textarea",
-      placeholder: "Key wins, credentials, or story hooks",
-      optional: true,
-    },
+    { id: "highlights", label: "Highlights", kind: "textarea", placeholder: "Key credentials or story hooks", optional: true },
     { id: "tone", label: "Tone", kind: "select", options: TONE_OPTIONS },
-    { id: "length", label: "Length", kind: "select", options: LENGTH_OPTIONS },
   ],
   buildSystem: commonBrandSystem,
-  buildPrompt: (v) =>
-    [
-      `Write a ${v.length} ${v.bioType} bio in a ${v.tone} tone.`,
-      `Subject: ${v.subject || "the brand"}.`,
-      v.role ? `Role: ${v.role}.` : "",
-      v.highlights ? `Highlights: ${v.highlights}.` : "",
-      "Constraints: no emoji spam, no clichés, first-person unless the bio type is 'business/agency/startup'. Return 1-3 short paragraphs.",
-    ]
-      .filter(Boolean)
-      .join("\n"),
+  buildPrompt: (v) => `Write a ${v.bioType} bio for ${v.subject || "the brand"} in a ${v.tone} tone. ${v.highlights ? `Include: ${v.highlights}.` : ""} Return 1-3 variations.`
 };
 
-// ── CTA GENERATOR ──────────────────────────────────────────────────
+// ── CTA GENERATORS ────────────────────────────────────────────────
 const CTA_TYPES = [
-  { label: "WhatsApp CTA", value: "whatsapp" },
-  { label: "Book Now CTA", value: "book" },
-  { label: "Buy Now CTA", value: "buy" },
-  { label: "Contact CTA", value: "contact" },
-  { label: "Portfolio CTA", value: "portfolio" },
-  { label: "Subscribe CTA", value: "subscribe" },
-  { label: "Donation CTA", value: "donation" },
-  { label: "Custom CTA", value: "custom" },
+  { label: "Call To Action", value: "cta" },
+  { label: "Buttons", value: "button" },
+  { label: "Headlines", value: "headline" },
+  { label: "Hero Titles", value: "hero" },
+  { label: "Descriptions", value: "description" },
 ];
 
-const ctaWriter: GeneratorDef = {
-  id: "cta-writer",
+const ctaGenerator: GeneratorDef = {
+  id: "cta-gen",
   category: "cta",
-  name: "CTA Generator",
-  description: "High-converting call-to-action headlines and button copy.",
+  name: "AI CTA Generator",
+  description: "High-converting titles, headlines, and action buttons.",
   fields: [
-    { id: "ctaType", label: "CTA type", kind: "select", options: CTA_TYPES },
-    { id: "goal", label: "Goal or offer", kind: "text", placeholder: "e.g. Book a free 30-min call" },
-    { id: "audience", label: "Target audience", kind: "text", placeholder: "e.g. small business owners", optional: true },
+    { id: "ctaType", label: "Type", kind: "select", options: CTA_TYPES },
+    { id: "goal", label: "Goal / Offer", kind: "text", placeholder: "e.g. Book a free consultation" },
     { id: "tone", label: "Tone", kind: "select", options: TONE_OPTIONS },
   ],
   buildSystem: commonBrandSystem,
-  buildPrompt: (v) =>
-    [
-      `Generate 5 ${v.ctaType} CTA variations in a ${v.tone} tone.`,
-      `Goal: ${v.goal || "drive action"}.`,
-      v.audience ? `Audience: ${v.audience}.` : "",
-      "For each variation return: HEADLINE — SUBTEXT — BUTTON LABEL. Numbered list only.",
-    ]
-      .filter(Boolean)
-      .join("\n"),
+  buildPrompt: (v) => `Generate 5 ${v.ctaType} variations for: ${v.goal}. Tone: ${v.tone}. Return a numbered list.`
+};
+
+// ── SECTION GENERATORS ────────────────────────────────────────────
+const SECTION_TYPES = [
+  { label: "About Section", value: "about" },
+  { label: "Services Section", value: "services" },
+  { label: "Pricing Section", value: "pricing" },
+  { label: "FAQ Section", value: "faq" },
+  { label: "Testimonials Section", value: "testimonials" },
+  { label: "Contact Section", value: "contact" },
+];
+
+const sectionGenerator: GeneratorDef = {
+  id: "section-gen",
+  category: "section",
+  name: "AI Section Generator",
+  description: "Generate complete page sections with structured content.",
+  fields: [
+    { id: "sectionType", label: "Section", kind: "select", options: SECTION_TYPES },
+    { id: "details", label: "What should we include?", kind: "textarea", placeholder: "List your services, prices, or key info" },
+    { id: "tone", label: "Tone", kind: "select", options: TONE_OPTIONS },
+  ],
+  buildSystem: commonBrandSystem,
+  buildPrompt: (v) => `Generate a complete ${v.sectionType} section. Content details: ${v.details}. Tone: ${v.tone}. Include a Title, Description, and Bullet points where appropriate.`
+};
+
+// ── STORE ASSISTANT ───────────────────────────────────────────────
+const STORE_TYPES = [
+  { label: "Product Title", value: "title" },
+  { label: "Product Description", value: "description" },
+  { label: "Benefits & Features", value: "benefits" },
+  { label: "Pricing Copy", value: "pricing" },
+];
+
+const storeAssistant: GeneratorDef = {
+  id: "store-gen",
+  category: "store",
+  name: "AI Store Assistant",
+  description: "Generate product titles, descriptions, and commerce copy.",
+  fields: [
+    { id: "tool", label: "I want to generate...", kind: "select", options: STORE_TYPES },
+    { id: "product", label: "Product Name/Type", kind: "text" },
+    { id: "features", label: "Key Features", kind: "textarea", placeholder: "What makes it special?" },
+  ],
+  buildSystem: commonBrandSystem,
+  buildPrompt: (v) => `Generate ${v.tool} for a product named "${v.product}". Key features: ${v.features}. Focus on conversion and value.`
+};
+
+// ── BOOKING ASSISTANT ─────────────────────────────────────────────
+const BOOKING_TYPES = [
+  { label: "Consultation Description", value: "consult" },
+  { label: "Booking Instructions", value: "instructions" },
+  { label: "Thank You Message", value: "thanks" },
+  { label: "Confirmation Email", value: "email" },
+];
+
+const bookingAssistant: GeneratorDef = {
+  id: "booking-gen",
+  category: "booking",
+  name: "AI Booking Assistant",
+  description: "Optimized messages for appointments and consultations.",
+  fields: [
+    { id: "tool", label: "Message Type", kind: "select", options: BOOKING_TYPES },
+    { id: "service", label: "Service Name", kind: "text" },
+    { id: "tone", label: "Tone", kind: "select", options: TONE_OPTIONS },
+  ],
+  buildSystem: commonBrandSystem,
+  buildPrompt: (v) => `Write a ${v.tool} for a "${v.service}" service. Tone: ${v.tone}. Keep it clear and helpful.`
+};
+
+// ── SEO GENERATOR ─────────────────────────────────────────────────
+const seoGenerator: GeneratorDef = {
+  id: "seo-gen",
+  category: "seo",
+  name: "AI SEO",
+  description: "Titles, meta descriptions, and keywords for better ranking.",
+  fields: [
+    { id: "topic", label: "Page Topic", kind: "text" },
+    { id: "keywords", label: "Keywords to include", kind: "textarea", optional: true },
+  ],
+  buildSystem: commonBrandSystem,
+  buildPrompt: (v) => `Generate an SEO pack for: ${v.topic}. ${v.keywords ? `Keywords: ${v.keywords}.` : ""} Return: META TITLE (max 60), META DESCRIPTION (max 155), KEYWORDS (comma-separated), OG TITLE, OG DESCRIPTION.`
 };
 
 // ── SOCIAL CONTENT ────────────────────────────────────────────────
-const SOCIAL_PLATFORMS = [
-  { label: "Instagram Bio", value: "instagram" },
-  { label: "X (Twitter) Bio", value: "twitter" },
-  { label: "LinkedIn Headline", value: "linkedin" },
-  { label: "Facebook About", value: "facebook" },
-  { label: "YouTube Description", value: "youtube" },
-  { label: "TikTok Bio", value: "tiktok" },
+const SOCIAL_TYPES = [
+  { label: "Instagram Caption", value: "instagram" },
+  { label: "Facebook Post", value: "facebook" },
+  { label: "LinkedIn Post", value: "linkedin" },
+  { label: "X (Twitter) Post", value: "twitter" },
+  { label: "WhatsApp Promo", value: "whatsapp" },
 ];
 
-const socialWriter: GeneratorDef = {
-  id: "social-writer",
+const socialGenerator: GeneratorDef = {
+  id: "social-gen",
   category: "social",
-  name: "Social Content",
-  description: "Platform-optimized bios and profile descriptions.",
+  name: "AI Social Content",
+  description: "Platform-optimized posts and promotional captions.",
   fields: [
-    { id: "platform", label: "Platform", kind: "select", options: SOCIAL_PLATFORMS },
-    { id: "subject", label: "Name or brand", kind: "text" },
-    { id: "niche", label: "Niche or industry", kind: "text" },
-    { id: "keywords", label: "Keywords / hooks", kind: "textarea", optional: true },
+    { id: "platform", label: "Platform", kind: "select", options: SOCIAL_TYPES },
+    { id: "topic", label: "Post Topic", kind: "text" },
     { id: "tone", label: "Tone", kind: "select", options: TONE_OPTIONS },
   ],
   buildSystem: commonBrandSystem,
-  buildPrompt: (v) => {
-    const limits: Record<string, string> = {
-      instagram: "under 150 characters, up to 3 line breaks, emoji allowed",
-      twitter: "under 160 characters",
-      linkedin: "under 220 characters, professional",
-      facebook: "under 250 characters",
-      youtube: "3 short paragraphs, keyword-rich, include a CTA",
-      tiktok: "under 80 characters, punchy, emoji allowed",
-    };
-    return [
-      `Write 3 variations of a ${v.platform} profile in a ${v.tone} tone.`,
-      `Subject: ${v.subject || "the brand"}. Niche: ${v.niche || "n/a"}.`,
-      v.keywords ? `Include these keywords/hooks: ${v.keywords}.` : "",
-      `Constraints: ${limits[v.platform] ?? "concise and on-brand"}.`,
-      "Return a numbered list, one variation per item.",
-    ]
-      .filter(Boolean)
-      .join("\n");
-  },
+  buildPrompt: (v) => `Write a ${v.platform} post about: ${v.topic}. Tone: ${v.tone}. Include relevant hashtags.`
 };
 
-// ── SEO CONTENT ────────────────────────────────────────────────────
-const seoWriter: GeneratorDef = {
-  id: "seo-writer",
-  category: "seo",
-  name: "SEO Content",
-  description: "Titles, meta descriptions, keywords and Open Graph copy.",
+// ── THEME SUGGESTIONS ─────────────────────────────────────────────
+const themeSuggestions: GeneratorDef = {
+  id: "theme-gen",
+  category: "design",
+  name: "AI Theme Suggestions",
+  description: "Recommended colors, fonts, and layouts based on industry.",
   fields: [
-    { id: "pageTopic", label: "Page topic", kind: "text", placeholder: "e.g. Wedding photographer in Mumbai" },
-    { id: "audience", label: "Audience", kind: "text", optional: true },
-    { id: "keywords", label: "Seed keywords", kind: "textarea", optional: true },
+    { id: "industry", label: "Your Industry", kind: "text", placeholder: "e.g. Minimalist Cafe, Tech Startup" },
+    { id: "vibe", label: "Brand Vibe", kind: "text", placeholder: "e.g. Modern, Vintage, Corporate" },
   ],
   buildSystem: commonBrandSystem,
-  buildPrompt: (v) =>
-    [
-      `Generate an SEO content pack for: ${v.pageTopic}.`,
-      v.audience ? `Audience: ${v.audience}.` : "",
-      v.keywords ? `Seed keywords: ${v.keywords}.` : "",
-      "",
-      "Return exactly these labeled sections, one per line group:",
-      "SEO TITLE: (max 60 chars)",
-      "META DESCRIPTION: (max 155 chars)",
-      "KEYWORDS: (comma-separated, 8-12)",
-      "OG TITLE: (max 60 chars)",
-      "OG DESCRIPTION: (max 200 chars)",
-    ]
-      .filter(Boolean)
-      .join("\n"),
+  buildPrompt: (v) => `Based on the industry "${v.industry}" and vibe "${v.vibe}", recommend: 1) Primary and Secondary Colors (Hex codes), 2) Font Pairings (Heading/Body), 3) Animation Styles, 4) Recommended Layout.`
 };
 
-// ── BUTTON TEXT ────────────────────────────────────────────────────
-const buttonWriter: GeneratorDef = {
-  id: "button-writer",
-  category: "button",
-  name: "Button Text",
-  description: "Concise, high-intent button labels for any purpose.",
-  fields: [
-    { id: "purpose", label: "Button purpose", kind: "text", placeholder: "e.g. Book a free consultation" },
-    { id: "audience", label: "Audience", kind: "text", optional: true },
-    { id: "tone", label: "Tone", kind: "select", options: TONE_OPTIONS },
-  ],
-  buildSystem: commonBrandSystem,
-  buildPrompt: (v) =>
-    [
-      `Generate 8 optimized button labels for: ${v.purpose}.`,
-      v.audience ? `Audience: ${v.audience}.` : "",
-      `Tone: ${v.tone}. Max 4 words each. Return a numbered list only.`,
-    ]
-      .filter(Boolean)
-      .join("\n"),
-};
-
-// ── REWRITE TOOLS ─────────────────────────────────────────────────
-const REWRITE_ACTIONS = [
-  { label: "Rewrite", value: "rewrite" },
-  { label: "Grammar Fix", value: "grammar" },
-  { label: "Professional Tone", value: "professional" },
-  { label: "Friendly Tone", value: "friendly" },
-  { label: "Luxury Tone", value: "luxury" },
-  { label: "Shorten", value: "shorten" },
-  { label: "Expand", value: "expand" },
-  { label: "Translate", value: "translate" },
+// ── IMAGE PROMPTS ─────────────────────────────────────────────────
+const IMAGE_TYPES = [
+  { label: "Logo", value: "logo" },
+  { label: "Banner", value: "banner" },
+  { label: "Profile Image", value: "profile" },
+  { label: "Hero Background", value: "hero" },
 ];
 
-const rewriteWriter: GeneratorDef = {
-  id: "rewrite",
-  category: "rewrite",
-  name: "Rewrite Tools",
-  description: "Rewrite, fix, shorten, expand, or translate any text.",
+const imagePrompts: GeneratorDef = {
+  id: "image-gen",
+  category: "image",
+  name: "AI Image Prompts",
+  description: "Generate high-quality prompts for AI image generation.",
   fields: [
-    { id: "action", label: "Action", kind: "select", options: REWRITE_ACTIONS },
-    { id: "text", label: "Original text", kind: "textarea", placeholder: "Paste text to transform" },
-    { id: "language", label: "Language (for translate)", kind: "text", optional: true, placeholder: "e.g. Spanish" },
+    { id: "type", label: "Asset Type", kind: "select", options: IMAGE_TYPES },
+    { id: "concept", label: "Visual Concept", kind: "textarea", placeholder: "e.g. futuristic city with neon lights" },
   ],
   buildSystem: commonBrandSystem,
-  buildPrompt: (v) => {
-    const map: Record<string, string> = {
-      rewrite: "Rewrite the following text keeping the meaning but improving clarity and flow.",
-      grammar: "Fix grammar, spelling and punctuation in the following text. Keep the original voice.",
-      professional: "Rewrite the following text in a professional tone.",
-      friendly: "Rewrite the following text in a warm, friendly tone.",
-      luxury: "Rewrite the following text in an elegant, premium luxury tone.",
-      shorten: "Shorten the following text by ~40% while preserving the key message.",
-      expand: "Expand the following text with more detail and vivid language, ~2x the length.",
-      translate: `Translate the following text to ${v.language || "English"}. Preserve tone and formatting.`,
-    };
-    return [map[v.action] || map.rewrite, "", v.text || ""].join("\n");
-  },
+  buildPrompt: (v) => `Create 3 detailed DALL-E/Midjourney prompts for a ${v.type}. Concept: ${v.concept}. Styles: realistic, artistic, and abstract.`
 };
 
 export const GENERATORS: GeneratorDef[] = [
-  bioWriter,
-  ctaWriter,
-  socialWriter,
-  seoWriter,
-  buttonWriter,
-  rewriteWriter,
+  bioGenerator,
+  ctaGenerator,
+  sectionGenerator,
+  storeAssistant,
+  bookingAssistant,
+  seoGenerator,
+  socialGenerator,
+  themeSuggestions,
+  imagePrompts,
 ];
 
 export function getGenerator(id: string): GeneratorDef | undefined {

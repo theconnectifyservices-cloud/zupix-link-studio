@@ -43,11 +43,15 @@ import {
 } from "./hooks";
 
 const CATEGORY_LABEL: Record<GeneratorCategory, string> = {
-  bio: "Bio Writer",
+  bio: "Bio Generator",
   cta: "CTA Generator",
+  section: "Section Generator",
+  store: "Store Assistant",
+  booking: "Booking Assistant",
+  seo: "AI SEO",
   social: "Social Content",
-  seo: "SEO Content",
-  button: "Button Text",
+  design: "Theme Suggestions",
+  image: "Image Prompts",
   rewrite: "Rewrite Tools",
 };
 
@@ -139,10 +143,10 @@ export function ContentStudio({ workspaceId, userId }: Props) {
       <Tabs defaultValue="generators">
         <TabsList>
           <TabsTrigger value="generators">Generators</TabsTrigger>
-          <TabsTrigger value="templates">Prompt Templates</TabsTrigger>
           <TabsTrigger value="history">
             History{history.data?.length ? ` (${history.data.length})` : ""}
           </TabsTrigger>
+          <TabsTrigger value="templates">Starter Kits</TabsTrigger>
         </TabsList>
 
         <TabsContent value="generators" className="mt-4">
