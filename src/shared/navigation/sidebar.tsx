@@ -66,6 +66,7 @@ type Item = {
 const appItems: Item[] = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/app", exact: true },
   { icon: Link2, label: "My Bio Pages", href: "/app/projects" },
+  { icon: Users, label: "Customers", href: "/app/customers" },
   { icon: Images, label: "Media Library", href: "/app/media" },
   { icon: LayoutTemplate, label: "Templates", href: "/app/templates", soon: true },
   { icon: BarChart3, label: "Analytics", href: "/app/analytics", soon: true },
@@ -78,6 +79,7 @@ const appItems: Item[] = [
   { icon: Globe, label: "Domains", href: "/app/domains" },
   { icon: Radar, label: "Tracking Center", href: "/app/tracking" },
   { icon: Radio, label: "Communications", href: "/app/communications" },
+
   { icon: Zap, label: "Automation", href: "/app/automation" },
   { icon: Sparkles, label: "ZUPIX AI", href: "/app/ai" },
   { icon: Crown, label: "My Subscription", href: "/app/my-subscription" },
