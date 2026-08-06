@@ -104,26 +104,14 @@ export function useFeature(feature: FeatureKey): FeatureAccess {
 
       const meta = defaults[feature];
 
-      if (isDismissed(feature)) {
-        // If dismissed in last 24h, we could still open if it's a direct click, 
-        // but often we want to respect the user. However, for a direct "Lock" click, 
-        // we should probably always show the intent.
-        openFeatureDialog({ 
-          feature, 
-          suggestedPlan: requiredPlan,
-          featureName: meta?.name,
-          benefits: meta?.benefits
-        });
-      } else {
-        openFeatureDialog({ 
-          feature, 
-          suggestedPlan: requiredPlan,
-          featureName: meta?.name,
-          benefits: meta?.benefits
-        });
-      }
+      openFeatureDialog({ 
+        feature, 
+        suggestedPlan: requiredPlan,
+        featureName: meta?.name ?? feature.replace("block.", "").replace("_", " "),
+        benefits: meta?.benefits ?? ["Premium features", "Priority support", "Professional tools"]
+      });
     },
-    [openFeatureDialog, feature, requiredPlan, isDismissed],
+    [feature, openFeatureDialog, requiredPlan]
   );
   return { enabled, requiredPlan, currentPlan: code, requestUpgrade };
 }
