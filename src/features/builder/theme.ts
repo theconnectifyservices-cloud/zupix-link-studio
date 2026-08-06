@@ -1209,6 +1209,8 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
     letterSpacing: `${t.letterSpacing}em`,
     fontWeight: t.bodyWeight,
     position: "relative",
+    // Ensure filters/blurs on the inner background layer are contained
+    isolation: "isolate",
   };
   return style;
 }

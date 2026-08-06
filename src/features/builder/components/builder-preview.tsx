@@ -100,8 +100,8 @@ export function BuilderPreview({
             data-theme-mode={resolvedMode}
             className={cn(
               resolvedMode === "dark" && "dark",
-              // Stacking context so the -z-10 background layers stay above
-              // this element's own base colour/gradient (parity with public).
+              // `isolate` ensures the absolute -z-10 background layer stays
+              // behind the content but doesn't bleed out of the preview frame.
               "relative isolate overflow-y-auto overflow-x-hidden",
               `zx-vp-${viewport}`,
               bgCls,
