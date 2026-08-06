@@ -208,7 +208,7 @@ const COMPARISON: Group[] = [
   {
     name: "Builder",
     rows: [
-      { label: "Bio pages", udaan: "1", tejas: "20", shikhar: "Unlimited" },
+      { label: "Bio pages", udaan: "1", tejas: "3", shikhar: "10" },
       { label: "Content blocks", udaan: "13 essentials", tejas: "All 21 blocks", shikhar: "All + commerce" },
       { label: "Drag & drop builder", udaan: "yes", tejas: "yes", shikhar: "yes" },
       { label: "Version history", udaan: "yes", tejas: "yes", shikhar: "yes" },

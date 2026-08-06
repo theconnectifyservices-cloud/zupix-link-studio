@@ -86,7 +86,7 @@ export interface PlanDefinition {
   comingSoon?: boolean;
   waitlist?: boolean;
   features: FeatureKey[];
-  limits: { bio_pages: number | "unlimited"; custom_domains: number | "unlimited" };
+  limits: { bio_pages: number; custom_domains: number | "unlimited" };
   highlights: string[];
 }
 
@@ -210,10 +210,10 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
     comingSoon: false,
     waitlist: false,
     features: [...UDAAN_FEATURES, ...TEJAS_ADDITIONS, ...SHIKHAR_ADDITIONS],
-    limits: { bio_pages: "unlimited", custom_domains: "unlimited" },
+    limits: { bio_pages: 10, custom_domains: "unlimited" },
     highlights: [
       "Everything in Tejas +",
-      "Unlimited Bio Links",
+      "10 Bio Links",
       "Store & Digital Products",
       "Booking System",
       "Membership System",
