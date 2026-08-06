@@ -189,7 +189,7 @@ function Hero({
         <CycleToggle
           cycle={cycle}
           onChange={(c) => { setCycle(c); track("toggle_usage", { cycle: c }); }}
-          savingsHint={`Save ₹${(tejasSavings / 100).toFixed(0)} per year`}
+          savingsHint={`Save \u20b9${(tejasSavings / 100).toFixed(0)} on Tejas / \u20b91,389 on Shikhar`}
         />
       </div>
     </section>
