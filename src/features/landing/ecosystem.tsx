@@ -1152,6 +1152,17 @@ function TrustFooter() {
 /* ------------------------------------------------------------------ */
 
 export function LandingEcosystem() {
+  /**
+   * 🚨 ROOT DOMAIN ROUTING BUG
+   *
+   * Current status:
+   * ✅ https://zupix.site/gaurav works correctly.
+   * ❌ https://zupix.site returns 404.
+   *
+   * Fix: Register "/" as a valid application route pointing to LandingPage.
+   * The $slug route remains as the catch-all for dynamic bio pages.
+   */
+
   return (
     <div className="relative isolate overflow-hidden bg-slate-950 text-white">
       {/* Ambient aurora background */}

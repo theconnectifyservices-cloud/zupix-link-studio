@@ -43,7 +43,10 @@ const RESERVED_SLUGS = new Set([
   "signup",
   "onboarding",
   "api",
+  "auth",
+  "index",
 ]);
+
 
 export const Route = createFileRoute("/$slug")({
   loader: async ({ params, context }) => {
