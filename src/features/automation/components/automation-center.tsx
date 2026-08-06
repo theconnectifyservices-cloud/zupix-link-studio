@@ -109,12 +109,13 @@ export function AutomationCenter({ workspaceId, userId }: Props) {
 
       </TabsList>
 
+      <TabsContent value="notifications"><NotificationsTab workspaceId={workspaceId} /></TabsContent>
+      <TabsContent value="workflows"><WorkflowsTab workspaceId={workspaceId} /></TabsContent>
+      <TabsContent value="timeline"><TimelineTab workspaceId={workspaceId} /></TabsContent>
       <TabsContent value="keys"><ApiKeysTab workspaceId={workspaceId} userId={userId} /></TabsContent>
       <TabsContent value="webhooks"><WebhooksTab workspaceId={workspaceId} userId={userId} /></TabsContent>
-      <TabsContent value="deliveries"><DeliveriesTab workspaceId={workspaceId} /></TabsContent>
-      <TabsContent value="logs"><LogsTab workspaceId={workspaceId} /></TabsContent>
-      <TabsContent value="providers"><ProvidersTab /></TabsContent>
-      <TabsContent value="docs"><DocsTab /></TabsContent>
+      <TabsContent value="settings"><SettingsTab workspaceId={workspaceId} /></TabsContent>
+
     </Tabs>
   );
 }
