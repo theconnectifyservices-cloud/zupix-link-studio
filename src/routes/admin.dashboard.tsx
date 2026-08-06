@@ -16,10 +16,10 @@ function AdminDashboard() {
     { title: "Bio Pages", value: kpis?.totalPages, icon: FileText, color: "text-purple-500", bg: "bg-purple-500/10" },
     { title: "Revenue", value: `₹${kpis?.totalRevenue?.toLocaleString()}`, icon: IndianRupee, color: "text-green-500", bg: "bg-green-500/10" },
     { title: "Active Today", value: kpis?.activeToday, icon: Activity, color: "text-amber-500", bg: "bg-amber-500/10" },
-    { title: "Custom Domains", value: "124", icon: Globe, color: "text-sky-500", bg: "bg-sky-500/10" },
-    { title: "Mini Stores", value: "45", icon: ShoppingBag, color: "text-pink-500", bg: "bg-pink-500/10" },
-    { title: "Bookings", value: "89", icon: Calendar, color: "text-orange-500", bg: "bg-orange-500/10" },
-    { title: "Storage Used", value: "4.2 GB", icon: Zap, color: "text-indigo-500", bg: "bg-indigo-500/10" },
+    { title: "Custom Domains", value: kpis?.totalDomains, icon: Globe, color: "text-sky-500", bg: "bg-sky-500/10" },
+    { title: "Mini Stores", value: kpis?.totalStores, icon: ShoppingBag, color: "text-pink-500", bg: "bg-pink-500/10" },
+    { title: "Bookings", value: kpis?.totalBookings, icon: Calendar, color: "text-orange-500", bg: "bg-orange-500/10" },
+    { title: "Storage Used", value: "Calculating...", icon: Zap, color: "text-indigo-500", bg: "bg-indigo-500/10" },
   ];
 
   return (
@@ -51,9 +51,6 @@ function AdminDashboard() {
                 <div className="text-2xl font-bold">
                   {isLoading ? <div className="h-8 w-24 bg-muted animate-pulse rounded" /> : stat.value}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  <span className="text-green-500 font-medium">↑ 12%</span> vs last month
-                </p>
               </CardContent>
             </Card>
           </motion.div>
@@ -74,18 +71,9 @@ function AdminDashboard() {
             <CardTitle>Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
-             <div className="space-y-4">
-               {[1,2,3,4,5].map(i => (
-                 <div key={i} className="flex items-center gap-3">
-                   <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                     <Activity className="h-4 w-4 text-muted-foreground" />
-                   </div>
-                   <div className="flex-1">
-                     <p className="text-sm font-medium">New User Registration</p>
-                     <p className="text-xs text-muted-foreground">2 mins ago</p>
-                   </div>
-                 </div>
-               ))}
+             <div className="flex flex-col items-center justify-center h-48 text-muted-foreground italic">
+               <Activity className="h-8 w-8 mb-2 opacity-20" />
+               <p>Real-time activity stream integration pending</p>
              </div>
           </CardContent>
         </Card>
