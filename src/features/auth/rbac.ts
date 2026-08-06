@@ -66,6 +66,7 @@ const ADMIN_PERMS: Permission[] = [
   "can_manage_qa",
   "can_manage_operations",
   "can_manage_launch",
+  "can_manage_monitoring",
 ];
 
 const ALL_PERMS: Permission[] = [
