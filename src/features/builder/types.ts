@@ -1196,7 +1196,8 @@ export type Block =
   | QrContactBlock
   | ContactFormBlock
   | MiniStoreBlock
-  | BookingBlock;
+  | BookingBlock
+  | GenericBlock;
 
 
 import type { PageTheme } from "./theme";

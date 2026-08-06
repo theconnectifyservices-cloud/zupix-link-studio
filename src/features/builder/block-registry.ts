@@ -717,7 +717,7 @@ export const BLOCK_DEFS: BlockDef[] = [
   },
   // Reserved / later phases
   {
-    type: "html",
+    type: "customCode",
     label: "HTML",
     description: "Coming soon",
     icon: FileCode,
