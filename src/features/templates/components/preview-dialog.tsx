@@ -37,9 +37,17 @@ export function PreviewDialog({ template, onClose, onApply }: Props) {
           <div className="min-w-0">
             <DialogTitle className="flex items-center gap-2">
               {template.name}
-              {template.isPremium && (
+              {template.tier === "enterprise" ? (
+                <Badge className="gap-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+                  <Crown className="h-3 w-3" /> Enterprise
+                </Badge>
+              ) : (template.tier === "premium" || template.isPremium) ? (
                 <Badge className="gap-1 bg-amber-500 text-white hover:bg-amber-500">
                   <Crown className="h-3 w-3" /> Premium
+                </Badge>
+              ) : (
+                <Badge variant="secondary" className="bg-emerald-500/90 text-white">
+                  Free
                 </Badge>
               )}
               {template.isCustom && <Badge variant="secondary">Mine</Badge>}

@@ -96,6 +96,14 @@ export function useFeature(feature: FeatureKey): FeatureAccess {
           name: "Automation & Webhooks",
           benefits: ["Connect to Zapier/Make", "Custom Webhooks", "API Access", "Automated Workflows"]
         },
+        "templates.premium": {
+          name: "Premium Template Marketplace",
+          benefits: ["Unlock 50+ hand-crafted themes", "Access exclusive creator layouts", "Professional typography axes", "One-click design imports"]
+        },
+        "templates.all": {
+          name: "Enterprise Design Studio",
+          benefits: ["Unlimited access to all themes", "Exclusive high-converting agency layouts", "White-label themes", "Priority support"]
+        },
         "advanced_builder": {
           name: "Enterprise Studio Features",
           benefits: ["Advanced Layout Controls", "Version History", "Bulk Duplication", "Premium Presets"]
