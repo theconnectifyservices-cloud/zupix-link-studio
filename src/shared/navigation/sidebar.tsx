@@ -33,6 +33,7 @@ import {
   KeyRound,
   Rocket,
   Bell,
+  Wallet,
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
