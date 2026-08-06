@@ -224,13 +224,14 @@ export function FollowCardRender({
   return (
     <div
       className={cn(
-        "w-full p-4",
+        "w-full p-4 relative isolate",
         !minimal && "border bg-card shadow-sm",
         align === "center" && "text-center",
         align === "right" && "text-right",
       )}
       style={{ borderRadius: block.radius ?? 16 }}
     >
+      {customStyles}
       <div
         className={cn(
           "flex items-center gap-3",
