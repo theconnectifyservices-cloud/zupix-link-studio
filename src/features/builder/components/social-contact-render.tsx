@@ -282,7 +282,8 @@ export function FollowCardRender({
               boxShadow: shadowMap[shadowSize as keyof typeof shadowMap] || `0 ${shadowBlur}px ${shadowBlur * 2}px ${shadowColor}`,
               borderWidth: block.buttonStyle === "outline" ? 1.5 : 0,
               borderStyle: "solid",
-              width: block.buttonWidth === "full" ? "100%" : "auto",
+              width: block.buttonWidthMode === "full" ? "100%" : block.buttonWidthMode === "custom" ? `${block.buttonWidthCustom ?? 100}%` : "auto",
+              height: block.buttonHeightMode === "custom" ? `${block.buttonHeightCustom ?? 40}px` : undefined,
             } : surfaceStyle("soft", baseColor);
 
             return (

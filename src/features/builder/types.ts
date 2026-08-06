@@ -1078,7 +1078,10 @@ export interface FollowCardBlock extends BaseBlock {
   showIcons?: boolean;
   /** Button customization */
   buttonStyle?: import("./types").ButtonStyle;
-  buttonWidth?: import("./types").ButtonWidth;
+  buttonWidthMode?: "auto" | "full" | "custom";
+  buttonWidthCustom?: number;
+  buttonHeightMode?: "sm" | "md" | "lg" | "custom";
+  buttonHeightCustom?: number;
   buttonAlign?: "left" | "center" | "right";
   buttonSize?: "sm" | "md" | "lg";
   buttonRadius?: number;
