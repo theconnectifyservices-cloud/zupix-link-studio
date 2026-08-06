@@ -172,7 +172,10 @@ export function HighlightCarousel({
           <button
             type="button"
             aria-label="Previous cards"
-            onClick={() => embla?.scrollPrev()}
+            onClick={(e) => {
+              e.stopPropagation();
+              embla?.scrollPrev();
+            }}
             disabled={!loop && !canPrev}
             className="absolute left-1 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border bg-background/85 backdrop-blur transition disabled:opacity-35"
           >
@@ -181,7 +184,10 @@ export function HighlightCarousel({
           <button
             type="button"
             aria-label="Next cards"
-            onClick={() => embla?.scrollNext()}
+            onClick={(e) => {
+              e.stopPropagation();
+              embla?.scrollNext();
+            }}
             disabled={!loop && !canNext}
             className="absolute right-1 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border bg-background/85 backdrop-blur transition disabled:opacity-35"
           >
@@ -198,7 +204,10 @@ export function HighlightCarousel({
               type="button"
               aria-label={`Go to slide ${i + 1}`}
               aria-current={i === selected}
-              onClick={() => embla?.scrollTo(i)}
+              onClick={(e) => {
+                e.stopPropagation();
+                embla?.scrollTo(i);
+              }}
               className={cn(
                 "h-1.5 rounded-full transition-all",
                 i === selected ? "w-5 bg-foreground/70" : "w-1.5 bg-foreground/25",
