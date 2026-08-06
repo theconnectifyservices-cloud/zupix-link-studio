@@ -18,7 +18,7 @@ import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-work
 import { CycleToggle, PricingCards, useBillingCycle } from "@/features/pricing";
 
 const TITLE = "Pricing — ZUPIX Link Studio | Plans from Free to Enterprise";
-const DESC = "Choose the right plan for your business. Start free with Udaan, upgrade to Tejas (₹299/mo) for pro tools, or reach the summit with Shikhar. 3-day free trial, no hidden charges.";
+const DESC = "Choose the right plan for your business. Start free with Udaan, upgrade to Tejas (₹299/mo) or Shikhar (₹499/mo) for pro tools. 3-day free trial, no hidden charges.";
 const URL = "https://zupixlink.lovable.app/pricing";
 
 function track(event: string, props?: Record<string, unknown>) {

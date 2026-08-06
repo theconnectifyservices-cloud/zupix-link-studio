@@ -51,7 +51,7 @@ export function UpgradeModal() {
                 Choose your plan
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Start free with Udaan. Grow with Tejas. Reach the summit with Shikhar.
+                Start free with Udaan. Grow with Tejas. Dominate with Shikhar.
               </p>
 
               <div className="mt-6 inline-flex items-center gap-1 rounded-full border bg-card p-1">
