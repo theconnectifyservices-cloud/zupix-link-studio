@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Sparkles,
   SkipForward,
+  Info,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import { canSkipVersion, RELEASE_TYPE_LABEL, RELEASE_TYPE_STYLE, type MyVersion 
 
 const SECTIONS = [
   { key: "whats_new", label: "What's New", icon: Sparkles, tone: "text-violet-500" },
+  { key: "critical_info", label: "Production Readiness (RC-1)", icon: Info, tone: "text-amber-500" },
   { key: "bug_fixes", label: "Bug Fixes", icon: Bug, tone: "text-emerald-500" },
   {
     key: "performance_improvements",
@@ -126,7 +128,7 @@ export function UpdateModal() {
             )}
 
             {SECTIONS.map(({ key, label, icon: Icon, tone }) => {
-              const items = update[key];
+              const items = update[key as keyof MyVersion] as string[] | undefined;
               if (!items?.length) return null;
               return (
                 <section key={key} className="space-y-2">
@@ -135,7 +137,7 @@ export function UpdateModal() {
                     {label}
                   </h3>
                   <ul className="space-y-1.5">
-                    {items.map((line, i) => (
+                    {items.map((line: string, i: number) => (
                       <li key={i} className="flex gap-2 text-sm text-muted-foreground">
                         <CheckCircle2
                           className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/70"

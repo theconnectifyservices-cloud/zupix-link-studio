@@ -1118,13 +1118,13 @@ function TrustFooter() {
             </form>
             <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/50">
               <span className="inline-flex items-center gap-1.5">
-                <Mail className="h-3.5 w-3.5" /> hello@zupix.in
+                <Mail className="h-3.5 w-3.5" /> hello@zupix.studio
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <MessageCircle className="h-3.5 w-3.5" /> WhatsApp: +91 90000 12345
+                <MessageCircle className="h-3.5 w-3.5" /> WhatsApp Support: +91 90000 12345
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5" /> Bengaluru · Mumbai · Delhi
+                <MapPin className="h-3.5 w-3.5" /> Silicon Valley of India · Bengaluru
               </span>
             </p>
           </div>

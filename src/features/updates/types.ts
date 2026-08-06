@@ -36,6 +36,7 @@ export interface PlatformVersion {
   bug_fixes: string[];
   performance_improvements: string[];
   security_updates: string[];
+  critical_info: string[];
   release_date: string;
   release_type: ReleaseType;
   priority: UpdatePriority;
@@ -69,6 +70,7 @@ export interface MyVersion {
   bug_fixes: string[];
   performance_improvements: string[];
   security_updates: string[];
+  critical_info: string[];
   release_date: string;
   release_type: ReleaseType;
   priority: UpdatePriority;
@@ -195,11 +197,12 @@ export function isVersionValid(version: string): boolean {
 }
 
 /** Total number of changelog line items across all four buckets. */
-export function changeCount(v: Pick<MyVersion, "whats_new" | "bug_fixes" | "performance_improvements" | "security_updates">) {
+export function changeCount(v: Pick<MyVersion, "whats_new" | "bug_fixes" | "performance_improvements" | "security_updates" | "critical_info">) {
   return (
     v.whats_new.length +
     v.bug_fixes.length +
     v.performance_improvements.length +
-    v.security_updates.length
+    v.security_updates.length +
+    v.critical_info.length
   );
 }
