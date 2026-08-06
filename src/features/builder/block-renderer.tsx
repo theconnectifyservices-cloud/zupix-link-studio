@@ -1506,8 +1506,8 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
         prof.badgeAnimation && "zx-badge-anim",
         fx.badgeClass,
         badgePos !== "inline" && "absolute z-[1]",
-        badgePos === "top-right" && "right-0 top-0",
-        badgePos === "bottom-right" && "bottom-0 right-0",
+        badgePos === "top-right" && (avatarShape === "circle" ? "right-[5%] top-[5%]" : "right-[-5%] top-[-5%]"),
+        badgePos === "bottom-right" && (avatarShape === "circle" ? "bottom-[5%] right-[5%]" : "bottom-[-5%] right-[-5%]"),
       )}
       style={{
         width: badgeSize + 4,
