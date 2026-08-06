@@ -395,17 +395,46 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
           </Select>
         </Field>
 
-        <Field label="Button width">
-          <Select value={block.buttonWidth ?? "auto"} onValueChange={(v) => set("buttonWidth", v)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="auto">Auto</SelectItem>
-              <SelectItem value="full">Full Width</SelectItem>
-            </SelectContent>
-          </Select>
-        </Field>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Button width">
+            <Select value={block.buttonWidthMode ?? "auto"} onValueChange={(v) => set("buttonWidthMode", v)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="auto">Auto</SelectItem>
+                <SelectItem value="full">Full Width</SelectItem>
+                <SelectItem value="custom">Custom %</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          {block.buttonWidthMode === "custom" && (
+            <Field label={`Width (${block.buttonWidthCustom ?? 100}%)`}>
+              <Slider min={10} max={100} step={1} value={[block.buttonWidthCustom ?? 100]} onValueChange={([v]) => set("buttonWidthCustom", v)} />
+            </Field>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Button height">
+            <Select value={block.buttonHeightMode ?? "md"} onValueChange={(v) => set("buttonHeightMode", v)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="sm">Small</SelectItem>
+                <SelectItem value="md">Medium</SelectItem>
+                <SelectItem value="lg">Large</SelectItem>
+                <SelectItem value="custom">Custom px</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          {block.buttonHeightMode === "custom" && (
+            <Field label={`Height (${block.buttonHeightCustom ?? 40}px)`}>
+              <Slider min={20} max={120} step={1} value={[block.buttonHeightCustom ?? 40]} onValueChange={([v]) => set("buttonHeightCustom", v)} />
+            </Field>
+          )}
+        </div>
 
         <Row label="Alignment">
           <AlignSelect value={block.buttonAlign ?? "center"} onChange={(v) => set("buttonAlign", v)} />
