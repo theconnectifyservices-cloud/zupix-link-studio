@@ -2,15 +2,17 @@ import { HardDrive, ImageIcon, FileText, Film, Music, TrendingUp, Sparkles } fro
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useStorageStats } from "../hooks";
-import { humanSize, STORAGE_QUOTA } from "../types";
+import { humanSize } from "../types";
 
 export function StorageDashboard({ workspaceId }: { workspaceId: string }) {
   const { data: stats, isLoading } = useStorageStats(workspaceId);
   if (isLoading || !stats)
     return <Card><CardContent className="h-32 animate-pulse" /></Card>;
 
-  const pctUsed = Math.min(100, (stats.used / STORAGE_QUOTA) * 100);
-  const remaining = Math.max(0, STORAGE_QUOTA - stats.used);
+  const quota = (stats as any).quota || 5 * 1024 * 1024 * 1024;
+  const pctUsed = Math.min(100, (stats.used / quota) * 100);
+  const remaining = Math.max(0, quota - stats.used);
+
   const kinds: Array<[string, typeof ImageIcon]> = [
     ["image", ImageIcon],
     ["video", Film],
@@ -34,7 +36,7 @@ export function StorageDashboard({ workspaceId }: { workspaceId: string }) {
             <div className="mb-1 flex items-baseline justify-between">
               <span className="text-2xl font-bold tabular-nums">{humanSize(stats.used)}</span>
               <span className="text-xs text-muted-foreground">
-                of {humanSize(STORAGE_QUOTA)} · {humanSize(remaining)} free
+                of {humanSize(quota)} · {humanSize(remaining)} free
               </span>
             </div>
             <Progress value={pctUsed} className="h-2" />
@@ -65,7 +67,7 @@ export function StorageDashboard({ workspaceId }: { workspaceId: string }) {
             {humanSize(stats.savedBytes)}
           </p>
           <p className="mb-3 text-xs text-muted-foreground">
-            Saved by WebP · {savingsPct}% smaller
+            Saved by WebP & SHA256 deduplication · {savingsPct}% smaller
           </p>
           <dl className="space-y-1 text-xs text-muted-foreground">
             <div className="flex justify-between">

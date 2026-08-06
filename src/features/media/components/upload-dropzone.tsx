@@ -6,7 +6,9 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { uploadAsset } from "../api";
 import { validateBeforeUpload } from "../processor";
+import { useStorageStats } from "../hooks";
 import { ALLOWED_MIME, MAX_FILE_SIZE, humanSize } from "../types";
+
 
 interface UploadItem {
   id: string;
@@ -28,9 +30,18 @@ export function UploadDropzone({ workspaceId, userId, folderId, compact }: Props
   const inputRef = useRef<HTMLInputElement>(null);
   const [items, setItems] = useState<UploadItem[]>([]);
   const [dragOver, setDragOver] = useState(false);
+  const { data: stats } = useStorageStats(workspaceId);
+
 
   const upload = useCallback(
     async (item: UploadItem) => {
+      if (stats && stats.used + item.file.size > (stats as any).quota) {
+        const msg = "Storage quota exceeded. Please upgrade your plan.";
+        setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "error", error: msg } : i)));
+        toast.error(msg);
+        return;
+      }
+
       setItems((prev) =>
         prev.map((i) => (i.id === item.id ? { ...i, status: "uploading", error: undefined } : i)),
       );

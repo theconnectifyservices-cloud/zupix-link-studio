@@ -4,7 +4,8 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 import type { MediaAsset, MediaFolder, MediaUsage, MediaKind } from "./types";
-import { kindFromMime, ALLOWED_MIME, MAX_FILE_SIZE } from "./types";
+import { kindFromMime, ALLOWED_MIME, MAX_FILE_SIZE, humanSize } from "./types";
+
 
 export const BUCKET = "media";
 
@@ -201,8 +202,9 @@ async function imageDimensions(file: File): Promise<{ width: number; height: num
 export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
   const { file, workspaceId, userId, folderId, onProgress, derivedFrom } = input;
 
-  if (file.size > MAX_FILE_SIZE) throw new Error(`File exceeds ${MAX_FILE_SIZE / 1024 / 1024} MB`);
-  if (!ALLOWED_MIME[file.type]) throw new Error(`Unsupported file type: ${file.type || "unknown"}`);
+  if (file.size > MAX_FILE_SIZE) throw new Error(`File exceeds ${humanSize(MAX_FILE_SIZE)}`);
+  // All types are now allowed by the FilePicker, validation happens there or in processor
+
 
   onProgress?.(5);
   const hash = await sha256Hex(file);

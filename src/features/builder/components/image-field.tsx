@@ -1,15 +1,15 @@
 /**
  * ImageField — property-panel control that replaces the raw URL input for
  * profile/hero images. Shows a live preview thumbnail and opens the
- * MediaPicker for upload / library / URL selection with optional crop.
+ * FilePicker for upload / library / URL selection with optional crop.
  */
 import { useState } from "react";
 import { ImageIcon, Trash2, Pencil, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MediaPicker } from "@/features/media/components/media-picker";
-import type { CropShape } from "@/features/media/crop";
+import { FilePicker as MediaPicker } from "@/features/media/components/file-picker";
+import type { CropShape } from "@/features/media/components/file-picker";
 import type { AspectValue } from "@/features/media/components/image-cropper";
 
 interface Props {
@@ -103,6 +103,7 @@ export function ImageField({
         open={open}
         onOpenChange={setOpen}
         title={pickerTitle ?? label}
+        kind="image"
         crop={crop}
         onSelect={(url) => onChange(url)}
       />
