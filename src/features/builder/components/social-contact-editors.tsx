@@ -544,7 +544,6 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
             </Select>
           </Field>
         </div>
-      </div>
 
         <div className="space-y-4 pt-4 border-t">
           <Label className="text-sm font-semibold">Shadow Settings</Label>
