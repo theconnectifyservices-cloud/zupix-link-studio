@@ -31,9 +31,30 @@ const bioQuery = (slug: string) =>
     retry: 2,
   });
 
+const RESERVED_SLUGS = new Set([
+  "admin",
+  "app",
+  "auth",
+  "pricing",
+  "features",
+  "ecosystem",
+  "dashboard",
+  "login",
+  "signup",
+  "onboarding",
+  "api",
+]);
+
 export const Route = createFileRoute("/$slug")({
   loader: async ({ params, context }) => {
-    const page = await context.queryClient.ensureQueryData(bioQuery(params.slug));
+    const slug = normalizeSlug(params.slug);
+    
+    // Explicitly reject reserved system paths to avoid routing hijacking
+    if (RESERVED_SLUGS.has(slug)) {
+      throw notFound();
+    }
+
+    const page = await context.queryClient.ensureQueryData(bioQuery(slug));
     if (!page) throw notFound();
     return { page };
   },

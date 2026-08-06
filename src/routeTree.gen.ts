@@ -13,17 +13,26 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SlugRouteImport } from './routes/$slug'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminUpdatesRouteImport } from './routes/admin.updates'
+import { Route as AdminSubscriptionsRouteImport } from './routes/admin.subscriptions'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminProfilesRouteImport } from './routes/admin.profiles'
+import { Route as AdminMonitoringRouteImport } from './routes/admin.monitoring'
+import { Route as AdminLicensesRouteImport } from './routes/admin.licenses'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminCommunicationsRouteImport } from './routes/admin.communications'
+import { Route as AdminAuditLogsRouteImport } from './routes/admin.audit-logs'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.app'
 import { Route as SlugPageRouteImport } from './routes/$slug.$page'
@@ -112,6 +121,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -121,15 +135,15 @@ const SlugRoute = SlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/auth/',
   path: '/auth/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const SitemapXmlRoute = SitemapXmlRouteImport.update({
   id: '/sitemap/xml',
@@ -156,15 +170,55 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUpdatesRoute = AdminUpdatesRouteImport.update({
+  id: '/updates',
+  path: '/updates',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSubscriptionsRoute = AdminSubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProfilesRoute = AdminProfilesRouteImport.update({
-  id: '/admin/profiles',
-  path: '/admin/profiles',
-  getParentRoute: () => rootRouteImport,
+  id: '/profiles',
+  path: '/profiles',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMonitoringRoute = AdminMonitoringRouteImport.update({
+  id: '/monitoring',
+  path: '/monitoring',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicensesRoute = AdminLicensesRouteImport.update({
+  id: '/licenses',
+  path: '/licenses',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/admin/dashboard',
-  path: '/admin/dashboard',
-  getParentRoute: () => rootRouteImport,
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCommunicationsRoute = AdminCommunicationsRouteImport.update({
+  id: '/communications',
+  path: '/communications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditLogsRoute = AdminAuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
@@ -212,9 +266,9 @@ const ApiAiChatRoute = ApiAiChatRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminBuilderIdRoute = AdminBuilderIdRouteImport.update({
-  id: '/admin/builder/$id',
-  path: '/admin/builder/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/builder/$id',
+  path: '/builder/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AuthenticatedBuilderIdRoute = AuthenticatedBuilderIdRouteImport.update({
   id: '/builder/$id',
@@ -544,8 +598,9 @@ const AuthenticatedAppBillingInvoicesIdPrintRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
+  '/': typeof AuthenticatedRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -553,13 +608,22 @@ export interface FileRoutesByFullPath {
   '/$slug/$page': typeof SlugPageRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/admin/audit-logs': typeof AdminAuditLogsRoute
+  '/admin/communications': typeof AdminCommunicationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/licenses': typeof AdminLicensesRoute
+  '/admin/monitoring': typeof AdminMonitoringRoute
   '/admin/profiles': typeof AdminProfilesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsRoute
+  '/admin/updates': typeof AdminUpdatesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/sitemap/xml': typeof SitemapXmlRoute
+  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/ai': typeof AuthenticatedAppAiRouteWithChildren
@@ -627,21 +691,30 @@ export interface FileRoutesByFullPath {
   '/app/billing/invoices/$id/print': typeof AuthenticatedAppBillingInvoicesIdPrintRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
+  '/': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/signup': typeof SignupRoute
   '/$slug/$page': typeof SlugPageRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/admin/audit-logs': typeof AdminAuditLogsRoute
+  '/admin/communications': typeof AdminCommunicationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/licenses': typeof AdminLicensesRoute
+  '/admin/monitoring': typeof AdminMonitoringRoute
   '/admin/profiles': typeof AdminProfilesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsRoute
+  '/admin/updates': typeof AdminUpdatesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/sitemap/xml': typeof SitemapXmlRoute
+  '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
   '/app/agency': typeof AuthenticatedAppAgencyRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
@@ -709,9 +782,9 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -719,13 +792,22 @@ export interface FileRoutesById {
   '/$slug/$page': typeof SlugPageRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/admin/audit-logs': typeof AdminAuditLogsRoute
+  '/admin/communications': typeof AdminCommunicationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/licenses': typeof AdminLicensesRoute
+  '/admin/monitoring': typeof AdminMonitoringRoute
   '/admin/profiles': typeof AdminProfilesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsRoute
+  '/admin/updates': typeof AdminUpdatesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/sitemap/xml': typeof SitemapXmlRoute
+  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/_authenticated/app/agency': typeof AuthenticatedAppAgencyRoute
   '/_authenticated/app/ai': typeof AuthenticatedAppAiRouteWithChildren
@@ -795,8 +877,9 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/$slug'
+    | '/'
+    | '/admin'
     | '/login'
     | '/pricing'
     | '/robots.txt'
@@ -804,13 +887,22 @@ export interface FileRouteTypes {
     | '/$slug/$page'
     | '/app'
     | '/onboarding'
+    | '/admin/audit-logs'
+    | '/admin/communications'
     | '/admin/dashboard'
+    | '/admin/licenses'
+    | '/admin/monitoring'
     | '/admin/profiles'
+    | '/admin/settings'
+    | '/admin/subscriptions'
+    | '/admin/updates'
+    | '/admin/users'
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/invite/$token'
     | '/sitemap/xml'
+    | '/admin/'
     | '/auth/'
     | '/app/agency'
     | '/app/ai'
@@ -878,21 +970,30 @@ export interface FileRouteTypes {
     | '/app/billing/invoices/$id/print'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/$slug'
+    | '/'
     | '/login'
     | '/pricing'
     | '/robots.txt'
     | '/signup'
     | '/$slug/$page'
     | '/onboarding'
+    | '/admin/audit-logs'
+    | '/admin/communications'
     | '/admin/dashboard'
+    | '/admin/licenses'
+    | '/admin/monitoring'
     | '/admin/profiles'
+    | '/admin/settings'
+    | '/admin/subscriptions'
+    | '/admin/updates'
+    | '/admin/users'
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/invite/$token'
     | '/sitemap/xml'
+    | '/admin'
     | '/auth'
     | '/app/agency'
     | '/app/analytics'
@@ -959,9 +1060,9 @@ export interface FileRouteTypes {
     | '/app/billing/invoices/$id/print'
   id:
     | '__root__'
-    | '/'
     | '/$slug'
     | '/_authenticated'
+    | '/admin'
     | '/login'
     | '/pricing'
     | '/robots.txt'
@@ -969,13 +1070,22 @@ export interface FileRouteTypes {
     | '/$slug/$page'
     | '/_authenticated/app'
     | '/_authenticated/onboarding'
+    | '/admin/audit-logs'
+    | '/admin/communications'
     | '/admin/dashboard'
+    | '/admin/licenses'
+    | '/admin/monitoring'
     | '/admin/profiles'
+    | '/admin/settings'
+    | '/admin/subscriptions'
+    | '/admin/updates'
+    | '/admin/users'
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/invite/$token'
     | '/sitemap/xml'
+    | '/admin/'
     | '/auth/'
     | '/_authenticated/app/agency'
     | '/_authenticated/app/ai'
@@ -1044,22 +1154,19 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRouteWithChildren
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SignupRoute: typeof SignupRoute
-  AdminDashboardRoute: typeof AdminDashboardRoute
-  AdminProfilesRoute: typeof AdminProfilesRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   InviteTokenRoute: typeof InviteTokenRoute
   SitemapXmlRoute: typeof SitemapXmlRoute
   AuthIndexRoute: typeof AuthIndexRoute
-  AdminBuilderIdRoute: typeof AdminBuilderIdRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAiGenerateRoute: typeof ApiAiGenerateRoute
   ApiPublicBookingsRoute: typeof ApiPublicBookingsRoute
@@ -1100,6 +1207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -1114,19 +1228,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/': {
       id: '/auth/'
       path: '/auth'
       fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/sitemap/xml': {
       id: '/sitemap/xml'
@@ -1163,19 +1277,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/updates': {
+      id: '/admin/updates'
+      path: '/updates'
+      fullPath: '/admin/updates'
+      preLoaderRoute: typeof AdminUpdatesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/subscriptions': {
+      id: '/admin/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/admin/subscriptions'
+      preLoaderRoute: typeof AdminSubscriptionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/profiles': {
       id: '/admin/profiles'
-      path: '/admin/profiles'
+      path: '/profiles'
       fullPath: '/admin/profiles'
       preLoaderRoute: typeof AdminProfilesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/monitoring': {
+      id: '/admin/monitoring'
+      path: '/monitoring'
+      fullPath: '/admin/monitoring'
+      preLoaderRoute: typeof AdminMonitoringRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/licenses': {
+      id: '/admin/licenses'
+      path: '/licenses'
+      fullPath: '/admin/licenses'
+      preLoaderRoute: typeof AdminLicensesRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/dashboard': {
       id: '/admin/dashboard'
-      path: '/admin/dashboard'
+      path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/communications': {
+      id: '/admin/communications'
+      path: '/communications'
+      fullPath: '/admin/communications'
+      preLoaderRoute: typeof AdminCommunicationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/audit-logs': {
+      id: '/admin/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/admin/audit-logs'
+      preLoaderRoute: typeof AdminAuditLogsRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
@@ -1242,10 +1412,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/builder/$id': {
       id: '/admin/builder/$id'
-      path: '/admin/builder/$id'
+      path: '/builder/$id'
       fullPath: '/admin/builder/$id'
       preLoaderRoute: typeof AdminBuilderIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_authenticated/builder/$id': {
       id: '/_authenticated/builder/$id'
@@ -1833,23 +2003,52 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface AdminRouteChildren {
+  AdminAuditLogsRoute: typeof AdminAuditLogsRoute
+  AdminCommunicationsRoute: typeof AdminCommunicationsRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminLicensesRoute: typeof AdminLicensesRoute
+  AdminMonitoringRoute: typeof AdminMonitoringRoute
+  AdminProfilesRoute: typeof AdminProfilesRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSubscriptionsRoute: typeof AdminSubscriptionsRoute
+  AdminUpdatesRoute: typeof AdminUpdatesRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminBuilderIdRoute: typeof AdminBuilderIdRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditLogsRoute: AdminAuditLogsRoute,
+  AdminCommunicationsRoute: AdminCommunicationsRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminLicensesRoute: AdminLicensesRoute,
+  AdminMonitoringRoute: AdminMonitoringRoute,
+  AdminProfilesRoute: AdminProfilesRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminSubscriptionsRoute: AdminSubscriptionsRoute,
+  AdminUpdatesRoute: AdminUpdatesRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminBuilderIdRoute: AdminBuilderIdRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   SlugRoute: SlugRouteWithChildren,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SignupRoute: SignupRoute,
-  AdminDashboardRoute: AdminDashboardRoute,
-  AdminProfilesRoute: AdminProfilesRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   InviteTokenRoute: InviteTokenRoute,
   SitemapXmlRoute: SitemapXmlRoute,
   AuthIndexRoute: AuthIndexRoute,
-  AdminBuilderIdRoute: AdminBuilderIdRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAiGenerateRoute: ApiAiGenerateRoute,
   ApiPublicBookingsRoute: ApiPublicBookingsRoute,
