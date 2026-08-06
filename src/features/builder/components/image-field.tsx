@@ -8,7 +8,7 @@ import { ImageIcon, Trash2, Pencil, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MediaPicker } from "@/features/media/components/media-picker";
+import { FilePicker as MediaPicker } from "@/features/media/components/file-picker";
 import type { CropShape } from "@/features/media/crop";
 import type { AspectValue } from "@/features/media/components/image-cropper";
 
