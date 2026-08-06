@@ -142,7 +142,7 @@ export function ThemePanel() {
             onChange={(v) =>
               patchColors({
                 background: v,
-                backgroundSolid: extractSolid(v) ?? theme.colors.backgroundSolid,
+                backgroundSolid: (typeof v === 'string' ? extractSolid(v) : null) ?? theme.colors.backgroundSolid,
               })
             }
           />
@@ -1443,7 +1443,7 @@ function ColorField({
   brands: string[];
   onSaveBrand: (hex: string) => void;
 }) {
-  const solid = extractSolid(value) ?? "#ffffff";
+  const solid = (typeof value === 'string' ? extractSolid(value) : null) ?? "#ffffff";
   return (
     <Field label={label}>
       <div className="flex items-center gap-2">
@@ -1461,8 +1461,8 @@ function ColorField({
           variant="ghost"
           className="h-8 w-8 shrink-0"
           title="Save to brand colors"
-          onClick={() => extractSolid(value) && onSaveBrand(extractSolid(value)!)}
-          disabled={!extractSolid(value) || brands.includes(extractSolid(value)!)}
+          onClick={() => typeof value === 'string' && extractSolid(value) && onSaveBrand(extractSolid(value)!)}
+          disabled={typeof value !== 'string' || !extractSolid(value) || brands.includes(extractSolid(value)!)}
         >
           <Plus className="h-3.5 w-3.5" />
         </Button>
