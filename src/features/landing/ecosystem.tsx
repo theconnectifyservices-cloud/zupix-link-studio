@@ -514,7 +514,7 @@ const WHY_CARDS = [
   },
   {
     title: "Indian Support",
-    desc: "Hindi, English & 6 regional languages — human help 24×7.",
+    desc: "hi — human help 24×7.",
     icon: MapPin,
     grad: "from-rose-500 to-orange-500",
     span: "sm:col-span-1",
