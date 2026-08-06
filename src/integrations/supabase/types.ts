@@ -1625,6 +1625,115 @@ export type Database = {
           },
         ]
       }
+      bio_customer_timeline: {
+        Row: {
+          created_at: string
+          customer_id: string
+          description: string | null
+          id: string
+          metadata: Json
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          description?: string | null
+          id?: string
+          metadata?: Json
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          description?: string | null
+          id?: string
+          metadata?: Json
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bio_customer_timeline_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "bio_customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bio_customers: {
+        Row: {
+          created_at: string
+          email: string | null
+          first_interaction: string
+          id: string
+          latest_activity: string
+          metadata: Json
+          name: string
+          notes: string | null
+          phone: string | null
+          source: string
+          status: string
+          tags: string[]
+          total_bookings: number
+          total_orders: number
+          total_payments: number
+          updated_at: string
+          whatsapp: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          first_interaction?: string
+          id?: string
+          latest_activity?: string
+          metadata?: Json
+          name: string
+          notes?: string | null
+          phone?: string | null
+          source: string
+          status?: string
+          tags?: string[]
+          total_bookings?: number
+          total_orders?: number
+          total_payments?: number
+          updated_at?: string
+          whatsapp?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          first_interaction?: string
+          id?: string
+          latest_activity?: string
+          metadata?: Json
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          source?: string
+          status?: string
+          tags?: string[]
+          total_bookings?: number
+          total_orders?: number
+          total_payments?: number
+          updated_at?: string
+          whatsapp?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bio_customers_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bio_leads: {
         Row: {
           attachments: Json
