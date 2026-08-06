@@ -140,6 +140,7 @@ export function PublicBioRenderer({
                   viewport={viewport}
                   staggerStep={motion.stagger ? (motion.staggerStep ?? 60) : 0}
                   reduceMotion={!!motion.reduce}
+                  allBlocks={blocks}
                 />
               ))}
             </PublicPageProvider>
