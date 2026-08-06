@@ -59,24 +59,84 @@ export interface FeatureAccess {
 
 export function useFeature(feature: FeatureKey): FeatureAccess {
   const { code } = usePlan();
-  const openUpgrade = useSubscriptionUI((s) => s.openUpgrade);
+  const { openUpgrade, openFeatureDialog, isDismissed } = useSubscriptionUI();
   const requiredPlan = requiredPlanFor(feature);
   const enabled = planCovers(code, requiredPlan);
+
   const requestUpgrade = useCallback(
-    () => openUpgrade({ feature, suggestedPlan: requiredPlan }),
-    [openUpgrade, feature, requiredPlan],
+    () => {
+      // Default benefits and names based on keys
+      const defaults: Record<string, { name: string; benefits: string[] }> = {
+        "block.store": { 
+          name: "Mini Store", 
+          benefits: ["Sell digital products & services", "Accept payments via UPI & Razorpay", "Inventory management", "Order tracking"] 
+        },
+        "block.bookings": { 
+          name: "Bookings Pro", 
+          benefits: ["Schedule appointments", "Google Calendar sync", "Automated reminders", "Pre-payment for sessions"] 
+        },
+        "remove_branding": { 
+          name: "Remove ZUPIX Branding", 
+          benefits: ["100% White-label experience", "Custom footer credit", "Professional brand appearance"] 
+        },
+        "custom_domain": { 
+          name: "Custom Domain", 
+          benefits: ["Connect your own domain (e.g. bio.yourname.com)", "Free SSL certificate", "Improved SEO authority"] 
+        },
+        "block.custom_code": { 
+          name: "Advanced Builder & CSS", 
+          benefits: ["Inject custom HTML/JS", "Full CSS control", "Third-party widget support"] 
+        },
+        "block.analytics": { 
+          name: "Advanced Analytics", 
+          benefits: ["Real-time traffic tracking", "Source & Device breakdown", "Conversion tracking", "Export data"] 
+        }
+      };
+
+      const meta = defaults[feature];
+
+      if (isDismissed(feature)) {
+        // If dismissed in last 24h, we could still open if it's a direct click, 
+        // but often we want to respect the user. However, for a direct "Lock" click, 
+        // we should probably always show the intent.
+        openFeatureDialog({ 
+          feature, 
+          suggestedPlan: requiredPlan,
+          featureName: meta?.name,
+          benefits: meta?.benefits
+        });
+      } else {
+        openFeatureDialog({ 
+          feature, 
+          suggestedPlan: requiredPlan,
+          featureName: meta?.name,
+          benefits: meta?.benefits
+        });
+      }
+    },
+    [openFeatureDialog, feature, requiredPlan, isDismissed],
   );
   return { enabled, requiredPlan, currentPlan: code, requestUpgrade };
 }
 
 export function useBlockAccess(type: BlockType): FeatureAccess {
   const { code } = usePlan();
-  const openUpgrade = useSubscriptionUI((s) => s.openUpgrade);
+  const { openFeatureDialog } = useSubscriptionUI();
   const requiredPlan = requiredPlanForBlock(type) ?? "udaan";
   const enabled = planCovers(code, requiredPlan);
+  
+  const featureKey = BLOCK_FEATURE_KEY[type];
+
   const requestUpgrade = useCallback(
-    () => openUpgrade({ suggestedPlan: requiredPlan, reason: `The "${type}" block requires ${PLANS[requiredPlan].name}.` }),
-    [openUpgrade, requiredPlan, type],
+    () => {
+      // Logic handled by useFeature usually, but we keep this for direct block clicks
+      openFeatureDialog({ 
+        feature: featureKey,
+        suggestedPlan: requiredPlan, 
+        reason: `The "${type}" block requires ${PLANS[requiredPlan].name} to unlock its full potential.` 
+      });
+    },
+    [openFeatureDialog, requiredPlan, type, featureKey],
   );
   return { enabled, requiredPlan, currentPlan: code, requestUpgrade };
 }
