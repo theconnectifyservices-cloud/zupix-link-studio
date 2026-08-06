@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/auth/login")({
   beforeLoad: async () => {
     // Only check session on the client — server has no cookie for the SPA Supabase client.
     if (typeof window !== "undefined") {

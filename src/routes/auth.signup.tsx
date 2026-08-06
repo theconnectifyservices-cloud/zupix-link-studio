@@ -6,7 +6,7 @@ const searchSchema = z.object({
   plan: z.string().optional().catch(undefined),
 });
 
-export const Route = createFileRoute("/signup")({
+export const Route = createFileRoute("/auth/signup")({
   validateSearch: searchSchema,
   beforeLoad: async ({ search }) => {
     if (typeof window !== "undefined") {
