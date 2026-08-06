@@ -240,7 +240,14 @@ export const ALLOWED_MIME: Record<string, MediaKind> = {
 };
 
 export const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
-export const STORAGE_QUOTA = 5 * 1024 * 1024 * 1024; // 5 GB per workspace default
+export const PLAN_STORAGE_LIMITS = {
+  udaan: 500 * 1024 * 1024, // 500 MB
+  tejas: 5 * 1024 * 1024 * 1024, // 5 GB
+  shikhar: 20 * 1024 * 1024 * 1024, // 20 GB
+} as const;
+
+export const STORAGE_QUOTA = PLAN_STORAGE_LIMITS.tejas; // Default fallback
+
 
 export function kindFromMime(mime: string): MediaKind {
   return ALLOWED_MIME[mime] ?? "other";
