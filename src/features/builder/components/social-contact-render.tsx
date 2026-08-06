@@ -315,7 +315,7 @@ export function FollowCardRender({
                     }} 
                   />
                 )}
-                <span className="truncate">{l.label || l.platform}</span>
+                <span className="truncate" style={{ fontSize: block.buttonFontSize ?? (isCustom ? 12 : undefined) }}>{l.label || l.platform}</span>
               </ButtonFxSurface>
             );
           })}
