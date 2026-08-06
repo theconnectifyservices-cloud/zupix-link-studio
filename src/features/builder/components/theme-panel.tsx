@@ -30,6 +30,7 @@ import {
   DEFAULT_BACKGROUND,
   GOOGLE_FONTS,
   THEME_PRESETS,
+  DEFAULT_MOTION,
   ensureGoogleFont,
   type BackgroundKind,
   type ButtonShapeId,
@@ -40,6 +41,11 @@ import {
   type ThemePresetId,
 } from "../theme";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
