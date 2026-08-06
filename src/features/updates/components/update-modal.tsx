@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Sparkles,
   SkipForward,
+  Info,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import { canSkipVersion, RELEASE_TYPE_LABEL, RELEASE_TYPE_STYLE, type MyVersion 
 
 const SECTIONS = [
   { key: "whats_new", label: "What's New", icon: Sparkles, tone: "text-violet-500" },
+  { key: "critical_info", label: "Production Readiness (RC-1)", icon: Info, tone: "text-amber-500" },
   { key: "bug_fixes", label: "Bug Fixes", icon: Bug, tone: "text-emerald-500" },
   {
     key: "performance_improvements",
