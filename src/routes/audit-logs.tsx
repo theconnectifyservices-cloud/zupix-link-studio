@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminComingSoon } from "@/features/admin/components/coming-soon";
 
-export const Route = createFileRoute("/_authenticated/admin/audit-logs")({
+export const Route = createFileRoute("/audit-logs")({
   component: () => <AdminComingSoon title="Audit Logs" />,
 });

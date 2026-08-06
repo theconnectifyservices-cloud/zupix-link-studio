@@ -3,7 +3,7 @@ import { AdminLayout } from "@/shared/layouts/admin-layout";
 import { supabase } from "@/integrations/supabase/client";
 import { isSuperAdmin, type PlatformRole } from "@/features/auth/rbac";
 
-export const Route = createFileRoute("/_authenticated/admin")({
+export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
     // 1. Verify session
     const { data: { session } } = await supabase.auth.getSession();

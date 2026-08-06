@@ -9,10 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsersRouteImport } from './routes/users'
+import { Route as UpdatesRouteImport } from './routes/updates'
+import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as MonitoringRouteImport } from './routes/monitoring'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LicensesRouteImport } from './routes/licenses'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CommunicationsRouteImport } from './routes/communications'
+import { Route as AuditLogsRouteImport } from './routes/audit-logs'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
@@ -92,9 +102,29 @@ import { Route as AuthenticatedAppAiDesignRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppAiConversationIdRouteImport } from './routes/_authenticated.app.ai.$conversationId'
 import { Route as AuthenticatedAppBillingInvoicesIdPrintRouteImport } from './routes/_authenticated.app.billing.invoices.$id.print'
 
+const UsersRoute = UsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdatesRoute = UpdatesRouteImport.update({
+  id: '/updates',
+  path: '/updates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionsRoute = SubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
@@ -107,9 +137,39 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MonitoringRoute = MonitoringRouteImport.update({
+  id: '/monitoring',
+  path: '/monitoring',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LicensesRoute = LicensesRouteImport.update({
+  id: '/licenses',
+  path: '/licenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunicationsRoute = CommunicationsRouteImport.update({
+  id: '/communications',
+  path: '/communications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditLogsRoute = AuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -157,14 +217,14 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminProfilesRoute = AdminProfilesRouteImport.update({
-  id: '/admin/profiles',
-  path: '/admin/profiles',
-  getParentRoute: () => rootRouteImport,
+  id: '/profiles',
+  path: '/profiles',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/admin/dashboard',
-  path: '/admin/dashboard',
-  getParentRoute: () => rootRouteImport,
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
@@ -212,9 +272,9 @@ const ApiAiChatRoute = ApiAiChatRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminBuilderIdRoute = AdminBuilderIdRouteImport.update({
-  id: '/admin/builder/$id',
-  path: '/admin/builder/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/builder/$id',
+  path: '/builder/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AuthenticatedBuilderIdRoute = AuthenticatedBuilderIdRouteImport.update({
   id: '/builder/$id',
@@ -546,10 +606,20 @@ const AuthenticatedAppBillingInvoicesIdPrintRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/audit-logs': typeof AuditLogsRoute
+  '/communications': typeof CommunicationsRoute
+  '/dashboard': typeof DashboardRoute
+  '/licenses': typeof LicensesRoute
   '/login': typeof LoginRoute
+  '/monitoring': typeof MonitoringRoute
   '/pricing': typeof PricingRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/subscriptions': typeof SubscriptionsRoute
+  '/updates': typeof UpdatesRoute
+  '/users': typeof UsersRoute
   '/$slug/$page': typeof SlugPageRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -629,10 +699,20 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/audit-logs': typeof AuditLogsRoute
+  '/communications': typeof CommunicationsRoute
+  '/dashboard': typeof DashboardRoute
+  '/licenses': typeof LicensesRoute
   '/login': typeof LoginRoute
+  '/monitoring': typeof MonitoringRoute
   '/pricing': typeof PricingRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/subscriptions': typeof SubscriptionsRoute
+  '/updates': typeof UpdatesRoute
+  '/users': typeof UsersRoute
   '/$slug/$page': typeof SlugPageRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -712,10 +792,20 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/audit-logs': typeof AuditLogsRoute
+  '/communications': typeof CommunicationsRoute
+  '/dashboard': typeof DashboardRoute
+  '/licenses': typeof LicensesRoute
   '/login': typeof LoginRoute
+  '/monitoring': typeof MonitoringRoute
   '/pricing': typeof PricingRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/subscriptions': typeof SubscriptionsRoute
+  '/updates': typeof UpdatesRoute
+  '/users': typeof UsersRoute
   '/$slug/$page': typeof SlugPageRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -797,10 +887,20 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$slug'
+    | '/admin'
+    | '/audit-logs'
+    | '/communications'
+    | '/dashboard'
+    | '/licenses'
     | '/login'
+    | '/monitoring'
     | '/pricing'
     | '/robots.txt'
+    | '/settings'
     | '/signup'
+    | '/subscriptions'
+    | '/updates'
+    | '/users'
     | '/$slug/$page'
     | '/app'
     | '/onboarding'
@@ -880,10 +980,20 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
+    | '/admin'
+    | '/audit-logs'
+    | '/communications'
+    | '/dashboard'
+    | '/licenses'
     | '/login'
+    | '/monitoring'
     | '/pricing'
     | '/robots.txt'
+    | '/settings'
     | '/signup'
+    | '/subscriptions'
+    | '/updates'
+    | '/users'
     | '/$slug/$page'
     | '/onboarding'
     | '/admin/dashboard'
@@ -962,10 +1072,20 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/_authenticated'
+    | '/admin'
+    | '/audit-logs'
+    | '/communications'
+    | '/dashboard'
+    | '/licenses'
     | '/login'
+    | '/monitoring'
     | '/pricing'
     | '/robots.txt'
+    | '/settings'
     | '/signup'
+    | '/subscriptions'
+    | '/updates'
+    | '/users'
     | '/$slug/$page'
     | '/_authenticated/app'
     | '/_authenticated/onboarding'
@@ -1047,19 +1167,26 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRouteWithChildren
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
+  AuditLogsRoute: typeof AuditLogsRoute
+  CommunicationsRoute: typeof CommunicationsRoute
+  DashboardRoute: typeof DashboardRoute
+  LicensesRoute: typeof LicensesRoute
   LoginRoute: typeof LoginRoute
+  MonitoringRoute: typeof MonitoringRoute
   PricingRoute: typeof PricingRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
-  AdminDashboardRoute: typeof AdminDashboardRoute
-  AdminProfilesRoute: typeof AdminProfilesRoute
+  SubscriptionsRoute: typeof SubscriptionsRoute
+  UpdatesRoute: typeof UpdatesRoute
+  UsersRoute: typeof UsersRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   InviteTokenRoute: typeof InviteTokenRoute
   SitemapXmlRoute: typeof SitemapXmlRoute
   AuthIndexRoute: typeof AuthIndexRoute
-  AdminBuilderIdRoute: typeof AdminBuilderIdRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAiGenerateRoute: typeof ApiAiGenerateRoute
   ApiPublicBookingsRoute: typeof ApiPublicBookingsRoute
@@ -1072,11 +1199,39 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/users': {
+      id: '/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof UsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/updates': {
+      id: '/updates'
+      path: '/updates'
+      fullPath: '/updates'
+      preLoaderRoute: typeof UpdatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscriptions': {
+      id: '/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/subscriptions'
+      preLoaderRoute: typeof SubscriptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots.txt': {
@@ -1093,11 +1248,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/monitoring': {
+      id: '/monitoring'
+      path: '/monitoring'
+      fullPath: '/monitoring'
+      preLoaderRoute: typeof MonitoringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/licenses': {
+      id: '/licenses'
+      path: '/licenses'
+      fullPath: '/licenses'
+      preLoaderRoute: typeof LicensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/communications': {
+      id: '/communications'
+      path: '/communications'
+      fullPath: '/communications'
+      preLoaderRoute: typeof CommunicationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit-logs': {
+      id: '/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AuditLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -1165,17 +1362,17 @@ declare module '@tanstack/react-router' {
     }
     '/admin/profiles': {
       id: '/admin/profiles'
-      path: '/admin/profiles'
+      path: '/profiles'
       fullPath: '/admin/profiles'
       preLoaderRoute: typeof AdminProfilesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/dashboard': {
       id: '/admin/dashboard'
-      path: '/admin/dashboard'
+      path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
@@ -1242,10 +1439,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/builder/$id': {
       id: '/admin/builder/$id'
-      path: '/admin/builder/$id'
+      path: '/builder/$id'
       fullPath: '/admin/builder/$id'
       preLoaderRoute: typeof AdminBuilderIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_authenticated/builder/$id': {
       id: '/_authenticated/builder/$id'
@@ -1833,23 +2030,44 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface AdminRouteChildren {
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminProfilesRoute: typeof AdminProfilesRoute
+  AdminBuilderIdRoute: typeof AdminBuilderIdRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminProfilesRoute: AdminProfilesRoute,
+  AdminBuilderIdRoute: AdminBuilderIdRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRouteWithChildren,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
+  AuditLogsRoute: AuditLogsRoute,
+  CommunicationsRoute: CommunicationsRoute,
+  DashboardRoute: DashboardRoute,
+  LicensesRoute: LicensesRoute,
   LoginRoute: LoginRoute,
+  MonitoringRoute: MonitoringRoute,
   PricingRoute: PricingRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
-  AdminDashboardRoute: AdminDashboardRoute,
-  AdminProfilesRoute: AdminProfilesRoute,
+  SubscriptionsRoute: SubscriptionsRoute,
+  UpdatesRoute: UpdatesRoute,
+  UsersRoute: UsersRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   InviteTokenRoute: InviteTokenRoute,
   SitemapXmlRoute: SitemapXmlRoute,
   AuthIndexRoute: AuthIndexRoute,
-  AdminBuilderIdRoute: AdminBuilderIdRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAiGenerateRoute: ApiAiGenerateRoute,
   ApiPublicBookingsRoute: ApiPublicBookingsRoute,
