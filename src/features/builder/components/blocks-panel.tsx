@@ -112,7 +112,7 @@ function PaletteTile({ def, onAdded }: { def: BlockDef; onAdded?: () => void }) 
       <div className="min-w-0">
         <div className="truncate text-sm font-medium">{def.label}</div>
         <div className="truncate text-[11px] text-muted-foreground">
-          {isComingSoon ? "Coming soon" : def.description}
+          {isLocked ? `Available in ${PLANS[requiredPlan || "shikhar"].name} Plan` : def.description}
         </div>
       </div>
     </button>
