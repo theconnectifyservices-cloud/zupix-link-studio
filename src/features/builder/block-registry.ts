@@ -33,7 +33,7 @@ import {
   UserPlus,
   QrCode,
 } from "lucide-react";
-import type { Block, BlockType } from "./types";
+import type { Block, BlockType, CustomCodeBlock } from "./types";
 import { newId } from "./types";
 
 export interface BlockDef {
