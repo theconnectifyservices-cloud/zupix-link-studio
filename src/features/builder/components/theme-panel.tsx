@@ -1210,76 +1210,7 @@ export function ThemePanel() {
         {/* ── SPACING ──────────────────────────────────────────────── */}
         <TabsContent value="space" className="mt-3 space-y-3">
           <SectionHead label="Spacing & Layout" onReset={resetSpace} />
-          <NumField
-            label="Page padding X"
-            min={0}
-            max={64}
-            step={2}
-            value={theme.spacing.pagePadding}
-            suffix="px"
-            onChange={(v) => patchSpace({ pagePadding: v })}
-          />
-          <NumField
-            label="Page padding Y"
-            min={0}
-            max={120}
-            step={2}
-            value={theme.spacing.pagePaddingY}
-            suffix="px"
-            onChange={(v) => patchSpace({ pagePaddingY: v })}
-          />
-          <Field label="Default section gap">
-            <div className="flex flex-wrap gap-1.5">
-              {[16, 24, 32, 40].map((g) => (
-                <Button
-                  key={g}
-                  type="button"
-                  size="sm"
-                  variant={(theme.spacing.sectionGap ?? 32) === g ? "default" : "outline"}
-                  className="h-7 px-2 text-xs"
-                  onClick={() => patchSpace({ sectionGap: g })}
-                >
-                  {g}
-                </Button>
-              ))}
-            </div>
-          </Field>
-          <NumField
-            label="Custom section gap"
-            min={0}
-            max={160}
-            step={2}
-            value={theme.spacing.sectionGap ?? 32}
-            suffix="px"
-            onChange={(v) => patchSpace({ sectionGap: v })}
-          />
-          <NumField
-            label="Block gap"
-            min={0}
-            max={48}
-            step={1}
-            value={theme.spacing.blockGap}
-            suffix="px"
-            onChange={(v) => patchSpace({ blockGap: v })}
-          />
-          <NumField
-            label="Content width"
-            min={320}
-            max={1200}
-            step={10}
-            value={theme.spacing.contentWidth}
-            suffix="px"
-            onChange={(v) => patchSpace({ contentWidth: v })}
-          />
-          <NumField
-            label="Radius"
-            min={0}
-            max={40}
-            step={1}
-            value={theme.spacing.radius}
-            suffix="px"
-            onChange={(v) => patchSpace({ radius: v })}
-          />
+          <SpacingPanel />
         </TabsContent>
 
         {/* ── MOTION ───────────────────────────────────────────────── */}
@@ -1336,6 +1267,106 @@ export function ThemePanel() {
         </TabsContent>
       </Tabs>
 
+    </div>
+  );
+}
+
+function SpacingPanel() {
+  const theme = useBuilderStore((s) => s.content.theme) ?? DEFAULT_THEME;
+  const patchSpace = useBuilderStore((s) => s.patchSpace);
+  const resetSpace = useBuilderStore((s) => s.resetSpace);
+  const { enabled, requestUpgrade } = useFeature("advanced_builder" as any);
+
+  return (
+    <div className="space-y-3">
+      <NumField
+        label="Page padding X"
+        min={0}
+        max={64}
+        step={2}
+        value={theme.spacing.pagePadding}
+        suffix="px"
+        onChange={(v) => patchSpace({ pagePadding: v })}
+      />
+      <NumField
+        label="Page padding Y"
+        min={0}
+        max={120}
+        step={2}
+        value={theme.spacing.pagePaddingY}
+        suffix="px"
+        onChange={(v) => patchSpace({ pagePaddingY: v })}
+      />
+      
+      {!enabled ? (
+        <div className="rounded-lg border border-dashed p-3 bg-muted/20">
+          <div className="flex items-center gap-2 mb-2">
+            <Lock className="h-3 w-3 text-amber-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Advanced Layout Locked</span>
+          </div>
+          <p className="text-[11px] text-muted-foreground mb-3">
+            Unlock precision layout controls: content width, custom gaps, and advanced radius settings.
+          </p>
+          <Button size="sm" variant="outline" className="h-7 w-full text-[10px]" onClick={requestUpgrade}>
+            Upgrade to Shikhar
+          </Button>
+        </div>
+      ) : (
+        <>
+          <Field label="Default section gap">
+            <div className="flex flex-wrap gap-1.5">
+              {[16, 24, 32, 40].map((g) => (
+                <Button
+                  key={g}
+                  type="button"
+                  size="sm"
+                  variant={(theme.spacing.sectionGap ?? 32) === g ? "default" : "outline"}
+                  className="h-7 px-2 text-xs"
+                  onClick={() => patchSpace({ sectionGap: g })}
+                >
+                  {g}
+                </Button>
+              ))}
+            </div>
+          </Field>
+          <NumField
+            label="Custom section gap"
+            min={0}
+            max={160}
+            step={2}
+            value={theme.spacing.sectionGap ?? 32}
+            suffix="px"
+            onChange={(v) => patchSpace({ sectionGap: v })}
+          />
+          <NumField
+            label="Block gap"
+            min={0}
+            max={48}
+            step={1}
+            value={theme.spacing.blockGap}
+            suffix="px"
+            onChange={(v) => patchSpace({ blockGap: v })}
+          />
+          <NumField
+            label="Content width"
+            min={320}
+            max={1200}
+            step={10}
+            value={theme.spacing.contentWidth}
+            suffix="px"
+            onChange={(v) => patchSpace({ contentWidth: v })}
+          />
+          <NumField
+            label="Radius"
+            min={0}
+            max={40}
+            step={1}
+            value={theme.spacing.radius}
+            suffix="px"
+            onChange={(v) => patchSpace({ radius: v })}
+          />
+        </>
+      )}
     </div>
   );
 }
