@@ -376,6 +376,160 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
         <Switch checked={block.showIcons !== false} onCheckedChange={(v) => set("showIcons", v)} />
       </Row>
 
+      <div className="space-y-4 pt-4 border-t">
+        <Label className="text-sm font-semibold">Button Settings</Label>
+        
+        <Field label="Button style">
+          <Select value={block.buttonStyle ?? "soft"} onValueChange={(v) => set("buttonStyle", v)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="filled">Solid</SelectItem>
+              <SelectItem value="outline">Outline</SelectItem>
+              <SelectItem value="soft">Soft</SelectItem>
+              <SelectItem value="ghost">Ghost</SelectItem>
+              <SelectItem value="glass">Glass</SelectItem>
+              <SelectItem value="gradient">Gradient</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+
+        <Field label="Button width">
+          <Select value={block.buttonWidth ?? "auto"} onValueChange={(v) => set("buttonWidth", v)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="auto">Auto</SelectItem>
+              <SelectItem value="full">Full Width</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+
+        <Row label="Alignment">
+          <AlignSelect value={block.buttonAlign ?? "center"} onChange={(v) => set("buttonAlign", v)} />
+        </Row>
+
+        <Field label="Button height">
+          <Select value={block.buttonSize ?? "md"} onValueChange={(v) => set("buttonSize", v)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sm">Small</SelectItem>
+              <SelectItem value="md">Medium</SelectItem>
+              <SelectItem value="lg">Large</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+
+        <Field label={`Font size (${block.buttonFontSize ?? 12}px)`}>
+          <Slider 
+            min={8} max={24} step={1} 
+            value={[block.buttonFontSize ?? 12]} 
+            onValueChange={([v]) => set("buttonFontSize", v)} 
+          />
+        </Field>
+
+        <Field label="Font weight">
+          <Select value={block.buttonFontWeight ?? "medium"} onValueChange={(v) => set("buttonFontWeight", v)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="normal">Normal</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="semibold">Semibold</SelectItem>
+              <SelectItem value="bold">Bold</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+
+        <Field label={`Corner radius (${block.buttonRadius ?? 100}px)`}>
+          <Slider min={0} max={100} step={1} value={[block.buttonRadius ?? 100]} onValueChange={([v]) => set("buttonRadius", v)} />
+        </Field>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Field label={`Padding X (${block.buttonPaddingX ?? 12}px)`}>
+            <Slider min={0} max={40} step={1} value={[block.buttonPaddingX ?? 12]} onValueChange={([v]) => set("buttonPaddingX", v)} />
+          </Field>
+          <Field label={`Padding Y (${block.buttonPaddingY ?? 6}px)`}>
+            <Slider min={0} max={40} step={1} value={[block.buttonPaddingY ?? 6]} onValueChange={([v]) => set("buttonPaddingY", v)} />
+          </Field>
+        </div>
+
+        <Field label={`Gap between buttons (${block.buttonGap ?? 8}px)`}>
+          <Slider min={0} max={32} step={1} value={[block.buttonGap ?? 8]} onValueChange={([v]) => set("buttonGap", v)} />
+        </Field>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Field label={`Icon size (${block.buttonIconSize ?? 14}px)`}>
+            <Slider min={10} max={32} step={1} value={[block.buttonIconSize ?? 14]} onValueChange={([v]) => set("buttonIconSize", v)} />
+          </Field>
+          <Field label="Icon position">
+            <Select value={block.buttonIconPosition ?? "left"} onValueChange={(v) => set("buttonIconPosition", v)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="left">Left</SelectItem>
+                <SelectItem value="right">Right</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-2 gap-y-4">
+          <Field label="Background">
+            <Input type="color" value={block.buttonBgColor ?? "#6366F1"} onChange={(e) => set("buttonBgColor", e.target.value)} />
+          </Field>
+          <Field label="Text">
+            <Input type="color" value={block.buttonColor ?? "#ffffff"} onChange={(e) => set("buttonColor", e.target.value)} />
+          </Field>
+          <Field label="Border">
+            <Input type="color" value={block.buttonBorderColor ?? "#6366F1"} onChange={(e) => set("buttonBorderColor", e.target.value)} />
+          </Field>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-2 gap-y-4">
+          <Field label="Hover BG">
+            <Input type="color" value={block.buttonHoverBgColor ?? "#4F46E5"} onChange={(e) => set("buttonHoverBgColor", e.target.value)} />
+          </Field>
+          <Field label="Hover Text">
+            <Input type="color" value={block.buttonHoverTextColor ?? "#ffffff"} onChange={(e) => set("buttonHoverTextColor", e.target.value)} />
+          </Field>
+          <Field label="Hover Border">
+            <Input type="color" value={block.buttonHoverBorderColor ?? "#4F46E5"} onChange={(e) => set("buttonHoverBorderColor", e.target.value)} />
+          </Field>
+        </div>
+
+        <div className="space-y-4 pt-2 border-t">
+          <Label className="text-xs font-semibold text-muted-foreground">Button Effects</Label>
+          <Field label="Effect">
+            <Select 
+              value={block.settings?.buttonEffect ?? "none"} 
+              onValueChange={(v) => set("settings", { ...block.settings, buttonEffect: v, buttonEffectEnabled: v !== "none" })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="shine">Shine</SelectItem>
+                <SelectItem value="glow">Glow</SelectItem>
+                <SelectItem value="pulse">Pulse</SelectItem>
+                <SelectItem value="ripple">Ripple</SelectItem>
+                <SelectItem value="floating">Floating</SelectItem>
+                <SelectItem value="gradientFlow">Gradient Flow</SelectItem>
+                <SelectItem value="magnetic">Magnetic Hover</SelectItem>
+                <SelectItem value="glass">Glass Reflection</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <Label className="text-xs text-muted-foreground">Follow links</Label>
         {links.map((l) => (
