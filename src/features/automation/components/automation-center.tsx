@@ -382,7 +382,7 @@ function WebhookRow({
           </div>
           <div className="mt-1 truncate text-xs text-muted-foreground">{hook.url}</div>
           <div className="mt-2 flex flex-wrap gap-1">
-            {hook.events.slice(0, 6).map((e) => <Badge key={e} variant="outline" className="text-[10px]">{e}</Badge>)}
+            {hook.events.slice(0, 6).map((e: WebhookEvent) => <Badge key={e} variant="outline" className="text-[10px]">{e}</Badge>)}
             {hook.events.length > 6 && (
               <Badge variant="outline" className="text-[10px]">+{hook.events.length - 6}</Badge>
             )}
