@@ -8,12 +8,14 @@ import {
   AutomationAction,
   NotificationType
 } from "../types";
+import { trackCustomerActivity } from "@/features/customers/lib/auto-collect";
 
 export interface TriggerPayload {
   workspace_id: string;
   trigger: AutomationTrigger;
   metadata?: Record<string, any>;
 }
+
 
 export async function processTrigger(payload: TriggerPayload): Promise<void> {
   const { workspace_id, trigger, metadata = {} } = payload;
