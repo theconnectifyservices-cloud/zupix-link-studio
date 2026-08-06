@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_authenticated/admin/index")({
+export const Route = createFileRoute("/_authenticated/admin/")({
   beforeLoad: () => {
     // Landing on /admin directly redirects to the dashboard
     throw redirect({ to: "/admin/dashboard" });
