@@ -39,8 +39,9 @@ export async function trackCustomerActivity(params: {
     }
 
     const { data: existing } = await query.limit(1);
-    if (existing && existing.length > 0) {
-      customerId = existing[0].id;
+    const existingList = existing as any[] | null;
+    if (existingList && existingList.length > 0) {
+      customerId = existingList[0].id;
     }
   }
 
@@ -65,7 +66,7 @@ export async function trackCustomerActivity(params: {
         total_payments: activity.type === "payment_completed" ? 1 : 0,
         total_bookings: activity.type === "booking_created" ? 1 : 0,
         metadata: activity.metadata || {}
-      })
+      } as any)
       .select("id")
       .single();
     
@@ -73,7 +74,7 @@ export async function trackCustomerActivity(params: {
       console.error("Error auto-collecting customer:", error);
       return;
     }
-    customerId = created.id;
+    customerId = (created as any).id;
   } else {
     // Update existing stats
     const updateData: any = {
@@ -81,10 +82,7 @@ export async function trackCustomerActivity(params: {
       updated_at: now
     };
 
-    if (activity.type === "order_created") updateData.total_orders = supabase.rpc('increment' as any, { row_id: customerId, col: 'total_orders' } as any);
-    // Note: Increments usually handled via specialized SQL or separate count queries, 
-    // for this lightweight module we update the latest activity.
-    
+    // Increments would normally happen via RPC or trigger, for now just update latest activity
     await supabase
       .from("bio_customers" as any)
       .update(updateData)
@@ -100,6 +98,6 @@ export async function trackCustomerActivity(params: {
       description: activity.description,
       metadata: activity.metadata || {},
       created_at: now
-    });
+    } as any);
   }
 }
