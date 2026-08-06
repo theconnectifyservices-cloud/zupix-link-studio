@@ -97,6 +97,7 @@ function formatNumber(n: number): string {
 }
 
 export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
+  const { enabled, requestUpgrade } = useFeature("block.analytics" as any);
   const [rangeKey, setRangeKey] = useState<RangeKey>("7d");
   const [metric, setMetric] = useState<"views" | "clicks" | "visitors">("views");
 
@@ -256,6 +257,26 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
       referrer: e.referrer_source ?? "direct",
       link_url: e.link_url ?? "",
     }));
+
+  if (!enabled) {
+    return (
+      <div className="flex h-[400px] flex-col items-center justify-center gap-6 rounded-2xl border border-dashed bg-muted/10 p-12 text-center">
+        <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-inner">
+          <TrendingUp className="h-10 w-10" />
+        </div>
+        <div className="max-w-sm space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight">Enterprise Analytics Dashboard</h2>
+          <p className="text-muted-foreground">
+            Get real-time visitor intelligence, track conversion sources, and optimize your bio link performance.
+          </p>
+        </div>
+        <Button size="lg" onClick={requestUpgrade} className="h-12 px-8 font-bold shadow-lg shadow-primary/20">
+          <Sparkles className="mr-2 h-4 w-4" />
+          Unlock Analytics Pro
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

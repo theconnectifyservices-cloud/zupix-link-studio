@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { useFeature } from "@/features/subscription/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,7 @@ export function ConnectDomainDialog({ workspaceId }: { workspaceId: string }) {
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const qc = useQueryClient();
+  const { enabled, requestUpgrade } = useFeature("custom_domain");
 
   const create = useMutation({
     mutationFn: async () => {
@@ -45,6 +47,10 @@ export function ConnectDomainDialog({ workspaceId }: { workspaceId: string }) {
     <Dialog
       open={open}
       onOpenChange={(o) => {
+        if (o && !enabled) {
+          requestUpgrade();
+          return;
+        }
         setOpen(o);
         if (!o) {
           setValue("");
