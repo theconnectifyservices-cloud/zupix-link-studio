@@ -938,174 +938,100 @@ export function MiniStoreEditor({ block, set }: { block: MiniStoreBlock; set: Se
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function BookingEditor({ block, set }: { block: BookingBlock; set: Set }) {
-  const days = block.days ?? [];
-  const slots = block.slots ?? [];
+  const services = block.services ?? [];
 
   return (
     <div className="space-y-3">
       <Section>Content</Section>
-      <Field label="Title">
+      <Field label="Main title">
         <Input value={block.title ?? ""} onChange={(e) => set("title", e.target.value)} />
       </Field>
-      <Field label="Description">
+      <Field label="Main description">
         <Textarea
           rows={2}
           value={block.description ?? ""}
           onChange={(e) => set("description", e.target.value)}
         />
       </Field>
-      <Field label="Type">
-        <Select
-          value={block.kind ?? "appointment"}
-          onChange={(v) => set("kind", v)}
-          options={[
-            ["appointment", "Appointment"],
-            ["meeting", "Meeting"],
-            ["consultation", "Consultation"],
-          ]}
-        />
-      </Field>
-      <Field label="Duration (minutes)">
-        <Input
-          type="number"
-          value={block.durationMin ?? 30}
-          onChange={(e) => set("durationMin", Number(e.target.value))}
-        />
-      </Field>
 
-      <Section>Availability</Section>
-      <Field label="Available days">
-        <div className="flex flex-wrap gap-1.5">
-          {DAYS.map((d, i) => {
-            const on = days.includes(i);
-            return (
-              <button
-                key={d}
-                type="button"
-                onClick={() =>
-                  set("days", on ? days.filter((x) => x !== i) : [...days, i].sort((a, b) => a - b))
-                }
-                className={`h-9 min-w-11 rounded-md border px-2 text-xs font-medium ${
-                  on ? "border-primary bg-primary text-primary-foreground" : "hover:bg-muted"
-                }`}
+      <Section>Services</Section>
+      <div className="space-y-2">
+        {services.map((s, idx) => (
+          <div key={s.id} className="rounded-lg border p-3 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase">Service #{idx + 1}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-destructive"
+                onClick={() => set("services", services.filter((x) => x.id !== s.id))}
               >
-                {d}
-              </button>
-            );
-          })}
-        </div>
-      </Field>
-      <Field label="Time slots (comma separated, 24h)">
-        <Input
-          value={slots.join(", ")}
-          onChange={(e) =>
-            set(
-              "slots",
-              e.target.value
-                .split(",")
-                .map((s) => s.trim())
-                .filter((s) => /^\d{1,2}:\d{2}$/.test(s))
-                .map((s) => s.padStart(5, "0")),
-            )
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+            <Field label="Service title">
+              <Input
+                value={s.title}
+                onChange={(e) =>
+                  set(
+                    "services",
+                    services.map((x) => (x.id === s.id ? { ...x, title: e.target.value } : x))
+                  )
+                }
+              />
+            </Field>
+            <Field label="Duration (min)">
+              <Input
+                type="number"
+                value={s.durationMin}
+                onChange={(e) =>
+                  set(
+                    "services",
+                    services.map((x) => (x.id === s.id ? { ...x, durationMin: Number(e.target.value) } : x))
+                  )
+                }
+              />
+            </Field>
+          </div>
+        ))}
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={() =>
+            set("services", [
+              ...services,
+              {
+                id: Math.random().toString(36).slice(2, 10),
+                kind: "appointment",
+                title: "New Service",
+                durationMin: 30,
+                locationType: "online",
+              },
+            ])
           }
-          placeholder="10:00, 11:00, 15:30"
-        />
-      </Field>
-      <Field label="Timezone">
-        <Input
-          value={block.timezone ?? ""}
-          onChange={(e) => set("timezone", e.target.value)}
-          placeholder="Asia/Kolkata"
-        />
-      </Field>
-
-      <Section>Meeting location</Section>
-      <Field label="Location type">
-        <Select
-          value={block.locationType ?? "online"}
-          onChange={(v) => set("locationType", v)}
-          options={[
-            ["online", "Online"],
-            ["offline", "In person"],
-          ]}
-        />
-      </Field>
-      {block.locationType === "offline" ? (
-        <Field label="Address">
-          <Textarea
-            rows={2}
-            value={block.address ?? ""}
-            onChange={(e) => set("address", e.target.value)}
-          />
-        </Field>
-      ) : (
-        <>
-          <Field label="Provider">
-            <Select
-              value={block.meetingProvider ?? "google_meet"}
-              onChange={(v) => set("meetingProvider", v)}
-              options={[
-                ["google_meet", "Google Meet"],
-                ["zoom", "Zoom"],
-                ["whatsapp", "WhatsApp"],
-                ["custom", "Custom link"],
-              ]}
-            />
-          </Field>
-          <Field label="Meeting link">
-            <Input
-              value={block.meetingLink ?? ""}
-              onChange={(e) => set("meetingLink", e.target.value)}
-              placeholder="https://…"
-            />
-          </Field>
-        </>
-      )}
-
-      <Section>Requests</Section>
-      <Toggle
-        label="Require phone number"
-        checked={!!block.requirePhone}
-        onChange={(v) => set("requirePhone", v)}
-      />
-      <Toggle
-        label="Send email confirmation"
-        checked={!!block.emailConfirmation}
-        onChange={(v) => set("emailConfirmation", v)}
-      />
-      <Field label="Notify email">
-        <Input
-          value={block.notifyEmail ?? ""}
-          onChange={(e) => set("notifyEmail", e.target.value)}
-          placeholder="you@business.com"
-        />
-      </Field>
-      <Field label="Button label">
-        <Input
-          value={block.submitLabel ?? ""}
-          onChange={(e) => set("submitLabel", e.target.value)}
-        />
-      </Field>
-      <Field label="Confirmation message">
-        <Input
-          value={block.confirmationMessage ?? ""}
-          onChange={(e) => set("confirmationMessage", e.target.value)}
-        />
-      </Field>
+        >
+          <Plus className="mr-1 h-3.5 w-3.5" /> Add service
+        </Button>
+      </div>
 
       <Section>Design</Section>
+      <Field label="Layout">
+        <Select
+          value={block.layout ?? "grid"}
+          onChange={(v) => set("layout", v)}
+          options={[
+            ["grid", "Grid"],
+            ["list", "List"],
+            ["carousel", "Carousel"],
+          ]}
+        />
+      </Field>
       <Field label="Card style">
         <Select
           value={block.cardStyle ?? "glass"}
           onChange={(v) => set("cardStyle", v)}
           options={CARD_STYLES}
-        />
-      </Field>
-      <Field label="Corner radius">
-        <Input
-          type="number"
-          value={block.radius ?? 18}
-          onChange={(e) => set("radius", Number(e.target.value))}
         />
       </Field>
     </div>
