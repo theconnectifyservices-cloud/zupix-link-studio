@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useAdminSubscriptions } from "@/features/admin/hooks/use-admin-center";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, CreditCard, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { Search, CreditCard, Clock, CheckCircle2, AlertCircle, Loader2 } from "lucide-range-lucide-react";
 import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/admin/subscriptions")({
@@ -10,12 +12,8 @@ export const Route = createFileRoute("/admin/subscriptions")({
 });
 
 function AdminSubscriptions() {
-  const mockSubs = [
-    { id: 1, user: "Rajesh Kumar", email: "rajesh@example.com", plan: "Tejas", status: "active", expires: "2026-09-15", amount: "₹499" },
-    { id: 2, user: "Priya Sharma", email: "priya@example.com", plan: "Shikhar", status: "active", expires: "2027-01-20", amount: "₹4599" },
-    { id: 3, user: "Amit Patel", email: "amit@example.com", plan: "Udaan", status: "trialing", expires: "2026-08-10", amount: "₹0" },
-    { id: 4, user: "Sneha Reddy", email: "sneha@example.com", plan: "Tejas", status: "past_due", expires: "2026-08-01", amount: "₹499" },
-  ];
+  const [query, setQuery] = useState("");
+  const { data, isLoading } = useAdminSubscriptions({ query });
 
   return (
     <div className="space-y-6">
@@ -29,7 +27,12 @@ function AdminSubscriptions() {
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search subscriptions..." className="pl-9" />
+          <Input 
+            placeholder="Search subscriptions by name or email..." 
+            className="pl-9"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
         </div>
         <Button variant="outline">Filter</Button>
       </div>
@@ -47,36 +50,51 @@ function AdminSubscriptions() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockSubs.map((sub) => (
+            {isLoading ? (
+              [1, 2, 3, 4, 5].map(i => (
+                <TableRow key={i}>
+                  <TableCell colSpan={6} className="h-16 animate-pulse bg-muted/20" />
+                </TableRow>
+              ))
+            ) : data?.data?.map((sub: any) => (
               <TableRow key={sub.id}>
                 <TableCell>
                   <div>
-                    <div className="font-medium">{sub.user}</div>
+                    <div className="font-medium">{sub.full_name || "User"}</div>
                     <div className="text-xs text-muted-foreground">{sub.email}</div>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline">{sub.plan}</Badge>
+                  <Badge variant="outline" className="capitalize">{sub.subscription_plan || "Udaan"}</Badge>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    {sub.status === 'active' ? (
+                    {sub.subscription_status === 'active' ? (
                       <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    ) : sub.status === 'trialing' ? (
+                    ) : sub.subscription_status === 'trialing' ? (
                       <Clock className="h-4 w-4 text-blue-500" />
                     ) : (
                       <AlertCircle className="h-4 w-4 text-red-500" />
                     )}
-                    <span className="text-sm capitalize">{sub.status.replace('_', ' ')}</span>
+                    <span className="text-sm capitalize">{(sub.subscription_status || 'Trialing').replace('_', ' ')}</span>
                   </div>
                 </TableCell>
-                <TableCell>{sub.amount}</TableCell>
-                <TableCell className="text-sm">{new Date(sub.expires).toLocaleDateString()}</TableCell>
+                <TableCell>₹{sub.last_payment_amount || 0}</TableCell>
+                <TableCell className="text-sm">
+                  {sub.subscription_expiry ? new Date(sub.subscription_expiry).toLocaleDateString() : "No expiry"}
+                </TableCell>
                 <TableCell className="text-right">
                   <Button variant="ghost" size="sm">Manage</Button>
                 </TableCell>
               </TableRow>
             ))}
+            {!isLoading && data?.data?.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                  No subscription records found.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
