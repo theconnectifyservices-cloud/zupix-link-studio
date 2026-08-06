@@ -984,20 +984,6 @@ export interface MiniStoreBlock extends BaseBlock {
 
 
 export type BookingKind = "appointment" | "meeting" | "consultation";
-
-/** Lightweight 1:1 booking block — requests land in Dashboard → Bookings. */
-export interface BookingBlock extends BaseBlock {
-  type: "booking";
-  title?: string;
-  description?: string;
-  kind?: BookingKind;
-  durationMin?: number;
-  /** 0 = Sunday … 6 = Saturday */
-  days?: number[];
-  /** "HH:MM" 24h slots */
-  slots?: string[];
-  timezone?: string;
-export type BookingKind = "appointment" | "meeting" | "consultation";
 export type BookingLocationType = "online" | "offline";
 export type BookingMeetingProvider = "google_meet" | "zoom" | "microsoft_teams" | "whatsapp" | "custom";
 export type BookingLayout = "card" | "list" | "compact" | "carousel" | "grid";
