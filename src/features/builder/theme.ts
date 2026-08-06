@@ -1186,7 +1186,10 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
 
     // Profile
     "--zx-avatar-size": `${AVATAR_PX[prof.avatarSize]}px`,
-    "--zx-avatar-radius": AVATAR_RADIUS[prof.avatarShape],
+    "--zx-avatar-radius":
+      prof.avatarShape === "rounded"
+        ? `${prof.avatarRadius ?? 20}px`
+        : AVATAR_RADIUS_MAP[prof.avatarShape],
     "--zx-avatar-border-w": `${prof.avatarBorderWidth}px`,
     "--zx-avatar-border-c": prof.avatarBorderColor,
     "--zx-avatar-glow-c": c.primary,
