@@ -10,7 +10,7 @@ interface Props {
 /** Small pill badge used in palette tiles and comparison lists. */
 export function PlanBadge({ plan, size = "xs", className }: Props) {
   const def = PLANS[plan];
-  const label = plan === "udaan" ? "FREE" : plan === "tejas" ? "TEJAS" : "SHIKHAR";
+  const label = plan === "udaan" ? "FREE" : plan === "tejas" ? "TEJAS" : plan === "shikhar" ? "SHIKHAR" : "PRO";
   return (
     <span
       className={cn(

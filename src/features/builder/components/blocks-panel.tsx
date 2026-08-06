@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useBlockAccess, usePlan } from "@/features/subscription/hooks";
 import { PlanBadge } from "@/features/subscription/components/plan-badge";
-import { requiredPlanForBlock } from "@/features/subscription/plans";
+import { requiredPlanForBlock, PLANS } from "@/features/subscription/plans";
 
 /** Add-blocks palette. Click to append, or drag onto the canvas. */
 export function BlocksPanel({ onAdded }: { onAdded?: () => void } = {}) {
