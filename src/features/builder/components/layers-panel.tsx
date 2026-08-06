@@ -15,6 +15,7 @@ import {
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useBuilderStore } from "../store";
+import { useFeature } from "@/features/subscription/hooks";
 import { blockLabel, getBlockDef } from "../block-registry";
 import type { Block } from "../types";
 import { cn } from "@/lib/utils";
@@ -125,6 +126,7 @@ function LayerItem({ block, dimmed }: { block: Block; dimmed: boolean }) {
   const toggle = useBuilderStore((s) => s.toggleHidden);
   const toggleLocked = useBuilderStore((s) => s.toggleLocked);
   const dup = useBuilderStore((s) => s.duplicateBlock);
+  const { enabled: canRename, requestUpgrade: upgradeRename } = useFeature("block.custom_code");
   const remove = useBuilderStore((s) => s.removeBlock);
   const rename = useBuilderStore((s) => s.renameBlock);
 
@@ -204,6 +206,10 @@ function LayerItem({ block, dimmed }: { block: Block; dimmed: boolean }) {
         <IconBtn
           label={isEditing ? "Save name" : "Rename"}
           onClick={() => {
+            if (!canRename) {
+              upgradeRename();
+              return;
+            }
             if (isEditing) {
               rename(block.id, draft);
               setEditing(false);

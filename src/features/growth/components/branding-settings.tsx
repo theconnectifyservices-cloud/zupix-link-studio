@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { useCurrentWorkspace } from "@/features/bio-pages/hooks/use-current-workspace";
 import { fetchWorkspaceBranding, updateWorkspaceBranding } from "../api";
 import { BRANDING_MODES, PLAN_LABELS, type BrandingMode } from "../types";
+import { useFeature } from "@/features/subscription/hooks";
 
 /**
  * Workspace branding preference.
@@ -19,6 +20,7 @@ export function BrandingSettings() {
   const { workspace } = useCurrentWorkspace();
   const workspaceId = workspace?.id;
   const [mode, setMode] = useState<BrandingMode>("full");
+  const { enabled, requestUpgrade } = useFeature("remove_branding");
   const [locked, setLocked] = useState(true);
   const [plan, setPlan] = useState("udaan");
   const [loading, setLoading] = useState(true);
@@ -75,15 +77,21 @@ export function BrandingSettings() {
       <CardContent className="space-y-5">
         {loading ? (
           <p className="text-sm text-muted-foreground">Loading…</p>
-        ) : locked ? (
-          <div className="flex items-start gap-3 rounded-lg border border-dashed p-4">
-            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+        ) : !enabled ? (
+          <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed p-8 text-center bg-muted/20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Lock className="h-6 w-6" />
+            </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium">ZUPIX branding is always on for your plan</p>
+              <p className="font-semibold">Professional Branding is Locked</p>
               <p className="text-sm text-muted-foreground">
-                Upgrade to TEJAS or higher to hide branding or switch to a compact badge.
+                Upgrade to TEJAS or higher to hide ZUPIX branding or switch to a compact badge.
               </p>
             </div>
+            <Button onClick={requestUpgrade} className="mt-2">
+              <Sparkles className="mr-2 h-4 w-4" />
+              Unlock Professional Branding
+            </Button>
           </div>
         ) : (
           <>

@@ -19,8 +19,10 @@ import {
   RotateCcw,
   LayoutTemplate,
   BookmarkPlus,
+  Lock,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { useFeature, usePlan } from "@/features/subscription/hooks";
 import { Button } from "@/components/ui/button";
 import { useBuilderStore } from "../store";
 import { saveBuilderContent } from "../api";
@@ -160,7 +162,7 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
         {pageId && (
           <SeoDialog pageId={pageId} pageName={pageName} slug={pageSlug} />
         )}
-        <VersionHistoryDialog />
+        <VersionHistoryButton />
         <Button
           variant={previewMode ? "default" : "ghost"}
           size="sm"
@@ -184,6 +186,24 @@ export function BuilderTopbar({ onTogglePreview, previewMode, viewport, onViewpo
         {pageId && <PublishDialog pageId={pageId} content={content} />}
       </div>
     </header>
+  );
+}
+
+function VersionHistoryButton() {
+  const { enabled, requestUpgrade } = useFeature("block.custom_code"); // Proxy for advanced builder features
+  return (
+    <Button 
+      variant="ghost" 
+      size="icon" 
+      aria-label="Version history" 
+      title="Version history"
+      onClick={() => {
+        if (!enabled) requestUpgrade();
+      }}
+      className={!enabled ? "text-muted-foreground/50" : ""}
+    >
+      {!enabled ? <Lock className="h-4 w-4 text-amber-500" /> : <History className="h-4 w-4" />}
+    </Button>
   );
 }
 

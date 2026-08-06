@@ -14,7 +14,7 @@ interface Props {
 /** Rendered in place of a locked block on the canvas. */
 export function LockedBlock({ requiredPlan, blockLabel, description }: Props) {
   const plan = PLANS[requiredPlan];
-  const openUpgrade = useSubscriptionUI((s) => s.openUpgrade);
+  const { openFeatureDialog } = useSubscriptionUI();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
@@ -38,7 +38,7 @@ export function LockedBlock({ requiredPlan, blockLabel, description }: Props) {
           <Button
             size="sm"
             className="mt-3 gap-1.5"
-            onClick={() => openUpgrade({ suggestedPlan: requiredPlan })}
+            onClick={() => openFeatureDialog({ suggestedPlan: requiredPlan, featureName: blockLabel, reason: description })}
           >
             <Sparkles className="h-3.5 w-3.5" />
             Upgrade to {plan.name}

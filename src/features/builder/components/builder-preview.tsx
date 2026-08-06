@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useFeature } from "@/features/subscription/hooks";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
@@ -201,6 +202,7 @@ function SortableCanvasBlock({
   const selectRange = useBuilderStore((s) => s.selectRange);
   const toggleHidden = useBuilderStore((s) => s.toggleHidden);
   const toggleLocked = useBuilderStore((s) => s.toggleLocked);
+  const { enabled: canDup, requestUpgrade: upgradeDup } = useFeature("advanced_builder" as any);
   const dup = useBuilderStore((s) => s.duplicateBlock);
   const remove = useBuilderStore((s) => s.removeBlock);
   const move = useBuilderStore((s) => s.moveBlock);
@@ -286,7 +288,13 @@ function SortableCanvasBlock({
                   <Eye className="h-3.5 w-3.5" />
                 )}
               </ToolBtn>
-              <ToolBtn label="Duplicate" onClick={stop(() => dup(block.id))}>
+              <ToolBtn label="Duplicate" onClick={stop(() => {
+                if (!canDup) {
+                  upgradeDup();
+                  return;
+                }
+                dup(block.id);
+              })}>
                 <Copy className="h-3.5 w-3.5" />
               </ToolBtn>
               <ToolBtn

@@ -16,6 +16,8 @@ import { useThemeStore } from "@/stores/theme.store";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { Toaster } from "@/components/ui/sonner";
 import { CommandPalette, ShortcutsDialog, ProductivityModeEffect } from "@/features/desktop";
+import { UpgradeModal } from "@/features/subscription/components/upgrade-modal";
+import { FeatureUpgradeDialog } from "@/features/subscription/components/feature-upgrade-dialog";
 import { ErrorBoundary } from "@/shared/error/error-boundary";
 import { InstallBanner, UpdateBanner, OfflineIndicator } from "@/features/pwa";
 import { RecoveryLinkRedirect } from "@/features/auth/recovery-redirect";
@@ -227,6 +229,8 @@ function RootComponent() {
       <UpdateBanner />
       <InstallBanner />
       <GlobalBackToTop />
+      <UpgradeModal />
+      <FeatureUpgradeDialog />
       <Toaster />
     </QueryClientProvider>
   );
