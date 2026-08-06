@@ -165,14 +165,7 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
   const countries = useMemo(() => groupCount(sessions, (s) => s.country ?? "Unknown"), [sessions]);
   const regions = useMemo(() => groupCount(sessions, (s) => s.region ?? "Unknown"), [sessions]);
   const cities = useMemo(() => groupCount(sessions, (s) => s.city ?? "Unknown"), [sessions]);
-  const referrers = useMemo(
-    () =>
-      groupCount(
-        events.filter((e) => e.event_type === "page_view"),
-        (e) => e.referrer_source ?? "direct",
-      ),
-    [events],
-  );
+  const referrers = sourceStats;
   const links = useMemo(() => linkPerformance(events), [events]);
   const sourceStats = useMemo(() => {
     const views = events.filter(e => e.event_type === 'page_view');
