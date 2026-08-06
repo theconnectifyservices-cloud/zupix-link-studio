@@ -3,14 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
   BarChart3,
+  CalendarCheck,
   Download,
   Eye,
   Globe2,
   Link2,
+  MessageSquare,
   MousePointerClick,
   QrCode,
   RefreshCw,
   Repeat,
+  ShoppingBag,
   Smartphone,
   Users,
 } from "lucide-react";
@@ -40,7 +43,9 @@ import {
   fetchWorkspacePages,
   resolveRange,
   type RangeKey,
+  fetchRecentEvents,
 } from "../api";
+import { listLeads, listBookings } from "@/features/business/api";
 import {
   bucketTimeseries,
   computeKpis,
@@ -119,6 +124,14 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
     refetchInterval: 30_000,
     staleTime: 15_000,
   });
+  const leadsQ = useQuery({
+    queryKey: ["business.leads", workspaceId],
+    queryFn: () => listLeads(workspaceId),
+  });
+  const bookingsQ = useQuery({
+    queryKey: ["business.bookings", workspaceId],
+    queryFn: () => listBookings(workspaceId),
+  });
   const recentQ = useQuery({
     queryKey: ["analytics.recent", workspaceId],
     queryFn: () => fetchRecentEvents(workspaceId, 15),
@@ -135,7 +148,7 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
     return (id: string | null | undefined) => (id && map.get(id)) || "Unknown page";
   }, [pages]);
 
-  const kpis = useMemo(() => computeKpis(events, sessions), [events, sessions]);
+  const kpis = useMemo(() => computeKpis(events, sessions, leadsQ.data, bookingsQ.data), [events, sessions, leadsQ.data, bookingsQ.data]);
   const bucket = useMemo(() => pickBucket(range), [range]);
   const series = useMemo(
     () => bucketTimeseries(events, sessions, range, bucket),
@@ -256,7 +269,7 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
           <KpiCard label="Total Views" value={formatNumber(kpis.totalViews)} icon={Eye} />
           <KpiCard
             label="Unique Visitors"
@@ -264,25 +277,27 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
             icon={Users}
           />
           <KpiCard
-            label="Returning"
-            value={formatNumber(kpis.returningVisitors)}
-            icon={Repeat}
-            hint={
-              kpis.uniqueVisitors > 0
-                ? `${((kpis.returningVisitors / kpis.uniqueVisitors) * 100).toFixed(1)}% of visitors`
-                : undefined
-            }
+            label="Total Clicks"
+            value={formatNumber(kpis.totalClicks)}
+            icon={MousePointerClick}
           />
-          <KpiCard label="Total Clicks" value={formatNumber(kpis.totalClicks)} icon={MousePointerClick} />
           <KpiCard
             label="CTR"
             value={`${kpis.ctr.toFixed(1)}%`}
             icon={BarChart3}
             hint="Clicks ÷ views"
           />
-          <KpiCard label="QR Scans" value={formatNumber(kpis.qrScans)} icon={QrCode} />
-          <KpiCard label="Active Pages" value={pages.length} icon={Link2} />
-          <KpiCard label="Published" value={publishedCount} icon={Globe2} />
+          <KpiCard label="Leads" value={kpis.leads} icon={MessageSquare} />
+          <KpiCard label="Bookings" value={kpis.bookings} icon={CalendarCheck} />
+          <KpiCard label="Store Orders" value={0} icon={ShoppingBag} />
+          <KpiCard
+            label="Conv. Rate"
+            value={`${kpis.conversionRate.toFixed(1)}%`}
+            icon={RefreshCw}
+            hint="Leads + Bookings ÷ Views"
+          />
+          <KpiCard label="Payments" value={0} icon={RefreshCw} />
+          <KpiCard label="Revenue" value="₹0" icon={RefreshCw} />
         </div>
       )}
 
