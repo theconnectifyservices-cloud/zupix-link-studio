@@ -3,12 +3,8 @@ import {
   AutomationRule, 
   DashboardNotification, 
   ActivityLogEntry, 
-  UserAutomationSettings,
-  AutomationTrigger,
-  AutomationAction,
-  NotificationType
+  UserAutomationSettings
 } from "../types";
-
 
 // --- Rules ---
 
@@ -23,7 +19,7 @@ export async function listAutomationRules(workspaceId: string): Promise<Automati
     console.error("Error listing automation rules:", error);
     return [];
   }
-  return data || [];
+  return (data as any) || [];
 }
 
 export async function createAutomationRule(rule: Omit<AutomationRule, "id" | "created_at">): Promise<AutomationRule> {
@@ -34,7 +30,7 @@ export async function createAutomationRule(rule: Omit<AutomationRule, "id" | "cr
     .single();
     
   if (error) throw error;
-  return data;
+  return data as any;
 }
 
 export async function updateAutomationRule(id: string, patch: Partial<AutomationRule>): Promise<void> {
@@ -69,7 +65,7 @@ export async function listNotifications(workspaceId: string): Promise<DashboardN
     console.error("Error listing notifications:", error);
     return [];
   }
-  return data || [];
+  return (data as any) || [];
 }
 
 export async function markNotificationRead(id: string, read: boolean = true): Promise<void> {
@@ -104,7 +100,7 @@ export async function listActivityLogs(workspaceId: string): Promise<ActivityLog
     console.error("Error listing activity logs:", error);
     return [];
   }
-  return data || [];
+  return (data as any) || [];
 }
 
 // --- Settings ---
@@ -120,7 +116,7 @@ export async function getAutomationSettings(workspaceId: string): Promise<UserAu
     console.error("Error fetching automation settings:", error);
   }
   
-  return data || {
+  return (data as any) || {
     email_enabled: true,
     whatsapp_enabled: false,
     dashboard_enabled: true
