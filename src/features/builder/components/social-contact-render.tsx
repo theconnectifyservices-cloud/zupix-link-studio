@@ -315,7 +315,8 @@ export function FollowCardRender({
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  "inline-flex items-center transition-all hover:-translate-y-0.5",
+                  "inline-flex items-center transition-all",
+                  `follow-btn-${blockId}`,
                   block.buttonIconPosition === "right" && "flex-row-reverse",
                   block.buttonSize === "sm" && !isCustom && "px-3 py-1.5 text-xs",
                   block.buttonSize === "md" && !isCustom && "px-4 py-2 text-sm",
