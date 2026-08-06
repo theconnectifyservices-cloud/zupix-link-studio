@@ -185,6 +185,7 @@ function SortableCanvasBlock({
   viewport = "mobile",
   staggerStep = 0,
   reduceMotion = false,
+  allBlocks,
 }: {
   block: Block;
   index?: number;
