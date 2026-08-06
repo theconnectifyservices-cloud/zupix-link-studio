@@ -9,6 +9,7 @@ import {
   planCovers,
   requiredPlanFor,
   requiredPlanForBlock,
+  BLOCK_FEATURE_KEY,
   type FeatureKey,
   type PlanCode,
   type PlanDefinition,
