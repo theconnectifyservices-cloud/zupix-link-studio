@@ -26,7 +26,12 @@ import {
   ExternalLink,
   ChevronRight,
   Filter,
+  CheckCircle2,
+  Clock,
+  ArrowRight,
+  User,
 } from "lucide-react";
+import { format } from "date-fns";
 
 import {
   Card,
@@ -34,6 +39,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardFooter,
   Tabs,
   TabsList,
   TabsTrigger,
@@ -64,6 +70,7 @@ import {
   Alert,
   EmptyState,
   toast,
+  Switch,
 } from "@/shared/ui";
 import {
   listApiKeys,
@@ -84,12 +91,30 @@ import {
   getWebhookSecret,
 } from "../api";
 import {
+  listAutomationRules,
+  createAutomationRule,
+  updateAutomationRule,
+  deleteAutomationRule,
+  listNotifications,
+  markNotificationRead,
+  deleteNotification,
+  listActivityLogs,
+  getAutomationSettings,
+  updateAutomationSettings,
+} from "../lib/automation-api";
+import {
   WEBHOOK_EVENTS,
   AUTOMATION_PROVIDERS,
+  type ApiKey,
   type ApiPermission,
   type Webhook,
   type WebhookEvent,
+  type AutomationRule,
+  type DashboardNotification,
+  type ActivityLogEntry,
+  type UserAutomationSettings,
 } from "../types";
+
 
 interface Props {
   workspaceId: string;
