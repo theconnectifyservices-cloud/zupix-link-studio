@@ -500,7 +500,7 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
             <CardTitle className="text-sm font-semibold">Visitor Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <DonutChart data={sourceStats} />
+            <DonutChart data={sourceStats.map(s => ({ ...s, key: s.key || s.label }))} />
           </CardContent>
         </Card>
         <Card>
