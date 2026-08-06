@@ -174,6 +174,39 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
     [events],
   );
   const links = useMemo(() => linkPerformance(events), [events]);
+  const sourceStats = useMemo(() => {
+    const views = events.filter(e => e.event_type === 'page_view');
+    const total = views.length || 1;
+    const map = new Map<string, number>();
+    const SOCIAL_SOURCES = ['Instagram', 'Facebook', 'WhatsApp', 'LinkedIn', 'YouTube', 'Telegram', 'X', 'Twitter', 'Google'];
+    
+    for (const v of views) {
+      let src = v.referrer_source || 'Direct';
+      const matched = SOCIAL_SOURCES.find(s => src.toLowerCase().includes(s.toLowerCase()));
+      if (matched) src = matched;
+      map.set(src, (map.get(src) ?? 0) + 1);
+    }
+    return Array.from(map, ([key, count]) => ({ key, label: key, count, pct: (count / total) * 100 }))
+      .sort((a, b) => b.count - a.count);
+  }, [events]);
+
+  const bookingStats = useMemo(() => {
+    const data = bookingsQ.data ?? [];
+    return {
+      upcoming: data.filter(b => b.status === 'pending' || b.status === 'approved').length,
+      completed: data.filter(b => b.status === 'completed').length,
+      cancelled: data.filter(b => b.status === 'cancelled').length,
+      mostBooked: groupCount(data, b => b.service_title)[0]?.label || 'None'
+    };
+  }, [bookingsQ.data]);
+
+  const leadStats = useMemo(() => {
+    const data = leadsQ.data ?? [];
+    return {
+      total: data.length,
+      latest: data.slice(0, 5)
+    };
+  }, [leadsQ.data]);
   const publishedCount = pages.filter((p) => p.status === "published").length;
   const qrByPage = useMemo(
     () =>
