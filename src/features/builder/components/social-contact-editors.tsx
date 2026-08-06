@@ -530,7 +530,31 @@ export function FollowCardEditor({ block, set }: { block: FollowCardBlock; set: 
         </div>
       </div>
 
-      <div className="space-y-2">
+        <div className="space-y-4 pt-4 border-t">
+          <Label className="text-sm font-semibold">Shadow Settings</Label>
+          <Field label="Shadow size">
+            <Select value={block.buttonShadowSize ?? "none"} onValueChange={(v) => set("buttonShadowSize", v)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="sm">Small</SelectItem>
+                <SelectItem value="md">Medium</SelectItem>
+                <SelectItem value="lg">Large</SelectItem>
+                <SelectItem value="xl">Extra Large</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field label={`Shadow blur (${block.buttonShadowBlur ?? 4}px)`}>
+            <Slider min={0} max={40} step={1} value={[block.buttonShadowBlur ?? 4]} onValueChange={([v]) => set("buttonShadowBlur", v)} />
+          </Field>
+          <Field label="Shadow color">
+            <Input type="color" value={block.buttonShadowColor ?? "#000000"} onChange={(e) => set("buttonShadowColor", e.target.value)} />
+          </Field>
+        </div>
+
+        <div className="space-y-2">
         <Label className="text-xs text-muted-foreground">Follow links</Label>
         {links.map((l) => (
           <div key={l.id} className="space-y-2 rounded-lg border p-2">
