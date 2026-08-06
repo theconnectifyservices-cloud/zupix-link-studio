@@ -1,6 +1,6 @@
 
 import { createFileRoute } from '@tanstack/react-router';
-import { useBioPages } from '@/features/bio-pages/hooks/use-bio-pages';
+import { useCurrentWorkspace } from '@/features/bio-pages/hooks/use-current-workspace';
 import { CustomerCenter } from '@/features/customers';
 
 export const Route = createFileRoute('/_authenticated/app/customers')({
@@ -8,9 +8,13 @@ export const Route = createFileRoute('/_authenticated/app/customers')({
 });
 
 function CustomersPage() {
-  const { currentWorkspace } = useBioPages();
+  const { workspace, isLoading } = useCurrentWorkspace();
 
-  if (!currentWorkspace) {
+  if (isLoading) {
+    return <div className="flex h-40 items-center justify-center">Loading workspace...</div>;
+  }
+
+  if (!workspace) {
     return (
       <div className="flex h-[400px] items-center justify-center">
         <p className="text-muted-foreground">Select a workspace to view customers.</p>
@@ -29,7 +33,8 @@ function CustomersPage() {
         </div>
       </div>
 
-      <CustomerCenter workspaceId={currentWorkspace.id} />
+      <CustomerCenter workspaceId={workspace.id} />
     </div>
   );
 }
+
