@@ -45,7 +45,8 @@ export type FeatureKey =
   | "remove_branding"
   | "custom_domain"
   | "templates.premium"
-  | "templates.all";
+  | "templates.all"
+  | "ai_studio";
 
 /** Map builder BlockType → subscription feature key. */
 export const BLOCK_FEATURE_KEY: Partial<Record<BlockType, FeatureKey>> = {
@@ -131,6 +132,7 @@ const SHIKHAR_ADDITIONS: FeatureKey[] = [
   "block.donations",
   "block.payments",
   "templates.all",
+  "ai_studio",
 ];
 
 export const PLANS: Record<PlanCode, PlanDefinition> = {
@@ -184,7 +186,7 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
       "Multiple Link Collections",
       "Custom Buttons",
       "Premium Icons",
-      "AI Content Assistance",
+      "AI Studio Ready",
       "Forms & Lead Collection",
       "WhatsApp Integration",
       "Google Analytics Integration",
@@ -229,6 +231,7 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
       "API Access",
       "Dedicated Success Manager",
       "Enterprise Features",
+      "Enterprise AI Studio (Unlimited)",
       "Future Commerce Modules",
     ],
   },
