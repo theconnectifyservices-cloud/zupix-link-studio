@@ -482,7 +482,7 @@ export function ThemePanel() {
             </Select>
           </Field>
 
-          {(bg.kind === "color" || bg.kind === "gradient" || bg.kind === "glass") && (
+          {bg.kind === "color" && (
             <ColorField
               label="Background color"
               value={theme.colors.background}
@@ -491,16 +491,108 @@ export function ThemePanel() {
               onChange={(v) =>
                 patchColors({
                   background: v,
-                  backgroundSolid: extractSolid(v) ?? theme.colors.backgroundSolid,
+                  backgroundSolid: v,
                 })
               }
             />
           )}
 
           {bg.kind === "gradient" && (
-            <GradientPresets
-              onPick={(g) => patchColors({ background: g.background, backgroundSolid: g.solid })}
-            />
+            <div className="space-y-3 rounded-md border p-3">
+              <Field label="Type">
+                <Select
+                  value={bg.gradientType ?? "linear"}
+                  onValueChange={(v) => patchBg({ gradientType: v as "linear" | "radial" })}
+                >
+                  <SelectTrigger className="h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="linear">Linear</SelectItem>
+                    <SelectItem value="radial">Radial</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+
+              {bg.gradientType !== "radial" && (
+                <NumField
+                  label="Angle"
+                  min={0}
+                  max={360}
+                  step={1}
+                  value={bg.gradientAngle ?? 180}
+                  suffix="deg"
+                  onChange={(v) => patchBg({ gradientAngle: v })}
+                />
+              )}
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-medium text-muted-foreground">Color Stops</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 px-2 text-[10px]"
+                    onClick={() => {
+                      const stops = [...(bg.gradientStops ?? [])];
+                      stops.push({ color: "#ffffff", position: 100 });
+                      patchBg({ gradientStops: stops });
+                    }}
+                  >
+                    <Plus className="mr-1 h-3 w-3" /> Add
+                  </Button>
+                </div>
+                {(bg.gradientStops ?? []).map((stop, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="flex-1">
+                      <ColorField
+                        label=""
+                        value={stop.color}
+                        brands={brands}
+                        onChange={(v) => {
+                          const stops = [...(bg.gradientStops ?? [])];
+                          stops[i] = { ...stop, color: v };
+                          patchBg({ gradientStops: stops });
+                        }}
+                      />
+                    </div>
+                    <Input
+                      type="number"
+                      className="h-8 w-16 text-xs"
+                      value={stop.position}
+                      onChange={(e) => {
+                        const stops = [...(bg.gradientStops ?? [])];
+                        stops[i] = { ...stop, position: Number(e.target.value) };
+                        patchBg({ gradientStops: stops });
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0"
+                      disabled={(bg.gradientStops ?? []).length <= 2}
+                      onClick={() => {
+                        const stops = bg.gradientStops?.filter((_, idx) => idx !== i);
+                        patchBg({ gradientStops: stops });
+                      }}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-2">
+                <div className="mb-2 text-[11px] font-medium text-muted-foreground">Presets</div>
+                <GradientPresets
+                  onPick={(g) => {
+                    // Try to parse the gradient string back into stops if possible,
+                    // or just set the legacy background string for compatibility
+                    patchColors({ background: g.background, backgroundSolid: g.solid });
+                  }}
+                />
+              </div>
+            </div>
           )}
 
           {bg.kind === "image" && (
@@ -611,36 +703,144 @@ export function ThemePanel() {
           )}
 
           {bg.kind === "pattern" && (
-            <div>
-              <div className="mb-1 text-[11px] text-muted-foreground">Pattern</div>
-              <div className="grid grid-cols-4 gap-2">
-                {BACKGROUND_PATTERNS.map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => patchBg({ patternId: p.id })}
-                    className={cn(
-                      "h-12 rounded-md border bg-background",
-                      bg.patternId === p.id && "ring-2 ring-primary",
-                    )}
-                    style={{ backgroundImage: p.url, backgroundRepeat: "repeat" }}
-                    aria-label={p.label}
-                    title={p.label}
+            <div className="space-y-3">
+              <div>
+                <div className="mb-1 text-[11px] text-muted-foreground">Pattern Type</div>
+                <div className="grid grid-cols-4 gap-2">
+                  {BACKGROUND_PATTERNS.map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => patchBg({ patternId: p.id })}
+                      className={cn(
+                        "h-12 rounded-md border bg-background",
+                        bg.patternId === p.id && "ring-2 ring-primary",
+                      )}
+                      style={{ backgroundImage: p.url, backgroundRepeat: "repeat" }}
+                      aria-label={p.label}
+                      title={p.label}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <NumField
+                label="Pattern Size"
+                min={10}
+                max={200}
+                step={5}
+                value={bg.patternSize ?? 20}
+                suffix="px"
+                onChange={(v) => patchBg({ patternSize: v })}
+              />
+
+              <NumField
+                label="Pattern Opacity"
+                min={0}
+                max={1}
+                step={0.05}
+                value={bg.patternOpacity ?? 0.1}
+                suffix=""
+                onChange={(v) => patchBg({ patternOpacity: v })}
+              />
+
+              <details className="rounded-md border p-2">
+                <summary className="cursor-pointer text-[11px] text-muted-foreground">
+                  Custom SVG Path (Advanced)
+                </summary>
+                <textarea
+                  className="mt-2 w-full rounded border bg-background p-2 text-[10px] font-mono"
+                  rows={3}
+                  value={bg.patternSvg ?? ""}
+                  onChange={(e) => patchBg({ patternSvg: e.target.value })}
+                  placeholder="<svg...><path d='M0 0h1v1H0z'/></svg>"
+                />
+              </details>
+            </div>
+          )}
+
+          {bg.kind === "glass" && (
+            <div className="space-y-3 rounded-md border p-3">
+              <NumField
+                label="Backdrop Blur"
+                min={0}
+                max={100}
+                step={1}
+                value={bg.glassBlur ?? 20}
+                suffix="px"
+                onChange={(v) => patchBg({ glassBlur: v })}
+              />
+              <NumField
+                label="Tint Opacity"
+                min={0}
+                max={1}
+                step={0.05}
+                value={bg.glassOpacity ?? 0.1}
+                suffix=""
+                onChange={(v) => patchBg({ glassOpacity: v })}
+              />
+              <NumField
+                label="Saturation"
+                min={0}
+                max={2}
+                step={0.1}
+                value={bg.glassSaturation ?? 1.2}
+                suffix=""
+                onChange={(v) => patchBg({ glassSaturation: v })}
+              />
+              <ColorField
+                label="Tint Color"
+                value={bg.glassTint || "rgba(255,255,255,1)"}
+                brands={brands}
+                onChange={(v) => patchBg({ glassTint: v })}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <label className="flex items-center gap-2 rounded border p-2 text-[10px]">
+                  <input
+                    type="checkbox"
+                    checked={!!bg.glassBorder}
+                    onChange={(e) => patchBg({ glassBorder: e.target.checked })}
                   />
-                ))}
+                  Border
+                </label>
+                <label className="flex items-center gap-2 rounded border p-2 text-[10px]">
+                  <input
+                    type="checkbox"
+                    checked={!!bg.glassBorderGlow}
+                    onChange={(e) => patchBg({ glassBorderGlow: e.target.checked })}
+                  />
+                  Glow
+                </label>
+                <label className="flex items-center gap-2 rounded border p-2 text-[10px]">
+                  <input
+                    type="checkbox"
+                    checked={!!bg.glassShadow}
+                    onChange={(e) => patchBg({ glassShadow: e.target.checked })}
+                  />
+                  Shadow
+                </label>
               </div>
             </div>
           )}
 
           {/* Blur + overlay + blend mode — available for all bg kinds */}
           <NumField
-            label="Background blur"
+            label="Layer blur"
             min={0}
             max={100}
             step={1}
             value={bg.blur ?? 0}
             suffix="px"
             onChange={(v) => patchBg({ blur: v })}
+          />
+          <NumField
+            label="Brightness"
+            min={0}
+            max={2}
+            step={0.05}
+            value={bg.brightness ?? 1}
+            suffix=""
+            onChange={(v) => patchBg({ brightness: v })}
           />
           <ColorField
             label="Overlay color"
