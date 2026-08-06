@@ -1,7 +1,6 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { AdminComingSoon } from "@/features/admin/components/coming-soon";
 
-export const Route = createFileRoute("/admin/dashboard")({
-  beforeLoad: () => {
-    throw redirect({ to: "/app" });
-  },
+export const Route = createFileRoute("/dashboard")({
+  component: () => <AdminComingSoon title="Admin Dashboard" />,
 });
