@@ -28,7 +28,18 @@ import {
   Code2,
 } from "lucide-react";
 
-export type IntegrationDisplayMode = "button" | "embed" | "popup" | "newTab" | "floating";
+export type IntegrationDisplayMode =
+  | "button"
+  | "embed"
+  | "popup"
+  | "newTab"
+  | "floating"
+  | "floatingBubble"
+  | "stickyBottom"
+  | "headerAction"
+  | "iconOnly"
+  | "card"
+  | "hidden";
 
 export type IntegrationFieldType =
   | "text"
@@ -116,15 +127,15 @@ function googleFormEmbed(url: string): string {
 export const STYLE_FIELDS: IntegrationField[] = [
   {
     key: "buttonText",
-    label: "Button text",
+    label: "Button text / Label",
     type: "text",
-    modes: ["button", "popup", "newTab", "floating"],
+    modes: ["button", "popup", "newTab", "floating", "stickyBottom", "headerAction", "card"],
   },
   {
     key: "style",
     label: "Style",
     type: "select",
-    modes: ["button", "popup", "newTab"],
+    modes: ["button", "popup", "newTab", "stickyBottom", "headerAction"],
     options: [
       { value: "filled", label: "Filled" },
       { value: "outline", label: "Outline" },
@@ -133,7 +144,8 @@ export const STYLE_FIELDS: IntegrationField[] = [
     ],
   },
   { key: "color", label: "Colour", type: "color" },
-  { key: "showIcon", label: "Show icon", type: "switch" },
+  { key: "textColor", label: "Text Colour", type: "color", modes: ["button", "floating", "stickyBottom", "card"] },
+  { key: "showIcon", label: "Show icon", type: "switch", modes: ["button", "floating", "stickyBottom", "card", "headerAction"] },
   {
     key: "animation",
     label: "Animation",
@@ -148,15 +160,53 @@ export const STYLE_FIELDS: IntegrationField[] = [
   },
   {
     key: "position",
-    label: "Floating position",
+    label: "Position",
     type: "select",
-    modes: ["floating"],
+    modes: ["floating", "floatingBubble"],
     options: [
       { value: "bottom-right", label: "Bottom right" },
       { value: "bottom-left", label: "Bottom left" },
+      { value: "top-right", label: "Top right" },
+      { value: "top-left", label: "Top left" },
     ],
   },
+  {
+    key: "shape",
+    label: "Shape",
+    type: "select",
+    modes: ["floating", "floatingBubble"],
+    options: [
+      { value: "circle", label: "Circle" },
+      { value: "rounded", label: "Rounded" },
+      { value: "square", label: "Square" },
+    ],
+  },
+  {
+    key: "size",
+    label: "Size",
+    type: "select",
+    modes: ["floating", "floatingBubble", "iconOnly"],
+    options: [
+      { value: "sm", label: "Small" },
+      { value: "md", label: "Medium" },
+      { value: "lg", label: "Large" },
+    ],
+  },
+  {
+    key: "floatingMode",
+    label: "Floating Mode",
+    type: "select",
+    modes: ["floating"],
+    options: [
+      { value: "icon", label: "Icon Only" },
+      { value: "label", label: "Icon + Label" },
+    ],
+  },
+  { key: "tooltip", label: "Tooltip Text", type: "text", modes: ["floating", "floatingBubble"] },
+  { key: "badge", label: "Badge Counter", type: "number", modes: ["floating", "floatingBubble"] },
+  { key: "zIndex", label: "Z-Index", type: "number", modes: ["floating", "floatingBubble", "stickyBottom"] },
   { key: "height", label: "Embed height (px)", type: "number", modes: ["embed", "popup"] },
+  { key: "description", label: "Card Description", type: "textarea", modes: ["card"] },
   { key: "showOnDesktop", label: "Show on desktop", type: "switch" },
   { key: "showOnMobile", label: "Show on mobile", type: "switch" },
 ];
@@ -166,6 +216,9 @@ export const STYLE_DEFAULTS: IntegrationConfig = {
   showIcon: true,
   animation: "none",
   position: "bottom-right",
+  shape: "circle",
+  size: "md",
+  floatingMode: "icon",
   height: 420,
   showOnDesktop: true,
   showOnMobile: true,
@@ -180,7 +233,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Chat button or floating bubble",
     icon: MessageCircle,
     brand: "#25D366",
-    modes: ["button", "floating", "newTab"],
+    modes: ["button", "floating", "floatingBubble", "newTab", "stickyBottom", "headerAction", "iconOnly", "card", "hidden"],
     fields: [
       { key: "phone", label: "Phone number", type: "tel", placeholder: "+91 98765 43210", required: true },
       { key: "message", label: "Default message", type: "textarea", placeholder: "Hi! I'd like to know more…" },
@@ -199,7 +252,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Booking popup or inline embed",
     icon: CalendarClock,
     brand: "#006BFF",
-    modes: ["popup", "embed", "newTab", "button"],
+    modes: ["popup", "embed", "newTab", "button", "floating", "floatingBubble", "card", "hidden"],
     fields: [
       { key: "url", label: "Calendly URL", type: "url", placeholder: "https://calendly.com/your-name/30min", required: true },
       {
@@ -230,7 +283,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Location embed or directions button",
     icon: MapPin,
     brand: "#1A73E8",
-    modes: ["embed", "button", "newTab"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
     fields: [
       { key: "businessName", label: "Business name", type: "text", placeholder: "ZUPIX Studio" },
       { key: "address", label: "Address", type: "textarea", placeholder: "MG Road, Bengaluru" },
@@ -253,7 +306,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Open a chat or channel",
     icon: Send,
     brand: "#229ED9",
-    modes: ["button", "floating", "newTab"],
+    modes: ["button", "floating", "floatingBubble", "newTab", "stickyBottom", "headerAction", "iconOnly", "card", "hidden"],
     fields: [
       { key: "username", label: "Username or channel", type: "text", placeholder: "zupixstudio", required: true },
     ],
@@ -269,7 +322,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "One-tap call button",
     icon: Phone,
     brand: "#0F172A",
-    modes: ["button", "floating"],
+    modes: ["button", "floating", "floatingBubble", "stickyBottom", "headerAction", "iconOnly", "card", "hidden"],
     fields: [{ key: "phone", label: "Phone number", type: "tel", placeholder: "+91 98765 43210", required: true }],
     defaults: { buttonText: "Call now", color: "#0F172A" },
     build: (c) => {
@@ -283,7 +336,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Prefilled mail composer",
     icon: Mail,
     brand: "#EA4335",
-    modes: ["button", "floating"],
+    modes: ["button", "floating", "floatingBubble", "stickyBottom", "headerAction", "iconOnly", "card", "hidden"],
     fields: [
       { key: "email", label: "Email address", type: "email", placeholder: "hello@zupix.app", required: true },
       { key: "subject", label: "Subject", type: "text" },
@@ -306,7 +359,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Video player or channel link",
     icon: Youtube,
     brand: "#FF0000",
-    modes: ["embed", "button", "newTab"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
     fields: [
       { key: "url", label: "Video or channel URL", type: "url", placeholder: "https://youtu.be/…", required: true },
     ],
@@ -324,7 +377,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Track, album or playlist player",
     icon: Music2,
     brand: "#1DB954",
-    modes: ["embed", "button", "newTab"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
     fields: [
       { key: "url", label: "Spotify URL", type: "url", placeholder: "https://open.spotify.com/…", required: true },
     ],
@@ -341,7 +394,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Inline form or link",
     icon: ClipboardList,
     brand: "#673AB7",
-    modes: ["embed", "button", "newTab"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
     fields: [
       { key: "url", label: "Form URL", type: "url", placeholder: "https://docs.google.com/forms/…", required: true },
     ],
@@ -358,7 +411,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Send customers to review you",
     icon: Star,
     brand: "#FBBC05",
-    modes: ["button", "newTab"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "card", "hidden"],
     fields: [
       { key: "placeId", label: "Google Place ID", type: "text", placeholder: "ChIJ…" },
       { key: "url", label: "Review link", type: "url", placeholder: "Used when no Place ID", help: "Paste your Google review short link." },
@@ -377,7 +430,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Link to your Trustpilot profile",
     icon: ShieldCheck,
     brand: "#00B67A",
-    modes: ["button", "newTab"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "card", "hidden"],
     fields: [
       { key: "domain", label: "Business domain", type: "text", placeholder: "zupix.app", required: true },
     ],
@@ -393,7 +446,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Profile or post link",
     icon: Instagram,
     brand: "#E1306C",
-    modes: ["button", "newTab"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "iconOnly", "card", "hidden"],
     fields: [{ key: "username", label: "Username", type: "text", placeholder: "zupix.studio", required: true }],
     defaults: { buttonText: "Follow on Instagram", color: "#E1306C" },
     build: (c) => {
@@ -407,7 +460,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Page or profile link",
     icon: Facebook,
     brand: "#1877F2",
-    modes: ["button", "newTab"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "iconOnly", "card", "hidden"],
     fields: [{ key: "username", label: "Page name or URL", type: "text", placeholder: "zupixstudio", required: true }],
     defaults: { buttonText: "Follow on Facebook", color: "#1877F2" },
     build: (c) => {
@@ -422,7 +475,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Profile link",
     icon: Twitter,
     brand: "#0F1419",
-    modes: ["button", "newTab"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "iconOnly", "card", "hidden"],
     fields: [{ key: "username", label: "Username", type: "text", placeholder: "zupix", required: true }],
     defaults: { buttonText: "Follow on X", color: "#0F1419" },
     build: (c) => {
@@ -436,7 +489,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Profile or company page",
     icon: Linkedin,
     brand: "#0A66C2",
-    modes: ["button", "newTab"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "iconOnly", "card", "hidden"],
     fields: [
       { key: "url", label: "LinkedIn URL", type: "url", placeholder: "https://linkedin.com/company/zupix", required: true },
     ],
@@ -452,7 +505,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Any trusted iframe URL",
     icon: Code2,
     brand: "#6366F1",
-    modes: ["embed", "button", "newTab"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
     fields: [
       { key: "url", label: "Embed URL", type: "url", placeholder: "https://…", required: true },
       { key: "title", label: "Accessible title", type: "text", placeholder: "Booking widget" },
@@ -484,5 +537,11 @@ export const MODE_LABEL: Record<IntegrationDisplayMode, string> = {
   embed: "Inline embed",
   popup: "Popup",
   newTab: "Open in new tab",
-  floating: "Floating",
+  floating: "Floating button",
+  floatingBubble: "Floating bubble",
+  stickyBottom: "Sticky bottom bar",
+  headerAction: "Header action",
+  iconOnly: "Icon only",
+  card: "Information card",
+  hidden: "Hidden",
 };
