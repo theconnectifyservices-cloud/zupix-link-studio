@@ -1,8 +1,8 @@
 /**
- * MediaPicker — universal image picker used by the builder.
+ * FilePicker — universal asset picker used across the platform.
  *
  * Modes:
- *  • Library — browse existing workspace media
+ *  • Library — browse existing workspace media with kind filters
  *  • Upload  — drag-drop / file-picker / paste from clipboard
  *  • URL     — advanced: paste an external URL
  *
@@ -10,7 +10,8 @@
  * can be persisted in block content and rendered on published pages.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Upload, ImageIcon, LinkIcon, Search, Loader2 } from "lucide-react";
+import { Upload, ImageIcon, LinkIcon, Search, Loader2, FileText, Film, Music, File as FileIcon } from "lucide-react";
+
 import { toast } from "sonner";
 import {
   Dialog,
