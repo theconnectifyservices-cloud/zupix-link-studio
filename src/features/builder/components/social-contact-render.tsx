@@ -243,10 +243,11 @@ export function FollowCardRender({
           <img
             src={block.avatarUrl}
             alt={block.name ? `${block.name} avatar` : "Profile avatar"}
-            className="h-14 w-14 rounded-full object-cover"
+            className="h-14 w-14 object-cover"
+            style={{ borderRadius: "var(--zx-avatar-radius, 9999px)" }}
           />
         ) : (
-          <div className="grid h-14 w-14 place-items-center rounded-full bg-muted text-muted-foreground">
+          <div className="grid h-14 w-14 place-items-center bg-muted text-muted-foreground" style={{ borderRadius: "var(--zx-avatar-radius, 9999px)" }}>
             <MessageCircle className="h-5 w-5" />
           </div>
         )}

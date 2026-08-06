@@ -1395,7 +1395,13 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
 
   // Avatar
   const avatarSize = block.avatarSize ?? 80;
-  const avatarRadius = block.avatarRadius ?? 9999;
+  const avatarShape = prof.avatarShape ?? "circle";
+  const avatarRadius =
+    avatarShape === "circle"
+      ? "50%"
+      : avatarShape === "square"
+        ? "0px"
+        : `${prof.avatarRadius ?? 20}px`;
   const avatarBorderW = block.avatarBorderWidth ?? 4;
   const avatarBorderC = block.avatarBorderColor ?? "#ffffff";
   const avatarShadow = SHADOW_MAP[block.avatarShadow ?? "none"];
@@ -1500,8 +1506,8 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
         prof.badgeAnimation && "zx-badge-anim",
         fx.badgeClass,
         badgePos !== "inline" && "absolute z-[1]",
-        badgePos === "top-right" && "right-0 top-0",
-        badgePos === "bottom-right" && "bottom-0 right-0",
+        badgePos === "top-right" && (avatarShape === "circle" ? "right-[5%] top-[5%]" : "right-[-5%] top-[-5%]"),
+        badgePos === "bottom-right" && (avatarShape === "circle" ? "bottom-[5%] right-[5%]" : "bottom-[-5%] right-[-5%]"),
       )}
       style={{
         width: badgeSize + 4,
@@ -1513,6 +1519,27 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
     >
       <BadgeCheck style={{ width: badgeSize, height: badgeSize }} />
     </span>
+  ) : null;
+  
+  const statusColor = 
+    prof.avatarStatus === "online" ? "#22c55e" : 
+    prof.avatarStatus === "away" ? "#f59e0b" : 
+    prof.avatarStatus === "busy" ? "#ef4444" : 
+    prof.avatarStatus === "offline" ? "#9ca3af" : 
+    null;
+
+  const statusEl = statusColor ? (
+    <span
+      className={cn(
+        "absolute z-[1] rounded-full border-2 border-background",
+        avatarShape === "circle" ? "bottom-[8%] left-[8%]" : "bottom-[-4px] left-[-4px]"
+      )}
+      style={{
+        width: 12,
+        height: 12,
+        background: statusColor,
+      }}
+    />
   ) : null;
 
   const nameStyle: CSSProperties = {

@@ -268,6 +268,8 @@ export interface ThemeProfile {
   avatarSize: AvatarSize; // sm=64, md=80, lg=96, xl=128
   avatarBorderWidth: number; // px
   avatarBorderColor: string;
+  avatarRadius?: number; // px, for "rounded" shape
+  avatarStatus?: "online" | "away" | "busy" | "offline" | "none";
   coverHeight: number; // px
   nameWeight: 400 | 500 | 600 | 700 | 800 | 900;
   nameSize: number; // px
@@ -287,12 +289,14 @@ export const DEFAULT_PROFILE: ThemeProfile = {
   avatarSize: "md",
   avatarBorderWidth: 4,
   avatarBorderColor: "#ffffff",
+  avatarRadius: 20,
   coverHeight: 96,
   nameWeight: 700,
   nameSize: 18,
   bioSize: 12,
   bioWeight: 400,
   verifiedPosition: "inline",
+  avatarStatus: "none",
   avatarGlow: false,
   avatarRing: false,
   avatarRotatingRing: false,
@@ -301,10 +305,10 @@ export const DEFAULT_PROFILE: ThemeProfile = {
 };
 
 const AVATAR_PX: Record<AvatarSize, number> = { sm: 64, md: 80, lg: 96, xl: 128 };
-const AVATAR_RADIUS: Record<AvatarShape, string> = {
+const AVATAR_RADIUS_MAP: Record<AvatarShape, string> = {
   circle: "9999px",
   rounded: "20px",
-  square: "6px",
+  square: "0px",
 };
 
 export type ThemePresetId =
@@ -1184,7 +1188,10 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
 
     // Profile
     "--zx-avatar-size": `${AVATAR_PX[prof.avatarSize]}px`,
-    "--zx-avatar-radius": AVATAR_RADIUS[prof.avatarShape],
+    "--zx-avatar-radius":
+      prof.avatarShape === "rounded"
+        ? `${prof.avatarRadius ?? 20}px`
+        : AVATAR_RADIUS_MAP[prof.avatarShape],
     "--zx-avatar-border-w": `${prof.avatarBorderWidth}px`,
     "--zx-avatar-border-c": prof.avatarBorderColor,
     "--zx-avatar-glow-c": c.primary,

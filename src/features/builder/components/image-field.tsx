@@ -42,13 +42,12 @@ export function ImageField({
       <Label className="text-xs">{label}</Label>
       <div className="flex items-center gap-3">
         <div
-          className={`relative flex shrink-0 items-center justify-center overflow-hidden border bg-muted ${
-            circle ? "rounded-full" : "rounded-md"
-          }`}
+          className={`relative flex shrink-0 items-center justify-center overflow-hidden border bg-muted`}
           style={{
             width: circle ? 64 : 96,
             height: circle ? 64 : previewAspect ? undefined : 64,
             aspectRatio: circle ? "1 / 1" : previewAspect ?? "1 / 1",
+            borderRadius: circle ? "var(--zx-avatar-radius, 9999px)" : "6px",
           }}
         >
           {value ? (
