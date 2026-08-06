@@ -115,8 +115,8 @@ function AiHome() {
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
                       {c.last_message_at
-                        ? formatDistanceToNow(new Date(c.last_message_at), { addSuffix: true })
-                        : "no messages yet"}
+                         ? formatDistanceToNow(new Date(c.last_message_at), { addSuffix: true })
+                         : "no messages yet"}
                     </p>
                   </button>
                 ))}
