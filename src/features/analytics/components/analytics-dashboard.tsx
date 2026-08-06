@@ -460,7 +460,7 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
 
       {/* Traffic sources + Links */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <RankedList title="Traffic sources" data={referrers} />
+        <RankedList title="Traffic sources" data={sourceStats} />
         <Card className="h-full">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-semibold">Top performing links</CardTitle>
@@ -474,13 +474,64 @@ export function AnalyticsDashboard({ workspaceId }: { workspaceId: string }) {
               <ul className="space-y-3 text-sm">
                 {links.slice(0, 10).map((l) => (
                   <li key={l.url} className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="truncate font-medium">{l.host || l.url}</p>
-                      <p className="truncate text-xs text-muted-foreground">{l.url}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <p className="truncate text-[10px] text-muted-foreground">{l.url}</p>
+                        <Badge variant="secondary" className="h-4 text-[9px] px-1">{l.ctr.toFixed(1)}% CTR</Badge>
+                      </div>
                     </div>
                     <span className="shrink-0 tabular-nums text-muted-foreground">
                       {l.clicks.toLocaleString()}
                     </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Business Analytics: Bookings & Leads */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Booking Analytics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Upcoming</p>
+                <p className="text-xl font-bold">{bookingStats.upcoming}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Completed</p>
+                <p className="text-xl font-bold">{bookingStats.completed}</p>
+              </div>
+              <div className="col-span-2 pt-2 border-t">
+                <p className="text-[10px] uppercase text-muted-foreground font-medium mb-1">Most Booked Service</p>
+                <p className="text-sm font-medium truncate">{bookingStats.mostBooked}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Latest Leads</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {leadStats.latest.length === 0 ? (
+              <p className="py-4 text-center text-xs text-muted-foreground">No leads yet</p>
+            ) : (
+              <ul className="space-y-2">
+                {leadStats.latest.map(l => (
+                  <li key={l.id} className="flex items-center justify-between text-xs border-b pb-2 last:border-0 last:pb-0">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{l.name || 'Anonymous'}</p>
+                      <p className="text-[10px] text-muted-foreground">{l.email || l.phone || 'No contact'}</p>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground shrink-0">{format(new Date(l.created_at), 'MMM d')}</span>
                   </li>
                 ))}
               </ul>
