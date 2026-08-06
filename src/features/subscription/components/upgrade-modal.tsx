@@ -183,9 +183,14 @@ function PlanCard({
               <span className="text-sm text-muted-foreground">/{cycle === "monthly" ? "mo" : "yr"}</span>
             )}
             {cycle === "yearly" && savings > 0 && (
-              <span className="ml-2 rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                SAVE {code === "shikhar" ? "23" : savings}%
-              </span>
+              <div className="flex flex-col ml-2">
+                <span className="rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                  SAVE {code === "shikhar" ? "23" : savings}%
+                </span>
+                {code === "shikhar" && (
+                  <span className="text-[10px] font-bold text-emerald-500 mt-0.5 whitespace-nowrap">Save ₹1,389</span>
+                )}
+              </div>
             )}
           </div>
         )}
