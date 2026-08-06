@@ -260,7 +260,7 @@ export const BACKGROUND_PATTERNS: { id: string; label: string; url: string }[] =
 // ── Profile (LS-07B) ────────────────────────────────────────────────────
 
 export type AvatarShape = "circle" | "rounded" | "square";
-export type AvatarSize = "sm" | "md" | "lg" | "xl";
+export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl" | number;
 export type BadgePosition = "inline" | "top-right" | "bottom-right";
 
 export interface ThemeProfile {
@@ -1189,11 +1189,8 @@ export function themeToCssVars(theme: PageTheme, viewport: Viewport = "mobile"):
     "--zx-btn-extra": btnCss.extra,
 
     // Profile
-    "--zx-avatar-size": `${AVATAR_PX[prof.avatarSize]}px`,
-    "--zx-avatar-radius":
-      prof.avatarShape === "rounded"
-        ? `${prof.avatarRadius ?? 20}px`
-        : AVATAR_RADIUS_MAP[prof.avatarShape],
+    "--zx-avatar-size": typeof prof.avatarSize === 'number' ? `${prof.avatarSize}px` : `${AVATAR_PX[prof.avatarSize] ?? 80}px`,
+    "--zx-avatar-radius": getAvatarRadius(prof.avatarShape, prof.avatarRadius),
     "--zx-avatar-border-w": `${prof.avatarBorderWidth}px`,
     "--zx-avatar-border-c": prof.avatarBorderColor,
     "--zx-avatar-glow-c": c.primary,
