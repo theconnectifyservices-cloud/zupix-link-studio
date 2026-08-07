@@ -654,19 +654,38 @@ export function LandingPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 sm:py-48 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[#FF6A3D]/5 pointer-events-none" />
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-8">Ready to transform your<br />digital presence?</h2>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            <CtaButton to="/auth" className="h-16 px-10 text-xl w-full sm:w-auto">
-              Start Building Now
-            </CtaButton>
-            <CtaButton to="/auth" variant="secondary" showIcon={false} icon={<Sparkles className="w-5 h-5 text-[#FF2DAA]" />} className="h-16 px-10 text-xl w-full sm:w-auto">
-              Start 3-Day Free Trial
-            </CtaButton>
+      <section className="py-20 sm:py-32 lg:py-48 relative overflow-hidden">
+        {/* Premium Gradient Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-[#FF2DAA]/10 via-[#FF7A45]/10 to-[#F72FB3]/10 blur-[120px] rounded-full pointer-events-none" />
+        
+        <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
+          <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-8 duration-1000">
+            <h2 className="text-[34px] sm:text-[42px] md:text-6xl lg:text-7xl font-bold mb-7 leading-[1.1] sm:leading-[1.15] max-w-[90%] md:max-w-4xl mx-auto tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+              Everything you need to grow online. Nothing you don't.
+            </h2>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-[14px] mt-7">
+              <CtaButton 
+                to="/auth" 
+                showIcon={false}
+                className="h-14 sm:h-[58px] px-4 min-[360px]:px-8 text-[13px] min-[360px]:text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap"
+              >
+                🎉 Start 3-Day Free Trial
+              </CtaButton>
+              <CtaButton 
+                to="/auth" 
+                variant="secondary" 
+                showIcon={false}
+                className="h-14 sm:h-[58px] px-4 min-[360px]:px-8 text-[13px] min-[360px]:text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap border-white/10 bg-white/5 backdrop-blur-sm"
+              >
+                ▶ Watch Live Demo
+              </CtaButton>
+            </div>
+            
+            <p className="mt-10 text-[#B9C0D4] text-base font-medium opacity-60">
+              No credit card required • Cancel anytime
+            </p>
           </div>
-          <p className="mt-8 text-[#B9C0D4]">No credit card required. Cancel anytime.</p>
         </div>
       </section>
 
