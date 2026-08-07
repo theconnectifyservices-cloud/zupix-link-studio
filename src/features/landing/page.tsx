@@ -193,8 +193,8 @@ export function LandingPage() {
                 <CtaButton to="/auth" className="flex-1 min-[480px]:flex-none">
                   Start Building Free
                 </CtaButton>
-                <CtaButton href="#templates" variant="secondary" showIcon={false} className="flex-1 min-[480px]:flex-none">
-                  Explore Templates
+                <CtaButton to="/auth" variant="secondary" showIcon={false} icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />} className="flex-1 min-[480px]:flex-none">
+                  Start 3-Day Free Trial
                 </CtaButton>
               </div>
 
@@ -327,9 +327,9 @@ export function LandingPage() {
               <h2 className="text-3xl sm:text-5xl font-bold mb-6">Premium Templates.</h2>
               <p className="text-lg text-[#B9C0D4]">Start with 75+ professionally designed themes. No runtime rendering required — our themes are fast, light, and beautiful.</p>
             </div>
-            <Button variant="link" className="text-[#FF6A3D] p-0 font-bold h-auto">
-              View Marketplace <ChevronRight className="ml-1 h-4 w-4" />
-            </Button>
+            <CtaButton to="/auth" variant="secondary" showIcon={false} icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />} className="min-h-[48px] px-6 text-sm">
+              Start 3-Day Free Trial
+            </CtaButton>
           </div>
 
           {/* Desktop Grid (Visible only on md+) */}

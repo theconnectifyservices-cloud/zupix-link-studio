@@ -9,6 +9,7 @@ interface CtaButtonProps {
   variant?: "primary" | "secondary";
   className?: string;
   showIcon?: boolean;
+  icon?: React.ReactNode;
   onClick?: () => void;
 }
 
@@ -19,6 +20,7 @@ export function CtaButton({
   variant = "primary", 
   className,
   showIcon = true,
+  icon,
   onClick
 }: CtaButtonProps) {
   const isPrimary = variant === "primary";
@@ -49,6 +51,7 @@ export function CtaButton({
       {gradientShift}
       {outerGlow}
       <span className="relative z-10 flex items-center gap-2">
+        {icon}
         {children}
         {showIcon && (
           <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
