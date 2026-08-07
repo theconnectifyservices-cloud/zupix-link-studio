@@ -26,7 +26,7 @@ export function CtaButton({
   const isPrimary = variant === "primary";
   
   const baseStyles = cn(
-    "group relative inline-flex items-center justify-center h-14 min-h-[56px] px-6 rounded-[18px] sm:rounded-full text-white font-semibold transition-all duration-[250ms] hover:-translate-y-[2px] hover:scale-[1.02] active:scale-[0.98] cursor-pointer outline-none select-none overflow-hidden text-base whitespace-nowrap w-full min-[480px]:w-auto min-w-[200px]",
+    "group relative flex items-center justify-center h-14 min-h-[56px] px-6 rounded-[18px] sm:rounded-full text-white font-semibold transition-all duration-[250ms] hover:-translate-y-[2px] hover:scale-[1.02] active:scale-[0.98] cursor-pointer outline-none select-none overflow-visible text-base whitespace-nowrap w-full min-w-auto sm:w-auto sm:min-w-[200px]",
     isPrimary 
       ? "bg-gradient-to-r from-[#FF2DAA] via-[#FF4D8D] to-[#FF7A45] shadow-[0_10px_30px_rgba(255,45,170,0.22)] hover:shadow-[0_15px_35px_rgba(255,45,170,0.3)]"
       : "bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#FF2DAA]/50 backdrop-blur-md",
