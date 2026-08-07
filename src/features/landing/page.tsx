@@ -71,32 +71,78 @@ const FEATURES = [
   }
 ];
 
+const COMPARISON_FEATURES = [
+  { name: "Unlimited Bio Pages", free: false, starter: true, pro: true },
+  { name: "Products Store", free: false, starter: true, pro: true },
+  { name: "Booking System", free: false, starter: true, pro: true },
+  { name: "Custom Domain", free: false, starter: false, pro: true },
+  { name: "Social Media Embed", free: true, starter: true, pro: true },
+  { name: "WhatsApp Integration", free: false, starter: true, pro: true },
+  { name: "AI Studio", free: false, starter: false, pro: true },
+  { name: "Payment Collection", free: false, starter: true, pro: true },
+  { name: "UPI QR", free: true, starter: true, pro: true },
+  { name: "HTML Embed", free: false, starter: false, pro: true },
+  { name: "Analytics", free: "Basic", starter: "Standard", pro: "Advanced" },
+  { name: "Verified Badge", free: false, starter: false, pro: true },
+  { name: "Premium Themes", free: false, starter: true, pro: true },
+  { name: "Remove Branding", free: false, starter: false, pro: true },
+  { name: "Priority Support", free: false, starter: false, pro: true },
+];
+
 const PRICING = [
   {
-    name: "UDAAN",
-    price: "Free",
+    name: "FREE",
+    price: "₹0",
     desc: "Perfect for students & hobbyists",
-    features: ["1 Bio Link", "Standard Templates", "Basic Analytics", "ZUPIX Branding"],
+    features: [
+      "1 Bio Link",
+      "ZUPIX Branding",
+      "Basic Buttons",
+      "Basic Analytics",
+      "Community Support"
+    ],
     cta: "Start for Free",
     popular: false
   },
   {
-    name: "TEJAS",
-    price: "₹149",
-    period: "/mo",
+    name: "STARTER",
+    price: "₹399",
+    period: "/month",
     desc: "For serious creators & small biz",
-    features: ["3 Bio Links", "Premium Templates", "Custom Colors", "Priority Support"],
-    cta: "Start 7-Day Trial",
-    popular: true
+    features: [
+      "Unlimited Buttons",
+      "Mini Website",
+      "Products Store",
+      "Booking Forms",
+      "UPI Payments",
+      "Social Embeds",
+      "Gallery",
+      "Analytics",
+      "Premium Themes",
+      "No Ads"
+    ],
+    cta: "Start 3-Day Free Trial",
+    popular: false
   },
   {
-    name: "SHIKHAR",
-    price: "₹499",
-    period: "/mo",
-    desc: "Enterprise-grade performance",
-    features: ["Unlimited Bio Links", "Custom Domains", "AI Content Studio", "0% Transaction Fee"],
-    cta: "Contact Sales",
-    popular: false
+    name: "PRO",
+    price: "₹999",
+    period: "/year",
+    desc: "Everything in Starter +",
+    features: [
+      "Custom Domain",
+      "Remove Branding",
+      "AI Content Tools",
+      "Embed HTML/CSS/JS",
+      "WhatsApp Catalog",
+      "Team Access",
+      "Advanced Analytics",
+      "Verified Badge",
+      "Priority Support",
+      "Early Access Features"
+    ],
+    cta: "Start 3-Day Free Trial",
+    popular: true
   }
 ];
 
@@ -565,38 +611,56 @@ export function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 sm:py-32">
+      <section id="pricing" className="py-24 sm:py-32 relative">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-3xl sm:text-5xl font-bold mb-6">Simple, Honest Pricing.</h2>
-            <p className="text-lg text-[#B9C0D4]">No hidden fees. No transaction commissions. Just a simple monthly subscription to power your growth.</p>
+            <h2 className="text-4xl sm:text-6xl font-bold mb-6 tracking-tight">Choose Your Plan</h2>
+            <p className="text-xl text-[#B9C0D4]">Power up your online presence with professional tools designed for growth.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-32">
             {PRICING.map((p, i) => (
               <div key={i} className={cn(
-                "relative p-10 rounded-[22px] border flex flex-col",
-                p.popular ? "bg-[#12152A] border-[#FF6A3D]/30 shadow-2xl scale-105" : "bg-transparent border-white/5"
+                "relative p-8 sm:p-10 rounded-[32px] border transition-all duration-500 flex flex-col group hover:shadow-2xl hover:-translate-y-2",
+                p.popular 
+                  ? "bg-white/[0.04] border-[#FF2DAA]/30 backdrop-blur-xl shadow-2xl z-10" 
+                  : "bg-white/[0.02] border-white/5 backdrop-blur-md"
               )}>
                 {p.popular && (
-                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#FF6A3D] text-white text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#FF2DAA] to-[#FF7A45] text-white text-[10px] font-bold px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-lg shadow-[#FF2DAA]/20">
                     Most Popular
-                  </span>
-                )}
-                <div className="mb-8">
-                  <h3 className="text-xl font-bold mb-2">{p.name}</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold">{p.price}</span>
-                    <span className="text-[#B9C0D4]">{p.period}</span>
                   </div>
-                  <p className="mt-4 text-[#B9C0D4] text-sm">{p.desc}</p>
+                )}
+                
+                <div className="mb-8">
+                  <h3 className={cn(
+                    "text-lg font-bold mb-4 tracking-widest",
+                    p.popular ? "text-[#FF2DAA]" : "text-[#B9C0D4]"
+                  )}>{p.name}</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-5xl font-bold tracking-tight">{p.price}</span>
+                    <span className="text-[#B9C0D4] font-medium">{p.period}</span>
+                  </div>
+                  {p.period === "/year" && (
+                    <div className="mt-2 text-[#FF2DAA] text-xs font-bold animate-pulse">
+                      🔥 Save over 75% yearly
+                    </div>
+                  )}
+                  <p className="mt-6 text-[#B9C0D4] text-base leading-relaxed">{p.desc}</p>
                 </div>
                 
+                <div className="w-full h-px bg-white/10 mb-8" />
+
                 <ul className="space-y-4 mb-10 flex-1">
                   {p.features.map((f, j) => (
-                    <li key={j} className="flex items-center gap-3 text-sm text-[#B9C0D4]">
-                      <CheckCircle2 className="h-4 w-4 text-[#FF6A3D]" />
-                      {f}
+                    <li key={j} className="flex items-start gap-3 text-sm text-[#B9C0D4] group/item">
+                      <div className="mt-0.5 rounded-full p-0.5 bg-gradient-to-br from-[#FF2DAA]/20 to-[#FF7A45]/20">
+                        <CheckCircle2 className={cn(
+                          "h-4 w-4",
+                          p.popular ? "text-[#FF2DAA]" : "text-[#FF7A45]"
+                        )} />
+                      </div>
+                      <span className="group-hover/item:text-white transition-colors">{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -604,13 +668,74 @@ export function LandingPage() {
                 <CtaButton 
                   to="/auth"
                   variant={p.popular ? "primary" : "secondary"}
-                  className="w-full h-12"
+                  className={cn(
+                    "w-full h-14 text-base font-bold transition-all duration-300",
+                    !p.popular && "bg-white/5 border-white/10 hover:bg-white/10"
+                  )}
                   showIcon={false}
                 >
                   {p.cta}
                 </CtaButton>
               </div>
             ))}
+          </div>
+
+          {/* Comparison Table */}
+          <div className="max-w-5xl mx-auto mt-24">
+            <div className="text-center mb-16">
+              <h3 className="text-2xl sm:text-3xl font-bold mb-4">Compare Features</h3>
+              <p className="text-[#B9C0D4]">Deep dive into what makes each plan unique.</p>
+            </div>
+            
+            <div className="overflow-x-auto rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-md">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-white/5 bg-white/[0.02]">
+                    <th className="p-6 font-bold text-white/50 text-xs uppercase tracking-[0.2em]">Feature</th>
+                    <th className="p-6 font-bold text-center text-xs uppercase tracking-[0.2em]">Free</th>
+                    <th className="p-6 font-bold text-center text-xs uppercase tracking-[0.2em]">Starter</th>
+                    <th className="p-6 font-bold text-center text-xs uppercase tracking-[0.2em] text-[#FF2DAA]">Pro</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {COMPARISON_FEATURES.map((feature, idx) => (
+                    <tr key={idx} className="group hover:bg-white/[0.01] transition-colors">
+                      <td className="p-6 text-sm font-medium text-[#B9C0D4] group-hover:text-white transition-colors">{feature.name}</td>
+                      <td className="p-6 text-center">
+                        {typeof feature.free === 'string' ? (
+                          <span className="text-xs font-bold text-white/40">{feature.free}</span>
+                        ) : feature.free ? (
+                          <CheckCircle2 className="h-5 w-5 text-white/20 mx-auto" />
+                        ) : (
+                          <X className="h-5 w-5 text-white/5 mx-auto" />
+                        )}
+                      </td>
+                      <td className="p-6 text-center">
+                        {typeof feature.starter === 'string' ? (
+                          <span className="text-xs font-bold text-[#FF7A45]">{feature.starter}</span>
+                        ) : feature.starter ? (
+                          <CheckCircle2 className="h-5 w-5 text-[#FF7A45] mx-auto" />
+                        ) : (
+                          <X className="h-5 w-5 text-white/5 mx-auto" />
+                        )}
+                      </td>
+                      <td className="p-6 text-center bg-[#FF2DAA]/5">
+                        {typeof feature.pro === 'string' ? (
+                          <span className="text-xs font-bold text-[#FF2DAA]">{feature.pro}</span>
+                        ) : feature.pro ? (
+                          <div className="relative inline-block group/check">
+                            <CheckCircle2 className="h-5 w-5 text-[#FF2DAA] mx-auto relative z-10 animate-in zoom-in-50 duration-500" />
+                            <div className="absolute inset-0 bg-[#FF2DAA]/40 blur-md rounded-full -z-0 opacity-0 group-hover/check:opacity-100 transition-opacity" />
+                          </div>
+                        ) : (
+                          <X className="h-5 w-5 text-white/5 mx-auto" />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
