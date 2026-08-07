@@ -668,7 +668,7 @@ export function LandingPage() {
               <CtaButton 
                 to="/auth" 
                 showIcon={false}
-                className="h-14 sm:h-[58px] px-8 text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap"
+                className="h-14 sm:h-[58px] px-4 min-[360px]:px-8 text-[14px] min-[360px]:text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap"
               >
                 🎉 Start 3-Day Free Trial
               </CtaButton>
@@ -676,7 +676,7 @@ export function LandingPage() {
                 to="/auth" 
                 variant="secondary" 
                 showIcon={false}
-                className="h-14 sm:h-[58px] px-8 text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap border-white/10 bg-white/5 backdrop-blur-sm"
+                className="h-14 sm:h-[58px] px-4 min-[360px]:px-8 text-[14px] min-[360px]:text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap border-white/10 bg-white/5 backdrop-blur-sm"
               >
                 ▶ Watch Live Demo
               </CtaButton>
