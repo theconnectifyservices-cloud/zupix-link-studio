@@ -667,7 +667,7 @@ export function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-[14px] mt-7">
               <CtaButton 
                 to="/auth" 
-                icon={<Sparkles className="w-5 h-5" />}
+                showIcon={false}
                 className="h-14 sm:h-[58px] px-8 text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap"
               >
                 🎉 Start 3-Day Free Trial
