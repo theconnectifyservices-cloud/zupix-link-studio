@@ -382,16 +382,18 @@ export function LandingPage() {
             </div>
 
             {/* Appointment Booking - Medium Card */}
-            <div className="md:col-span-4 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-[#FF4D8D]/30 transition-all duration-500">
-              <div className="relative z-10">
-                <div className="h-12 w-12 rounded-xl bg-[#FF4D8D]/10 flex items-center justify-center mb-6">
-                  <Calendar className="h-6 w-6 text-[#FF4D8D]" />
+            <div className="md:col-span-4 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-[#FF4D8D]/30 transition-all duration-500 flex flex-col h-full">
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex-1">
+                  <div className="h-12 w-12 rounded-xl bg-[#FF4D8D]/10 flex items-center justify-center mb-6">
+                    <Calendar className="h-6 w-6 text-[#FF4D8D]" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4">Appointment Booking</h3>
+                  <p className="text-[#B9C0D4] leading-[1.6] text-[15px] sm:text-base mb-6">Professional calendar booking with time slots, auto-confirmation, and WhatsApp notifications.</p>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Appointment Booking</h3>
-                <p className="text-[#B9C0D4] mb-6">Professional calendar booking with time slots, auto-confirmation, and WhatsApp notifications.</p>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mt-auto">
                   {["Time Slots", "Auto Confirm", "WhatsApp Alerts"].map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-xs font-bold text-[#B9C0D4]/70">
+                    <li key={f} className="flex items-center gap-2 text-[10px] sm:text-xs font-bold text-[#B9C0D4]/70">
                       <Plus className="w-3 h-3 text-[#FF4D8D]" /> {f}
                     </li>
                   ))}
@@ -400,7 +402,7 @@ export function LandingPage() {
             </div>
 
             {/* AI Assistant - Large Card */}
-            <div className="md:col-span-8 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-purple-500/30 transition-all duration-500">
+            <div className="md:col-span-8 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-purple-500/30 transition-all duration-500 flex flex-col h-full">
               <div className="relative z-10 flex flex-col h-full">
                 <div className="flex items-start justify-between mb-8">
                   <div className="h-14 w-14 rounded-2xl bg-purple-500/10 flex items-center justify-center">
@@ -410,11 +412,13 @@ export function LandingPage() {
                     Coming Soon
                   </span>
                 </div>
-                <h3 className="text-3xl font-bold mb-4">AI Studio</h3>
-                <p className="text-[#B9C0D4] text-lg max-w-md mb-8">Our AI assistant doesn't just chat—it builds. Generate bios, CTAs, headlines, and descriptions tailored for your brand in seconds.</p>
-                <div className="mt-auto grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div className="flex-1">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-4">AI Studio</h3>
+                  <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6] max-w-md mb-8">Our AI assistant doesn't just chat—it builds. Generate bios, CTAs, headlines, and descriptions tailored for your brand in seconds.</p>
+                </div>
+                <div className="mt-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {["Bio Gen", "CTA Gen", "Content Gen", "Headline Gen"].map((tool) => (
-                    <div key={tool} className="p-3 rounded-xl bg-white/5 border border-white/10 text-center text-xs font-medium">
+                    <div key={tool} className="p-3 rounded-xl bg-white/5 border border-white/10 text-center text-[10px] sm:text-xs font-medium">
                       {tool}
                     </div>
                   ))}
@@ -423,27 +427,27 @@ export function LandingPage() {
             </div>
 
             {/* Custom Domain - Medium Card */}
-            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-blue-500/30 transition-all duration-500">
+            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-blue-500/30 transition-all duration-500 flex items-center">
               <div className="relative z-10 flex items-center gap-6">
                 <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
                   <Globe2 className="h-6 w-6 text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">Custom Domain</h3>
-                  <p className="text-sm text-[#B9C0D4]">yourbrand.com with free SSL & one-click connect.</p>
+                  <h3 className="text-lg sm:text-xl font-bold mb-1">Custom Domain</h3>
+                  <p className="text-[13px] sm:text-sm text-[#B9C0D4] leading-relaxed">yourbrand.com with free SSL & one-click connect.</p>
                 </div>
               </div>
             </div>
 
             {/* WhatsApp Integration - Medium Card */}
-            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-green-500/30 transition-all duration-500">
+            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-green-500/30 transition-all duration-500 flex items-center">
               <div className="relative z-10 flex items-center gap-6">
                 <div className="h-12 w-12 rounded-xl bg-green-500/10 flex items-center justify-center shrink-0">
                   <MessageSquare className="h-6 w-6 text-green-400" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">WhatsApp Catalog</h3>
-                  <p className="text-sm text-[#B9C0D4]">One-click chat, order capture, and lead management.</p>
+                  <h3 className="text-lg sm:text-xl font-bold mb-1">WhatsApp Catalog</h3>
+                  <p className="text-[13px] sm:text-sm text-[#B9C0D4] leading-relaxed">One-click chat, order capture, and lead management.</p>
                 </div>
               </div>
             </div>
