@@ -819,14 +819,14 @@ function PhoneMock({ demo }: { demo: Demo }) {
 
           {/* Cover */}
           <div className="relative mb-0 h-24 w-full overflow-hidden rounded-t-2xl border border-white/15">
-            <img src={demo.cover} alt="" className="h-full w-full object-cover" loading="eager" decoding="async" />
+            <img src={demo.cover} alt="" className="h-full w-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
 
           {/* Avatar + verified pulse */}
           <div className="relative -mt-8 mb-3 flex items-end gap-3 px-1">
             <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border-2 border-white/80 bg-white shadow-[0_10px_30px_-8px_rgba(0,0,0,.5)]">
-              <img src={demo.avatar} alt={demo.name} className="h-full w-full object-cover" loading="eager" decoding="async" />
+              <img src={demo.avatar} alt={demo.name} className="h-full w-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
             </div>
             <div className="relative mt-1 min-w-0 flex-1 pb-1">
               <div className="flex items-center gap-1">
