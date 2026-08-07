@@ -587,7 +587,7 @@ function WhyBento() {
             key={w.title}
             initial={{ opacity: 1, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "200px" }}
             transition={{ duration: 0.5, delay: (i % 4) * 0.05 }}
             whileHover={{ y: -4 }}
             className={`group relative flex h-auto min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl sm:p-6 ${w.span}`}
@@ -683,7 +683,7 @@ function LiveSupport() {
             key={s.title}
             initial={{ opacity: 1, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "200px" }}
             transition={{ duration: 0.5, delay: (i % 3) * 0.05 }}
             whileHover={{ y: -6 }}
             className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl"
