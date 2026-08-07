@@ -309,12 +309,12 @@ export function LandingPage() {
                 Build professional <span className="text-white font-medium">Bio Links</span> and <span className="text-white font-medium">Mini Websites</span> in minutes. Accept <span className="text-white font-medium">Payments</span>, sell <span className="text-white font-medium">Products</span>, and verify your brand with <span className="text-white font-medium">Custom Domains</span>.
               </p>
               
-              <div className="flex flex-col sm:flex-row min-[480px]:flex-wrap items-stretch min-[480px]:items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both w-full max-w-[400px] min-[480px]:max-w-none mx-auto lg:mx-0">
-                <CtaButton to="/auth" className="min-[480px]:flex-1 min-[480px]:min-w-[220px]">
-                  Start Building Free
-                </CtaButton>
-                <CtaButton to="/auth" variant="secondary" showIcon={false} icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />} className="min-[480px]:flex-1 min-[480px]:min-w-[220px]">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-[14px] sm:gap-4 mb-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both w-full max-w-[400px] min-[480px]:max-w-[500px] sm:max-w-none mx-auto lg:mx-0">
+                <CtaButton to="/auth" className="w-full sm:flex-1 h-[56px] px-6 text-base font-semibold">
                   Start 3-Day Free Trial
+                </CtaButton>
+                <CtaButton to="/auth" variant="secondary" showIcon={true} icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />} className="w-full sm:flex-1 h-[56px] px-6 text-base font-semibold">
+                  Watch Live Demo
                 </CtaButton>
               </div>
 
