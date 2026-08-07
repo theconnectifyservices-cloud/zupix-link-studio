@@ -927,11 +927,11 @@ export function LandingPage() {
               Everything you need to grow online. Nothing you don't.
             </h2>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-[14px] mt-7">
+            <div className="flex flex-col sm:flex-row min-[480px]:flex-wrap items-center justify-center gap-4 mt-7">
               <CtaButton 
                 to="/auth" 
                 showIcon={false}
-                className="h-14 sm:h-[58px] px-4 min-[360px]:px-8 text-[13px] min-[360px]:text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap"
+                className="min-[480px]:flex-1 min-[480px]:min-w-[220px]"
               >
                 🎉 Start 3-Day Free Trial
               </CtaButton>
@@ -939,7 +939,7 @@ export function LandingPage() {
                 to="/auth" 
                 variant="secondary" 
                 showIcon={false}
-                className="h-14 sm:h-[58px] px-4 min-[360px]:px-8 text-[13px] min-[360px]:text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap border-white/10 bg-white/5 backdrop-blur-sm"
+                className="min-[480px]:flex-1 min-[480px]:min-w-[220px]"
               >
                 ▶ Watch Live Demo
               </CtaButton>
