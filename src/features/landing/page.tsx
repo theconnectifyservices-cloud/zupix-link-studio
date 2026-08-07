@@ -20,7 +20,10 @@ import {
   Linkedin,
   Youtube,
   Menu,
-  X
+  X,
+  Calendar,
+  CreditCard,
+  Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "./components/navbar";
@@ -319,105 +322,189 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Templates Section */}
-      <section id="templates" className="py-24 sm:py-32 bg-white/[0.02]">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-            <div className="max-w-2xl">
-              <h2 className="text-3xl sm:text-5xl font-bold mb-6">Premium Templates.</h2>
-              <p className="text-lg text-[#B9C0D4]">Start with 75+ professionally designed themes. No runtime rendering required — our themes are fast, light, and beautiful.</p>
-            </div>
-            <CtaButton to="/auth" variant="secondary" showIcon={false} icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />} className="min-h-[48px] px-6 text-sm">
-              Start 3-Day Free Trial
-            </CtaButton>
+      {/* Bento Grid Section - Everything Your Business Needs */}
+      <section id="features-bento" className="py-24 sm:py-32 bg-[#090B18] relative overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center max-w-4xl mx-auto mb-20">
+            <h2 className="text-4xl sm:text-6xl font-bold mb-8 tracking-tight">
+              Everything Your Business Needs.<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2DAA] via-[#FF4D8D] to-[#FF7A45]">
+                One Link.
+              </span>
+            </h2>
+            <p className="text-xl text-[#B9C0D4] leading-relaxed">
+              Stop paying for multiple tools. ZUPIX Link Studio combines your Bio Link, Mini Website, Store, Booking, Payments and Marketing into one powerful platform.
+            </p>
           </div>
 
-          {/* Desktop Grid (Visible only on md+) */}
-          <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {BUILTIN_TEMPLATES.slice(0, 4).map((t, i) => (
-              <div key={i} className="group relative aspect-[3/4] rounded-[22px] overflow-hidden bg-[#12152A] border border-white/5 transition-transform duration-300 hover:scale-[1.02]">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
-                <img 
-                  src={COVERS.restaurant} // Fallback to restaurant for now as demo
-                  alt={t.name}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute top-4 left-4 z-20">
-                  <span className="bg-[#FF6A3D]/20 backdrop-blur-md border border-[#FF6A3D]/30 text-[#FF6A3D] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                    {t.category}
-                  </span>
-                </div>
-                {t.isPremium && (
-                  <div className="absolute top-4 right-4 z-20">
-                    <span className="bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
-                      <Sparkles className="w-2.5 h-2.5" /> Premium
-                    </span>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[240px]">
+            {/* Sell Products - Large Feature Card */}
+            <div className="md:col-span-8 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-[#FF2DAA]/30 transition-all duration-500">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FF2DAA]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="mb-auto">
+                  <div className="h-14 w-14 rounded-2xl bg-[#FF2DAA]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                    <ShoppingBag className="h-7 w-7 text-[#FF2DAA]" />
                   </div>
-                )}
-                <div className="absolute bottom-6 left-6 right-6 z-20">
-                  <h4 className="text-xl font-bold truncate">{t.name}</h4>
-                  <Button variant="link" className="text-[#FF6A3D] p-0 font-bold h-auto mt-2 text-sm">
-                    Use Template <ArrowRight className="ml-1 h-3 w-4" />
-                  </Button>
+                  <h3 className="text-3xl font-bold mb-4">Sell Products</h3>
+                  <p className="text-[#B9C0D4] text-lg max-w-md">Create your own mini online store. Sell physical and digital products with inventory management, discounts, and seamless UPI payments.</p>
                 </div>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  {["Physical + Digital", "Inventory", "Discounts", "0% Fee"].map((tag) => (
+                    <span key={tag} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-[#B9C0D4]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-[#FF2DAA]/10 blur-[80px] rounded-full group-hover:bg-[#FF2DAA]/20 transition-all duration-700" />
+            </div>
+
+            {/* Accept Payments - Medium Card */}
+            <div className="md:col-span-4 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-[#FF7A45]/30 transition-all duration-500">
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="h-12 w-12 rounded-xl bg-[#FF7A45]/10 flex items-center justify-center mb-6">
+                  <CreditCard className="h-6 w-6 text-[#FF7A45]" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">Accept Payments</h3>
+                <p className="text-[#B9C0D4] mb-8">Integrated with Razorpay, Cashfree, and PayU. Support for offline UPI with manual approval.</p>
+                <div className="mt-auto space-y-3">
+                  {["Razorpay", "Cashfree", "PayU", "Offline UPI"].map((item) => (
+                    <div key={item} className="flex items-center gap-3 text-sm text-[#B9C0D4]">
+                      <CheckCircle2 className="h-4 w-4 text-[#FF7A45]" />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Appointment Booking - Medium Card */}
+            <div className="md:col-span-4 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-[#FF4D8D]/30 transition-all duration-500">
+              <div className="relative z-10">
+                <div className="h-12 w-12 rounded-xl bg-[#FF4D8D]/10 flex items-center justify-center mb-6">
+                  <Calendar className="h-6 w-6 text-[#FF4D8D]" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">Appointment Booking</h3>
+                <p className="text-[#B9C0D4] mb-6">Professional calendar booking with time slots, auto-confirmation, and WhatsApp notifications.</p>
+                <ul className="space-y-2">
+                  {["Time Slots", "Auto Confirm", "WhatsApp Alerts"].map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-xs font-bold text-[#B9C0D4]/70">
+                      <Plus className="w-3 h-3 text-[#FF4D8D]" /> {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* AI Assistant - Large Card */}
+            <div className="md:col-span-8 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-purple-500/30 transition-all duration-500">
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex items-start justify-between mb-8">
+                  <div className="h-14 w-14 rounded-2xl bg-purple-500/10 flex items-center justify-center">
+                    <Sparkles className="h-7 w-7 text-purple-400" />
+                  </div>
+                  <span className="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 text-[10px] font-bold text-purple-300 uppercase tracking-widest">
+                    Coming Soon
+                  </span>
+                </div>
+                <h3 className="text-3xl font-bold mb-4">AI Studio</h3>
+                <p className="text-[#B9C0D4] text-lg max-w-md mb-8">Our AI assistant doesn't just chat—it builds. Generate bios, CTAs, headlines, and descriptions tailored for your brand in seconds.</p>
+                <div className="mt-auto grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {["Bio Gen", "CTA Gen", "Content Gen", "Headline Gen"].map((tool) => (
+                    <div key={tool} className="p-3 rounded-xl bg-white/5 border border-white/10 text-center text-xs font-medium">
+                      {tool}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Custom Domain - Medium Card */}
+            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-blue-500/30 transition-all duration-500">
+              <div className="relative z-10 flex items-center gap-6">
+                <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
+                  <Globe2 className="h-6 w-6 text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Custom Domain</h3>
+                  <p className="text-sm text-[#B9C0D4]">yourbrand.com with free SSL & one-click connect.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* WhatsApp Integration - Medium Card */}
+            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-green-500/30 transition-all duration-500">
+              <div className="relative z-10 flex items-center gap-6">
+                <div className="h-12 w-12 rounded-xl bg-green-500/10 flex items-center justify-center shrink-0">
+                  <MessageSquare className="h-6 w-6 text-green-400" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">WhatsApp Catalog</h3>
+                  <p className="text-sm text-[#B9C0D4]">One-click chat, order capture, and lead management.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Analytics Dashboard - Medium Card */}
+            <div className="md:col-span-12 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-cyan-500/30 transition-all duration-500">
+               <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center h-full">
+                  <div>
+                    <div className="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6">
+                      <BarChart3 className="h-6 w-6 text-cyan-400" />
+                    </div>
+                    <h3 className="text-3xl font-bold mb-4">Analytics Dashboard</h3>
+                    <p className="text-[#B9C0D4] text-lg">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    {[
+                      { label: "Visitors", value: "12k+" },
+                      { label: "CTR", value: "8.4%" },
+                      { label: "Sales", value: "₹45k" },
+                      { label: "Growth", value: "+24%" }
+                    ].map((stat) => (
+                      <div key={stat.label} className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
+                        <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                        <div className="text-[10px] font-bold text-[#B9C0D4] uppercase tracking-wider">{stat.label}</div>
+                      </div>
+                    ))}
+                  </div>
+               </div>
+            </div>
+          </div>
+
+          {/* Bottom Highlight Statistics */}
+          <div className="mt-24 py-16 border-y border-white/5 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 text-center">
+            {[
+              { label: "Premium Themes", value: "75+" },
+              { label: "Business Modules", value: "15+" },
+              { label: "Payment Options", value: "10+" },
+              { label: "Bio Pages", value: "Unlimited" },
+              { label: "Custom Domains", value: "Free" },
+              { label: "AI Powered", value: "Yes" },
+              { label: "Made in India", value: "🇮🇳" }
+            ].map((stat, i) => (
+              <div key={i} className="group">
+                <div className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FF2DAA] to-[#FF7A45] mb-2 group-hover:scale-110 transition-transform duration-300">
+                  {stat.value}
+                </div>
+                <div className="text-[11px] font-bold text-[#B9C0D4] uppercase tracking-widest">{stat.label}</div>
               </div>
             ))}
           </div>
 
-          {/* Mobile Carousel (Visible only on <md) */}
-          <div 
-            ref={carouselRef}
-            className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide flex gap-4 px-6 -mx-6 pb-8"
-          >
-            {BUILTIN_TEMPLATES.slice(0, 5).map((t, i) => (
-              <div 
-                key={i} 
-                className="flex-none w-[85vw] h-[380px] snap-center relative rounded-[22px] overflow-hidden bg-[#12152A] border border-white/5"
-              >
-                <img 
-                  src={COVERS.restaurant} 
-                  alt={t.name}
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
-                
-                {/* Badges */}
-                <div className="absolute top-4 left-4 z-20">
-                  <span className="bg-[#FF6A3D]/20 backdrop-blur-md border border-[#FF6A3D]/30 text-[#FF6A3D] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                    {t.category}
-                  </span>
-                </div>
-                <div className="absolute top-4 right-4 z-20">
-                  <span className="bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
-                    <Sparkles className="w-2.5 h-2.5 text-yellow-400" /> Premium
-                  </span>
-                </div>
-
-                {/* Bottom Overlay with Gradient */}
-                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
-                
-                <div className="absolute bottom-6 left-6 right-6 z-20">
-                  <h4 className="text-2xl font-bold truncate mb-4">{t.name}</h4>
-                  <CtaButton to="/auth" className="w-full h-12 text-sm" showIcon={false}>
-                    Use Template
-                  </CtaButton>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Mobile Pagination Dots */}
-          <div className="flex justify-center gap-1.5 md:hidden">
-            {[0, 1, 2, 3, 4].map((dot) => (
-              <div 
-                key={dot} 
-                className={cn(
-                  "h-1.5 rounded-full transition-all duration-300",
-                  dot === activeSlide ? "w-6 bg-[#FF6A3D]" : "w-1.5 bg-white/20"
-                )}
-              />
-            ))}
+          {/* Bottom CTA for Section */}
+          <div className="mt-32 text-center max-w-3xl mx-auto p-12 rounded-[40px] bg-gradient-to-br from-[#12152A] to-[#090B18] border border-white/5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-[#FF2DAA]/5 pointer-events-none" />
+            <h3 className="text-3xl sm:text-5xl font-bold mb-6">Everything you need to grow online. Nothing you don't.</h3>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <CtaButton to="/auth" className="h-16 px-10 text-lg w-full sm:w-auto">
+                Start 3-Day Free Trial
+              </CtaButton>
+              <CtaButton to="/auth" variant="secondary" showIcon={false} className="h-16 px-10 text-lg w-full sm:w-auto">
+                See Live Demo
+              </CtaButton>
+            </div>
           </div>
         </div>
       </section>
