@@ -504,16 +504,17 @@ export function LandingPage() {
                     <h3 className="text-2xl sm:text-3xl font-bold mb-4">Analytics Dashboard</h3>
                     <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6]">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-auto">
+                  <div className="flex flex-wrap lg:grid lg:grid-cols-4 gap-3 sm:gap-4 mt-auto">
                     {[
-                      { label: "Visitors", value: "12k+" },
-                      { label: "CTR", value: "8.4%" },
-                      { label: "Sales", value: "₹45k" },
-                      { label: "Growth", value: "+24%" }
+                      { label: "Visitors", value: "12k+", width: "calc(50% - 6px)" },
+                      { label: "CTR", value: "8.4%", width: "calc(50% - 6px)" },
+                      { label: "Sales", value: "₹45k", width: "calc(50% - 6px)" },
+                      { label: "Growth", value: "+24%", width: "calc(50% - 6px)" }
                     ].map((stat) => (
                       <div 
                         key={stat.label} 
-                        className="group/kpi p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 text-center backdrop-blur-md hover:bg-white/[0.05] hover:border-cyan-500/30 transition-all duration-300 active:scale-[0.98] flex flex-col items-center justify-center min-h-[100px]"
+                        style={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? stat.width : 'auto' }}
+                        className="group/kpi p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 text-center backdrop-blur-md hover:bg-white/[0.05] hover:border-cyan-500/30 transition-all duration-300 active:scale-[0.98] flex flex-col items-center justify-center min-h-[100px] lg:flex-1"
                       >
                         <div className="text-2xl sm:text-2xl lg:text-3xl font-bold text-white mb-1.5 tracking-tight group-hover/kpi:text-cyan-400 transition-colors whitespace-nowrap">
                           <NumberTicker value={stat.value} />
