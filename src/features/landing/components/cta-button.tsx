@@ -9,6 +9,7 @@ interface CtaButtonProps {
   variant?: "primary" | "secondary";
   className?: string;
   showIcon?: boolean;
+  onClick?: () => void;
 }
 
 export function CtaButton({ 
@@ -17,7 +18,8 @@ export function CtaButton({
   children, 
   variant = "primary", 
   className,
-  showIcon = true
+  showIcon = true,
+  onClick
 }: CtaButtonProps) {
   const isPrimary = variant === "primary";
   
@@ -57,7 +59,7 @@ export function CtaButton({
 
   if (to) {
     return (
-      <Link to={to} className={baseStyles}>
+      <Link to={to} className={baseStyles} onClick={onClick}>
         {content}
       </Link>
     );
@@ -65,14 +67,14 @@ export function CtaButton({
 
   if (href) {
     return (
-      <a href={href} className={baseStyles}>
+      <a href={href} className={baseStyles} onClick={onClick}>
         {content}
       </a>
     );
   }
 
   return (
-    <button className={baseStyles}>
+    <button className={baseStyles} onClick={onClick}>
       {content}
     </button>
   );
