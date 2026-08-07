@@ -376,17 +376,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Secondary Trust Logos */}
-      <section className="py-12 border-y border-white/5 bg-white/[0.02] hidden sm:block">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-wrap items-center justify-between gap-8 opacity-40 grayscale hover:opacity-100 transition-opacity duration-500">
-             <span className="text-xl font-black tracking-widest italic">MADE IN INDIA</span>
-             <span className="text-xl font-black tracking-widest italic">UPI SECURE</span>
-             <span className="text-xl font-black tracking-widest italic">DOMAIN MAPPING</span>
-             <span className="text-xl font-black tracking-widest italic">ENTERPRISE ANALYTICS</span>
-          </div>
-        </div>
-      </section>
 
       {/* Why ZUPIX - Features */}
       <section id="features" className="py-24 sm:py-32">
