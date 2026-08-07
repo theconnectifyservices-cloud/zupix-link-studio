@@ -628,7 +628,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
       <section id="pricing" className="py-24 sm:py-32 relative">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-12">
