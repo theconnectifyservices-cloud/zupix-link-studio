@@ -280,11 +280,11 @@ export function LandingPage() {
                 Build professional <span className="text-white font-medium">Bio Links</span> and <span className="text-white font-medium">Mini Websites</span> in minutes. Accept <span className="text-white font-medium">Payments</span>, sell <span className="text-white font-medium">Products</span>, and verify your brand with <span className="text-white font-medium">Custom Domains</span>.
               </p>
               
-              <div className="flex flex-col min-[480px]:flex-row items-stretch min-[480px]:items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both w-full max-w-[400px] min-[480px]:max-w-none mx-auto lg:mx-0">
-                <CtaButton to="/auth" className="flex-1 min-[480px]:flex-none">
+              <div className="flex flex-col sm:flex-row min-[480px]:flex-wrap items-stretch min-[480px]:items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both w-full max-w-[400px] min-[480px]:max-w-none mx-auto lg:mx-0">
+                <CtaButton to="/auth" className="min-[480px]:flex-1 min-[480px]:min-w-[220px]">
                   Start Building Free
                 </CtaButton>
-                <CtaButton to="/auth" variant="secondary" showIcon={false} icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />} className="flex-1 min-[480px]:flex-none">
+                <CtaButton to="/auth" variant="secondary" showIcon={false} icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />} className="min-[480px]:flex-1 min-[480px]:min-w-[220px]">
                   Start 3-Day Free Trial
                 </CtaButton>
               </div>
@@ -587,11 +587,11 @@ export function LandingPage() {
           <div className="mt-32 text-center max-w-3xl mx-auto p-12 rounded-[40px] bg-gradient-to-br from-[#12152A] to-[#090B18] border border-white/5 relative overflow-hidden">
             <div className="absolute inset-0 bg-[#FF2DAA]/5 pointer-events-none" />
             <h3 className="text-3xl sm:text-5xl font-bold mb-6">Everything you need to grow online. Nothing you don't.</h3>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <CtaButton to="/auth" className="h-16 px-10 text-lg w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row min-[480px]:flex-wrap items-center justify-center gap-4">
+              <CtaButton to="/auth" className="min-[480px]:flex-1 min-[480px]:min-w-[220px]">
                 Start 3-Day Free Trial
               </CtaButton>
-              <CtaButton to="/auth" variant="secondary" showIcon={false} className="h-16 px-10 text-lg w-full sm:w-auto">
+              <CtaButton to="/auth" variant="secondary" showIcon={false} className="min-[480px]:flex-1 min-[480px]:min-w-[220px]">
                 See Live Demo
               </CtaButton>
             </div>
@@ -927,11 +927,11 @@ export function LandingPage() {
               Everything you need to grow online. Nothing you don't.
             </h2>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-[14px] mt-7">
+            <div className="flex flex-col sm:flex-row min-[480px]:flex-wrap items-center justify-center gap-4 mt-7">
               <CtaButton 
                 to="/auth" 
                 showIcon={false}
-                className="h-14 sm:h-[58px] px-4 min-[360px]:px-8 text-[13px] min-[360px]:text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap"
+                className="min-[480px]:flex-1 min-[480px]:min-w-[220px]"
               >
                 🎉 Start 3-Day Free Trial
               </CtaButton>
@@ -939,7 +939,7 @@ export function LandingPage() {
                 to="/auth" 
                 variant="secondary" 
                 showIcon={false}
-                className="h-14 sm:h-[58px] px-4 min-[360px]:px-8 text-[13px] min-[360px]:text-[15px] sm:text-lg w-full max-w-[320px] sm:w-auto hover:scale-[1.03] transition-transform duration-300 whitespace-nowrap border-white/10 bg-white/5 backdrop-blur-sm"
+                className="min-[480px]:flex-1 min-[480px]:min-w-[220px]"
               >
                 ▶ Watch Live Demo
               </CtaButton>
