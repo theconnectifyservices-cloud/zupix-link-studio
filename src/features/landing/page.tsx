@@ -631,15 +631,35 @@ export function LandingPage() {
       {/* Pricing Section */}
       <section id="pricing" className="py-24 sm:py-32 relative">
         <div className="container mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-20">
+          <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-4xl sm:text-6xl font-bold mb-6 tracking-tight">Choose Your Plan</h2>
             <p className="text-xl text-[#B9C0D4]">Power up your online presence with professional tools designed for growth.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-32">
+          {/* Billing Toggle */}
+          <div className="flex justify-center items-center gap-4 mb-16">
+            <span className={cn("text-sm font-medium transition-colors", billingCycle === 'monthly' ? "text-white" : "text-[#B9C0D4]")}>Monthly</span>
+            <button 
+              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
+              className="relative w-14 h-7 rounded-full bg-white/10 border border-white/10 p-1 transition-all duration-300"
+            >
+              <div className={cn(
+                "w-5 h-5 rounded-full bg-gradient-to-r from-[#FF2DAA] to-[#FF7A45] transition-all duration-300 transform shadow-lg",
+                billingCycle === 'yearly' ? "translate-x-7" : "translate-x-0"
+              )} />
+            </button>
+            <div className="flex items-center gap-2">
+              <span className={cn("text-sm font-medium transition-colors", billingCycle === 'yearly' ? "text-white" : "text-[#B9C0D4]")}>Yearly</span>
+              <span className="px-2 py-0.5 rounded-full bg-[#FF2DAA]/20 border border-[#FF2DAA]/30 text-[10px] font-bold text-[#FF2DAA] uppercase tracking-wider">
+                Save 50%
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-32 items-stretch">
             {PRICING.map((p, i) => (
               <div key={i} className={cn(
-                "relative p-8 sm:p-10 rounded-[32px] border transition-all duration-500 flex flex-col group hover:shadow-2xl hover:-translate-y-2",
+                "relative p-8 sm:p-10 rounded-[32px] border transition-all duration-500 flex flex-col group hover:shadow-[0_0_50px_-12px_rgba(255,45,170,0.3)] hover:-translate-y-2 h-full",
                 p.popular 
                   ? "bg-white/[0.04] border-[#FF2DAA]/30 backdrop-blur-xl shadow-2xl z-10" 
                   : "bg-white/[0.02] border-white/5 backdrop-blur-md"
@@ -656,12 +676,15 @@ export function LandingPage() {
                     p.popular ? "text-[#FF2DAA]" : "text-[#B9C0D4]"
                   )}>{p.name}</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-5xl font-bold tracking-tight">{p.price}</span>
-                    <span className="text-[#B9C0D4] font-medium">{p.period}</span>
+                    <span className="text-5xl font-bold tracking-tight">
+                      {billingCycle === 'monthly' ? p.price.monthly : p.price.yearly}
+                    </span>
+                    <span className="text-[#B9C0D4] font-medium">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
                   </div>
-                  {p.period === "/year" && (
-                    <div className="mt-2 text-[#FF2DAA] text-xs font-bold animate-pulse">
-                      🔥 Save over 75% yearly
+                  {billingCycle === 'yearly' && p.name !== 'FREE' && (
+                    <div className="mt-2 text-[#FF2DAA] text-xs font-bold flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3" />
+                      Yearly savings applied
                     </div>
                   )}
                   <p className="mt-6 text-[#B9C0D4] text-base leading-relaxed">{p.desc}</p>
@@ -688,7 +711,7 @@ export function LandingPage() {
                   variant={p.popular ? "primary" : "secondary"}
                   className={cn(
                     "w-full h-14 text-base font-bold transition-all duration-300",
-                    !p.popular && "bg-white/5 border-white/10 hover:bg-white/10"
+                    p.name === 'PRO' ? "bg-gradient-to-r from-[#FF2DAA] to-[#FF7A45] border-none text-white hover:opacity-90" : "bg-white/5 border-white/10 hover:bg-white/10"
                   )}
                   showIcon={false}
                 >
