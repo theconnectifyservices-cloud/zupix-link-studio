@@ -1568,5 +1568,5 @@ export function LandingExperience() {
     ],
     [],
   );
-  return <div className="relative">{sections}</div>;
+  return <div id="experience" className="reveal-on-scroll relative">{sections}</div>;
 }

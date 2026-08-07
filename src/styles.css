@@ -1322,3 +1322,70 @@ body {
 @media (min-width: 1024px) {
   .zx-floating { --zx-float-inset: 24px; right: 24px; }
 }
+
+/* Scroll Reveal Animations */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-fade-left {
+  transform: translateX(-30px);
+}
+
+.reveal-fade-right {
+  transform: translateX(30px);
+}
+
+.reveal-scale {
+  transform: scale(0.95);
+}
+
+.reveal-visible.reveal-fade-left,
+.reveal-visible.reveal-fade-right,
+.reveal-visible.reveal-scale {
+  transform: translate(0) scale(1);
+}
+
+/* GPU Acceleration Utilities */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Stagger Children Support */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.reveal-visible.stagger-children > *:nth-child(1) { transition-delay: 0.1s; opacity: 1; transform: translateY(0); }
+.reveal-visible.stagger-children > *:nth-child(2) { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
+.reveal-visible.stagger-children > *:nth-child(3) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+.reveal-visible.stagger-children > *:nth-child(4) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+.reveal-visible.stagger-children > *:nth-child(5) { transition-delay: 0.5s; opacity: 1; transform: translateY(0); }
+
+/* Parallax Utilities */
+.parallax-subtle {
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
