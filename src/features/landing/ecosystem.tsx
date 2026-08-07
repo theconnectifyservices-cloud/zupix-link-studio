@@ -587,7 +587,7 @@ function WhyBento() {
             key={w.title}
             initial={{ opacity: 1, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "200px" }}
             transition={{ duration: 0.5, delay: (i % 4) * 0.05 }}
             whileHover={{ y: -4 }}
             className={`group relative flex h-auto min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl sm:p-6 ${w.span}`}
@@ -683,7 +683,7 @@ function LiveSupport() {
             key={s.title}
             initial={{ opacity: 1, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "200px" }}
             transition={{ duration: 0.5, delay: (i % 3) * 0.05 }}
             whileHover={{ y: -6 }}
             className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl"
@@ -808,7 +808,7 @@ function Roadmap() {
                 key={r.version}
                 initial={{ opacity: 1, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
+                viewport={{ once: true, margin: "200px" }}
                 transition={{ duration: 0.55 }}
                 className={`relative flex items-start gap-6 sm:gap-10 ${
                   left ? "sm:flex-row" : "sm:flex-row-reverse"
@@ -876,7 +876,7 @@ function Newsletter() {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "done">("idle");
   const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const inView = useInView(ref, { once: true, margin: "200px" });
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
