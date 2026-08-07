@@ -179,10 +179,26 @@
   }
 
   body {
-    background-color: var(--color-background);
+    background-color: #090B18 !important;
     color: var(--color-foreground);
   }
 }
+
+/* Custom styles for the premium navigation */
+.nav-active-glow {
+  text-shadow: 0 0 10px rgba(255, 122, 26, 0.5);
+}
+
+@keyframes pulse-once {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.cta-pulse {
+  animation: pulse-once 2s ease-in-out;
+}
+
 
 /* ─────────────────────────────────────────────────────────────
    ZUPIX Motion Studio · LS-07C
