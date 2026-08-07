@@ -436,7 +436,7 @@ function LearningCarousel() {
           {LEARNING.map((l, i) => (
             <motion.article
               key={l.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 1, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: (i % 4) * 0.04 }}
@@ -585,7 +585,7 @@ function WhyBento() {
         {WHY_CARDS.map((w, i) => (
           <motion.div
             key={w.title}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 1, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: (i % 4) * 0.05 }}
@@ -681,7 +681,7 @@ function LiveSupport() {
         {SUPPORT.map((s, i) => (
           <motion.div
             key={s.title}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 1, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: (i % 3) * 0.05 }}
@@ -806,7 +806,7 @@ function Roadmap() {
             return (
               <motion.li
                 key={r.version}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 1, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.55 }}
@@ -889,7 +889,7 @@ function Newsletter() {
     <section ref={ref} className="relative py-24">
       <div className="mx-auto max-w-4xl px-6">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 1, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="relative overflow-hidden rounded-3xl p-[1.5px]"
@@ -943,7 +943,7 @@ function Newsletter() {
                     {state === "idle" && (
                       <motion.span
                         key="idle"
-                        initial={{ opacity: 0, y: 4 }}
+                        initial={{ opacity: 1, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}
                         className="inline-flex items-center gap-2"
@@ -954,7 +954,7 @@ function Newsletter() {
                     {state === "loading" && (
                       <motion.span
                         key="loading"
-                        initial={{ opacity: 0 }}
+                        initial={{ opacity: 1 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         className="inline-flex items-center gap-2"
@@ -965,7 +965,7 @@ function Newsletter() {
                     {state === "done" && (
                       <motion.span
                         key="done"
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 1, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
                         className="inline-flex items-center gap-2"
@@ -1164,7 +1164,7 @@ export function LandingEcosystem() {
    */
 
   return (
-    <div id="ecosystem" className="reveal-on-scroll relative isolate overflow-hidden bg-[#0a0a12] text-white">
+    <div id="ecosystem" className="reveal-visible relative isolate overflow-hidden bg-[#090B18] text-white">
       {/* Ambient aurora background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-40 left-1/4 h-[520px] w-[520px] rounded-full bg-orange-500/10 blur-[120px]" />
