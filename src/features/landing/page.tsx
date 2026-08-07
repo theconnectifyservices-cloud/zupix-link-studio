@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/accordion";
 import { PORTRAITS, COVERS } from "./demo-media";
 import { BUILTIN_TEMPLATES } from "@/features/templates/catalog";
+import { cn } from "@/lib/utils";
 
 const FEATURES = [
   {
