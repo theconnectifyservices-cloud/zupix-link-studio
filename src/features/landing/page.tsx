@@ -165,11 +165,11 @@ export function LandingPage() {
                 Build professional <span className="text-white font-medium">Bio Links</span> and <span className="text-white font-medium">Mini Websites</span> in minutes. Accept <span className="text-white font-medium">Payments</span>, sell <span className="text-white font-medium">Products</span>, and verify your brand with <span className="text-white font-medium">Custom Domains</span>.
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both">
-                <CtaButton to="/auth">
+              <div className="flex flex-col min-[480px]:flex-row items-stretch min-[480px]:items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both w-full max-w-[400px] min-[480px]:max-w-none mx-auto lg:mx-0">
+                <CtaButton to="/auth" className="flex-1 min-[480px]:flex-none">
                   Start Building Free
                 </CtaButton>
-                <CtaButton href="#templates" variant="secondary" showIcon={false}>
+                <CtaButton href="#templates" variant="secondary" showIcon={false} className="flex-1 min-[480px]:flex-none">
                   Explore Templates
                 </CtaButton>
               </div>
