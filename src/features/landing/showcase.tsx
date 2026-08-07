@@ -98,7 +98,7 @@ interface ThemeCard {
 }
 
 const g = (c1: string, c2: string, c3: string) =>
-  `radial-gradient(120% 80% at 20% 0%, ${c1}, transparent 60%), radial-gradient(120% 80% at 80% 100%, ${c2}, transparent 60%), ${c3}`;
+  `radial-gradient(120% 80% at 20% 0%, ${c1}, transparent 60%), radial-gradient(120% 80% at 80% 100%, ${c2}, transparent 60%), #090B18`;
 
 const THEMES: ThemeCard[] = [
   {

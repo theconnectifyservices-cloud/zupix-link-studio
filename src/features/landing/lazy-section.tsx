@@ -67,7 +67,7 @@ export function LazySection({
     <div
       id={id}
       ref={ref}
-      className={cn(id ? "scroll-mt-20" : undefined, "bg-[#0a0a12]")}
+      className={cn(id ? "scroll-mt-20" : undefined, "bg-[#090B18] relative z-10")}
       style={{
         minHeight: Comp ? undefined : minHeight,
         contentVisibility: "auto",
