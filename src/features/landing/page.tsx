@@ -677,9 +677,11 @@ export function LandingPage() {
                   )}>{p.name}</h3>
                   <div className="flex items-baseline gap-1">
                     <span className="text-5xl font-bold tracking-tight">
-                      {billingCycle === 'monthly' ? p.price.monthly : p.price.yearly}
+                      {typeof p.price === 'string' ? p.price : (billingCycle === 'monthly' ? p.price.monthly : p.price.yearly)}
                     </span>
-                    <span className="text-[#B9C0D4] font-medium">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
+                    {typeof p.price !== 'string' && (
+                      <span className="text-[#B9C0D4] font-medium">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
+                    )}
                   </div>
                   {billingCycle === 'yearly' && p.name !== 'FREE' && (
                     <div className="mt-2 text-[#FF2DAA] text-xs font-bold flex items-center gap-1.5">
