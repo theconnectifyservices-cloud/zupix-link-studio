@@ -453,16 +453,16 @@ export function LandingPage() {
             </div>
 
             {/* Analytics Dashboard - Medium Card */}
-            <div className="md:col-span-12 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-cyan-500/30 transition-all duration-500">
-               <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center h-full">
-                  <div>
+            <div className="md:col-span-12 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-cyan-500/30 transition-all duration-500 flex flex-col h-full">
+               <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center flex-1">
+                  <div className="flex flex-col h-full">
                     <div className="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6">
                       <BarChart3 className="h-6 w-6 text-cyan-400" />
                     </div>
-                    <h3 className="text-3xl font-bold mb-4">Analytics Dashboard</h3>
-                    <p className="text-[#B9C0D4] text-lg">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
+                    <h3 className="text-2xl sm:text-3xl font-bold mb-4">Analytics Dashboard</h3>
+                    <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6]">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-auto">
                     {[
                       { label: "Visitors", value: "12k+" },
                       { label: "CTR", value: "8.4%" },
@@ -470,7 +470,7 @@ export function LandingPage() {
                       { label: "Growth", value: "+24%" }
                     ].map((stat) => (
                       <div key={stat.label} className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
-                        <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                        <div className="text-xl sm:text-2xl font-bold text-white mb-1">{stat.value}</div>
                         <div className="text-[10px] font-bold text-[#B9C0D4] uppercase tracking-wider">{stat.label}</div>
                       </div>
                     ))}
