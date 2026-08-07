@@ -504,7 +504,7 @@ export function LandingPage() {
                     <h3 className="text-2xl sm:text-3xl font-bold mb-4">Analytics Dashboard</h3>
                     <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6]">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
                   </div>
-                  <div className="flex flex-row flex-wrap justify-between gap-y-3 gap-x-0 mt-auto w-full relative z-10">
+                  <div className="flex flex-row flex-wrap justify-between gap-y-3 gap-x-0 mt-auto w-full relative z-[1]">
                     {[
                       { label: "Visitors", value: "12k+" },
                       { label: "CTR", value: "8.4+" },
@@ -513,7 +513,7 @@ export function LandingPage() {
                     ].map((stat) => (
                       <div 
                         key={stat.label} 
-                        className="group/kpi p-3 sm:p-5 rounded-2xl bg-[#1A1C2E] border border-white/10 text-center shadow-lg transition-all duration-300 active:scale-[0.98] flex flex-col items-center justify-center min-h-[90px] w-[calc(50%-6px)] md:w-[calc(25%-12px)]"
+                        className="group/kpi p-3 sm:p-5 rounded-2xl bg-[#1A1C2E]/80 border border-white/10 text-center backdrop-blur-md shadow-xl transition-all duration-300 active:scale-[0.98] flex flex-col items-center justify-center min-h-[90px] w-[calc(50%-6px)] md:w-[calc(25%-12px)]"
                       >
                         <div className="text-2xl sm:text-2xl lg:text-3xl font-bold text-white mb-1.5 tracking-tight group-hover/kpi:text-cyan-400 transition-colors whitespace-nowrap">
                           <NumberTicker value={stat.value} />
