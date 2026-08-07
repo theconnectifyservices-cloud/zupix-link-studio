@@ -722,6 +722,14 @@ export function LandingPage() {
               </div>
             ))}
           </div>
+
+          {/* Bottom Highlight Statistics */}
+          <div className="mt-24 py-16 border-y border-white/5 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 text-center">
+            {[
+              { label: "Premium Themes", value: "75+" },
+              { label: "Business Modules", value: "15+" },
+              { label: "Payment Options", value: "10+" },
+              { label: "Bio Pages", value: "10" },
               { label: "Custom Domains", value: "Free" },
               { label: "AI Powered", value: "Yes" },
               { label: "Made in India", value: "🇮🇳" }
