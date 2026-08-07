@@ -808,7 +808,7 @@ function Roadmap() {
                 key={r.version}
                 initial={{ opacity: 1, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
+                viewport={{ once: true, margin: "200px" }}
                 transition={{ duration: 0.55 }}
                 className={`relative flex items-start gap-6 sm:gap-10 ${
                   left ? "sm:flex-row" : "sm:flex-row-reverse"
@@ -876,7 +876,7 @@ function Newsletter() {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "done">("idle");
   const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const inView = useInView(ref, { once: true, margin: "200px" });
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
