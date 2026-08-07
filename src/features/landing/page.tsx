@@ -516,9 +516,14 @@ export function LandingPage() {
         <div className="absolute inset-0 bg-[#FF6A3D]/5 pointer-events-none" />
         <div className="container mx-auto px-6 relative z-10 text-center">
           <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-8">Ready to transform your<br />digital presence?</h2>
-          <CtaButton to="/auth" className="h-16 px-10 text-xl">
-            Start Building Free Today
-          </CtaButton>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+            <CtaButton to="/auth" className="h-16 px-10 text-xl w-full sm:w-auto">
+              Start Building Now
+            </CtaButton>
+            <CtaButton to="/auth" variant="secondary" showIcon={false} icon={<Sparkles className="w-5 h-5 text-[#FF2DAA]" />} className="h-16 px-10 text-xl w-full sm:w-auto">
+              Start 3-Day Free Trial
+            </CtaButton>
+          </div>
           <p className="mt-8 text-[#B9C0D4]">No credit card required. Cancel anytime.</p>
         </div>
       </section>
