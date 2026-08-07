@@ -513,7 +513,7 @@ export function LandingPage() {
                     ].map((stat) => (
                       <div 
                         key={stat.label} 
-                        className="group/kpi p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 text-center backdrop-blur-md hover:bg-white/[0.05] hover:border-cyan-500/30 transition-all duration-300 active:scale-[0.98] flex flex-col items-center justify-center min-h-[100px] w-[calc(50%-6px)] md:w-full"
+                        className="group/kpi p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 text-center backdrop-blur-md hover:bg-white/[0.05] hover:border-cyan-500/30 transition-all duration-300 active:scale-[0.98] flex flex-col items-center justify-center min-h-[100px] w-full"
                       >
                         <div className="text-2xl sm:text-2xl lg:text-3xl font-bold text-white mb-1.5 tracking-tight group-hover/kpi:text-cyan-400 transition-colors whitespace-nowrap">
                           <NumberTicker value={stat.value} />
