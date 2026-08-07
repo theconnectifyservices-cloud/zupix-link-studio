@@ -257,6 +257,7 @@ function NumberTicker({ value, duration = 2000 }: { value: string; duration?: nu
 }
 
 export function LandingPage() {
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
   const [activeSlide, setActiveSlide] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
