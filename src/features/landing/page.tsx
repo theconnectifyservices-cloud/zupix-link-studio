@@ -71,32 +71,78 @@ const FEATURES = [
   }
 ];
 
+const COMPARISON_FEATURES = [
+  { name: "Unlimited Bio Pages", free: false, starter: true, pro: true },
+  { name: "Products Store", free: false, starter: true, pro: true },
+  { name: "Booking System", free: false, starter: true, pro: true },
+  { name: "Custom Domain", free: false, starter: false, pro: true },
+  { name: "Social Media Embed", free: true, starter: true, pro: true },
+  { name: "WhatsApp Integration", free: false, starter: true, pro: true },
+  { name: "AI Studio", free: false, starter: false, pro: true },
+  { name: "Payment Collection", free: false, starter: true, pro: true },
+  { name: "UPI QR", free: true, starter: true, pro: true },
+  { name: "HTML Embed", free: false, starter: false, pro: true },
+  { name: "Analytics", free: "Basic", starter: "Standard", pro: "Advanced" },
+  { name: "Verified Badge", free: false, starter: false, pro: true },
+  { name: "Premium Themes", free: false, starter: true, pro: true },
+  { name: "Remove Branding", free: false, starter: false, pro: true },
+  { name: "Priority Support", free: false, starter: false, pro: true },
+];
+
 const PRICING = [
   {
-    name: "UDAAN",
-    price: "Free",
+    name: "FREE",
+    price: "₹0",
     desc: "Perfect for students & hobbyists",
-    features: ["1 Bio Link", "Standard Templates", "Basic Analytics", "ZUPIX Branding"],
+    features: [
+      "1 Bio Link",
+      "ZUPIX Branding",
+      "Basic Buttons",
+      "Basic Analytics",
+      "Community Support"
+    ],
     cta: "Start for Free",
     popular: false
   },
   {
-    name: "TEJAS",
-    price: "₹149",
-    period: "/mo",
+    name: "STARTER",
+    price: "₹399",
+    period: "/month",
     desc: "For serious creators & small biz",
-    features: ["3 Bio Links", "Premium Templates", "Custom Colors", "Priority Support"],
-    cta: "Start 7-Day Trial",
-    popular: true
+    features: [
+      "Unlimited Buttons",
+      "Mini Website",
+      "Products Store",
+      "Booking Forms",
+      "UPI Payments",
+      "Social Embeds",
+      "Gallery",
+      "Analytics",
+      "Premium Themes",
+      "No Ads"
+    ],
+    cta: "Start 3-Day Free Trial",
+    popular: false
   },
   {
-    name: "SHIKHAR",
-    price: "₹499",
-    period: "/mo",
-    desc: "Enterprise-grade performance",
-    features: ["Unlimited Bio Links", "Custom Domains", "AI Content Studio", "0% Transaction Fee"],
-    cta: "Contact Sales",
-    popular: false
+    name: "PRO",
+    price: "₹999",
+    period: "/year",
+    desc: "Everything in Starter +",
+    features: [
+      "Custom Domain",
+      "Remove Branding",
+      "AI Content Tools",
+      "Embed HTML/CSS/JS",
+      "WhatsApp Catalog",
+      "Team Access",
+      "Advanced Analytics",
+      "Verified Badge",
+      "Priority Support",
+      "Early Access Features"
+    ],
+    cta: "Start 3-Day Free Trial",
+    popular: true
   }
 ];
 
