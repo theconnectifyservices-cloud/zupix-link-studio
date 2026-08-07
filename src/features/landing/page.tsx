@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useState, useRef, useEffect } from "react";
 import { 
   ArrowRight, 
   Sparkles, 
@@ -137,6 +138,29 @@ const FAQS = [
 ];
 
 export function LandingPage() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      const scrollLeft = el.scrollLeft;
+      const width = el.offsetWidth;
+      // We need a more accurate way since cards are 85vw
+      const children = el.children;
+      if (children.length === 0) return;
+      
+      const cardWidth = (children[0] as HTMLElement).offsetWidth + 16; // 16 is gap-4
+      const index = Math.round(scrollLeft / cardWidth);
+      setActiveSlide(Math.min(index, 4));
+    };
+
+    el.addEventListener('scroll', handleScroll, { passive: true });
+    return () => el.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <main id="hero" className="min-h-screen bg-[#090B18] text-white selection:bg-[#FF6A3D]/30">
       <Navbar />
@@ -308,20 +332,91 @@ export function LandingPage() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Desktop Grid (Visible only on md+) */}
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
             {BUILTIN_TEMPLATES.slice(0, 4).map((t, i) => (
-              <div key={i} className="group relative aspect-[3/4] rounded-[22px] overflow-hidden bg-[#12152A] border border-white/5">
+              <div key={i} className="group relative aspect-[3/4] rounded-[22px] overflow-hidden bg-[#12152A] border border-white/5 transition-transform duration-300 hover:scale-[1.02]">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
                 <img 
                   src={COVERS.restaurant} // Fallback to restaurant for now as demo
                   alt={t.name}
+                  loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
+                <div className="absolute top-4 left-4 z-20">
+                  <span className="bg-[#FF6A3D]/20 backdrop-blur-md border border-[#FF6A3D]/30 text-[#FF6A3D] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    {t.category}
+                  </span>
+                </div>
+                {t.isPremium && (
+                  <div className="absolute top-4 right-4 z-20">
+                    <span className="bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
+                      <Sparkles className="w-2.5 h-2.5" /> Premium
+                    </span>
+                  </div>
+                )}
                 <div className="absolute bottom-6 left-6 right-6 z-20">
-                  <span className="text-xs font-bold text-[#FF6A3D] uppercase tracking-wider mb-2 block">{t.category}</span>
-                  <h4 className="text-xl font-bold">{t.name}</h4>
+                  <h4 className="text-xl font-bold truncate">{t.name}</h4>
+                  <Button variant="link" className="text-[#FF6A3D] p-0 font-bold h-auto mt-2 text-sm">
+                    Use Template <ArrowRight className="ml-1 h-3 w-4" />
+                  </Button>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {/* Mobile Carousel (Visible only on <md) */}
+          <div 
+            ref={carouselRef}
+            className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide flex gap-4 px-6 -mx-6 pb-8"
+          >
+            {BUILTIN_TEMPLATES.slice(0, 5).map((t, i) => (
+              <div 
+                key={i} 
+                className="flex-none w-[85vw] h-[380px] snap-center relative rounded-[22px] overflow-hidden bg-[#12152A] border border-white/5"
+              >
+                <img 
+                  src={COVERS.restaurant} 
+                  alt={t.name}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Badges */}
+                <div className="absolute top-4 left-4 z-20">
+                  <span className="bg-[#FF6A3D]/20 backdrop-blur-md border border-[#FF6A3D]/30 text-[#FF6A3D] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    {t.category}
+                  </span>
+                </div>
+                <div className="absolute top-4 right-4 z-20">
+                  <span className="bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
+                    <Sparkles className="w-2.5 h-2.5 text-yellow-400" /> Premium
+                  </span>
+                </div>
+
+                {/* Bottom Overlay with Gradient */}
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
+                
+                <div className="absolute bottom-6 left-6 right-6 z-20">
+                  <h4 className="text-2xl font-bold truncate mb-4">{t.name}</h4>
+                  <CtaButton to="/auth" className="w-full h-12 text-sm" showIcon={false}>
+                    Use Template
+                  </CtaButton>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile Pagination Dots */}
+          <div className="flex justify-center gap-1.5 md:hidden">
+            {[0, 1, 2, 3, 4].map((dot) => (
+              <div 
+                key={dot} 
+                className={cn(
+                  "h-1.5 rounded-full transition-all duration-300",
+                  dot === activeSlide ? "w-6 bg-[#FF6A3D]" : "w-1.5 bg-white/20"
+                )}
+              />
             ))}
           </div>
         </div>
