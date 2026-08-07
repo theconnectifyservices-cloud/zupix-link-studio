@@ -20,7 +20,10 @@ import {
   Linkedin,
   Youtube,
   Menu,
-  X
+  X,
+  Calendar,
+  CreditCard,
+  Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "./components/navbar";
