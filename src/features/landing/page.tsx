@@ -366,7 +366,10 @@ export function LandingPage() {
           </div>
 
           {/* Mobile Carousel (Visible only on <md) */}
-          <div className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide flex gap-4 px-4 -mx-6 pb-8">
+          <div 
+            ref={carouselRef}
+            className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide flex gap-4 px-6 -mx-6 pb-8"
+          >
             {BUILTIN_TEMPLATES.slice(0, 5).map((t, i) => (
               <div 
                 key={i} 
@@ -411,7 +414,7 @@ export function LandingPage() {
                 key={dot} 
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-300",
-                  dot === 0 ? "w-6 bg-[#FF6A3D]" : "w-1.5 bg-white/20"
+                  dot === activeSlide ? "w-6 bg-[#FF6A3D]" : "w-1.5 bg-white/20"
                 )}
               />
             ))}
