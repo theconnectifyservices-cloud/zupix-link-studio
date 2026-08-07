@@ -29,6 +29,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { CtaButton } from "./components/cta-button";
 import { PORTRAITS, COVERS } from "./demo-media";
 import { BUILTIN_TEMPLATES } from "@/features/templates/catalog";
 import { cn } from "@/lib/utils";
@@ -163,12 +164,12 @@ export function LandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both">
-              <Button asChild size="lg" className="h-14 px-8 rounded-full bg-[#FF6A3D] hover:bg-[#FF6A3D]/90 text-lg font-bold shadow-[0_0_40px_-10px_rgba(255,106,61,0.5)]">
-                <Link to="/auth">Start Building Free</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="h-14 px-8 rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-lg font-medium">
-                <a href="#templates">Explore Templates</a>
-              </Button>
+              <CtaButton to="/auth">
+                Start Building Free
+              </CtaButton>
+              <CtaButton href="#templates" variant="secondary" showIcon={false}>
+                Explore Templates
+              </CtaButton>
             </div>
 
             {/* Mockup Preview */}
@@ -295,12 +296,14 @@ export function LandingPage() {
                   ))}
                 </ul>
 
-                <Button className={cn(
-                  "w-full h-12 rounded-full font-bold",
-                  p.popular ? "bg-[#FF6A3D] hover:bg-[#FF6A3D]/90" : "bg-white/5 hover:bg-white/10 text-white"
-                )}>
+                <CtaButton 
+                  to="/auth"
+                  variant={p.popular ? "primary" : "secondary"}
+                  className="w-full h-12"
+                  showIcon={false}
+                >
                   {p.cta}
-                </Button>
+                </CtaButton>
               </div>
             ))}
           </div>
@@ -350,9 +353,9 @@ export function LandingPage() {
         <div className="absolute inset-0 bg-[#FF6A3D]/5 pointer-events-none" />
         <div className="container mx-auto px-6 relative z-10 text-center">
           <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-8">Ready to transform your<br />digital presence?</h2>
-          <Button asChild size="lg" className="h-16 px-10 rounded-full bg-[#FF6A3D] hover:bg-[#FF6A3D]/90 text-xl font-bold shadow-2xl">
-            <Link to="/auth">Start Building Free Today</Link>
-          </Button>
+          <CtaButton to="/auth" className="h-16 px-10 text-xl">
+            Start Building Free Today
+          </CtaButton>
           <p className="mt-8 text-[#B9C0D4]">No credit card required. Cancel anytime.</p>
         </div>
       </section>

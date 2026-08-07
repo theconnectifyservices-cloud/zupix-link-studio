@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { CtaButton } from "./cta-button";
 import logoAsset from "@/assets/zupix-studio-logo.png.asset.json";
 
 const NAV_LINKS = [
@@ -70,15 +70,12 @@ export function Navbar() {
               <Link to="/auth" className="text-sm font-medium text-[#B9C0D4] hover:text-white">
                 Sign In
               </Link>
-              <Button 
-                asChild
-                className="rounded-full bg-gradient-to-r from-[#FF7A1A] to-[#F72FB3] px-6 font-bold text-white hover:opacity-90"
+              <CtaButton 
+                to="/auth"
+                className="h-12 px-6"
               >
-                <Link to="/auth">
-                  Start Building
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+                Start Building
+              </CtaButton>
             </div>
 
             {/* Mobile Toggle */}
@@ -128,13 +125,13 @@ export function Navbar() {
             >
               Sign In
             </Link>
-            <Button 
-              asChild
-              className="h-16 rounded-2xl bg-gradient-to-r from-[#FF7A1A] to-[#F72FB3] text-white text-xl font-bold"
+            <CtaButton 
+              to="/auth"
+              className="h-16 rounded-2xl"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <Link to="/auth">Start Building</Link>
-            </Button>
+              Start Building
+            </CtaButton>
           </div>
         </div>
       </div>
