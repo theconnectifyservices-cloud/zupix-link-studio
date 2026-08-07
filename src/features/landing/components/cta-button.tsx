@@ -53,7 +53,7 @@ export function CtaButton({
       <span className="relative z-10 flex items-center gap-2">
         {icon}
         {children}
-        {showIcon && (
+        {showIcon && variant === "primary" && (
           <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
         )}
       </span>
