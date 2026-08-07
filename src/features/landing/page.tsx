@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { 
   ArrowRight, 
   Sparkles, 
@@ -139,6 +139,48 @@ const FAQS = [
     a: "Not at all. Pick a template, upload your logo, and add your links. Our builder handles all the layout and responsiveness for you."
   }
 ];
+
+function NumberTicker({ value, duration = 2000 }: { value: string; duration?: number }) {
+  const [count, setCount] = useState(0);
+  const target = parseFloat(value.replace(/[^0-9.]/g, ""));
+  const suffix = value.replace(/[0-9.]/g, "");
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasAnimated]);
+
+  useEffect(() => {
+    if (!hasAnimated) return;
+
+    let startTime: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      setCount(Math.floor(progress * target));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }, [hasAnimated, target, duration]);
+
+  return <div ref={elementRef}>{count}{suffix}</div>;
+}
 
 export function LandingPage() {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -462,16 +504,23 @@ export function LandingPage() {
                     <h3 className="text-2xl sm:text-3xl font-bold mb-4">Analytics Dashboard</h3>
                     <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6]">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-auto">
+                  <div className="flex flex-row flex-wrap justify-between gap-y-3 gap-x-0 mt-auto w-full relative z-[1]">
                     {[
                       { label: "Visitors", value: "12k+" },
-                      { label: "CTR", value: "8.4%" },
+                      { label: "CTR", value: "8.4+" },
                       { label: "Sales", value: "₹45k" },
                       { label: "Growth", value: "+24%" }
                     ].map((stat) => (
-                      <div key={stat.label} className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
-                        <div className="text-xl sm:text-2xl font-bold text-white mb-1">{stat.value}</div>
-                        <div className="text-[10px] font-bold text-[#B9C0D4] uppercase tracking-wider">{stat.label}</div>
+                      <div 
+                        key={stat.label} 
+                        className="group/kpi p-3 sm:p-5 rounded-2xl bg-[#1A1C2E]/80 border border-white/10 text-center backdrop-blur-md shadow-xl transition-all duration-300 active:scale-[0.98] flex flex-col items-center justify-center min-h-[90px] w-[calc(50%-6px)] md:w-[calc(25%-12px)]"
+                      >
+                        <div className="text-2xl sm:text-2xl lg:text-3xl font-bold text-white mb-1.5 tracking-tight group-hover/kpi:text-cyan-400 transition-colors whitespace-nowrap">
+                          <NumberTicker value={stat.value} />
+                        </div>
+                        <div className="text-[11px] sm:text-xs font-bold text-[#B9C0D4]/60 uppercase tracking-widest group-hover/kpi:text-[#B9C0D4] transition-colors whitespace-nowrap">
+                          {stat.label}
+                        </div>
                       </div>
                     ))}
                   </div>
