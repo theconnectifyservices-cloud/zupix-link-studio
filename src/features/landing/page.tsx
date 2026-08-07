@@ -310,12 +310,12 @@ export function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURES.map((f, i) => (
-              <div key={i} className="group p-8 rounded-[22px] border border-white/5 bg-[#12152A] hover:border-[#FF6A3D]/30 transition-all duration-300">
-                <div className="h-12 w-12 rounded-xl bg-[#FF6A3D]/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+              <div key={i} className="group p-6 sm:p-8 rounded-[22px] border border-white/5 bg-[#12152A] hover:border-[#FF6A3D]/30 transition-all duration-300 flex flex-col h-full">
+                <div className="h-12 w-12 rounded-xl bg-[#FF6A3D]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shrink-0">
                   <f.icon className="h-6 w-6 text-[#FF6A3D]" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">{f.title}</h3>
-                <p className="text-[#B9C0D4] leading-relaxed">{f.desc}</p>
+                <h3 className="text-xl font-bold mb-4">{f.title}</h3>
+                <p className="text-[#B9C0D4] leading-[1.6] text-[15px] sm:text-base lg:text-[17px]">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -337,37 +337,39 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[240px]">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:auto-rows-[240px] auto-rows-auto items-stretch">
             {/* Sell Products - Large Feature Card */}
-            <div className="md:col-span-8 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-[#FF2DAA]/30 transition-all duration-500">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#FF2DAA]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative z-10 h-full flex flex-col">
-                <div className="mb-auto">
+            <div className="md:col-span-8 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-[#FF2DAA]/30 transition-all duration-500 flex flex-col h-full">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FF2DAA]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex-1">
                   <div className="h-14 w-14 rounded-2xl bg-[#FF2DAA]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                     <ShoppingBag className="h-7 w-7 text-[#FF2DAA]" />
                   </div>
-                  <h3 className="text-3xl font-bold mb-4">Sell Products</h3>
-                  <p className="text-[#B9C0D4] text-lg max-w-md">Create your own mini online store. Sell physical and digital products with inventory management, discounts, and seamless UPI payments.</p>
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-4">Sell Products</h3>
+                  <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6] max-w-md">Create your own mini online store. Sell physical and digital products with inventory management, discounts, and seamless UPI payments.</p>
                 </div>
                 <div className="mt-8 flex flex-wrap gap-3">
                   {["Physical + Digital", "Inventory", "Discounts", "0% Fee"].map((tag) => (
-                    <span key={tag} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-[#B9C0D4]">
+                    <span key={tag} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold text-[#B9C0D4]">
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
-              <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-[#FF2DAA]/10 blur-[80px] rounded-full group-hover:bg-[#FF2DAA]/20 transition-all duration-700" />
+              <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-[#FF2DAA]/10 blur-[80px] rounded-full group-hover:bg-[#FF2DAA]/20 transition-all duration-700 pointer-events-none" />
             </div>
 
             {/* Accept Payments - Medium Card */}
-            <div className="md:col-span-4 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-[#FF7A45]/30 transition-all duration-500">
-              <div className="relative z-10 h-full flex flex-col">
-                <div className="h-12 w-12 rounded-xl bg-[#FF7A45]/10 flex items-center justify-center mb-6">
-                  <CreditCard className="h-6 w-6 text-[#FF7A45]" />
+            <div className="md:col-span-4 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-[#FF7A45]/30 transition-all duration-500 flex flex-col h-full">
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex-1">
+                  <div className="h-12 w-12 rounded-xl bg-[#FF7A45]/10 flex items-center justify-center mb-6">
+                    <CreditCard className="h-6 w-6 text-[#FF7A45]" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4">Accept Payments</h3>
+                  <p className="text-[#B9C0D4] leading-[1.6] text-[15px] sm:text-base mb-8">Integrated with Razorpay, Cashfree, and PayU. Support for offline UPI with manual approval.</p>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Accept Payments</h3>
-                <p className="text-[#B9C0D4] mb-8">Integrated with Razorpay, Cashfree, and PayU. Support for offline UPI with manual approval.</p>
                 <div className="mt-auto space-y-3">
                   {["Razorpay", "Cashfree", "PayU", "Offline UPI"].map((item) => (
                     <div key={item} className="flex items-center gap-3 text-sm text-[#B9C0D4]">
@@ -380,16 +382,18 @@ export function LandingPage() {
             </div>
 
             {/* Appointment Booking - Medium Card */}
-            <div className="md:col-span-4 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-[#FF4D8D]/30 transition-all duration-500">
-              <div className="relative z-10">
-                <div className="h-12 w-12 rounded-xl bg-[#FF4D8D]/10 flex items-center justify-center mb-6">
-                  <Calendar className="h-6 w-6 text-[#FF4D8D]" />
+            <div className="md:col-span-4 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-[#FF4D8D]/30 transition-all duration-500 flex flex-col h-full">
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex-1">
+                  <div className="h-12 w-12 rounded-xl bg-[#FF4D8D]/10 flex items-center justify-center mb-6">
+                    <Calendar className="h-6 w-6 text-[#FF4D8D]" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4">Appointment Booking</h3>
+                  <p className="text-[#B9C0D4] leading-[1.6] text-[15px] sm:text-base mb-6">Professional calendar booking with time slots, auto-confirmation, and WhatsApp notifications.</p>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Appointment Booking</h3>
-                <p className="text-[#B9C0D4] mb-6">Professional calendar booking with time slots, auto-confirmation, and WhatsApp notifications.</p>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mt-auto">
                   {["Time Slots", "Auto Confirm", "WhatsApp Alerts"].map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-xs font-bold text-[#B9C0D4]/70">
+                    <li key={f} className="flex items-center gap-2 text-[10px] sm:text-xs font-bold text-[#B9C0D4]/70">
                       <Plus className="w-3 h-3 text-[#FF4D8D]" /> {f}
                     </li>
                   ))}
@@ -398,7 +402,7 @@ export function LandingPage() {
             </div>
 
             {/* AI Assistant - Large Card */}
-            <div className="md:col-span-8 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-purple-500/30 transition-all duration-500">
+            <div className="md:col-span-8 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-purple-500/30 transition-all duration-500 flex flex-col h-full">
               <div className="relative z-10 flex flex-col h-full">
                 <div className="flex items-start justify-between mb-8">
                   <div className="h-14 w-14 rounded-2xl bg-purple-500/10 flex items-center justify-center">
@@ -408,11 +412,13 @@ export function LandingPage() {
                     Coming Soon
                   </span>
                 </div>
-                <h3 className="text-3xl font-bold mb-4">AI Studio</h3>
-                <p className="text-[#B9C0D4] text-lg max-w-md mb-8">Our AI assistant doesn't just chat—it builds. Generate bios, CTAs, headlines, and descriptions tailored for your brand in seconds.</p>
-                <div className="mt-auto grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div className="flex-1">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-4">AI Studio</h3>
+                  <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6] max-w-md mb-8">Our AI assistant doesn't just chat—it builds. Generate bios, CTAs, headlines, and descriptions tailored for your brand in seconds.</p>
+                </div>
+                <div className="mt-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {["Bio Gen", "CTA Gen", "Content Gen", "Headline Gen"].map((tool) => (
-                    <div key={tool} className="p-3 rounded-xl bg-white/5 border border-white/10 text-center text-xs font-medium">
+                    <div key={tool} className="p-3 rounded-xl bg-white/5 border border-white/10 text-center text-[10px] sm:text-xs font-medium">
                       {tool}
                     </div>
                   ))}
@@ -421,42 +427,42 @@ export function LandingPage() {
             </div>
 
             {/* Custom Domain - Medium Card */}
-            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-blue-500/30 transition-all duration-500">
+            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-blue-500/30 transition-all duration-500 flex items-center">
               <div className="relative z-10 flex items-center gap-6">
                 <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
                   <Globe2 className="h-6 w-6 text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">Custom Domain</h3>
-                  <p className="text-sm text-[#B9C0D4]">yourbrand.com with free SSL & one-click connect.</p>
+                  <h3 className="text-lg sm:text-xl font-bold mb-1">Custom Domain</h3>
+                  <p className="text-[13px] sm:text-sm text-[#B9C0D4] leading-relaxed">yourbrand.com with free SSL & one-click connect.</p>
                 </div>
               </div>
             </div>
 
             {/* WhatsApp Integration - Medium Card */}
-            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-green-500/30 transition-all duration-500">
+            <div className="md:col-span-6 md:row-span-1 group relative p-6 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-green-500/30 transition-all duration-500 flex items-center">
               <div className="relative z-10 flex items-center gap-6">
                 <div className="h-12 w-12 rounded-xl bg-green-500/10 flex items-center justify-center shrink-0">
                   <MessageSquare className="h-6 w-6 text-green-400" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">WhatsApp Catalog</h3>
-                  <p className="text-sm text-[#B9C0D4]">One-click chat, order capture, and lead management.</p>
+                  <h3 className="text-lg sm:text-xl font-bold mb-1">WhatsApp Catalog</h3>
+                  <p className="text-[13px] sm:text-sm text-[#B9C0D4] leading-relaxed">One-click chat, order capture, and lead management.</p>
                 </div>
               </div>
             </div>
 
             {/* Analytics Dashboard - Medium Card */}
-            <div className="md:col-span-12 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-cyan-500/30 transition-all duration-500">
-               <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center h-full">
-                  <div>
+            <div className="md:col-span-12 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-cyan-500/30 transition-all duration-500 flex flex-col h-full">
+               <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center flex-1">
+                  <div className="flex flex-col h-full">
                     <div className="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6">
                       <BarChart3 className="h-6 w-6 text-cyan-400" />
                     </div>
-                    <h3 className="text-3xl font-bold mb-4">Analytics Dashboard</h3>
-                    <p className="text-[#B9C0D4] text-lg">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
+                    <h3 className="text-2xl sm:text-3xl font-bold mb-4">Analytics Dashboard</h3>
+                    <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6]">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-auto">
                     {[
                       { label: "Visitors", value: "12k+" },
                       { label: "CTR", value: "8.4%" },
@@ -464,7 +470,7 @@ export function LandingPage() {
                       { label: "Growth", value: "+24%" }
                     ].map((stat) => (
                       <div key={stat.label} className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
-                        <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                        <div className="text-xl sm:text-2xl font-bold text-white mb-1">{stat.value}</div>
                         <div className="text-[10px] font-bold text-[#B9C0D4] uppercase tracking-wider">{stat.label}</div>
                       </div>
                     ))}
