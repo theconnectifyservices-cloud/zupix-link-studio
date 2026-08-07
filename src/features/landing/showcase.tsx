@@ -14,7 +14,9 @@
  */
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { AnimatePresence, motion, useInView, useMotionValue, useSpring, useTransform } from "motion/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useMotionValue, useSpring, useTransform } from "framer-motion";
 import {
   BadgeCheck,
   Check,

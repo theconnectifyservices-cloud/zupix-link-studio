@@ -29,7 +29,7 @@ import {
   useScroll,
   useSpring,
   useTransform,
-} from "motion/react";
+} from "framer-motion";
 import {
   Activity,
   ArrowRight,
