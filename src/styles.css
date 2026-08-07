@@ -1323,14 +1323,30 @@ body {
   .zx-floating { --zx-float-inset: 24px; right: 24px; }
 }
 
+/* Global scroll optimizations */
+html, body {
+  background-color: #0a0a12 !important;
+  color-scheme: dark;
+  overflow-x: hidden;
+  height: auto;
+  min-height: 100%;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* Scroll Reveal Animations */
 .reveal-on-scroll {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(30px) translateZ(0);
   transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
               transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: opacity, transform;
+  backface-visibility: hidden;
 }
+
 
 .reveal-visible {
   opacity: 1;

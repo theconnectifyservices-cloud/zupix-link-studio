@@ -1568,5 +1568,5 @@ export function LandingExperience() {
     ],
     [],
   );
-  return <div id="experience" className="reveal-on-scroll relative">{sections}</div>;
+  return <div id="experience" className="reveal-on-scroll relative bg-[#0a0a12]">{sections}</div>;
 }

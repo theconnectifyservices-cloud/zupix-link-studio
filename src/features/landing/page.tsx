@@ -8,7 +8,13 @@ export function LandingPage() {
   useScrollReveal();
 
   return (
-    <main className="min-h-screen bg-background selection:bg-primary selection:text-white">
+    <main className="relative min-h-screen bg-[#0a0a12] text-white selection:bg-primary selection:text-white">
+      {/* Root Background Layer - Fixed and GPU accelerated */}
+      <div className="fixed inset-0 z-[-1] pointer-events-none bg-[#0a0a12] transform-gpu">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a12] via-[#0f0f1a] to-[#0a0a12]" />
+        <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-50 contrast-150" />
+      </div>
+
       <ScrollProgress />
       <LandingNavbar />
       

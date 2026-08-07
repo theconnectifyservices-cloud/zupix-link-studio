@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useRef, useState, type ComponentType } from "react";
+import { cn } from "@/lib/utils";
 
 /** Mount a heavy section only when it's near the viewport. Preserves layout via min-height. */
 export function LazySection({
@@ -66,7 +67,7 @@ export function LazySection({
     <div
       id={id}
       ref={ref}
-      className={id ? "scroll-mt-20" : undefined}
+      className={cn(id ? "scroll-mt-20" : undefined, "bg-[#0a0a12]")}
       style={{
         minHeight: Comp ? undefined : minHeight,
         contentVisibility: "auto",

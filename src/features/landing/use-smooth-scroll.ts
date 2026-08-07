@@ -2,15 +2,18 @@ import { useEffect } from "react";
 
 export function useSmoothScroll() {
   useEffect(() => {
-    // Lenis or simple native optimization could go here.
-    // Since the request asks for requestAnimationFrame based smooth scrolling,
-    // we ensure passive listeners and hardware acceleration.
+    // Implement ultra-smooth native scroll optimization
+    // We avoid heavy libraries like Lenis/Locomotive if not strictly needed
+    // to prevent the "white screen" issue often caused by transform-based scrolling
     
-    const handleScroll = () => {
-      // Logic for scroll progress or parallax could be centralized here if needed
-    };
+    document.documentElement.style.scrollBehavior = 'smooth';
+    
+    // Ensure the background color is forced on the root elements
+    document.documentElement.style.backgroundColor = '#0a0a12';
+    document.body.style.backgroundColor = '#0a0a12';
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      document.documentElement.style.scrollBehavior = '';
+    };
   }, []);
 }

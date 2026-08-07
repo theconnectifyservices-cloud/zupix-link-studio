@@ -1164,7 +1164,7 @@ export function LandingEcosystem() {
    */
 
   return (
-    <div id="ecosystem" className="reveal-on-scroll relative isolate overflow-hidden bg-slate-950 text-white">
+    <div id="ecosystem" className="reveal-on-scroll relative isolate overflow-hidden bg-[#0a0a12] text-white">
       {/* Ambient aurora background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-40 left-1/4 h-[520px] w-[520px] rounded-full bg-orange-500/10 blur-[120px]" />
