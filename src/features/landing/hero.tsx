@@ -72,7 +72,7 @@ const DEMOS: Demo[] = [
     handle: "@kalyanheritage",
     tagline: "Handcrafted 22K jewellery · Mumbai",
     description: "Family-run bridal & everyday gold since 1974. BIS-hallmarked, lifetime buy-back, in-house designers.",
-    gradient: "linear-gradient(160deg,#ff6b35 0%,#e84393 55%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#ff6b35 0%,#e84393 55%,#090B18 100%)",
     accent: "#ff6b35",
     icon: Gem,
     chips: ["Bridal", "22K Gold", "BIS Hallmark"],
@@ -111,7 +111,7 @@ const DEMOS: Demo[] = [
     handle: "@bombaycanteen",
     tagline: "Modern Indian · Kala Ghoda",
     description: "Regional Indian plates reimagined with seasonal produce and small-batch spirits. Chef Thomas Zacharias.",
-    gradient: "linear-gradient(160deg,#e84393 0%,#6c5ce7 60%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#e84393 0%,#6c5ce7 60%,#090B18 100%)",
     accent: "#e84393",
     icon: Utensils,
     chips: ["Zomato Gold", "Chef’s table", "Vegan"],
@@ -149,7 +149,7 @@ const DEMOS: Demo[] = [
     handle: "@dranyarao",
     tagline: "Dermatologist · MBBS, MD",
     description: "Fortis-affiliated dermatologist & cosmetologist. Evidence-based skin, hair & laser care since 2011.",
-    gradient: "linear-gradient(160deg,#6c5ce7 0%,#4f46e5 60%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#6c5ce7 0%,#4f46e5 60%,#090B18 100%)",
     accent: "#a78bfa",
     icon: Stethoscope,
     chips: ["15+ yrs", "Fortis", "Verified"],
@@ -185,7 +185,7 @@ const DEMOS: Demo[] = [
     handle: "@sunriseacademy",
     tagline: "CBSE · Pre-K to Grade 12",
     description: "Inquiry-based CBSE school on 8 acres in Baner, Pune. STEM labs, performing arts, 1:14 teacher ratio.",
-    gradient: "linear-gradient(160deg,#ff6b35 0%,#f59e0b 55%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#ff6b35 0%,#f59e0b 55%,#090B18 100%)",
     accent: "#f59e0b",
     icon: GraduationCap,
     chips: ["Admissions ’26", "Scholarships", "STEM"],
@@ -221,7 +221,7 @@ const DEMOS: Demo[] = [
     handle: "@studiolakmepro",
     tagline: "Luxury salon & spa · Juhu",
     description: "Signature colour bar, keratin lab, and bridal suite. L’Oréal Colour Trophy 2025 finalists.",
-    gradient: "linear-gradient(160deg,#e84393 0%,#f472b6 55%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#e84393 0%,#f472b6 55%,#090B18 100%)",
     accent: "#f472b6",
     icon: Sparkles,
     chips: ["Bridal", "Colour bar", "Keratin"],
@@ -259,7 +259,7 @@ const DEMOS: Demo[] = [
     handle: "@tajcolabasuites",
     tagline: "Heritage boutique hotel · South Mumbai",
     description: "42 suites overlooking the Gateway. Butler service, rooftop infinity pool, Michelin-recommended dining.",
-    gradient: "linear-gradient(160deg,#0ea5e9 0%,#6c5ce7 55%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#0ea5e9 0%,#6c5ce7 55%,#090B18 100%)",
     accent: "#38bdf8",
     icon: Globe2,
     chips: ["5★", "Heritage", "Sea-view"],
@@ -297,7 +297,7 @@ const DEMOS: Demo[] = [
     handle: "@lodhaskyline",
     tagline: "Sea-view residences · Worli",
     description: "RERA-registered 3 & 4 BHK sky-homes on Worli sea-face. 42nd–70th floor, ready to move.",
-    gradient: "linear-gradient(160deg,#0ea5e9 0%,#6c5ce7 55%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#0ea5e9 0%,#6c5ce7 55%,#090B18 100%)",
     accent: "#38bdf8",
     icon: Hospital,
     chips: ["3 / 4 BHK", "Ready to move", "RERA"],
@@ -333,7 +333,7 @@ const DEMOS: Demo[] = [
     handle: "@wandererco",
     tagline: "Curated small-group travel · India + Asia",
     description: "Slow, small-group journeys across Ladakh, Kerala, Bhutan and Japan. Max 12 travellers per trip.",
-    gradient: "linear-gradient(160deg,#22d3ee 0%,#0ea5e9 55%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#22d3ee 0%,#0ea5e9 55%,#090B18 100%)",
     accent: "#22d3ee",
     icon: Globe2,
     chips: ["Small group", "IATA", "1000+ trips"],
@@ -371,7 +371,7 @@ const DEMOS: Demo[] = [
     handle: "@ironrepublic",
     tagline: "Strength gym & coaching · HSR Layout",
     description: "10,000 sq ft strength & conditioning gym. Certified coaches, powerlifting rack row, recovery lounge.",
-    gradient: "linear-gradient(160deg,#f59e0b 0%,#ef4444 55%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#f59e0b 0%,#ef4444 55%,#090B18 100%)",
     accent: "#f59e0b",
     icon: HardHat,
     chips: ["24/7", "Powerlifting", "Recovery"],
@@ -409,7 +409,7 @@ const DEMOS: Demo[] = [
     handle: "@bluetokaicafe",
     tagline: "Single-origin coffee · Roasted daily",
     description: "India’s largest specialty coffee roaster. 38 cafés, farm-direct beans from Chikmagalur & Coorg.",
-    gradient: "linear-gradient(160deg,#f59e0b 0%,#ff6b35 55%,#0b0b12 100%)",
+    gradient: "linear-gradient(160deg,#f59e0b 0%,#ff6b35 55%,#090B18 100%)",
     accent: "#f59e0b",
     icon: Sparkles,
     chips: ["Roastery", "Filter", "Beans"],
@@ -1252,13 +1252,13 @@ export function LandingHero() {
           })}
         </div>
         {/* Bottom vignette */}
-        <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-[#0b0b12] to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-[#090B18] to-transparent" />
       </div>
 
       {/* HERO */}
       <div
         ref={heroRef}
-        className="relative mx-auto flex min-h-dvh max-w-7xl flex-col justify-center px-5 py-16 sm:px-8 lg:py-24"
+        className="relative mx-auto flex min-h-dvh max-w-7xl flex-col justify-center px-5 pt-[116px] pb-16 sm:px-8 sm:pt-[124px] lg:pb-24"
         style={heroStyle}
       >
         {/* Top badge row */}
@@ -1331,7 +1331,7 @@ export function LandingHero() {
               <a
                 ref={primaryRef}
                 href="/pricing"
-                className="zx-cta-primary group relative inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-3.5 text-sm font-semibold text-[#0b0b12] transition-transform duration-200"
+                className="zx-cta-primary group relative inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-3.5 text-sm font-semibold text-[#090B18] transition-transform duration-200"
                 style={{
                   background: "linear-gradient(135deg,#ffb37a 0%,#ff6b35 45%,#e84393 100%)",
                 }}
