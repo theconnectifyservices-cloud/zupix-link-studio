@@ -185,7 +185,7 @@ function CountUp({
   format?: (n: number) => string;
 }) {
   const ref = useRef<HTMLSpanElement | null>(null);
-  const inView = useInView(ref, { once: true, margin: "-15% 0px" });
+  const inView = useInView(ref, { once: true, margin: "200px" });
   const [n, setN] = useState(0);
 
   useEffect(() => {
