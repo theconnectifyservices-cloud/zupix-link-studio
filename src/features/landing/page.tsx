@@ -504,16 +504,23 @@ export function LandingPage() {
                     <h3 className="text-2xl sm:text-3xl font-bold mb-4">Analytics Dashboard</h3>
                     <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6]">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-auto">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-auto">
                     {[
                       { label: "Visitors", value: "12k+" },
                       { label: "CTR", value: "8.4%" },
                       { label: "Sales", value: "₹45k" },
                       { label: "Growth", value: "+24%" }
                     ].map((stat) => (
-                      <div key={stat.label} className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
-                        <div className="text-xl sm:text-2xl font-bold text-white mb-1">{stat.value}</div>
-                        <div className="text-[10px] font-bold text-[#B9C0D4] uppercase tracking-wider">{stat.label}</div>
+                      <div 
+                        key={stat.label} 
+                        className="group/kpi p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 text-center backdrop-blur-md hover:bg-white/[0.05] hover:border-cyan-500/30 transition-all duration-300 active:scale-[0.98]"
+                      >
+                        <div className="text-2xl sm:text-2xl lg:text-3xl font-bold text-white mb-1.5 tracking-tight group-hover/kpi:text-cyan-400 transition-colors">
+                          <NumberTicker value={stat.value} />
+                        </div>
+                        <div className="text-[11px] sm:text-xs font-bold text-[#B9C0D4]/60 uppercase tracking-widest group-hover/kpi:text-[#B9C0D4] transition-colors">
+                          {stat.label}
+                        </div>
                       </div>
                     ))}
                   </div>
