@@ -19,21 +19,27 @@ export function LandingNavbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      // Logic for scrolled state
+      setIsScrolled(window.scrollY > 20);
 
       // Active section detection
       const sections = NAV_LINKS.map(link => link.href.substring(1));
-      for (const section of sections.reverse()) {
+      let currentActive = "";
+      for (const section of sections) {
         const element = document.getElementById(section);
-        if (element && window.scrollY >= element.offsetTop - 100) {
-          setActiveSection(`#${section}`);
-          break;
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          // If section top is above or near the middle of viewport
+          if (rect.top <= 150) {
+            currentActive = `#${section}`;
+          }
         }
       }
-      if (window.scrollY < 100) setActiveSection("");
+      setActiveSection(currentActive);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial check
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -42,28 +48,42 @@ export function LandingNavbar() {
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-[100] transition-all duration-300",
-          isScrolled ? "py-4" : "py-6"
+          isScrolled ? "py-2 sm:py-3" : "py-4 sm:py-6"
         )}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <nav
             className={cn(
-              "relative flex items-center justify-between rounded-full px-6 py-2 transition-all duration-300 h-[72px] sm:h-[76px]",
+              "relative flex items-center justify-between rounded-full px-5 py-2 transition-all duration-500",
+              "h-[72px] sm:h-[76px]",
               isScrolled 
-                ? "bg-[#090B18]/92 backdrop-blur-[22px] border border-[#FF7A1A]/18 shadow-[0_8px_32px_rgba(0,0,0,0.3)] mx-4 scale-[0.98]" 
+                ? "bg-[#090B18]/92 backdrop-blur-[22px] border border-[#FF7A1A]/18 shadow-[0_8px_32px_rgba(0,0,0,0.3)] mx-2 sm:mx-4 scale-[0.98]" 
                 : "bg-transparent border border-white/5 backdrop-blur-[2px]"
             )}
           >
             {/* Logo */}
             <Link 
               to="/" 
-              className="flex items-center transition-transform duration-300"
+              className="flex shrink-0 items-center transition-all duration-300 hover:opacity-80"
               style={{ transform: isScrolled ? 'scale(0.92)' : 'scale(1)' }}
             >
               <img 
                 src={logoAsset.url} 
                 alt="ZUPIX Studio" 
-                className="h-8 w-auto object-contain animate-in fade-in zoom-in duration-700" 
+                className="h-[32px] w-auto object-contain sm:h-[42px] min-w-[120px]" 
+                loading="eager"
+                onError={(e) => {
+                  console.error("Logo failed to load:", e);
+                  // Fallback to text if image fails
+                  e.currentTarget.style.display = 'none';
+                  const parent = e.currentTarget.parentElement;
+                  if (parent && !parent.querySelector('.logo-fallback')) {
+                    const span = document.createElement('span');
+                    span.className = 'logo-fallback text-xl font-bold tracking-tight text-white';
+                    span.innerText = 'ZUPIX STUDIO';
+                    parent.appendChild(span);
+                  }
+                }}
               />
             </Link>
 
@@ -109,6 +129,7 @@ export function LandingNavbar() {
             <button
               className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-white lg:hidden transition-transform active:scale-90"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" /> }
             </button>
@@ -165,3 +186,4 @@ export function LandingNavbar() {
     </>
   );
 }
+
