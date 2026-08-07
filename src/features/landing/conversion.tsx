@@ -1068,7 +1068,7 @@ function TrustStat({
 
 export function LandingConversion() {
   return (
-    <div id="conversion" className="reveal-on-scroll relative isolate">
+    <div id="conversion" className="reveal-on-scroll relative isolate bg-[#0a0a12]">
       {/* Ambient background wash for the entire conversion stack */}
       <div
         aria-hidden
