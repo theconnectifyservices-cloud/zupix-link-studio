@@ -310,12 +310,12 @@ export function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURES.map((f, i) => (
-              <div key={i} className="group p-8 rounded-[22px] border border-white/5 bg-[#12152A] hover:border-[#FF6A3D]/30 transition-all duration-300">
-                <div className="h-12 w-12 rounded-xl bg-[#FF6A3D]/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+              <div key={i} className="group p-6 sm:p-8 rounded-[22px] border border-white/5 bg-[#12152A] hover:border-[#FF6A3D]/30 transition-all duration-300 flex flex-col h-full">
+                <div className="h-12 w-12 rounded-xl bg-[#FF6A3D]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shrink-0">
                   <f.icon className="h-6 w-6 text-[#FF6A3D]" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">{f.title}</h3>
-                <p className="text-[#B9C0D4] leading-relaxed">{f.desc}</p>
+                <h3 className="text-xl font-bold mb-4">{f.title}</h3>
+                <p className="text-[#B9C0D4] leading-[1.6] text-[15px] sm:text-base lg:text-[17px]">{f.desc}</p>
               </div>
             ))}
           </div>
