@@ -456,7 +456,7 @@ function GrowthBar({ before, after, label, format }: {
 function StoryCard({ s, index }: { s: Story; index: number }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 1, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10% 0px" }}
       transition={{ duration: 0.6, delay: (index % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
@@ -572,7 +572,7 @@ function FeatureCell({ f, i }: { f: (typeof FEATURES)[number]; i: number }) {
   const Icon = f.icon;
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 1, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10% 0px" }}
       transition={{ duration: 0.5, delay: (i % 4) * 0.06, ease: [0.22, 1, 0.36, 1] }}
@@ -806,7 +806,7 @@ function FaqItem({ f, i }: { f: Faq; i: number }) {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 1, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: i * 0.03 }}
       className="overflow-hidden rounded-2xl border border-foreground/10 bg-background/60 backdrop-blur-md"
@@ -928,7 +928,7 @@ function SectionTrust() {
               return (
                 <motion.div
                   key={b.label}
-                  initial={{ opacity: 0, y: 12 }}
+                  initial={{ opacity: 1, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-10% 0px" }}
                   transition={{ duration: 0.4, delay: i * 0.05 }}
@@ -1068,7 +1068,7 @@ function TrustStat({
 
 export function LandingConversion() {
   return (
-    <div id="conversion" className="reveal-on-scroll relative isolate bg-[#0a0a12]">
+    <div id="conversion" className="reveal-on-scroll relative isolate bg-[#090B18]">
       {/* Ambient background wash for the entire conversion stack */}
       <div
         aria-hidden

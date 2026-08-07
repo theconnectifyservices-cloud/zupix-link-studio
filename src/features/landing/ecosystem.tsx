@@ -78,9 +78,9 @@ function SectionHeader({
   return (
     <div className="mx-auto mb-14 max-w-3xl text-center">
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.5 }}
         className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-white/70 backdrop-blur"
       >
@@ -88,18 +88,18 @@ function SectionHeader({
         {eyebrow}
       </motion.div>
       <motion.h2
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.6, delay: 0.05 }}
         className="mt-5 text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl"
       >
         {title}
       </motion.h2>
       <motion.p
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.6, delay: 0.1 }}
         className="mt-4 text-pretty text-base text-white/60 sm:text-lg"
       >
@@ -276,9 +276,9 @@ function EcosystemGrid() {
           <motion.button
             key={c.title}
             type="button"
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 1, y: 0 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "200px" }}
             transition={{ duration: 0.5, delay: (i % 4) * 0.05 }}
             whileHover={{ y: -6, rotateX: 2, rotateY: -2 }}
             style={{ transformStyle: "preserve-3d" }}

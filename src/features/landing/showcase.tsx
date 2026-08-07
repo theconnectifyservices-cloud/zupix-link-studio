@@ -986,7 +986,7 @@ export function LandingShowcase() {
   );
 
   return (
-    <div id="showcase" className="reveal-on-scroll relative bg-[#0a0a12] text-white">
+    <div id="showcase" className="reveal-on-scroll relative bg-[#090B18] text-white w-full overflow-hidden">
       <style>{`
         @keyframes zx-float { 0%,100% { transform: translateY(0px) } 50% { transform: translateY(-10px) } }
         @keyframes zx-drift { 0%,100% { transform: translate(0,0) } 50% { transform: translate(-6px,8px) } }

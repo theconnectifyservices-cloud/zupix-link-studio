@@ -127,9 +127,9 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title
   return (
     <div className="mx-auto mb-14 max-w-3xl text-center">
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.5 }}
         className="mb-4 inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 px-4 py-1.5 text-xs font-medium text-foreground/70 backdrop-blur"
       >
@@ -137,18 +137,18 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title
         {eyebrow}
       </motion.div>
       <motion.h2
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.6, delay: 0.05 }}
         className="font-serif text-4xl leading-[1.05] tracking-tight text-foreground md:text-5xl lg:text-6xl"
       >
         {title}
       </motion.h2>
       <motion.p
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.6, delay: 0.1 }}
         className="mt-4 text-base text-foreground/60 md:text-lg"
       >
