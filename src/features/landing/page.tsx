@@ -504,7 +504,7 @@ export function LandingPage() {
                     <h3 className="text-2xl sm:text-3xl font-bold mb-4">Analytics Dashboard</h3>
                     <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6]">Real-time tracking of visitors, clicks, CTR, device types, and traffic sources with precision.</p>
                   </div>
-                  <div className="flex flex-wrap md:grid md:grid-cols-4 gap-3 sm:gap-4 mt-auto w-full">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-auto w-full">
                     {[
                       { label: "Visitors", value: "12k+" },
                       { label: "CTR", value: "8.4+" },
