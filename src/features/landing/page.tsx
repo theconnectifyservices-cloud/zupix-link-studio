@@ -142,49 +142,118 @@ export function LandingPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden sm:pt-48 sm:pb-32">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-gradient-to-b from-[#FF6A3D]/10 via-transparent to-transparent blur-[120px] pointer-events-none" />
+      <section className="relative pt-32 pb-20 overflow-hidden lg:pt-48 lg:pb-40">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-[#FF6A3D]/10 via-transparent to-transparent blur-[120px] pointer-events-none" />
         
         <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-[#B9C0D4] mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <span className="flex h-2 w-2 rounded-full bg-[#FF6A3D] animate-pulse" />
-              Trusted by 10,000+ Indian Businesses
-            </div>
-            
-            <h1 className="text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both">
-              Beautiful Bio Links<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF6A3D] via-[#F72585] to-[#7C5CFF]">
-                That Actually Convert.
-              </span>
-            </h1>
-            
-            <p className="text-lg sm:text-xl text-[#B9C0D4] max-w-2xl mx-auto mb-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both">
-              The only link you'll ever need. Build a premium digital identity with zero commissions, zero code, and native UPI payments.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both">
-              <CtaButton to="/auth">
-                Start Building Free
-              </CtaButton>
-              <CtaButton href="#templates" variant="secondary" showIcon={false}>
-                Explore Templates
-              </CtaButton>
+          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+            {/* Left Content */}
+            <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-[#B9C0D4] mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <span className="flex h-2 w-2 rounded-full bg-[#FF6A3D] animate-pulse" />
+                India's Premium Bio Link Platform
+              </div>
+              
+              <h1 className="text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both leading-[1.1]">
+                Beautiful Bio Links<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2DAA] via-[#FF4D8D] to-[#FF7A45]">
+                  That Actually Convert.
+                </span>
+              </h1>
+              
+              <p className="text-lg sm:text-xl text-[#B9C0D4] max-w-2xl lg:max-w-none mx-auto lg:mx-0 mb-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both leading-relaxed">
+                Build professional <span className="text-white font-medium">Bio Links</span> and <span className="text-white font-medium">Mini Websites</span> in minutes. Accept <span className="text-white font-medium">Payments</span>, sell <span className="text-white font-medium">Products</span>, and verify your brand with <span className="text-white font-medium">Custom Domains</span>.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both">
+                <CtaButton to="/auth">
+                  Start Building Free
+                </CtaButton>
+                <CtaButton href="#templates" variant="secondary" showIcon={false}>
+                  Explore Templates
+                </CtaButton>
+              </div>
+
+              {/* Trust Badges Below CTA */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-3 animate-in fade-in duration-1000 delay-500 fill-mode-both">
+                {[
+                  { icon: ShieldCheck, label: "Made in India" },
+                  { icon: Zap, label: "UPI Ready" },
+                  { icon: CheckCircle2, label: "Verified Profiles" },
+                  { icon: Globe2, label: "Custom Domains" },
+                  { icon: BarChart3, label: "Analytics Included" }
+                ].map((badge, i) => (
+                  <div key={i} className="flex items-center gap-2 text-[13px] font-medium text-[#B9C0D4]/80">
+                    <badge.icon className="w-3.5 h-3.5 text-[#FF2DAA]" />
+                    {badge.label}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Mockup Preview */}
-            <div className="relative mx-auto max-w-[320px] sm:max-w-[400px] animate-in fade-in zoom-in-95 duration-1000 delay-500 fill-mode-both">
-              <div className="absolute inset-0 bg-gradient-to-t from-[#090B18] via-transparent to-transparent z-10 h-32 bottom-0" />
-              <div className="rounded-[40px] border-[8px] border-[#12152A] bg-[#090B18] shadow-2xl overflow-hidden aspect-[9/18.5]">
-                <img 
-                  src={COVERS.fashion} 
-                  alt="Premium Template" 
-                  className="w-full h-full object-cover opacity-80"
-                />
-                <div className="absolute inset-x-6 top-1/2 -translate-y-1/2 space-y-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10" />
-                  ))}
+            {/* Right Phone Mockup - 40-45% width on desktop */}
+            <div className="w-full max-w-[340px] lg:max-w-[420px] lg:w-[42%] relative animate-in fade-in zoom-in-95 duration-1000 delay-500 fill-mode-both">
+              <div className="absolute inset-0 bg-[#FF2DAA]/20 blur-[100px] rounded-full pointer-events-none -z-10" />
+              
+              {/* Premium Phone Frame */}
+              <div className="relative rounded-[50px] border-[10px] border-[#12152A] bg-[#090B18] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden aspect-[9/18.5]">
+                {/* Status Bar */}
+                <div className="absolute top-0 inset-x-0 h-8 flex items-center justify-between px-8 pt-2 z-20">
+                  <span className="text-[10px] font-bold">9:41</span>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-4 h-2 rounded-[2px] border border-white/30" />
+                  </div>
+                </div>
+
+                {/* Bio Profile Content (Non-scrolling Focus) */}
+                <div className="h-full pt-16 px-6 flex flex-col items-center">
+                  <div className="relative mb-6">
+                    <div className="w-24 h-24 rounded-full border-2 border-[#FF2DAA] p-1">
+                      <img src={PORTRAITS.drAnanya} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 bg-[#007AFF] text-white p-1 rounded-full border-2 border-[#090B18]">
+                      <CheckCircle2 className="w-4 h-4 fill-current" />
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-1">Dr. Ananya Rao</h3>
+                  <p className="text-sm text-[#B9C0D4] mb-8 text-center px-4">Helping you glow with science-backed skincare. Founder of Glow Studio.</p>
+                  
+                  {/* Premium Buttons */}
+                  <div className="w-full space-y-3 mb-8">
+                    {[
+                      { label: "Book Consultation", color: "#FF2DAA" },
+                      { label: "View Shop", color: "#12152A" },
+                      { label: "WhatsApp Me", color: "#12152A" }
+                    ].map((btn, i) => (
+                      <div key={i} className={cn(
+                        "w-full h-12 rounded-2xl flex items-center justify-center text-sm font-bold border border-white/10 shadow-lg",
+                        btn.color === "#12152A" ? "bg-[#12152A] text-white" : "bg-[#FF2DAA] text-white"
+                      )}>
+                        {btn.label}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Visual blocks: Gallery & Products Mini Preview */}
+                  <div className="w-full grid grid-cols-2 gap-3 mb-6">
+                    <div className="aspect-square rounded-2xl bg-[#12152A] border border-white/5 overflow-hidden">
+                      <img src={COVERS.restaurant} className="w-full h-full object-cover opacity-60" />
+                    </div>
+                    <div className="aspect-square rounded-2xl bg-[#12152A] border border-white/5 overflow-hidden">
+                      <img src={COVERS.fashion} className="w-full h-full object-cover opacity-60" />
+                    </div>
+                  </div>
+
+                  <div className="w-full p-4 rounded-2xl bg-[#12152A] border border-white/5 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-[#FF2DAA]/20 flex items-center justify-center">
+                      <ShoppingBag className="w-5 h-5 text-[#FF2DAA]" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold uppercase tracking-tighter opacity-50">FEATURED PRODUCT</div>
+                      <div className="text-sm font-bold">Skin Revive Serum</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -192,15 +261,14 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Trust Badges */}
-      <section className="py-12 border-y border-white/5 bg-white/[0.02]">
+      {/* Secondary Trust Logos */}
+      <section className="py-12 border-y border-white/5 bg-white/[0.02] hidden sm:block">
         <div className="container mx-auto px-6">
-          <div className="flex flex-wrap items-center justify-center gap-8 opacity-40 grayscale">
-             {/* Scrolling logos placeholder or static list */}
-             <span className="text-xl font-bold tracking-widest">MADE IN INDIA</span>
-             <span className="text-xl font-bold tracking-widest">UPI READY</span>
-             <span className="text-xl font-bold tracking-widest">CUSTOM DOMAINS</span>
-             <span className="text-xl font-bold tracking-widest">VERIFIED</span>
+          <div className="flex flex-wrap items-center justify-between gap-8 opacity-40 grayscale hover:opacity-100 transition-opacity duration-500">
+             <span className="text-xl font-black tracking-widest italic">MADE IN INDIA</span>
+             <span className="text-xl font-black tracking-widest italic">UPI SECURE</span>
+             <span className="text-xl font-black tracking-widest italic">DOMAIN MAPPING</span>
+             <span className="text-xl font-black tracking-widest italic">ENTERPRISE ANALYTICS</span>
           </div>
         </div>
       </section>
