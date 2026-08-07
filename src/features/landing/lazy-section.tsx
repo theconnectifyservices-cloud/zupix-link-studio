@@ -42,15 +42,20 @@ export function LazySection({
   }, [rootMargin]);
 
   useEffect(() => {
+    // FORCE LOADING IMMEDIATELY FOR DEBUGGING
+    setVisible(true);
+    
     if (!visible || Comp) return;
     let cancelled = false;
     loader().then((m) => {
       if (!cancelled) setComp(() => m.default);
+    }).catch(err => {
+      console.error(`LazySection [${id}] load failed:`, err);
     });
     return () => {
       cancelled = true;
     };
-  }, [visible, Comp, loader]);
+  }, [visible, Comp, loader, id]);
 
   // If the page is opened/navigated directly to this section's hash, mount immediately.
   useEffect(() => {
@@ -67,11 +72,11 @@ export function LazySection({
     <div
       id={id}
       ref={ref}
-      className={cn(id ? "scroll-mt-20" : undefined, "bg-[#090B18] relative z-10")}
+      className={cn(id ? "scroll-mt-20" : undefined, "bg-[#090B18] relative z-10 w-full")}
       style={{
         minHeight: Comp ? undefined : minHeight,
-        contentVisibility: "auto",
-        containIntrinsicSize: `${minHeight}px`,
+        // contentVisibility: "auto", // Disable temporarily
+        // containIntrinsicSize: `${minHeight}px`,
       }}
     >
       {Comp ? (
