@@ -137,7 +137,7 @@ const FAQS = [
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#090B18] text-white selection:bg-[#FF6A3D]/30">
+    <main id="hero" className="min-h-screen bg-[#090B18] text-white selection:bg-[#FF6A3D]/30">
       <Navbar />
 
       {/* Hero Section */}
