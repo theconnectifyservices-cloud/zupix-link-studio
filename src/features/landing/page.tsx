@@ -740,26 +740,175 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-24 sm:py-32 bg-white/[0.02]">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl sm:text-5xl font-bold mb-16 text-center">Loved by Founders.</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="p-8 rounded-[22px] bg-[#12152A] border border-white/5">
-                <p className="text-lg text-[#B9C0D4] mb-8 leading-relaxed italic">"{t.content}"</p>
-                <div className="flex items-center gap-4">
-                  <img src={t.image} alt={t.name} className="h-12 w-12 rounded-full object-cover" />
-                  <div>
-                    <h4 className="font-bold">{t.name}</h4>
-                    <p className="text-sm text-[#B9C0D4]">{t.role}</p>
+      {/* Social Ecosystem Section */}
+      <section className="py-24 sm:py-32 relative overflow-hidden bg-[#090B18]">
+        {/* Background Glows */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#FF2DAA]/5 blur-[120px] rounded-full pointer-events-none" />
+        
+        <div className="container mx-auto px-6 relative z-10 text-center">
+          <div className="max-w-4xl mx-auto mb-20">
+            <h2 className="text-4xl sm:text-6xl font-bold mb-8 tracking-tight">
+              One Link.<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2DAA] via-[#FF4D8D] to-[#FF7A45]">
+                Every Platform.
+              </span>
+            </h2>
+            <p className="text-xl text-[#B9C0D4]">
+              Connect your audience everywhere from one beautiful profile.
+            </p>
+          </div>
+
+          {/* Animated Ecosystem Orbit */}
+          <div className="relative h-[400px] sm:h-[600px] w-full flex items-center justify-center mb-24 perspective-1000">
+            {/* Center Logo */}
+            <div className="relative z-20 group">
+              <div className="absolute inset-0 bg-[#FF2DAA]/40 blur-3xl rounded-full scale-150 group-hover:scale-[2] transition-transform duration-700" />
+              <div className="relative h-24 w-24 sm:h-32 sm:w-32 rounded-3xl bg-gradient-to-br from-[#FF2DAA] to-[#FF7A45] flex items-center justify-center shadow-2xl border border-white/20">
+                <span className="text-3xl sm:text-4xl font-black tracking-tighter text-white">ZX</span>
+              </div>
+            </div>
+
+            {/* Orbiting Icons */}
+            <div className="absolute inset-0 pointer-events-none">
+              {[
+                { icon: Instagram, color: "#E4405F", delay: 0, radius: 140, speed: 20 },
+                { icon: Twitter, color: "#1DA1F2", delay: 2, radius: 180, speed: 25 },
+                { icon: Linkedin, color: "#0077B5", delay: 4, radius: 220, speed: 18, highlight: true },
+                { icon: Youtube, color: "#FF0000", delay: 6, radius: 260, speed: 22 },
+                { icon: MessageSquare, color: "#25D366", delay: 8, radius: 160, speed: 30 },
+                { icon: Globe2, color: "#4285F4", delay: 10, radius: 240, speed: 28 },
+                { icon: ShoppingBag, color: "#F72FB3", delay: 12, radius: 200, speed: 24 },
+                { icon: Sparkles, color: "#A855F7", delay: 14, radius: 280, speed: 35 },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                  style={{
+                    animation: `orbit ${item.speed}s linear infinite`,
+                    animationDelay: `-${item.delay}s`,
+                    width: `${item.radius * 2}px`,
+                    height: `${item.radius * 2}px`,
+                  }}
+                >
+                  <div 
+                    className={cn(
+                      "absolute top-0 left-1/2 -translate-x-1/2 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md pointer-events-auto cursor-pointer transition-all duration-300 hover:scale-125 hover:border-white/30",
+                      item.highlight && "ring-2 ring-[#0077B5] ring-offset-4 ring-offset-[#090B18]"
+                    )}
+                    style={{ 
+                      boxShadow: `0 0 20px ${item.color}33`,
+                    }}
+                  >
+                    <item.icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: item.color }} />
                   </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Particle Effects */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {[...Array(20)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 bg-white/20 rounded-full animate-pulse"
+                  style={{
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 5}s`,
+                    animationDuration: `${2 + Math.random() * 3}s`,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Premium Ecosystem Features */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-32">
+            {[
+              "Social Embed", "Link Preview", "Smart Icons", "Video Embed",
+              "Playlist Embed", "Google Reviews", "Maps Embed", "PDF Embed",
+              "HTML Embed", "Instagram Feed", "YouTube Shorts", "LinkedIn Profile",
+              "Company Page", "WhatsApp Catalog", "Telegram Channel", "Spotify Playlist"
+            ].map((feature) => (
+              <div key={feature} className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 text-[11px] font-bold text-[#B9C0D4] uppercase tracking-wider hover:bg-white/[0.04] hover:border-white/10 transition-colors">
+                {feature}
               </div>
             ))}
           </div>
+
+          {/* LinkedIn Highlight Section */}
+          <div className="max-w-6xl mx-auto rounded-[40px] bg-gradient-to-br from-[#0077B5]/10 via-[#090B18] to-[#FF2DAA]/5 border border-white/5 p-8 sm:p-16 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-[#0077B5]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            
+            <div className="flex flex-col lg:flex-row items-center gap-16 relative z-10">
+              <div className="flex-1 text-left">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0077B5]/20 border border-[#0077B5]/30 text-[10px] font-bold text-[#0077B5] uppercase tracking-widest mb-6">
+                  ⭐ Professional Spotlight
+                </div>
+                <h3 className="text-3xl sm:text-5xl font-bold mb-6 tracking-tight">Grow Your Professional Brand.</h3>
+                <p className="text-lg text-[#B9C0D4] mb-10 leading-relaxed max-w-xl">
+                  Connect your LinkedIn profile or company page directly to your ZUPIX Link Studio. Let recruiters, clients, partners and businesses discover your professional identity in one click.
+                </p>
+                
+                <div className="flex flex-wrap gap-3 mb-12">
+                  {[
+                    "Business Ready", "Professional Networking", "Recruitment Friendly",
+                    "B2B Optimized", "Corporate Branding"
+                  ].map((badge) => (
+                    <span key={badge} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-[#B9C0D4]">
+                      {badge}
+                    </span>
+                  ))}
+                </div>
+
+                <CtaButton to="/auth" className="bg-[#0077B5] hover:bg-[#006396] border-none shadow-xl shadow-[#0077B5]/20">
+                  Connect LinkedIn
+                </CtaButton>
+              </div>
+
+              {/* LinkedIn Card Preview */}
+              <div className="w-full max-w-[400px] aspect-[4/5] relative animate-in fade-in slide-in-from-right-8 duration-1000">
+                <div className="absolute inset-0 bg-[#0077B5]/20 blur-3xl rounded-full scale-75 group-hover:scale-100 transition-transform duration-700" />
+                <div className="relative h-full w-full rounded-[32px] bg-[#12152A] border border-white/10 overflow-hidden shadow-2xl transition-transform duration-500 group-hover:rotate-2 group-hover:scale-[1.02]">
+                  {/* LinkedIn Header */}
+                  <div className="h-24 bg-[#0077B5]/20 relative">
+                     <div className="absolute -bottom-10 left-8 h-20 w-20 rounded-xl border-4 border-[#12152A] bg-white overflow-hidden shadow-lg">
+                       <img src={PORTRAITS.karan} className="h-full w-full object-cover" alt="Profile" />
+                     </div>
+                  </div>
+                  <div className="pt-14 px-8">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-xl font-bold">Karan Malhotra</h4>
+                      <div className="bg-[#0077B5] text-white p-0.5 rounded-sm">
+                        <Linkedin className="w-3 h-3 fill-current" />
+                      </div>
+                    </div>
+                    <p className="text-sm text-[#B9C0D4] mb-6 font-medium">Creative Director at ZUPIX Studio • Top Voice in Design</p>
+                    
+                    <div className="space-y-4">
+                      <div className="h-10 w-full rounded-lg bg-[#0077B5]/10 border border-[#0077B5]/20 flex items-center justify-center text-xs font-bold text-[#0077B5]">
+                        View LinkedIn Profile
+                      </div>
+                      <div className="h-32 w-full rounded-xl bg-white/5 border border-white/5 p-4">
+                        <div className="flex items-center gap-3 mb-3">
+                          <TrendingUp className="w-4 h-4 text-[#0077B5]" />
+                          <div className="text-[10px] font-bold uppercase tracking-tighter opacity-50">Recent Activity</div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="h-2 w-3/4 rounded-full bg-white/10" />
+                          <div className="h-2 w-1/2 rounded-full bg-white/10" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Testimonials */}
 
       {/* FAQ Accordion */}
       <section id="faq" className="py-24 sm:py-32">
