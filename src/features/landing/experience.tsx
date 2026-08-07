@@ -1528,7 +1528,7 @@ function PerformanceMetrics() {
               key={m.label}
               initial={{ opacity: 1, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
+              viewport={{ once: true, margin: "200px" }}
               transition={{ duration: 0.4 }}
               className="rounded-2xl border border-border/60 bg-background/70 p-5 text-center backdrop-blur-xl"
             >

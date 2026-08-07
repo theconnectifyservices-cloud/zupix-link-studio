@@ -1243,7 +1243,7 @@ function DeviceCase({ kind, theme }: { kind: "desktop" | "tablet" | "mobile"; th
 
 function FeatureCard({ icon: Icon, label, hue, delay }: { icon: typeof Zap; label: string; hue: string; delay: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "200px" });
   return (
     <motion.div
       ref={ref}
