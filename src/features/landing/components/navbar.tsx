@@ -72,7 +72,7 @@ export function Navbar() {
               </Link>
               <CtaButton 
                 to="/auth"
-                className="h-12 px-6"
+                className="min-h-[44px] h-[44px] px-6 text-sm"
               >
                 Start Building
               </CtaButton>
