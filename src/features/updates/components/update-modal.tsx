@@ -218,7 +218,7 @@ export function UpdateModal() {
             size="sm"
             className="w-full gap-1.5 text-muted-foreground"
           >
-            <Link to="/app/changelog" onClick={() => close({ dismissed: true })}>
+            <Link to="/" onClick={() => close({ dismissed: true })}>
               <BookOpen className="h-4 w-4" aria-hidden />
               View changelog
             </Link>

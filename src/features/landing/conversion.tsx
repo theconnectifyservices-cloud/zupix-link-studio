@@ -2,7 +2,7 @@
  * Landing Conversion — the high-converting section stack below the Showcase.
  *
  * 1. Success Stories (Indian customers, animated stats)
- * 2. Video Testimonials (auto-scrolling row, lightbox)
+ * 2. Enterprise Features (bento grid, animated icons)
  * 3. Enterprise Features (bento grid, animated icons)
  * 4. Comparison Table (sticky header, ZUPIX highlighted)
  * 5. Pricing Experience (glass cards, glow border)
@@ -548,184 +548,6 @@ function SectionSuccessStories() {
   );
 }
 
-// ============================================================================
-// SECTION 2 — VIDEO TESTIMONIALS
-// ============================================================================
-
-type VideoTestimonial = {
-  id: string;
-  name: string;
-  business: string;
-  industry: string;
-  duration: string;
-  colors: [string, string];
-  quote: string;
-  photo: string;
-  coverKey: keyof typeof COVERS;
-};
-
-const VIDEOS: VideoTestimonial[] = [
-  { id: "v1", name: "Meera Iyer", business: "Meera Silks", industry: "Textiles", duration: "1:24", colors: ["#c44569", "#6c5ce7"], quote: "Sold out our Kanjivaram festive drop in 6 days.", photo: PORTRAITS.meera, coverKey: "fashion" },
-  { id: "v2", name: "Arjun Reddy", business: "Blue Tokai Coffee HQ", industry: "F&B", duration: "2:03", colors: ["#6b3a2a", "#e8b84a"], quote: "Subscription sign-ups from IG bio doubled.", photo: PORTRAITS.cafeOwner, coverKey: "coffee" },
-  { id: "v3", name: "Dr. Nisha Menon", business: "Bloom Dental", industry: "Healthcare", duration: "1:47", colors: ["#2dd4a8", "#0d7a5f"], quote: "80% of new patient calls now start on the profile.", photo: PORTRAITS.nisha, coverKey: "doctor" },
-  { id: "v4", name: "Farhan Qureshi", business: "Qureshi Kababs", industry: "Restaurant", duration: "1:11", colors: ["#e85d3a", "#0d0d0d"], quote: "Weekend covers up 3× since we added the menu block.", photo: PORTRAITS.farhan, coverKey: "restaurant" },
-  { id: "v5", name: "Anaya Kapoor", business: "Anaya Studio", industry: "Photography", duration: "2:22", colors: ["#4f46e5", "#22d3ee"], quote: "Wedding inquiries went from 4/mo to 40/mo.", photo: PORTRAITS.anaya, coverKey: "creator" },
-  { id: "v6", name: "Vikram Joshi", business: "Joshi Motors", industry: "Automotive", duration: "1:38", colors: ["#0f1b3d", "#3b6fa0"], quote: "Test-drive bookings straight from QR at the showroom.", photo: PORTRAITS.vikram, coverKey: "electronics" },
-  { id: "v7", name: "Kavya Nair", business: "Kavya Yoga Kerala", industry: "Wellness", duration: "1:56", colors: ["#87a878", "#4a6741"], quote: "Retreat waitlist filled in 48 hours.", photo: PORTRAITS.kavya, coverKey: "gym" },
-  { id: "v8", name: "Aditya Bose", business: "Bose Legal", industry: "Legal", duration: "2:10", colors: ["#0f1b3d", "#c9a84c"], quote: "Professional page that finally matches our reputation.", photo: PORTRAITS.aditya, coverKey: "law" },
-];
-
-function VideoCard({ v, onOpen }: { v: VideoTestimonial; onOpen: () => void }) {
-  return (
-    <motion.button
-      whileHover={{ y: -6, scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 250, damping: 20 }}
-      onClick={onOpen}
-      className="group relative w-[min(320px,calc(100vw-4rem))] shrink-0 overflow-hidden rounded-3xl border border-foreground/10 bg-background/60 text-left backdrop-blur-md"
-    >
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-black">
-        <img
-          src={COVERS[v.coverKey]}
-          alt={v.business}
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-        <div className="absolute left-4 top-4">
-          <AvatarMonogram name={v.name} colors={v.colors} photo={v.photo} />
-        </div>
-
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-4">
-          <div className="text-white">
-            <div className="flex items-center gap-1.5 text-xs font-medium">
-              <BadgeCheck className="h-4 w-4 text-white" />
-              Verified customer
-            </div>
-            <div className="mt-1 text-sm font-semibold">{v.name}</div>
-            <div className="text-xs opacity-80">{v.business}</div>
-          </div>
-          <div className="rounded-full bg-white/20 px-2 py-1 text-[11px] font-medium text-white backdrop-blur">
-            {v.duration}
-          </div>
-        </div>
-        <motion.div
-          className="absolute inset-0 grid place-items-center"
-          initial={{ opacity: 0.85 }}
-          whileHover={{ opacity: 1 }}
-        >
-          <div className="relative">
-            <div className="absolute inset-0 -m-3 animate-ping rounded-full bg-white/30" />
-            <div className="relative grid h-16 w-16 place-items-center rounded-full bg-white/95 text-[#e84393] shadow-2xl transition-transform group-hover:scale-110">
-              <Play className="ml-1 h-6 w-6 fill-current" />
-            </div>
-          </div>
-        </motion.div>
-      </div>
-      <div className="p-4">
-        <p className="line-clamp-2 text-sm text-foreground/80">"{v.quote}"</p>
-        <p className="mt-2 text-xs text-foreground/60">{v.industry}</p>
-      </div>
-    </motion.button>
-  );
-}
-
-function SectionVideoTestimonials() {
-  const [open, setOpen] = useState<VideoTestimonial | null>(null);
-  const [paused, setPaused] = useState(false);
-  const loop = [...VIDEOS, ...VIDEOS];
-
-  return (
-    <section className="relative overflow-hidden py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        <SectionHeader
-          eyebrow="Video testimonials"
-          title={
-            <>
-              Hear it from founders <span style={{ fontFamily: "'Instrument Serif', serif" }} className="italic">who ship</span>
-            </>
-          }
-          subtitle="Short, honest stories from teams running their business on ZUPIX."
-        />
-      </div>
-
-      <div
-        className="relative mt-14 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
-        <motion.div
-          className="flex gap-5 px-6"
-          animate={{ x: paused ? undefined : ["0%", "-50%"] }}
-          transition={{ duration: 60, ease: "linear", repeat: Infinity }}
-        >
-          {loop.map((v, i) => (
-            <VideoCard key={`${v.id}-${i}`} v={v} onOpen={() => setOpen(v)} />
-          ))}
-        </motion.div>
-      </div>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-4 backdrop-blur-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setOpen(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 240, damping: 24 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-neutral-950 text-white shadow-2xl"
-            >
-              <button
-                onClick={() => setOpen(null)}
-                className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/20"
-                aria-label="Close"
-              >
-                <X className="h-4 w-4" />
-              </button>
-              <div className="relative aspect-video w-full overflow-hidden bg-black">
-                <img
-                  src={COVERS[open.coverKey]}
-                  alt={open.business}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/45" />
-                <div className="relative grid h-full w-full place-items-center text-center">
-                  <div>
-                    <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-white/95 text-[#e84393] shadow-2xl">
-                      <Play className="ml-1 h-8 w-8 fill-current" />
-                    </div>
-                    <p className="mt-4 text-sm opacity-90">Preview available on request</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4 p-6">
-                <AvatarMonogram name={open.name} colors={open.colors} photo={open.photo} />
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-semibold">{open.name}</h3>
-                    <BadgeCheck className="h-4 w-4 text-[#22d3ee]" />
-                  </div>
-                  <p className="text-sm opacity-70">
-                    {open.business} • {open.industry}
-                  </p>
-                  <p className="mt-3 text-sm leading-relaxed opacity-90">"{open.quote}"</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </section>
-  );
-}
 
 // ============================================================================
 // SECTION 3 — ENTERPRISE FEATURES BENTO
@@ -1257,7 +1079,7 @@ export function LandingConversion() {
         }}
       />
       <SectionSuccessStories />
-      <SectionVideoTestimonials />
+      
       <SectionFeatures />
       <SectionCompare />
       <PricingSection id="pricing" />
