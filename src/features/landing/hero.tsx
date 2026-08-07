@@ -1149,7 +1149,7 @@ export function LandingHero() {
   const headline = ["Build", "Beautiful", "Bio", "Links", "That", "Actually", "Convert."];
 
   return (
-    <section id="hero" className="relative isolate min-h-dvh w-full overflow-hidden bg-[#0a0a12] text-white">
+    <section id="hero" className="relative isolate min-h-dvh w-full overflow-hidden bg-[#0a0a12] text-white pt-[116px] sm:pt-[124px]">
       {/* Local keyframes / utilities used by this hero only */}
       <style>{`
         @keyframes zx-aurora-a { 0%,100% { transform: translate3d(-6%,-4%,0) scale(1); }
