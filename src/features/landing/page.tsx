@@ -253,7 +253,7 @@ function NumberTicker({ value, duration = 2000 }: { value: string; duration?: nu
     window.requestAnimationFrame(step);
   }, [hasAnimated, target, duration]);
 
-  return <div ref={elementRef}>{count}{suffix}</div>;
+  return <div ref={elementRef} className="inline-block">{count}{suffix}</div>;
 }
 
 export function LandingPage() {
@@ -309,12 +309,12 @@ export function LandingPage() {
                 Build professional <span className="text-white font-medium">Bio Links</span> and <span className="text-white font-medium">Mini Websites</span> in minutes. Accept <span className="text-white font-medium">Payments</span>, sell <span className="text-white font-medium">Products</span>, and verify your brand with <span className="text-white font-medium">Custom Domains</span>.
               </p>
               
-              <div className="flex flex-col sm:flex-row min-[480px]:flex-wrap items-stretch min-[480px]:items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both w-full max-w-[400px] min-[480px]:max-w-none mx-auto lg:mx-0">
-                <CtaButton to="/auth" className="min-[480px]:flex-1 min-[480px]:min-w-[220px]">
-                  Start Building Free
-                </CtaButton>
-                <CtaButton to="/auth" variant="secondary" showIcon={false} icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />} className="min-[480px]:flex-1 min-[480px]:min-w-[220px]">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-[14px] sm:gap-4 mb-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 fill-mode-both w-full max-w-[400px] min-[480px]:max-w-[500px] sm:max-w-none mx-auto lg:mx-0">
+                <CtaButton to="/auth" className="w-full sm:flex-1 h-[56px] px-6 text-base font-semibold">
                   Start 3-Day Free Trial
+                </CtaButton>
+                <CtaButton to="/auth" variant="secondary" showIcon={true} icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />} className="w-full sm:flex-1 h-[56px] px-6 text-base font-semibold">
+                  Watch Live Demo
                 </CtaButton>
               </div>
 
@@ -972,36 +972,37 @@ export function LandingPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 sm:py-32 lg:py-48 relative overflow-hidden">
+      <section className="py-12 sm:py-20 md:py-32 lg:py-48 relative overflow-hidden">
         {/* Premium Gradient Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-[#FF2DAA]/10 via-[#FF7A45]/10 to-[#F72FB3]/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] aspect-square bg-gradient-to-r from-[#FF2DAA]/10 via-[#FF7A45]/10 to-[#F72FB3]/10 blur-[100px] sm:blur-[120px] rounded-full pointer-events-none -z-10" />
         
         <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-          <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-8 duration-1000">
+          <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-8 duration-1000 w-full">
             <h2 className="text-[34px] sm:text-[42px] md:text-6xl lg:text-7xl font-bold mb-7 leading-[1.1] sm:leading-[1.15] max-w-[90%] md:max-w-4xl mx-auto tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
               Everything you need to grow online. Nothing you don't.
             </h2>
             
-            <div className="flex flex-col sm:flex-row min-[480px]:flex-wrap items-center justify-center gap-4 mt-7">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-[14px] sm:gap-3 md:gap-4 mt-7 w-full max-w-[400px] min-[480px]:max-w-[500px] sm:max-w-none mx-auto">
               <CtaButton 
                 to="/auth" 
-                showIcon={false}
-                className="min-[480px]:flex-1 min-[480px]:min-w-[220px]"
+                showIcon={true}
+                className="w-full sm:flex-1 h-[56px] px-6 text-base font-semibold"
               >
-                🎉 Start 3-Day Free Trial
+                Start 3-Day Free Trial
               </CtaButton>
               <CtaButton 
                 to="/auth" 
                 variant="secondary" 
-                showIcon={false}
-                className="min-[480px]:flex-1 min-[480px]:min-w-[220px]"
+                showIcon={true}
+                icon={<Sparkles className="w-4 h-4 text-[#FF2DAA]" />}
+                className="w-full sm:flex-1 h-[56px] px-6 text-base font-semibold"
               >
-                ▶ Watch Live Demo
+                Watch Live Demo
               </CtaButton>
             </div>
             
             <p className="mt-10 text-[#B9C0D4] text-base font-medium opacity-60">
-              No credit card required • Cancel anytime
+              No credit card required • Cancel anytime • Instant setup
             </p>
           </div>
         </div>
