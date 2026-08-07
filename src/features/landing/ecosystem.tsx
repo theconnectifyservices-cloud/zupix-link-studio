@@ -78,9 +78,9 @@ function SectionHeader({
   return (
     <div className="mx-auto mb-14 max-w-3xl text-center">
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.5 }}
         className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-white/70 backdrop-blur"
       >
@@ -88,18 +88,18 @@ function SectionHeader({
         {eyebrow}
       </motion.div>
       <motion.h2
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.6, delay: 0.05 }}
         className="mt-5 text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl"
       >
         {title}
       </motion.h2>
       <motion.p
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.6, delay: 0.1 }}
         className="mt-4 text-pretty text-base text-white/60 sm:text-lg"
       >
@@ -276,9 +276,9 @@ function EcosystemGrid() {
           <motion.button
             key={c.title}
             type="button"
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 1, y: 0 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "200px" }}
             transition={{ duration: 0.5, delay: (i % 4) * 0.05 }}
             whileHover={{ y: -6, rotateX: 2, rotateY: -2 }}
             style={{ transformStyle: "preserve-3d" }}
@@ -436,7 +436,7 @@ function LearningCarousel() {
           {LEARNING.map((l, i) => (
             <motion.article
               key={l.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 1, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: (i % 4) * 0.04 }}
@@ -585,7 +585,7 @@ function WhyBento() {
         {WHY_CARDS.map((w, i) => (
           <motion.div
             key={w.title}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 1, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: (i % 4) * 0.05 }}
@@ -681,7 +681,7 @@ function LiveSupport() {
         {SUPPORT.map((s, i) => (
           <motion.div
             key={s.title}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 1, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: (i % 3) * 0.05 }}
@@ -806,7 +806,7 @@ function Roadmap() {
             return (
               <motion.li
                 key={r.version}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 1, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.55 }}
@@ -889,7 +889,7 @@ function Newsletter() {
     <section ref={ref} className="relative py-24">
       <div className="mx-auto max-w-4xl px-6">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 1, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="relative overflow-hidden rounded-3xl p-[1.5px]"
@@ -943,7 +943,7 @@ function Newsletter() {
                     {state === "idle" && (
                       <motion.span
                         key="idle"
-                        initial={{ opacity: 0, y: 4 }}
+                        initial={{ opacity: 1, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}
                         className="inline-flex items-center gap-2"
@@ -954,7 +954,7 @@ function Newsletter() {
                     {state === "loading" && (
                       <motion.span
                         key="loading"
-                        initial={{ opacity: 0 }}
+                        initial={{ opacity: 1 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         className="inline-flex items-center gap-2"
@@ -965,7 +965,7 @@ function Newsletter() {
                     {state === "done" && (
                       <motion.span
                         key="done"
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 1, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
                         className="inline-flex items-center gap-2"
@@ -1164,7 +1164,7 @@ export function LandingEcosystem() {
    */
 
   return (
-    <div id="ecosystem" className="reveal-on-scroll relative isolate overflow-hidden bg-[#0a0a12] text-white">
+    <div id="ecosystem" className="reveal-visible relative isolate overflow-hidden bg-[#090B18] text-white">
       {/* Ambient aurora background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-40 left-1/4 h-[520px] w-[520px] rounded-full bg-orange-500/10 blur-[120px]" />

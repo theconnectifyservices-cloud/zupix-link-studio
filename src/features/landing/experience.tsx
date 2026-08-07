@@ -29,7 +29,7 @@ import {
   useScroll,
   useSpring,
   useTransform,
-} from "motion/react";
+} from "framer-motion";
 import {
   Activity,
   ArrowRight,
@@ -127,9 +127,9 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title
   return (
     <div className="mx-auto mb-14 max-w-3xl text-center">
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.5 }}
         className="mb-4 inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 px-4 py-1.5 text-xs font-medium text-foreground/70 backdrop-blur"
       >
@@ -137,18 +137,18 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title
         {eyebrow}
       </motion.div>
       <motion.h2
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.6, delay: 0.05 }}
         className="font-serif text-4xl leading-[1.05] tracking-tight text-foreground md:text-5xl lg:text-6xl"
       >
         {title}
       </motion.h2>
       <motion.p
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "200px" }}
         transition={{ duration: 0.6, delay: 0.1 }}
         className="mt-4 text-base text-foreground/60 md:text-lg"
       >
@@ -522,7 +522,7 @@ function PhoneFrame({ business, className = "" }: { business: Business; classNam
         <AnimatePresence mode="wait">
           <motion.div
             key={business.id}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 1, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -576,7 +576,7 @@ function PhoneFrame({ business, className = "" }: { business: Business; classNam
               {business.buttons.map((b, i) => (
                 <motion.div
                   key={b.label}
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 1, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * i + 0.15 }}
                   className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[12px] font-medium"
@@ -1037,7 +1037,7 @@ function AiStudioDemo() {
                     <AnimatePresence key={`${runId}-${i}`} initial>
                       {shown && (
                         <motion.div
-                          initial={{ opacity: 0, y: 8 }}
+                          initial={{ opacity: 1, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.35 }}
                           className="rounded-xl border border-border/60 bg-background p-3"
@@ -1133,7 +1133,7 @@ function FeatureTile({ feature, index }: { feature: (typeof FEATURES)[number]; i
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 1, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : undefined}
       transition={{ duration: 0.4, delay: index * 0.03 }}
       whileHover={{ y: -4 }}
@@ -1304,7 +1304,7 @@ function WorkflowTimeline() {
               return (
                 <motion.div
                   key={s.title}
-                  initial={{ opacity: 0, y: 24 }}
+                  initial={{ opacity: 1, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
                   transition={{ duration: 0.5 }}
@@ -1526,7 +1526,7 @@ function PerformanceMetrics() {
           {METRICS.map((m) => (
             <motion.div
               key={m.label}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 1, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4 }}
@@ -1568,5 +1568,5 @@ export function LandingExperience() {
     ],
     [],
   );
-  return <div id="experience" className="reveal-on-scroll relative bg-[#0a0a12]">{sections}</div>;
+  return <div id="experience" className="reveal-visible relative bg-[#090B18]">{sections}</div>;
 }

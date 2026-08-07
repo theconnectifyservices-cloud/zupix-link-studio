@@ -14,7 +14,9 @@
  */
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { AnimatePresence, motion, useInView, useMotionValue, useSpring, useTransform } from "motion/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useMotionValue, useSpring, useTransform } from "framer-motion";
 import {
   BadgeCheck,
   Check,
@@ -669,7 +671,7 @@ function ThemeModal({ theme, onClose }: { theme: ThemeCard | null; onClose: () =
     <AnimatePresence>
       {theme && (
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
@@ -984,7 +986,7 @@ export function LandingShowcase() {
   );
 
   return (
-    <div id="showcase" className="reveal-on-scroll relative bg-[#0a0a12] text-white">
+    <div id="showcase" className="reveal-visible relative bg-[#090B18] text-white w-full overflow-hidden">
       <style>{`
         @keyframes zx-float { 0%,100% { transform: translateY(0px) } 50% { transform: translateY(-10px) } }
         @keyframes zx-drift { 0%,100% { transform: translate(0,0) } 50% { transform: translate(-6px,8px) } }
@@ -1042,7 +1044,7 @@ export function LandingShowcase() {
               <motion.div
                 key={t.id}
                 layout
-                initial={{ opacity: 0, y: 20, scale: 0.96, filter: "blur(8px)" }}
+                initial={{ opacity: 1, y: 20, scale: 0.96, filter: "blur(8px)" }}
                 animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
                 exit={{ opacity: 0, scale: 0.96, filter: "blur(8px)" }}
                 transition={{ type: "spring", stiffness: 200, damping: 22 }}
@@ -1184,7 +1186,7 @@ function SectionHeader({ kicker, title, sub }: { kicker: string; title: React.Re
   return (
     <div ref={ref} className="mx-auto max-w-4xl px-4 pb-10 pt-24 text-center">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 1, y: 20 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7 }}
       >
@@ -1223,7 +1225,7 @@ function DeviceCase({ kind, theme }: { kind: "desktop" | "tablet" | "mobile"; th
           <AnimatePresence mode="wait">
             <motion.div
               key={theme.id + kind}
-              initial={{ opacity: 0, scale: 0.98 }}
+              initial={{ opacity: 1, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ type: "spring", stiffness: 220, damping: 24 }}
@@ -1245,7 +1247,7 @@ function FeatureCard({ icon: Icon, label, hue, delay }: { icon: typeof Zap; labe
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 24, scale: 0.94 }}
+      initial={{ opacity: 1, y: 24, scale: 0.94 }}
       animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
       transition={{ type: "spring", stiffness: 200, damping: 20, delay }}
       whileHover={{ y: -6, scale: 1.03 }}
