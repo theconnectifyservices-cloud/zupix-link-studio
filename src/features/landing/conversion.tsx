@@ -2,7 +2,7 @@
  * Landing Conversion — the high-converting section stack below the Showcase.
  *
  * 1. Success Stories (Indian customers, animated stats)
- * 2. Video Testimonials (auto-scrolling row, lightbox)
+ * 2. Enterprise Features (bento grid, animated icons)
  * 3. Enterprise Features (bento grid, animated icons)
  * 4. Comparison Table (sticky header, ZUPIX highlighted)
  * 5. Pricing Experience (glass cards, glow border)
@@ -1257,7 +1257,7 @@ export function LandingConversion() {
         }}
       />
       <SectionSuccessStories />
-      <SectionVideoTestimonials />
+      
       <SectionFeatures />
       <SectionCompare />
       <PricingSection id="pricing" />
