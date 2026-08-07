@@ -1182,7 +1182,7 @@ export function LandingShowcase() {
 
 function SectionHeader({ kicker, title, sub }: { kicker: string; title: React.ReactNode; sub: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const inView = useInView(ref, { once: true, margin: "200px" });
   return (
     <div ref={ref} className="mx-auto max-w-4xl px-4 pb-10 pt-24 text-center">
       <motion.div
@@ -1314,7 +1314,7 @@ function QrIllustration() {
 
 function StatsSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-120px" });
+  const inView = useInView(ref, { once: true, margin: "200px" });
   const stats = [
     { label: "Themes", n: 20, suffix: "+" },
     { label: "Profiles", n: 5600, suffix: "+" },
