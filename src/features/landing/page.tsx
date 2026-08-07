@@ -337,37 +337,39 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[240px]">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:auto-rows-[240px] auto-rows-auto items-stretch">
             {/* Sell Products - Large Feature Card */}
-            <div className="md:col-span-8 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-[#FF2DAA]/30 transition-all duration-500">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#FF2DAA]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative z-10 h-full flex flex-col">
-                <div className="mb-auto">
+            <div className="md:col-span-8 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-[#FF2DAA]/30 transition-all duration-500 flex flex-col h-full">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FF2DAA]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex-1">
                   <div className="h-14 w-14 rounded-2xl bg-[#FF2DAA]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                     <ShoppingBag className="h-7 w-7 text-[#FF2DAA]" />
                   </div>
-                  <h3 className="text-3xl font-bold mb-4">Sell Products</h3>
-                  <p className="text-[#B9C0D4] text-lg max-w-md">Create your own mini online store. Sell physical and digital products with inventory management, discounts, and seamless UPI payments.</p>
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-4">Sell Products</h3>
+                  <p className="text-[#B9C0D4] text-base sm:text-lg leading-[1.6] max-w-md">Create your own mini online store. Sell physical and digital products with inventory management, discounts, and seamless UPI payments.</p>
                 </div>
                 <div className="mt-8 flex flex-wrap gap-3">
                   {["Physical + Digital", "Inventory", "Discounts", "0% Fee"].map((tag) => (
-                    <span key={tag} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-[#B9C0D4]">
+                    <span key={tag} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold text-[#B9C0D4]">
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
-              <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-[#FF2DAA]/10 blur-[80px] rounded-full group-hover:bg-[#FF2DAA]/20 transition-all duration-700" />
+              <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-[#FF2DAA]/10 blur-[80px] rounded-full group-hover:bg-[#FF2DAA]/20 transition-all duration-700 pointer-events-none" />
             </div>
 
             {/* Accept Payments - Medium Card */}
-            <div className="md:col-span-4 md:row-span-2 group relative p-8 rounded-[32px] border border-white/5 bg-white/[0.02] overflow-hidden hover:border-[#FF7A45]/30 transition-all duration-500">
-              <div className="relative z-10 h-full flex flex-col">
-                <div className="h-12 w-12 rounded-xl bg-[#FF7A45]/10 flex items-center justify-center mb-6">
-                  <CreditCard className="h-6 w-6 text-[#FF7A45]" />
+            <div className="md:col-span-4 md:row-span-2 group relative p-6 sm:p-8 rounded-[32px] border border-white/5 bg-white/[0.02] hover:border-[#FF7A45]/30 transition-all duration-500 flex flex-col h-full">
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex-1">
+                  <div className="h-12 w-12 rounded-xl bg-[#FF7A45]/10 flex items-center justify-center mb-6">
+                    <CreditCard className="h-6 w-6 text-[#FF7A45]" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4">Accept Payments</h3>
+                  <p className="text-[#B9C0D4] leading-[1.6] text-[15px] sm:text-base mb-8">Integrated with Razorpay, Cashfree, and PayU. Support for offline UPI with manual approval.</p>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Accept Payments</h3>
-                <p className="text-[#B9C0D4] mb-8">Integrated with Razorpay, Cashfree, and PayU. Support for offline UPI with manual approval.</p>
                 <div className="mt-auto space-y-3">
                   {["Razorpay", "Cashfree", "PayU", "Offline UPI"].map((item) => (
                     <div key={item} className="flex items-center gap-3 text-sm text-[#B9C0D4]">
