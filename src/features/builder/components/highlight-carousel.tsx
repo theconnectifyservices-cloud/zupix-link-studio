@@ -167,7 +167,7 @@ export function HighlightCarousel({
         </div>
       </div>
 
-      {showArrows && cards.length > perView && (
+      {false && showArrows && cards.length > perView && (
         <>
           <button
             type="button"
@@ -196,7 +196,7 @@ export function HighlightCarousel({
         </>
       )}
 
-      {showDots && snaps.length > 1 && (
+      {false && showDots && snaps.length > 1 && (
         <div className="mt-3 flex justify-center gap-1.5">
           {snaps.map((_, i) => (
             <button
