@@ -274,24 +274,26 @@ function StoreCarousel({ gap, children }: { gap: number; children: React.ReactNo
             ))
           : children}
       </div>
-      <div className="mt-2 flex justify-end gap-1.5">
-        <button
-          type="button"
-          aria-label="Previous items"
-          onClick={() => scrollBy(-1)}
-          className="grid h-9 w-9 place-items-center rounded-full border bg-card/70 backdrop-blur transition-colors hover:bg-muted"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          aria-label="Next items"
-          onClick={() => scrollBy(1)}
-          className="grid h-9 w-9 place-items-center rounded-full border bg-card/70 backdrop-blur transition-colors hover:bg-muted"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </div>
+      {false && (
+        <div className="mt-2 flex justify-end gap-1.5">
+          <button
+            type="button"
+            aria-label="Previous items"
+            onClick={() => scrollBy(-1)}
+            className="grid h-9 w-9 place-items-center rounded-full border bg-card/70 backdrop-blur transition-colors hover:bg-muted"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next items"
+            onClick={() => scrollBy(1)}
+            className="grid h-9 w-9 place-items-center rounded-full border bg-card/70 backdrop-blur transition-colors hover:bg-muted"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

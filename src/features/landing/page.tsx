@@ -258,28 +258,7 @@ function NumberTicker({ value, duration = 2000 }: { value: string; duration?: nu
 
 export function LandingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
-  const [activeSlide, setActiveSlide] = useState(0);
-  const carouselRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const el = carouselRef.current;
-    if (!el) return;
-
-    const handleScroll = () => {
-      const scrollLeft = el.scrollLeft;
-      const width = el.offsetWidth;
-      // We need a more accurate way since cards are 85vw
-      const children = el.children;
-      if (children.length === 0) return;
-      
-      const cardWidth = (children[0] as HTMLElement).offsetWidth + 16; // 16 is gap-4
-      const index = Math.round(scrollLeft / cardWidth);
-      setActiveSlide(Math.min(index, 4));
-    };
-
-    el.addEventListener('scroll', handleScroll, { passive: true });
-    return () => el.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <main id="hero" className="min-h-screen bg-[#090B18] text-white selection:bg-[#FF6A3D]/30">
