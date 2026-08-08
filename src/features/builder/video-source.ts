@@ -7,6 +7,7 @@
 export type VideoProvider =
   | "mp4"
   | "webm"
+  | "mov"
   | "youtube"
   | "vimeo"
   | "loom"
@@ -55,6 +56,7 @@ export function detectVideoProvider(url: string): VideoProvider {
   if (/\/storage\/v1\/object\/(sign|public)\//i.test(u)) return "asset";
   if (/\.mp4(\?|#|$)/i.test(u)) return "mp4";
   if (/\.webm(\?|#|$)/i.test(u)) return "webm";
+  if (/\.mov(\?|#|$)/i.test(u)) return "mov";
   return "unknown";
 }
 
@@ -62,6 +64,7 @@ export function providerLabel(p: VideoProvider): string {
   switch (p) {
     case "mp4": return "MP4";
     case "webm": return "WebM";
+    case "mov": return "MOV";
     case "youtube": return "YouTube";
     case "vimeo": return "Vimeo";
     case "loom": return "Loom";
@@ -80,7 +83,7 @@ export function buildEmbed(url: string, opts: EmbedOptions = {}): EmbedInfo | nu
     controls = !background,
   } = opts;
 
-  if (p === "mp4" || p === "webm" || p === "asset") {
+  if (p === "mp4" || p === "webm" || p === "mov" || p === "asset") {
     return { kind: "video", src: url, provider: p };
   }
   if (p === "youtube") {

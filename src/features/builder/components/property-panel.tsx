@@ -1150,21 +1150,24 @@ function IconBtn({
 function VideoEditor({ block, set }: { block: VideoBlock; set: (k: string, v: unknown) => void }) {
   return (
     <>
-      <Field label="Provider">
+      <Field label="Video Provider">
         <SelectSimple
-          value={block.provider}
+          value={block.provider || "youtube"}
           onChange={(v) => set("provider", v)}
           options={[
             ["youtube", "YouTube"],
             ["vimeo", "Vimeo"],
-            ["mp4", "MP4 upload URL"],
+            ["loom", "Loom"],
+            ["mp4", "Direct Upload / URL"],
           ]}
         />
       </Field>
       <VideoSourceField
-        label="Video source"
+        label="Video Source"
         value={block.url}
-        onChange={(url) => set("url", url ?? "")}
+        onChange={(url) => {
+          set("url", url ?? "");
+        }}
         background={false}
       />
       <ImageField

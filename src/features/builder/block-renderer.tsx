@@ -908,14 +908,13 @@ function ButtonGroupRender({
 
 
 // ── Video ────────────────────────────────────────────────────────────────
-function extractYouTubeId(url: string): string | null {
-  const m = url.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{6,})/);
-  return m ? m[1] : null;
-}
-function extractVimeoId(url: string): string | null {
-  const m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-  return m ? m[1] : null;
-}
+import {
+  extractYouTubeId,
+  extractVimeoId,
+  extractLoomId,
+  detectVideoProvider,
+  buildEmbed,
+} from "./video-source";
 function VideoRender({ block }: { block: VideoBlock }) {
   const roundedCls =
     block.rounded === "xl"
@@ -927,6 +926,7 @@ function VideoRender({ block }: { block: VideoBlock }) {
           : block.rounded === "sm"
             ? "rounded"
             : "rounded-none";
+
   if (!block.url) {
     return (
       <div
@@ -941,12 +941,31 @@ function VideoRender({ block }: { block: VideoBlock }) {
       </div>
     );
   }
-  if (block.provider === "mp4") {
+
+  const embed = buildEmbed(block.url, {
+    autoplay: block.autoplay,
+    muted: block.muted,
+    loop: block.loop,
+    controls: true,
+  });
+
+  if (!embed) {
+    const provider = block.provider || detectVideoProvider(block.url);
+    const label =
+      provider === "youtube" ? "YouTube" : provider === "vimeo" ? "Vimeo" : provider === "loom" ? "Loom" : "video";
+    return (
+      <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+        Invalid {label} URL
+      </div>
+    );
+  }
+
+  if (embed.kind === "video") {
     const wantAutoplay = block.autoplay !== false;
     if (wantAutoplay) {
       return (
         <AutoplayVideo
-          src={block.url}
+          src={embed.src}
           poster={block.thumbnailUrl}
           loop={block.loop !== false}
           controls
@@ -957,7 +976,7 @@ function VideoRender({ block }: { block: VideoBlock }) {
     }
     return (
       <video
-        src={block.url}
+        src={embed.src}
         controls
         muted={block.muted}
         loop={block.loop}
@@ -968,47 +987,11 @@ function VideoRender({ block }: { block: VideoBlock }) {
       />
     );
   }
-  const params = new URLSearchParams();
-  const wantAutoplay = block.autoplay !== false;
-  if (wantAutoplay) {
-    params.set("autoplay", "1");
-    // Autoplay requires muted on mobile browsers.
-    params.set("mute", "1");
-  } else if (block.muted) {
-    params.set("mute", "1");
-  }
-  params.set("playsinline", "1");
-  params.set("rel", "0");
-  params.set("modestbranding", "1");
-  let src = "";
-  if (block.provider === "youtube") {
-    const id = extractYouTubeId(block.url);
-    if (!id)
-      return (
-        <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
-          Invalid YouTube URL
-        </div>
-      );
-    if (block.loop) {
-      params.set("loop", "1");
-      params.set("playlist", id);
-    }
-    src = `https://www.youtube.com/embed/${id}?${params.toString()}`;
-  } else {
-    const id = extractVimeoId(block.url);
-    if (!id)
-      return (
-        <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
-          Invalid Vimeo URL
-        </div>
-      );
-    if (block.loop) params.set("loop", "1");
-    src = `https://player.vimeo.com/video/${id}?${params.toString()}`;
-  }
+
   return (
     <div className={cn("aspect-video w-full overflow-hidden bg-black", roundedCls)}>
       <iframe
-        src={src}
+        src={embed.src}
         className="h-full w-full"
         allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
         allowFullScreen
