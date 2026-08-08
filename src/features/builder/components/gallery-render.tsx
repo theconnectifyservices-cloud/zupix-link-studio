@@ -324,7 +324,7 @@ function CarouselLayout({ block, images, interactive, onOpen }: LayoutProps) {
         ))}
       </div>
 
-      {showArrows && interactive && (
+      {false && showArrows && interactive && (
         <>
           <button
             type="button"
@@ -345,7 +345,7 @@ function CarouselLayout({ block, images, interactive, onOpen }: LayoutProps) {
         </>
       )}
 
-      {showDots && (
+      {false && showDots && (
         <div className="absolute inset-x-0 bottom-2 flex items-center justify-center gap-1.5">
           {images.map((img, i) => (
             <button
