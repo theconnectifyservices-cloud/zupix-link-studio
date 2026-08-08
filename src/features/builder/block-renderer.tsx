@@ -32,7 +32,7 @@ import { GalleryRender } from "./components/gallery-render";
 import { resolveHeroEffects } from "./effects/hero-effects";
 import { getIcon as getButtonIcon } from "./button-icons";
 import { cn } from "@/lib/utils";
-import { buildEmbed } from "./video-source";
+
 import { AutoplayVideo } from "./components/autoplay-video";
 import {
   Twitter,
@@ -952,7 +952,13 @@ function VideoRender({ block }: { block: VideoBlock }) {
   if (!embed) {
     const provider = block.provider || detectVideoProvider(block.url);
     const label =
-      provider === "youtube" ? "YouTube" : provider === "vimeo" ? "Vimeo" : provider === "loom" ? "Loom" : "video";
+      provider === "youtube"
+        ? "YouTube"
+        : provider === "vimeo"
+          ? "Vimeo"
+          : (provider as string) === "loom"
+            ? "Loom"
+            : "video";
     return (
       <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
         Invalid {label} URL
