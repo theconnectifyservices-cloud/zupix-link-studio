@@ -28,9 +28,10 @@ export function useAdminLicenses(filters: any) {
 }
 
 export function useAdminSubscriptions(filters: any) {
+  const fetchSubs = useServerFn(getAdminSubscriptions);
   return useQuery({
     queryKey: ["admin", "subscriptions", filters],
-    queryFn: () => adminCenterApi.getSubscriptions(filters),
+    queryFn: () => fetchSubs({ data: filters }),
   });
 }
 
