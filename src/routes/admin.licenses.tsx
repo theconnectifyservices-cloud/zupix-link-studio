@@ -205,7 +205,7 @@ function AdminLicenses() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="secondary" className="capitalize">{license.plan_code}</Badge>
+                  <Badge variant="secondary" className="uppercase">{license.plan_code || "—"}</Badge>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
