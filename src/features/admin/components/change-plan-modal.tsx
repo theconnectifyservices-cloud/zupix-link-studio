@@ -51,8 +51,8 @@ export function ChangePlanModal({ user, isOpen, onClose }: ChangePlanModalProps)
   const handleConfirm = () => {
     mutation.mutate({
       userId: user.id,
-      planTier: selectedTier,
-      billingCycle: selectedTier === "free" ? "monthly" : billingCycle
+      planCode: selectedTier,
+      billingCycle: billingCycle
     });
   };
 

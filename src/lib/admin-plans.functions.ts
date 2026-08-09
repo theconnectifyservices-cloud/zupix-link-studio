@@ -55,16 +55,16 @@ export const updateAdminUserPlan = createServerFn({ method: "POST" })
 
     const { data: targetPlan } = await supabaseAdmin
       .from("billing_plans")
-      .select("id, code, price_monthly_minor, price_yearly_minor, currency")
-      .eq("tier", data.planTier)
+      .select("id, code, tier, price_monthly_minor, price_yearly_minor, currency")
+      .eq("code", data.planCode)
       .eq("is_active", true)
       .maybeSingle();
 
     if (!targetPlan) throw new Error("Plan not found");
 
     const now = new Date().toISOString();
-    const cycle = data.planTier === "free" ? "monthly" : data.billingCycle;
-    const unitAmount = data.planTier === "free" ? 0 : 
+    const cycle = targetPlan.tier === "free" ? "monthly" : data.billingCycle;
+    const unitAmount = targetPlan.tier === "free" ? 0 : 
       (cycle === "monthly" ? targetPlan.price_monthly_minor : targetPlan.price_yearly_minor);
 
     const periodEnd = new Date();
@@ -83,7 +83,7 @@ export const updateAdminUserPlan = createServerFn({ method: "POST" })
         quantity: 1,
         gateway: "manual",
         current_period_start: now,
-        current_period_end: data.planTier === "free" ? null : periodEnd.toISOString(),
+        current_period_end: targetPlan.tier === "free" ? null : periodEnd.toISOString(),
         updated_at: now
       }, { onConflict: "workspace_id" })
       .select("id")
@@ -93,7 +93,7 @@ export const updateAdminUserPlan = createServerFn({ method: "POST" })
 
     await supabaseAdmin
       .from("profiles")
-      .update({ subscription_tier: data.planTier } as any)
+      .update({ subscription_tier: targetPlan.code } as any)
       .eq("id", data.userId);
 
     await supabaseAdmin.from("activity_logs").insert({
@@ -103,7 +103,7 @@ export const updateAdminUserPlan = createServerFn({ method: "POST" })
       target_type: "user_plan",
       metadata: {
         previous_plan: profile?.subscription_tier,
-        new_plan: data.planTier,
+        new_plan: targetPlan.code,
         cycle: data.billingCycle,
         admin_id: context.userId,
         reason: "Admin manual override"
