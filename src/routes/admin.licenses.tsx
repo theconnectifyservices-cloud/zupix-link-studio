@@ -128,30 +128,45 @@ function AdminLicenses() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+        <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
-            placeholder="Search license key or email..." 
+            placeholder="Search key, email, or customer..." 
             className="pl-9"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
-            <Filter className="h-4 w-4 mr-2" />
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="unused">Unused</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="expired">Expired</SelectItem>
-            <SelectItem value="revoked">Revoked</SelectItem>
-            <SelectItem value="suspended">Suspended</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full md:w-[180px]">
+              <Filter className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="unused">Unused</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="expired">Expired</SelectItem>
+              <SelectItem value="revoked">Revoked</SelectItem>
+              <SelectItem value="suspended">Suspended</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Select defaultValue="all">
+            <SelectTrigger className="w-full md:w-[150px]">
+              <Badge className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Plan" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Plans</SelectItem>
+              <SelectItem value="starter">Starter</SelectItem>
+              <SelectItem value="pro">Pro</SelectItem>
+              <SelectItem value="tejas">Tejas</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="border rounded-xl bg-card overflow-hidden">
