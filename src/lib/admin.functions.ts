@@ -13,7 +13,7 @@ const getAdminInput = z.object({
 
 export const getAdminUsers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => getUsersInput.parse(data))
+  .inputValidator((data: unknown) => getAdminInput.parse(data))
   .handler(async ({ data: filters, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const userId = context.userId;
