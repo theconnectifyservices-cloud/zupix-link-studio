@@ -171,3 +171,23 @@ function AdminSubscriptions() {
     </div>
   );
 }
+
+function StatusBadge({ status }: { status: string }) {
+  const configs: Record<string, { label: string, color: string, icon: any }> = {
+    active: { label: "Active", color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20", icon: CheckCircle2 },
+    trialing: { label: "Trial", color: "text-blue-500 bg-blue-500/10 border-blue-500/20", icon: Clock },
+    past_due: { label: "Past Due", color: "text-amber-500 bg-amber-500/10 border-amber-500/20", icon: AlertCircle },
+    canceled: { label: "Canceled", color: "text-slate-500 bg-slate-500/10 border-slate-500/20", icon: AlertCircle },
+    expired: { label: "Expired", color: "text-red-500 bg-red-500/10 border-red-500/20", icon: AlertCircle },
+  };
+
+  const config = configs[status] || { label: status, color: "text-muted-foreground bg-muted border-border", icon: AlertCircle };
+  const Icon = config.icon;
+
+  return (
+    <Badge variant="outline" className={`flex items-center gap-1.5 w-fit capitalize font-medium ${config.color}`}>
+      <Icon className="h-3 w-3" />
+      {config.label}
+    </Badge>
+  );
+}
