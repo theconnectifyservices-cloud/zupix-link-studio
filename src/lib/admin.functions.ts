@@ -2,17 +2,18 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const getUsersInput = z.object({
+const getAdminInput = z.object({
   query: z.string().optional(),
   plan: z.string().optional(),
   status: z.string().optional(),
-  limit: z.number().optional(),
-  offset: z.number().optional(),
+  cycle: z.enum(["monthly", "yearly"]).optional(),
+  limit: z.number().optional().default(10),
+  offset: z.number().optional().default(0),
 });
 
 export const getAdminUsers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => getUsersInput.parse(data))
+  .inputValidator((data: unknown) => getAdminInput.parse(data))
   .handler(async ({ data: filters, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const userId = context.userId;
@@ -147,6 +148,99 @@ export const getAdminKPIs = createServerFn({ method: "GET" })
       };
     } catch (e: any) {
       console.error("[Admin API] KPI Fetch Failure:", e);
-      throw e;
+      throw new Error(e.message || "KPI Fetch Failure");
+    }
+  });
+
+export const getAdminSubscriptions = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => getAdminInput.parse(data))
+  .handler(async ({ data: filters, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const userId = context.userId;
+
+    const { data: isAdmin } = await (supabaseAdmin as any).rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    if (!isAdmin) throw new Error("Unauthorized: Admin access required");
+
+    try {
+      // Use a simpler query first to avoid TS depth issues
+      let query = supabaseAdmin
+        .from("billing_subscriptions")
+        .select(`
+          id,
+          status,
+          cycle,
+          currency,
+          unit_amount_minor,
+          current_period_start,
+          current_period_end,
+          trial_start,
+          trial_end,
+          cancel_at_period_end,
+          canceled_at,
+          workspace_id,
+          billing_plans!inner(id, code, name, tier),
+          workspaces!inner(id, owner_id)
+        `, { count: "exact" });
+
+      if (filters.status) query = query.eq("status", filters.status as any);
+      if (filters.cycle) query = query.eq("cycle", filters.cycle);
+
+      const { data: subs, error, count } = await query
+        .order("created_at", { ascending: false })
+        .range(filters.offset || 0, (filters.offset || 0) + (filters.limit || 10) - 1);
+
+      if (error) throw error;
+      if (!subs?.length) return { data: [], count: 0 };
+
+      // Fetch profile separately to avoid massive join recursion
+      const ownerIds = subs.map(s => (s.workspaces as any).owner_id);
+      const { data: profiles } = await supabaseAdmin
+        .from("profiles")
+        .select("id, email, display_name")
+        .in("id", ownerIds);
+
+      const profileMap = new Map(profiles?.map(p => [p.id, p]));
+
+      const mappedData = subs.map((sub: any) => {
+        const profile = profileMap.get(sub.workspaces.owner_id);
+        const plan = sub.billing_plans;
+        return {
+          id: sub.id,
+          user_id: profile?.id,
+          email: profile?.email || "—",
+          display_name: profile?.display_name || "Unnamed User",
+          plan_code: plan?.code,
+          plan_name: plan?.name || plan?.code,
+          plan_tier: plan?.tier,
+          status: sub.status,
+          cycle: sub.cycle,
+          currency: sub.currency,
+          amount_minor: sub.unit_amount_minor,
+          start_date: sub.current_period_start || sub.trial_start,
+          expiry_date: sub.current_period_end || sub.trial_end,
+          cancel_at_period_end: sub.cancel_at_period_end,
+          trial_end: sub.trial_end
+        };
+      });
+
+      if (filters.query) {
+        const q = filters.query.toLowerCase();
+        const filtered = mappedData.filter((d: any) => 
+          d.email.toLowerCase().includes(q) || 
+          d.display_name.toLowerCase().includes(q) || 
+          d.plan_name.toLowerCase().includes(q)
+        );
+        return { data: filtered, count: count || 0 };
+      }
+
+      return { data: mappedData, count: count || 0 };
+    } catch (e: any) {
+      console.error("[Admin API] Failed to fetch subscriptions:", e);
+      throw new Error(e.message || "Failed to fetch subscriptions");
     }
   });
