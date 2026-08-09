@@ -13,6 +13,7 @@ import {
 import { 
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { ChangePlanModal } from "@/features/admin/components/change-plan-modal";
 
 export const Route = createFileRoute("/admin/users")({
   component: AdminUsers,
@@ -20,6 +21,8 @@ export const Route = createFileRoute("/admin/users")({
 
 function AdminUsers() {
   const [query, setQuery] = useState("");
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
   const { data, isLoading, error } = useAdminUsers({ query });
 
   if (error) {
@@ -122,7 +125,10 @@ function AdminUsers() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => {
+                        setSelectedUser(user);
+                        setIsPlanModalOpen(true);
+                      }}>
                         <Shield className="h-4 w-4 mr-2" /> Change Plan
                       </DropdownMenuItem>
                       <DropdownMenuItem>
@@ -153,6 +159,17 @@ function AdminUsers() {
           </TableBody>
         </Table>
       </div>
+
+      {selectedUser && (
+        <ChangePlanModal 
+          user={selectedUser}
+          isOpen={isPlanModalOpen}
+          onClose={() => {
+            setIsPlanModalOpen(false);
+            setSelectedUser(null);
+          }}
+        />
+      )}
     </div>
   );
 }
