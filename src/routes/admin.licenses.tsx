@@ -156,7 +156,7 @@ function AdminLicenses() {
           
           <Select defaultValue="all">
             <SelectTrigger className="w-full md:w-[150px]">
-              <Badge className="h-4 w-4 mr-2" />
+              <Clock className="h-4 w-4 mr-2" />
               <SelectValue placeholder="Plan" />
             </SelectTrigger>
             <SelectContent>
