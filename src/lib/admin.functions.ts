@@ -148,6 +148,106 @@ export const getAdminKPIs = createServerFn({ method: "GET" })
       };
     } catch (e: any) {
       console.error("[Admin API] KPI Fetch Failure:", e);
-      throw e;
+      throw new Error(e.message || "KPI Fetch Failure");
+    }
+  });
+
+export const getAdminSubscriptions = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => getAdminInput.parse(data))
+  .handler(async ({ data: filters, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const userId = context.userId;
+
+    const { data: isAdmin } = await (supabaseAdmin as any).rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    if (!isAdmin) throw new Error("Unauthorized: Admin access required");
+
+    try {
+      let query = supabaseAdmin
+        .from("billing_subscriptions")
+        .select(`
+          id,
+          status,
+          cycle,
+          currency,
+          unit_amount_minor,
+          current_period_start,
+          current_period_end,
+          trial_start,
+          trial_end,
+          cancel_at_period_end,
+          canceled_at,
+          workspace_id,
+          billing_plans (
+            id,
+            code,
+            name,
+            tier
+          ),
+          workspaces (
+            id,
+            owner_id,
+            profiles:profiles!owner_id (
+              id,
+              email,
+              display_name
+            )
+          )
+        `, { count: "exact" });
+
+      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.cycle) query = query.eq("cycle", filters.cycle);
+
+      const { data: subs, error, count } = await query
+        .order("created_at", { ascending: false })
+        .range(filters.offset || 0, (filters.offset || 0) + (filters.limit || 10) - 1);
+
+      if (error) throw error;
+
+      // Manual filtering for text search since it spans nested relationships
+      let filtered = subs || [];
+      if (filters.query) {
+        const q = filters.query.toLowerCase();
+        filtered = filtered.filter((s: any) => {
+          const profile = s.workspaces?.profiles;
+          return (
+            profile?.email?.toLowerCase().includes(q) ||
+            profile?.display_name?.toLowerCase().includes(q) ||
+            s.billing_plans?.name?.toLowerCase().includes(q) ||
+            s.billing_plans?.code?.toLowerCase().includes(q)
+          );
+        });
+      }
+
+      const mappedData = filtered.map((sub: any) => {
+        const profile = sub.workspaces?.profiles;
+        const plan = sub.billing_plans;
+        return {
+          id: sub.id,
+          user_id: profile?.id,
+          email: profile?.email || "—",
+          display_name: profile?.display_name || "Unnamed User",
+          plan_code: plan?.code,
+          plan_name: plan?.name || plan?.code,
+          plan_tier: plan?.tier,
+          status: sub.status,
+          cycle: sub.cycle,
+          currency: sub.currency,
+          amount_minor: sub.unit_amount_minor,
+          start_date: sub.current_period_start || sub.trial_start,
+          expiry_date: sub.current_period_end || sub.trial_end,
+          cancel_at_period_end: sub.cancel_at_period_end,
+          trial_end: sub.trial_end
+        };
+      });
+
+      return { data: mappedData, count: count || 0 };
+    } catch (e: any) {
+      console.error("[Admin API] Failed to fetch subscriptions:", e);
+      throw new Error(e.message || "Failed to fetch subscriptions");
     }
   });
