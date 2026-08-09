@@ -357,7 +357,8 @@ export const BLOCK_DEFS: BlockDef[] = [
       fileUrl: "",
       fileName: "document.pdf",
       fileKind: "pdf",
-      buttonLabel: "Download",
+      buttonLabel: "Download PDF",
+      pdfSourceType: "url",
     }),
   },
   {
