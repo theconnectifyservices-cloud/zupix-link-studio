@@ -167,6 +167,7 @@ export const getAdminSubscriptions = createServerFn({ method: "GET" })
     if (!isAdmin) throw new Error("Unauthorized: Admin access required");
 
     try {
+      // Use a simpler query first to avoid TS depth issues
       let query = supabaseAdmin
         .from("billing_subscriptions")
         .select(`
@@ -182,21 +183,8 @@ export const getAdminSubscriptions = createServerFn({ method: "GET" })
           cancel_at_period_end,
           canceled_at,
           workspace_id,
-          billing_plans (
-            id,
-            code,
-            name,
-            tier
-          ),
-          workspaces (
-            id,
-            owner_id,
-            profiles:profiles!owner_id (
-              id,
-              email,
-              display_name
-            )
-          )
+          billing_plans!inner(id, code, name, tier),
+          workspaces!inner(id, owner_id)
         `, { count: "exact" });
 
       if (filters.status) query = query.eq("status", filters.status);
@@ -207,24 +195,19 @@ export const getAdminSubscriptions = createServerFn({ method: "GET" })
         .range(filters.offset || 0, (filters.offset || 0) + (filters.limit || 10) - 1);
 
       if (error) throw error;
+      if (!subs?.length) return { data: [], count: 0 };
 
-      // Manual filtering for text search since it spans nested relationships
-      let filtered = subs || [];
-      if (filters.query) {
-        const q = filters.query.toLowerCase();
-        filtered = filtered.filter((s: any) => {
-          const profile = s.workspaces?.profiles;
-          return (
-            profile?.email?.toLowerCase().includes(q) ||
-            profile?.display_name?.toLowerCase().includes(q) ||
-            s.billing_plans?.name?.toLowerCase().includes(q) ||
-            s.billing_plans?.code?.toLowerCase().includes(q)
-          );
-        });
-      }
+      // Fetch profile separately to avoid massive join recursion
+      const ownerIds = subs.map(s => (s.workspaces as any).owner_id);
+      const { data: profiles } = await supabaseAdmin
+        .from("profiles")
+        .select("id, email, display_name")
+        .in("id", ownerIds);
 
-      const mappedData = filtered.map((sub: any) => {
-        const profile = sub.workspaces?.profiles;
+      const profileMap = new Map(profiles?.map(p => [p.id, p]));
+
+      const mappedData = subs.map((sub: any) => {
+        const profile = profileMap.get(sub.workspaces.owner_id);
         const plan = sub.billing_plans;
         return {
           id: sub.id,
@@ -244,6 +227,16 @@ export const getAdminSubscriptions = createServerFn({ method: "GET" })
           trial_end: sub.trial_end
         };
       });
+
+      if (filters.query) {
+        const q = filters.query.toLowerCase();
+        const filtered = mappedData.filter((d: any) => 
+          d.email.toLowerCase().includes(q) || 
+          d.display_name.toLowerCase().includes(q) || 
+          d.plan_name.toLowerCase().includes(q)
+        );
+        return { data: filtered, count: count || 0 };
+      }
 
       return { data: mappedData, count: count || 0 };
     } catch (e: any) {
