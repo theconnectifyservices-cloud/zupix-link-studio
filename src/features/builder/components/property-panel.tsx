@@ -2286,23 +2286,6 @@ function FileEditor({ block, set }: { block: FileBlock; set: (k: string, v: unkn
     </>
   );
 }
-      <Field label="Size label">
-        <Input
-          value={block.sizeLabel ?? ""}
-          onChange={(e) => set("sizeLabel", e.target.value)}
-          placeholder="e.g. 2.4 MB"
-        />
-      </Field>
-      <Field label="Button label">
-        <Input
-          value={block.buttonLabel ?? ""}
-          onChange={(e) => set("buttonLabel", e.target.value)}
-          placeholder="Download"
-        />
-      </Field>
-    </>
-  );
-}
 
 function humanBytes(bytes: number): string {
   if (!bytes) return "0 B";
