@@ -57,9 +57,9 @@ export function ChangePlanModal({ user, isOpen, onClose }: ChangePlanModalProps)
   };
 
   const getPrice = (tier: string) => {
-    const plan = plans?.find((p: any) => p.tier === tier);
+    const plan = plans?.find((p: any) => p.tier === tier || p.code === tier);
     if (!plan) return "₹0";
-    if (tier === "free") return "₹0";
+    if (plan.tier === "free" || plan.code === "udaan") return "₹0";
     
     const minor = billingCycle === "monthly" 
       ? plan.price_monthly_minor 
