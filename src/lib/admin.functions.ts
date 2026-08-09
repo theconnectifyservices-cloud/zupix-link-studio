@@ -187,7 +187,7 @@ export const getAdminSubscriptions = createServerFn({ method: "GET" })
           workspaces!inner(id, owner_id)
         `, { count: "exact" });
 
-      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.status) query = query.eq("status", filters.status as any);
       if (filters.cycle) query = query.eq("cycle", filters.cycle);
 
       const { data: subs, error, count } = await query
