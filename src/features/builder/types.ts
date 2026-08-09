@@ -623,11 +623,19 @@ export interface MapBlock extends BaseBlock {
 export type FileKind = "pdf" | "docx" | "zip" | "image" | "custom";
 export interface FileBlock extends BaseBlock {
   type: "file";
+  /** Primary URL used for rendering. */
   fileUrl: string;
   fileName: string;
   fileKind?: FileKind;
   sizeLabel?: string;
   buttonLabel?: string;
+  
+  /** Enterprise Upload System fields */
+  pdfSourceType?: "upload" | "url";
+  pdfFileUrl?: string;
+  pdfFileName?: string;
+  pdfFileSize?: number;
+  pdfFileMime?: string;
 }
 
 // ── Contact Card ─────────────────────────────────────────────────────────

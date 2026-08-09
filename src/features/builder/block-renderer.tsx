@@ -1210,6 +1210,8 @@ function MapRender({ block }: { block: MapBlock }) {
 
 // ── File Download ────────────────────────────────────────────────────────
 function FileRender({ block }: { block: FileBlock }) {
+  const finalUrl = block.pdfFileUrl || block.fileUrl;
+  
   const Icon =
     block.fileKind === "zip"
       ? FileArchive
@@ -1220,19 +1222,35 @@ function FileRender({ block }: { block: FileBlock }) {
           : block.fileKind === "pdf"
             ? FileText
             : FileIcon;
+
+  if (!finalUrl) {
+    return (
+      <div className="flex h-20 items-center justify-center rounded-xl border border-dashed text-xs text-muted-foreground">
+        PDF block not configured
+      </div>
+    );
+  }
+
+  const handleDownload = () => {
+    window.open(finalUrl, "_blank", "noopener,noreferrer");
+  };
+
   return (
-    <div className="flex items-center gap-3 rounded-xl border bg-card p-3">
-      <div className="grid h-10 w-10 place-items-center rounded-lg bg-muted">
+    <div 
+      className="group flex cursor-pointer items-center gap-3 rounded-xl border bg-card p-3 transition-all hover:border-primary/50 hover:shadow-sm active:scale-[0.98]"
+      onClick={handleDownload}
+    >
+      <div className="grid h-10 w-10 place-items-center rounded-lg bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
         <Icon className="h-5 w-5" />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-medium">{block.fileName || "File"}</div>
+        <div className="truncate text-sm font-medium">{block.pdfFileName || block.fileName || "File"}</div>
         {block.sizeLabel && (
           <div className="text-[11px] text-muted-foreground">{block.sizeLabel}</div>
         )}
       </div>
-      <div className="flex shrink-0 items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-medium text-background">
-        <Download className="h-3.5 w-3.5" /> {block.buttonLabel || "Download"}
+      <div className="flex shrink-0 items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-medium text-background transition-opacity group-hover:opacity-90">
+        <Download className="h-3.5 w-3.5" /> {block.buttonLabel || "Download PDF"}
       </div>
     </div>
   );
