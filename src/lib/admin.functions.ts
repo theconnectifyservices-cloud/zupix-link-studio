@@ -48,12 +48,28 @@ export const getAdminUsers = createServerFn({ method: "GET" })
       
       let bioCounts: Record<string, number> = {};
       let mediaCounts: Record<string, number> = {};
+      let activeSubs: Record<string, any> = {};
 
       if (userIds.length > 0) {
-        const [ { data: bios }, { data: media } ] = await Promise.all([
+        const [ { data: bios }, { data: media }, { data: workspaces } ] = await Promise.all([
           supabaseAdmin.from("bio_pages").select("owner_id").in("owner_id", userIds),
-          supabaseAdmin.from("media_assets").select("owner_id").in("owner_id", userIds)
+          supabaseAdmin.from("media_assets").select("owner_id").in("owner_id", userIds),
+          supabaseAdmin.from("workspaces").select("id, owner_id").in("owner_id", userIds)
         ]);
+
+        const wsIds = workspaces?.map(w => w.id) || [];
+        const { data: subs } = await supabaseAdmin
+          .from("billing_subscriptions")
+          .select("workspace_id, plan_id, status, cycle, unit_amount_minor, billing_plans(name, code)")
+          .in("workspace_id", wsIds)
+          .in("status", ["active", "trialing", "past_due"]);
+
+        const wsToOwner = new Map(workspaces?.map(w => [w.id, w.owner_id]));
+        
+        subs?.forEach((s: any) => {
+          const ownerId = wsToOwner.get(s.workspace_id);
+          if (ownerId) activeSubs[ownerId] = s;
+        });
 
         bios?.forEach((b: any) => {
           bioCounts[b.owner_id] = (bioCounts[b.owner_id] || 0) + 1;
@@ -63,18 +79,23 @@ export const getAdminUsers = createServerFn({ method: "GET" })
         });
       }
 
-      const mappedData = users?.map((user: any) => ({
-        id: user.id,
-        email: user.email || "—",
-        display_name: user.display_name || "Unnamed User",
-        avatar_url: user.avatar_url,
-        subscription_tier: user.subscription_tier || "free",
-        status: user.status || "active",
-        created_at: user.created_at,
-        bio_pages_count: bioCounts[user.id] || 0,
-        media_count: mediaCounts[user.id] || 0,
-        storage_usage: user.storage_usage || 0
-      }));
+      const mappedData = users?.map((user: any) => {
+        const sub = activeSubs[user.id];
+        return {
+          id: user.id,
+          email: user.email || "—",
+          display_name: user.display_name || "Unnamed User",
+          avatar_url: user.avatar_url,
+          subscription_tier: sub ? (sub.billing_plans?.name || sub.billing_plans?.code) : (user.subscription_tier || "free"),
+          subscription_status: sub?.status || user.status || "active",
+          subscription_price: sub ? `${sub.unit_amount_minor / 100}/${sub.cycle}` : null,
+          status: user.status || "active",
+          created_at: user.created_at,
+          bio_pages_count: bioCounts[user.id] || 0,
+          media_count: mediaCounts[user.id] || 0,
+          storage_usage: user.storage_usage || 0
+        };
+      });
 
       return { data: mappedData, count: count || 0 };
     } catch (e: any) {

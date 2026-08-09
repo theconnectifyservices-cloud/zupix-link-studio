@@ -103,8 +103,8 @@ function AdminUsers() {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Badge className={user.status === 'suspended' ? 'bg-red-500' : 'bg-green-500'}>
-                    {user.status || 'Active'}
+                 <Badge className={user.subscription_status === 'suspended' ? 'bg-red-500' : 'bg-green-500'}>
+                    {user.subscription_status || 'Active'}
                   </Badge>
                 </TableCell>
                 <TableCell>
