@@ -23,8 +23,23 @@ export const Route = createFileRoute("/admin/licenses")({
 
 function AdminLicenses() {
   const [query, setQuery] = useState("");
-  const { data, isLoading } = useAdminLicenses({ query });
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const { data, isLoading, error } = useAdminLicenses({ 
+    query, 
+    status: statusFilter === "all" ? undefined : statusFilter 
+  });
   const generateMutation = useGenerateLicenses();
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-card border rounded-xl">
+        <XCircle className="h-12 w-12 text-red-500 mb-4" />
+        <h3 className="text-lg font-semibold">Unable to load licenses</h3>
+        <p className="text-muted-foreground mt-1 mb-6">There was an error connecting to the database.</p>
+        <Button onClick={() => window.location.reload()}>Try Again</Button>
+      </div>
+    );
+  }
 
   const [isGenOpen, setIsGenOpen] = useState(false);
   const [genCount, setGenCount] = useState("5");
@@ -77,11 +92,11 @@ function AdminLicenses() {
                      <SelectTrigger>
                        <SelectValue />
                      </SelectTrigger>
-                     <SelectContent>
-                       <SelectItem value="udaan">Udaan (Trial)</SelectItem>
-                       <SelectItem value="tejas">Tejas (Pro)</SelectItem>
-                       <SelectItem value="shikhar">Shikhar (Enterprise)</SelectItem>
-                     </SelectContent>
+                      <SelectContent>
+                        <SelectItem value="starter">Starter</SelectItem>
+                        <SelectItem value="pro">Pro</SelectItem>
+                        <SelectItem value="tejas">Tejas (Legacy)</SelectItem>
+                      </SelectContent>
                    </Select>
                  </div>
                  <div className="grid gap-2">
@@ -113,19 +128,45 @@ function AdminLicenses() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+        <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
-            placeholder="Search license key or email..." 
+            placeholder="Search key, email, or customer..." 
             className="pl-9"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <Button variant="outline" size="icon">
-          <Filter className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full md:w-[180px]">
+              <Filter className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="unused">Unused</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="expired">Expired</SelectItem>
+              <SelectItem value="revoked">Revoked</SelectItem>
+              <SelectItem value="suspended">Suspended</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Select defaultValue="all">
+            <SelectTrigger className="w-full md:w-[150px]">
+              <Clock className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Plan" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Plans</SelectItem>
+              <SelectItem value="starter">Starter</SelectItem>
+              <SelectItem value="pro">Pro</SelectItem>
+              <SelectItem value="tejas">Tejas</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="border rounded-xl bg-card overflow-hidden">
@@ -147,6 +188,12 @@ function AdminLicenses() {
                   <TableCell colSpan={6} className="h-16 animate-pulse bg-muted/20" />
                 </TableRow>
               ))
+            ) : data?.data?.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                  No licenses found.
+                </TableCell>
+              </TableRow>
             ) : data?.data?.map((license: any) => (
               <TableRow key={license.id}>
                 <TableCell>
@@ -158,7 +205,7 @@ function AdminLicenses() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="secondary" className="capitalize">{license.plan_code}</Badge>
+                  <Badge variant="secondary" className="uppercase">{license.plan_code || "—"}</Badge>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -175,8 +222,15 @@ function AdminLicenses() {
                 <TableCell className="text-sm">
                   {license.duration_days >= 9999 ? "Lifetime" : `${license.duration_days} Days`}
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {license.bound_email || "Unassigned"}
+                <TableCell className="text-sm">
+                  {license.assigned_to ? (
+                    <div className="flex flex-col">
+                      <span className="font-medium text-foreground">{license.assigned_to.display_name}</span>
+                      <span className="text-xs text-muted-foreground">{license.assigned_to.email}</span>
+                    </div>
+                  ) : (
+                    license.bound_email || "Unassigned"
+                  )}
                 </TableCell>
                 <TableCell className="text-right">
                    <Button variant="ghost" size="icon">
