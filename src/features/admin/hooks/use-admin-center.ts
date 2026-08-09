@@ -45,24 +45,3 @@ export function useGenerateLicenses() {
     }
   });
 }
-
-
-
-export function useAdminSubscriptions(filters: any) {
-  return useQuery({
-    queryKey: ["admin", "subscriptions", filters],
-    queryFn: () => adminCenterApi.getSubscriptions(filters),
-  });
-}
-
-export function useGenerateLicenses() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ count, plan, duration }: { count: number; plan: string; duration: number }) => 
-      adminCenterApi.generateLicenses(count, plan, duration),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "licenses"] });
-      toast.success("Licenses generated successfully");
-    }
-  });
-}

@@ -17,7 +17,6 @@ export const getAdminUsers = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const userId = context.userId;
 
-    // Verify admin role via security definer function
     const { data: isAdmin } = await (supabaseAdmin as any).rpc("has_role", {
       _user_id: userId,
       _role: "admin",
@@ -28,8 +27,6 @@ export const getAdminUsers = createServerFn({ method: "GET" })
     }
 
     try {
-      // We use supabaseAdmin to bypass RLS and ensure we see all users
-      // We manually perform joins/counts because the schema cache might be stale or missing FKs
       let query = supabaseAdmin
         .from("profiles")
         .select(`*`, { count: "exact" });
@@ -41,14 +38,12 @@ export const getAdminUsers = createServerFn({ method: "GET" })
       if (filters.plan) query = query.eq("subscription_tier", filters.plan);
       if (filters.status) query = query.eq("status", filters.status as any);
 
-
       const { data: users, error, count } = await query
         .order("created_at", { ascending: false })
         .range(filters.offset || 0, (filters.offset || 0) + (filters.limit || 10) - 1);
 
       if (error) throw error;
 
-      // Fetch counts separately to avoid complex join issues with missing FKs
       const userIds = users?.map(u => u.id) || [];
       
       let bioCounts: Record<string, number> = {};
@@ -60,10 +55,10 @@ export const getAdminUsers = createServerFn({ method: "GET" })
           supabaseAdmin.from("media_assets").select("owner_id").in("owner_id", userIds)
         ]);
 
-        bios?.forEach(b => {
+        bios?.forEach((b: any) => {
           bioCounts[b.owner_id] = (bioCounts[b.owner_id] || 0) + 1;
         });
-        media?.forEach(m => {
+        media?.forEach((m: any) => {
           mediaCounts[m.owner_id] = (mediaCounts[m.owner_id] || 0) + 1;
         });
       }
@@ -107,13 +102,15 @@ export const getAdminKPIs = createServerFn({ method: "GET" })
         { count: totalPages },
         { data: revenueData },
         { count: totalStores },
-        { count: totalBookings }
+        { count: totalBookings },
+        { count: totalDomains }
       ] = await Promise.all([
         supabaseAdmin.from("profiles").select("*", { count: "exact", head: true }),
         supabaseAdmin.from("bio_pages").select("*", { count: "exact", head: true }),
         supabaseAdmin.from("billing_payments").select("amount_minor").eq("status", "succeeded"),
         supabaseAdmin.from("bio_store_items").select("*", { count: "exact", head: true }),
-        supabaseAdmin.from("bio_bookings").select("*", { count: "exact", head: true })
+        supabaseAdmin.from("bio_bookings").select("*", { count: "exact", head: true }),
+        supabaseAdmin.from("domains").select("*", { count: "exact", head: true })
       ]);
 
       const totalRevenue = (revenueData || []).reduce((acc: number, curr: any) => acc + (curr.amount_minor || 0), 0) / 100;
@@ -124,7 +121,8 @@ export const getAdminKPIs = createServerFn({ method: "GET" })
         totalRevenue: totalRevenue || 0,
         totalStores: totalStores || 0,
         totalBookings: totalBookings || 0,
-        activeToday: 0 // Activity logs might be too noisy to count head-on without indexing
+        totalDomains: totalDomains || 0,
+        activeToday: 0
       };
     } catch (e: any) {
       console.error("[Admin API] KPI Fetch Failure:", e);
