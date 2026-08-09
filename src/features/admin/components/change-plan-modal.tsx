@@ -25,10 +25,10 @@ export function ChangePlanModal({ user, isOpen, onClose }: ChangePlanModalProps)
   const fetchPlans = useServerFn(getAdminPlans);
   const updatePlan = useServerFn(updateAdminUserPlan);
 
-  const [selectedTier, setSelectedTier] = useState<"free" | "starter" | "pro">(
-    (user.subscription_tier?.toLowerCase() as any) || "free"
+  const [selectedTier, setSelectedTier] = useState<string>(
+    user.subscription_tier?.toLowerCase() || "udaan"
   );
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
 
   const { data: plans, isLoading: plansLoading } = useQuery({
     queryKey: ["admin", "plans"],
