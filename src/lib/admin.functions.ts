@@ -79,18 +79,23 @@ export const getAdminUsers = createServerFn({ method: "GET" })
         });
       }
 
-      const mappedData = users?.map((user: any) => ({
-        id: user.id,
-        email: user.email || "—",
-        display_name: user.display_name || "Unnamed User",
-        avatar_url: user.avatar_url,
-        subscription_tier: user.subscription_tier || "free",
-        status: user.status || "active",
-        created_at: user.created_at,
-        bio_pages_count: bioCounts[user.id] || 0,
-        media_count: mediaCounts[user.id] || 0,
-        storage_usage: user.storage_usage || 0
-      }));
+      const mappedData = users?.map((user: any) => {
+        const sub = activeSubs[user.id];
+        return {
+          id: user.id,
+          email: user.email || "—",
+          display_name: user.display_name || "Unnamed User",
+          avatar_url: user.avatar_url,
+          subscription_tier: sub ? (sub.billing_plans?.name || sub.billing_plans?.code) : (user.subscription_tier || "free"),
+          subscription_status: sub?.status || user.status || "active",
+          subscription_price: sub ? `${sub.unit_amount_minor / 100}/${sub.cycle}` : null,
+          status: user.status || "active",
+          created_at: user.created_at,
+          bio_pages_count: bioCounts[user.id] || 0,
+          media_count: mediaCounts[user.id] || 0,
+          storage_usage: user.storage_usage || 0
+        };
+      });
 
       return { data: mappedData, count: count || 0 };
     } catch (e: any) {
