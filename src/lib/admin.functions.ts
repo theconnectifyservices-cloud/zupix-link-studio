@@ -2,12 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const getUsersInput = z.object({
+const getAdminInput = z.object({
   query: z.string().optional(),
   plan: z.string().optional(),
   status: z.string().optional(),
-  limit: z.number().optional(),
-  offset: z.number().optional(),
+  cycle: z.enum(["monthly", "yearly"]).optional(),
+  limit: z.number().optional().default(10),
+  offset: z.number().optional().default(0),
 });
 
 export const getAdminUsers = createServerFn({ method: "GET" })
