@@ -2162,41 +2162,130 @@ function FileEditor({ block, set }: { block: FileBlock; set: (k: string, v: unkn
     if (mime.startsWith("image/")) return "image";
     return "custom";
   };
+
+  const sourceType = block.pdfSourceType ?? "url";
+
   return (
     <>
-      <MediaFileField
-        label="File"
-        value={block.fileUrl || undefined}
-        fileName={block.fileName}
-        pickerTitle="Choose a file"
-        hint="Upload a PDF, DOC, XLS, PPT, ZIP or audio file — or pick one from your Media Library."
-        onChange={(v) => {
-          if (!v) {
-            set("fileUrl", "");
-            return;
-          }
-          set("fileUrl", v.url);
-          if (v.name) set("fileName", v.name);
-          if (v.size) set("sizeLabel", humanBytes(v.size));
-          set("fileKind", kindFromMime(v.mime));
-        }}
-      />
-      <Field label="File name">
-        <Input value={block.fileName} onChange={(e) => set("fileName", e.target.value)} />
-      </Field>
-      <Field label="Type">
+      <SectionTitle>PDF Source</SectionTitle>
+      <div className="grid grid-cols-2 gap-2 rounded-lg bg-muted/40 p-1">
+        <Button
+          size="sm"
+          variant={sourceType === "upload" ? "secondary" : "ghost"}
+          className={cn("h-8 text-xs", sourceType === "upload" && "bg-background shadow-sm")}
+          onClick={() => set("pdfSourceType", "upload")}
+        >
+          Upload PDF
+        </Button>
+        <Button
+          size="sm"
+          variant={sourceType === "url" ? "secondary" : "ghost"}
+          className={cn("h-8 text-xs", sourceType === "url" && "bg-background shadow-sm")}
+          onClick={() => set("pdfSourceType", "url")}
+        >
+          External URL
+        </Button>
+      </div>
+
+      {sourceType === "upload" ? (
+        <MediaFileField
+          label="PDF File"
+          value={block.pdfFileUrl || undefined}
+          fileName={block.pdfFileName}
+          pickerTitle="Choose a PDF"
+          kind="document"
+          hint="Select a PDF from your device or media library."
+          onChange={(v) => {
+            if (!v) {
+              set("pdfFileUrl", "");
+              set("pdfFileName", "");
+              set("pdfFileSize", undefined);
+              set("pdfFileMime", undefined);
+              return;
+            }
+            set("pdfFileUrl", v.url);
+            if (v.name) set("pdfFileName", v.name);
+            if (v.size) {
+              set("pdfFileSize", v.size);
+              set("sizeLabel", humanBytes(v.size));
+            }
+            if (v.mime) set("pdfFileMime", v.mime);
+            
+            // Auto-sync primary file properties for compatibility
+            set("fileUrl", v.url);
+            if (v.name) set("fileName", v.name);
+            set("fileKind", "pdf");
+          }}
+        />
+      ) : (
+        <Field label="External PDF URL">
+          <Input 
+            value={block.fileUrl} 
+            placeholder="https://example.com/ebook.pdf"
+            onChange={(e) => {
+              set("fileUrl", e.target.value);
+              set("fileKind", "pdf");
+            }} 
+          />
+        </Field>
+      )}
+
+      <SectionTitle>Button Settings</SectionTitle>
+      <Field label="Button label">
         <SelectSimple
-          value={block.fileKind ?? "pdf"}
-          onChange={(v) => set("fileKind", v)}
+          value={block.buttonLabel || "Download PDF"}
+          onChange={(v) => set("buttonLabel", v)}
           options={[
-            ["pdf", "PDF"],
-            ["docx", "DOCX"],
-            ["zip", "ZIP"],
-            ["image", "Image"],
-            ["custom", "Custom"],
+            ["Download PDF", "Download PDF"],
+            ["Download Ebook", "Download Ebook"],
+            ["Download Brochure", "Download Brochure"],
+            ["Download Menu", "Download Menu"],
+            ["Download Catalogue", "Download Catalogue"],
+            ["Download Resume", "Download Resume"],
+            ["Get PDF", "Get PDF"],
+            ["Download File", "Download File"],
           ]}
         />
       </Field>
+      <Field label="Custom label (optional)">
+        <Input 
+          value={block.buttonLabel || ""} 
+          placeholder="Download Guide..."
+          onChange={(e) => set("buttonLabel", e.target.value)} 
+        />
+      </Field>
+
+      <Field label="Display name (Internal)">
+        <Input value={block.fileName} onChange={(e) => set("fileName", e.target.value)} />
+      </Field>
+
+      <details className="mt-2">
+        <summary className="cursor-pointer text-[11px] font-medium uppercase text-muted-foreground">Advanced Settings</summary>
+        <div className="mt-2 space-y-3">
+          <Field label="Manual Type">
+            <SelectSimple
+              value={block.fileKind ?? "pdf"}
+              onChange={(v) => set("fileKind", v)}
+              options={[
+                ["pdf", "PDF"],
+                ["docx", "DOCX"],
+                ["zip", "ZIP"],
+                ["image", "Image"],
+                ["custom", "Custom"],
+              ]}
+            />
+          </Field>
+          <Field label="Size label (e.g. 2.4 MB)">
+            <Input
+              value={block.sizeLabel ?? ""}
+              onChange={(e) => set("sizeLabel", e.target.value)}
+            />
+          </Field>
+        </div>
+      </details>
+    </>
+  );
+}
       <Field label="Size label">
         <Input
           value={block.sizeLabel ?? ""}
