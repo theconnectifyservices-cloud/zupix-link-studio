@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ErrorBoundary } from "@/shared/error/error-boundary";
 import {
   ArrowUpRight,
   ChevronLeft,
@@ -189,13 +190,21 @@ export function MiniStoreRender({ block }: { block: MiniStoreBlock }) {
   );
 
   if (items.length === 0) {
+    if (useRendererMode() === "builder") {
+      return (
+        <BusinessCard style={block.cardStyle} radius={block.radius}>
+          <div className="flex flex-col items-center gap-2 p-6 text-center text-muted-foreground">
+            <ShoppingBag className="h-6 w-6" />
+            <p className="text-xs">Add items in the settings panel</p>
+          </div>
+        </BusinessCard>
+      );
+    }
     return (
-      <BusinessCard style={block.cardStyle} radius={block.radius}>
-        <div className="flex flex-col items-center gap-2 p-6 text-center text-muted-foreground">
-          <ShoppingBag className="h-6 w-6" />
-          <p className="text-xs">Add items in the settings panel</p>
-        </div>
-      </BusinessCard>
+      <div className="flex flex-col items-center gap-2 py-8 text-center text-muted-foreground">
+        <ShoppingBag className="h-5 w-5 opacity-40" />
+        <p className="text-xs font-medium tracking-wide">Products coming soon</p>
+      </div>
     );
   }
 
@@ -211,43 +220,52 @@ export function MiniStoreRender({ block }: { block: MiniStoreBlock }) {
   ));
 
   return (
-    <section
-      style={{
-        background: block.background || undefined,
-        padding: block.spacing ? `${block.spacing}px` : undefined,
-        borderRadius: block.background && block.radius ? block.radius : undefined,
-      }}
-    >
-      <BusinessHeader title={block.title} description={block.subtitle ?? block.description} />
-      {block.divider && <div className="mb-4 h-px w-full bg-border" />}
-
-      {block.layout === "carousel" ? (
-        <StoreCarousel gap={gap}>{cards}</StoreCarousel>
-      ) : (
-        <div
-          className={cn(
-            "grid",
-            cols === 1 && "grid-cols-1",
-            cols === 2 && "grid-cols-1 sm:grid-cols-2",
-            cols === 3 && "grid-cols-2 sm:grid-cols-3",
-          )}
-          style={{ gap }}
-        >
-          {cards}
+    <ErrorBoundary
+      fallback={
+        <div className="flex flex-col items-center gap-2 py-8 text-center text-muted-foreground">
+          <ShoppingBag className="h-5 w-5 opacity-40" />
+          <p className="text-xs">Store temporarily unavailable.</p>
         </div>
-      )}
+      }
+    >
+      <section
+        style={{
+          background: block.background || undefined,
+          padding: block.spacing ? `${block.spacing}px` : undefined,
+          borderRadius: block.background && block.radius ? block.radius : undefined,
+        }}
+      >
+        <BusinessHeader title={block.title} description={block.subtitle ?? block.description} />
+        {block.divider && <div className="mb-4 h-px w-full bg-border" />}
 
-      {detail && (
-        <StoreDetailDialog
-          item={detail}
-          block={block}
-          currency={currency}
-          items={items}
-          onSelect={(next) => setDetail(next)}
-          onClose={() => setDetail(null)}
-        />
-      )}
-    </section>
+        {block.layout === "carousel" ? (
+          <StoreCarousel gap={gap}>{cards}</StoreCarousel>
+        ) : (
+          <div
+            className={cn(
+              "grid",
+              cols === 1 && "grid-cols-1",
+              cols === 2 && "grid-cols-1 sm:grid-cols-2",
+              cols === 3 && "grid-cols-2 sm:grid-cols-3",
+            )}
+            style={{ gap }}
+          >
+            {cards}
+          </div>
+        )}
+
+        {detail && (
+          <StoreDetailDialog
+            item={detail}
+            block={block}
+            currency={currency}
+            items={items}
+            onSelect={(next) => setDetail(next)}
+            onClose={() => setDetail(null)}
+          />
+        )}
+      </section>
+    </ErrorBoundary>
   );
 }
 

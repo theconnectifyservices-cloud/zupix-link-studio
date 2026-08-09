@@ -48,6 +48,9 @@ const SUPPORTED_TYPES: Block["type"][] = [
   "telegramButton",
   "followCard",
   "qrContact",
+  "form",
+  "store",
+  "booking",
 ];
 
 const URL_LIKE =
