@@ -101,38 +101,38 @@ export function ChangePlanModal({ user, isOpen, onClose }: ChangePlanModalProps)
           <RadioGroup 
             value={selectedTier} 
             onValueChange={(val: any) => setSelectedTier(val)}
-            className="grid grid-cols-1 gap-3"
+            className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-2"
           >
-            {["free", "starter", "pro"].map((tier) => (
+            {plans?.map((plan: any) => (
               <Label
-                key={tier}
-                htmlFor={tier}
+                key={plan.id}
+                htmlFor={plan.code}
                 className={cn(
                   "relative flex items-center justify-between p-4 border-2 rounded-xl cursor-pointer transition-all hover:bg-muted/30",
-                  selectedTier === tier ? "border-primary bg-primary/5" : "border-border"
+                  selectedTier === plan.code ? "border-primary bg-primary/5" : "border-border"
                 )}
               >
                 <div className="flex items-center gap-3">
-                  <RadioGroupItem value={tier} id={tier} className="sr-only" />
+                  <RadioGroupItem value={plan.code} id={plan.code} className="sr-only" />
                   <div>
-                    <div className="font-bold capitalize flex items-center gap-2">
-                      {tier}
-                      {user.subscription_tier?.toLowerCase() === tier && (
+                    <div className="font-bold flex items-center gap-2">
+                      {plan.name}
+                      {(user.subscription_tier?.toLowerCase() === plan.code || user.subscription_tier?.toLowerCase() === plan.name.toLowerCase()) && (
                         <Badge variant="outline" className="text-[10px] h-4">Current</Badge>
                       )}
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {tier === 'free' ? 'Essential features' : tier === 'starter' ? 'Professional link tools' : 'Enterprise branding & AI'}
+                    <div className="text-xs text-muted-foreground line-clamp-1 max-w-[200px]">
+                      {plan.description || "Premium features and limits"}
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-lg">{getPrice(tier)}</div>
+                  <div className="font-bold text-lg">{getPrice(plan.code)}</div>
                   <div className="text-[10px] text-muted-foreground">
-                    {tier === 'free' ? 'Forever' : `per ${billingCycle === 'monthly' ? 'month' : 'year'}`}
+                    {plan.tier === 'free' ? 'Forever' : `per ${billingCycle === 'monthly' ? 'month' : 'year'}`}
                   </div>
                 </div>
-                {selectedTier === tier && (
+                {selectedTier === plan.code && (
                   <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full p-0.5">
                     <Check className="h-3 w-3" />
                   </div>
