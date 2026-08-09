@@ -39,7 +39,8 @@ export const getAdminUsers = createServerFn({ method: "GET" })
       }
 
       if (filters.plan) query = query.eq("subscription_tier", filters.plan);
-      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.status) query = query.eq("status", filters.status as any);
+
 
       const { data: users, error, count } = await query
         .order("created_at", { ascending: false })
