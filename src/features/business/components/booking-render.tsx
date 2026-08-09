@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { ErrorBoundary } from "@/shared/error/error-boundary";
 import { CheckCircle2, Loader2, CalendarClock, Clock, MapPin, Video, Trash2, Plus } from "lucide-react";
 import type { BookingBlock } from "@/features/builder/types";
 import { useRendererMode } from "@/features/builder/renderer-mode";
@@ -91,74 +92,100 @@ export function BookingRender({ block }: { block: BookingBlock }) {
     );
   }
 
-  if (!service) {
-    return (
-      <BusinessCard style={block.cardStyle} radius={block.radius}>
-        <div className="p-4 sm:p-5">
-          <BusinessHeader title={block.title} description={block.description} />
-          <div className={cn("grid gap-3", block.layout === "grid" && "sm:grid-cols-2")}>
-            {block.services.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => setSelectedServiceId(s.id)}
-                className="flex flex-col gap-2 rounded-xl border p-4 text-left transition-hover hover:border-primary"
-              >
-                <div className="font-semibold text-sm">{s.title}</div>
-                <div className="text-xs text-muted-foreground">{s.durationMin} min</div>
-              </button>
-            ))}
+  if (block.services.length === 0) {
+    if (mode === "builder") {
+      return (
+        <BusinessCard style={block.cardStyle} radius={block.radius}>
+          <div className="flex flex-col items-center gap-2 p-6 text-center text-muted-foreground">
+            <CalendarClock className="h-6 w-6" />
+            <p className="text-xs">Add services in the settings panel</p>
           </div>
-        </div>
-      </BusinessCard>
+        </BusinessCard>
+      );
+    }
+    return (
+      <div className="flex flex-col items-center gap-2 py-8 text-center text-muted-foreground">
+        <CalendarClock className="h-5 w-5 opacity-40" />
+        <p className="text-xs font-medium tracking-wide">Bookings coming soon</p>
+      </div>
     );
   }
 
   return (
-    <BusinessCard style={block.cardStyle} radius={block.radius}>
-      <form className="p-4 sm:p-5" onSubmit={onSubmit} noValidate>
-        <button
-          type="button"
-          onClick={() => setSelectedServiceId(null)}
-          className="mb-2 text-xs text-primary hover:underline"
-        >
-          ← Back to services
-        </button>
-        <BusinessHeader title={service.title} description={service.description} />
-
-        <div className="grid gap-3 sm:grid-cols-2">
-           <div>
-            <label className="mb-1 block text-xs font-medium">Date</label>
-            <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-           </div>
-           <div>
-            <label className="mb-1 block text-xs font-medium">Time</label>
-            <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-           </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium">Name<span className="text-destructive">*</span></label>
-            <Input className={INPUT_CLS} value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium">Email</label>
-            <Input type="email" className={INPUT_CLS} value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-medium">Phone</label>
-            <Input type="tel" className={INPUT_CLS} value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-medium">Notes</label>
-            <Textarea className={INPUT_CLS} value={notes} onChange={(e) => setNotes(e.target.value)} />
-          </div>
+    <ErrorBoundary
+      fallback={
+        <div className="flex flex-col items-center gap-2 py-8 text-center text-muted-foreground">
+          <CalendarClock className="h-5 w-5 opacity-40" />
+          <p className="text-xs">Booking system temporarily unavailable.</p>
         </div>
+      }
+    >
+      {!service ? (
+        <BusinessCard style={block.cardStyle} radius={block.radius}>
+          <div className="p-4 sm:p-5">
+            <BusinessHeader title={block.title} description={block.description} />
+            <div className={cn("grid gap-3", block.layout === "grid" && "sm:grid-cols-2")}>
+              {block.services.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setSelectedServiceId(s.id)}
+                  className="flex flex-col gap-2 rounded-xl border p-4 text-left transition-hover hover:border-primary"
+                >
+                  <div className="font-semibold text-sm">{s.title}</div>
+                  <div className="text-xs text-muted-foreground">{s.durationMin} min</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </BusinessCard>
+      ) : (
+        <BusinessCard style={block.cardStyle} radius={block.radius}>
+          <form className="p-4 sm:p-5" onSubmit={onSubmit} noValidate>
+            <button
+              type="button"
+              onClick={() => setSelectedServiceId(null)}
+              className="mb-2 text-xs text-primary hover:underline"
+            >
+              ← Back to services
+            </button>
+            <BusinessHeader title={service.title} description={service.description} />
 
-        {error && <p className="mt-3 text-xs font-medium text-destructive">{error}</p>}
+            <div className="grid gap-3 sm:grid-cols-2">
+               <div>
+                <label className="mb-1 block text-xs font-medium">Date</label>
+                <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+               </div>
+               <div>
+                <label className="mb-1 block text-xs font-medium">Time</label>
+                <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+               </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium">Name<span className="text-destructive">*</span></label>
+                <Input className={INPUT_CLS} value={name} onChange={(e) => setName(e.target.value)} />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium">Email</label>
+                <Input type="email" className={INPUT_CLS} value={email} onChange={(e) => setEmail(e.target.value)} />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-xs font-medium">Phone</label>
+                <Input type="tel" className={INPUT_CLS} value={phone} onChange={(e) => setPhone(e.target.value)} />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-xs font-medium">Notes</label>
+                <Textarea className={INPUT_CLS} value={notes} onChange={(e) => setNotes(e.target.value)} />
+              </div>
+            </div>
 
-        <Button type="submit" disabled={busy} className="mt-4 w-full">
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <CalendarClock className="h-4 w-4 mr-2" />}
-          Request booking
-        </Button>
-      </form>
-    </BusinessCard>
+            {error && <p className="mt-3 text-xs font-medium text-destructive">{error}</p>}
+
+            <Button type="submit" disabled={busy} className="mt-4 w-full">
+              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <CalendarClock className="h-4 w-4 mr-2" />}
+              Request booking
+            </Button>
+          </form>
+        </BusinessCard>
+      )}
+    </ErrorBoundary>
   );
 }
