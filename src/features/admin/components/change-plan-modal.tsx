@@ -148,7 +148,7 @@ export function ChangePlanModal({ user, isOpen, onClose }: ChangePlanModalProps)
           </Button>
           <Button 
             onClick={handleConfirm} 
-            disabled={mutation.isPending || selectedTier === user.subscription_tier?.toLowerCase()}
+            disabled={mutation.isPending || (selectedTier === user.subscription_tier?.toLowerCase() || selectedTier === user.subscription_tier)}
             className="bg-primary hover:bg-primary/90"
           >
             {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
