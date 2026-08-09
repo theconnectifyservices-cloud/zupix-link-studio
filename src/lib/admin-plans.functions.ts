@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const updatePlanInput = z.object({
   userId: z.string().uuid(),
-  planTier: z.enum(["free", "starter", "pro"]),
+  planCode: z.string(),
   billingCycle: z.enum(["monthly", "yearly"]),
 });
 
