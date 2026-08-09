@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { CheckCircle2, Loader2, Paperclip, Send, X } from "lucide-react";
+import { ErrorBoundary } from "@/shared/error/error-boundary";
+import { CheckCircle2, ClipboardList, Loader2, Paperclip, Send, X } from "lucide-react";
 import type { ContactFormBlock, FormFieldDef } from "@/features/builder/types";
 import { useRendererMode } from "@/features/builder/renderer-mode";
 import { usePublicPage } from "../page-context";
@@ -207,72 +208,92 @@ export function ContactFormRender({ block }: { block: ContactFormBlock }) {
 
   return (
     <div ref={rootRef}>
-      <BusinessCard style={block.cardStyle} radius={block.radius} className={shadow}>
-        <form
-          onSubmit={onSubmit}
-          onFocusCapture={markOpen}
-          noValidate
-          style={{ padding: pad, ...style }}
-        >
-          <BusinessHeader title={block.title} description={block.description} />
-
-          {/* honeypot — hidden from humans, tempting for bots */}
-          <div aria-hidden className="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden">
-            <label>
-              Company website
-              <input
-                tabIndex={-1}
-                autoComplete="off"
-                value={hp}
-                onChange={(e) => setHp(e.target.value)}
-              />
-            </label>
+      <ErrorBoundary
+        fallback={
+          <div className="flex flex-col items-center gap-2 py-8 text-center text-muted-foreground">
+            <ClipboardList className="h-5 w-5 opacity-40" />
+            <p className="text-xs">Form temporarily unavailable.</p>
           </div>
-
-          {fields.length === 0 ? (
-            <p className="rounded-lg border border-dashed p-3 text-center text-xs text-muted-foreground">
-              Add form fields in the settings panel
-            </p>
-          ) : (
-            <div className={cn("grid gap-3", block.columns === 2 ? "sm:grid-cols-2" : "grid-cols-1")}>
-              {fields.map((f) => (
-                <FieldRender
-                  key={f.id}
-                  field={f}
-                  value={values[fieldKey(f)]}
-                  file={files[f.id]}
-                  onFile={(file) =>
-                    setFiles((prev) => {
-                      const next = { ...prev };
-                      if (file) next[f.id] = file;
-                      else delete next[f.id];
-                      return next;
-                    })
-                  }
-                  onError={setError}
-                  onChange={(v) => set(fieldKey(f), v)}
-                  span={block.columns === 2 && isFull(block, f)}
-                />
-              ))}
-            </div>
-          )}
-
-          {error && <p className="mt-3 text-xs font-medium text-destructive">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={busy}
-            style={{ borderRadius: block.buttonRadius ?? 10 }}
-            className={cn(
-              "mt-4 inline-flex h-11 w-full items-center justify-center gap-2 px-4 text-sm font-semibold transition-transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60",
-              buttonClasses(block.buttonStyle),
-            )}
+        }
+      >
+        <BusinessCard style={block.cardStyle} radius={block.radius} className={shadow}>
+          <form
+            onSubmit={onSubmit}
+            onFocusCapture={markOpen}
+            noValidate
+            style={{ padding: pad, ...style }}
           >
-            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            {block.submitLabel || "Send message"}
-          </button>
-        </form>
-      </BusinessCard>
+            <BusinessHeader title={block.title} description={block.description} />
+
+            {/* honeypot — hidden from humans, tempting for bots */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden"
+            >
+              <label>
+                Company website
+                <input
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={hp}
+                  onChange={(e) => setHp(e.target.value)}
+                />
+              </label>
+            </div>
+
+            {fields.length === 0 ? (
+              mode === "builder" ? (
+                <p className="rounded-lg border border-dashed p-3 text-center text-xs text-muted-foreground">
+                  Add form fields in the settings panel
+                </p>
+              ) : (
+                <p className="py-4 text-center text-xs text-muted-foreground">
+                  Form coming soon
+                </p>
+              )
+            ) : (
+              <div
+                className={cn("grid gap-3", block.columns === 2 ? "sm:grid-cols-2" : "grid-cols-1")}
+              >
+                {fields.map((f) => (
+                  <FieldRender
+                    key={f.id}
+                    field={f}
+                    value={values[fieldKey(f)]}
+                    file={files[f.id]}
+                    onFile={(file) =>
+                      setFiles((prev) => {
+                        const next = { ...prev };
+                        if (file) next[f.id] = file;
+                        else delete next[f.id];
+                        return next;
+                      })
+                    }
+                    onError={setError}
+                    onChange={(v) => set(fieldKey(f), v)}
+                    span={block.columns === 2 && isFull(block, f)}
+                  />
+                ))}
+              </div>
+            )}
+
+            {error && <p className="mt-3 text-xs font-medium text-destructive">{error}</p>}
+
+            <button
+              type="submit"
+              disabled={busy}
+              style={{ borderRadius: block.buttonRadius ?? 10 }}
+              className={cn(
+                "mt-4 inline-flex h-11 w-full items-center justify-center gap-2 px-4 text-sm font-semibold transition-transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60",
+                buttonClasses(block.buttonStyle),
+              )}
+            >
+              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              {block.submitLabel || "Send message"}
+            </button>
+          </form>
+        </BusinessCard>
+      </ErrorBoundary>
     </div>
   );
 }
