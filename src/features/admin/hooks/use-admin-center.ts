@@ -1,11 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminCenterApi } from "../api/admin-center";
+import { getAdminUsers, getAdminKPIs } from "@/lib/admin.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 export function useAdminUsers(filters: any) {
+  const fetchUsers = useServerFn(getAdminUsers);
   return useQuery({
     queryKey: ["admin", "users", filters],
-    queryFn: () => adminCenterApi.getUsers(filters),
+    queryFn: () => fetchUsers({ data: filters }),
+  });
+}
+
+export function useAdminKPIs() {
+  const fetchKPIs = useServerFn(getAdminKPIs);
+  return useQuery({
+    queryKey: ["admin", "kpis"],
+    queryFn: () => fetchKPIs({ data: undefined }),
   });
 }
 
@@ -13,13 +24,6 @@ export function useAdminLicenses(filters: any) {
   return useQuery({
     queryKey: ["admin", "licenses", filters],
     queryFn: () => adminCenterApi.getLicenses(filters),
-  });
-}
-
-export function useAdminKPIs() {
-  return useQuery({
-    queryKey: ["admin", "kpis"],
-    queryFn: adminCenterApi.getKPIs,
   });
 }
 

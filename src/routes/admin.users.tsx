@@ -20,7 +20,24 @@ export const Route = createFileRoute("/admin/users")({
 
 function AdminUsers() {
   const [query, setQuery] = useState("");
-  const { data, isLoading } = useAdminUsers({ query });
+  const { data, isLoading, error } = useAdminUsers({ query });
+
+  if (error) {
+    return (
+      <div className="p-8 text-center bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-xl">
+        <h2 className="text-red-600 dark:text-red-400 font-semibold text-lg">Failed to fetch users</h2>
+        <p className="text-red-500 dark:text-red-400/70 mt-1">{(error as any).message || "An unexpected error occurred"}</p>
+        <Button 
+          variant="outline" 
+          className="mt-4 border-red-200 hover:bg-red-50 dark:border-red-900/50 dark:hover:bg-red-900/20"
+          onClick={() => window.location.reload()}
+        >
+          Retry Connection
+        </Button>
+      </div>
+    );
+  }
+
 
   return (
     <div className="space-y-6">
