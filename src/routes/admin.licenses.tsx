@@ -23,8 +23,23 @@ export const Route = createFileRoute("/admin/licenses")({
 
 function AdminLicenses() {
   const [query, setQuery] = useState("");
-  const { data, isLoading } = useAdminLicenses({ query });
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const { data, isLoading, error } = useAdminLicenses({ 
+    query, 
+    status: statusFilter === "all" ? undefined : statusFilter 
+  });
   const generateMutation = useGenerateLicenses();
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-card border rounded-xl">
+        <XCircle className="h-12 w-12 text-red-500 mb-4" />
+        <h3 className="text-lg font-semibold">Unable to load licenses</h3>
+        <p className="text-muted-foreground mt-1 mb-6">There was an error connecting to the database.</p>
+        <Button onClick={() => window.location.reload()}>Try Again</Button>
+      </div>
+    );
+  }
 
   const [isGenOpen, setIsGenOpen] = useState(false);
   const [genCount, setGenCount] = useState("5");
@@ -123,9 +138,20 @@ function AdminLicenses() {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <Button variant="outline" size="icon">
-          <Filter className="h-4 w-4" />
-        </Button>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[180px]">
+            <Filter className="h-4 w-4 mr-2" />
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="unused">Unused</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="expired">Expired</SelectItem>
+            <SelectItem value="revoked">Revoked</SelectItem>
+            <SelectItem value="suspended">Suspended</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="border rounded-xl bg-card overflow-hidden">
@@ -147,6 +173,12 @@ function AdminLicenses() {
                   <TableCell colSpan={6} className="h-16 animate-pulse bg-muted/20" />
                 </TableRow>
               ))
+            ) : data?.data?.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                  No licenses found.
+                </TableCell>
+              </TableRow>
             ) : data?.data?.map((license: any) => (
               <TableRow key={license.id}>
                 <TableCell>
