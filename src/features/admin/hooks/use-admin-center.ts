@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminCenterApi } from "../api/admin-center";
-import { getAdminUsers, getAdminKPIs, getAdminSubscriptions } from "@/lib/admin.functions";
+import { getAdminUsers, getAdminKPIs, getAdminSubscriptions, getAdminLicenses, generateAdminLicenses } from "@/lib/admin.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
@@ -21,9 +21,10 @@ export function useAdminKPIs() {
 }
 
 export function useAdminLicenses(filters: any) {
+  const fetchLicenses = useServerFn(getAdminLicenses);
   return useQuery({
     queryKey: ["admin", "licenses", filters],
-    queryFn: () => adminCenterApi.getLicenses(filters),
+    queryFn: () => fetchLicenses({ data: filters }),
   });
 }
 
@@ -37,9 +38,10 @@ export function useAdminSubscriptions(filters: any) {
 
 export function useGenerateLicenses() {
   const queryClient = useQueryClient();
+  const generateFn = useServerFn(generateAdminLicenses);
   return useMutation({
     mutationFn: ({ count, plan, duration }: { count: number; plan: string; duration: number }) => 
-      adminCenterApi.generateLicenses(count, plan, duration),
+      generateFn({ data: { count, plan, durationDays: duration } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "licenses"] });
       toast.success("Licenses generated successfully");

@@ -244,3 +244,113 @@ export const getAdminSubscriptions = createServerFn({ method: "GET" })
       throw new Error(e.message || "Failed to fetch subscriptions");
     }
   });
+
+export const getAdminLicenses = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => getAdminInput.parse(data))
+  .handler(async ({ data: filters, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const userId = context.userId;
+
+    const { data: isAdmin } = await (supabaseAdmin as any).rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    if (!isAdmin) throw new Error("Unauthorized: Admin access required");
+
+    try {
+      let query = supabaseAdmin
+        .from("product_licenses")
+        .select(`
+          *,
+          profiles:user_id (id, email, display_name)
+        `, { count: "exact" });
+
+      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.query) {
+        query = query.or(`license_key.ilike.%${filters.query}%,email.ilike.%${filters.query}%,customer_name.ilike.%${filters.query}%`);
+      }
+
+      const { data: licenses, error, count } = await query
+        .order("created_at", { ascending: false })
+        .range(filters.offset || 0, (filters.offset || 0) + (filters.limit || 10) - 1);
+
+      if (error) throw error;
+
+      const mappedData = licenses?.map((lic: any) => {
+        const profile = lic.profiles;
+        // Calculate duration in days
+        let durationDays = 0;
+        if (lic.created_at && lic.expires_at) {
+          const start = new Date(lic.created_at);
+          const end = new Date(lic.expires_at);
+          durationDays = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+        }
+
+        return {
+          id: lic.id,
+          key: lic.license_key,
+          plan_code: lic.plan,
+          status: lic.status,
+          duration_days: durationDays,
+          assigned_to: profile ? {
+            id: profile.id,
+            email: profile.email,
+            display_name: profile.display_name
+          } : null,
+          bound_email: lic.email,
+          customer_name: lic.customer_name,
+          activated_at: lic.activated_at,
+          expires_at: lic.expires_at,
+          created_at: lic.created_at
+        };
+      });
+
+      return { data: mappedData, count: count || 0 };
+    } catch (e: any) {
+      console.error("[Admin API] Failed to fetch licenses:", e);
+      throw new Error(e.message || "Failed to fetch licenses");
+    }
+  });
+
+export const generateAdminLicenses = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: any) => z.object({
+    count: z.number().min(1).max(100),
+    plan: z.string(),
+    durationDays: z.number().min(1)
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const userId = context.userId;
+
+    const { data: isAdmin } = await (supabaseAdmin as any).rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const keys = Array.from({ length: data.count }).map(() => {
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + data.durationDays);
+      
+      return {
+        license_key: `ZUP-${Math.random().toString(36).substring(2, 10).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+        plan: data.plan.toLowerCase() as any,
+        status: 'unused' as any,
+        expires_at: expiresAt.toISOString(),
+        max_devices: 1,
+        created_by: userId
+      };
+    });
+
+    const { data: inserted, error } = await supabaseAdmin
+      .from("product_licenses")
+      .insert(keys)
+      .select();
+
+    if (error) throw error;
+    return inserted;
+  });

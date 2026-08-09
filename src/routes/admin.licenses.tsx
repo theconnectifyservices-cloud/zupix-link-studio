@@ -77,11 +77,11 @@ function AdminLicenses() {
                      <SelectTrigger>
                        <SelectValue />
                      </SelectTrigger>
-                     <SelectContent>
-                       <SelectItem value="udaan">Udaan (Trial)</SelectItem>
-                       <SelectItem value="tejas">Tejas (Pro)</SelectItem>
-                       <SelectItem value="shikhar">Shikhar (Enterprise)</SelectItem>
-                     </SelectContent>
+                      <SelectContent>
+                        <SelectItem value="starter">Starter</SelectItem>
+                        <SelectItem value="pro">Pro</SelectItem>
+                        <SelectItem value="tejas">Tejas (Legacy)</SelectItem>
+                      </SelectContent>
                    </Select>
                  </div>
                  <div className="grid gap-2">
@@ -175,8 +175,15 @@ function AdminLicenses() {
                 <TableCell className="text-sm">
                   {license.duration_days >= 9999 ? "Lifetime" : `${license.duration_days} Days`}
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {license.bound_email || "Unassigned"}
+                <TableCell className="text-sm">
+                  {license.assigned_to ? (
+                    <div className="flex flex-col">
+                      <span className="font-medium text-foreground">{license.assigned_to.display_name}</span>
+                      <span className="text-xs text-muted-foreground">{license.assigned_to.email}</span>
+                    </div>
+                  ) : (
+                    license.bound_email || "Unassigned"
+                  )}
                 </TableCell>
                 <TableCell className="text-right">
                    <Button variant="ghost" size="icon">
