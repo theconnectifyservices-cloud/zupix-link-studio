@@ -267,7 +267,7 @@ export const getAdminLicenses = createServerFn({ method: "GET" })
           profiles:user_id (id, email, display_name)
         `, { count: "exact" });
 
-      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.status) query = query.eq("status", filters.status as any);
       if (filters.query) {
         query = query.or(`license_key.ilike.%${filters.query}%,email.ilike.%${filters.query}%,customer_name.ilike.%${filters.query}%`);
       }
