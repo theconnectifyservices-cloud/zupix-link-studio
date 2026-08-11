@@ -1802,7 +1802,7 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
       const d = e.data as { __zxcc?: boolean; height?: number } | undefined;
       if (!d || !d.__zxcc || typeof d.height !== "number") return;
       if (e.source !== ref.current?.contentWindow) return;
-      setHeight(Math.max(block.minHeight ?? 0, Math.ceil(d.height)));
+      setHeight(Math.ceil(d.height));
     }
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);

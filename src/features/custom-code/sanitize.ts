@@ -140,7 +140,15 @@ export function buildSrcDoc(input: {
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"/>
 <base target="_blank"/>
 <style>
-  html,body{
+  html{
+    margin:0;
+    padding:0;
+    background:transparent;
+    width:100%;
+    height:auto;
+    min-height: 0;
+  }
+  body{
     margin:0;
     padding:0;
     background:transparent;
@@ -151,6 +159,8 @@ export function buildSrcDoc(input: {
     overflow-x:hidden;
     -webkit-text-size-adjust:100%;
     box-sizing:border-box;
+    display: flex;
+    flex-direction: column;
   }
   *,*:before,*:after{box-sizing:inherit}
   .zx-cc-scope{
