@@ -1,7 +1,8 @@
 import { LucideIcon, Instagram, Facebook } from "lucide-react";
-import { newId } from "../types";
-import { BlockDef } from "../block-registry";
-import { SocialEmbedBlock } from "../types";
+import { newId } from "../../types";
+import { BlockDef } from "../../block-registry";
+import { SocialEmbedBlock } from "../../types";
+
 
 export const SocialEmbedEditor = ({
   block,
