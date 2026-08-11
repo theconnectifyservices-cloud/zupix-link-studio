@@ -1882,7 +1882,7 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
         loading={block.lazy ? "lazy" : "eager"}
         style={{
           width: "100%",
-          height,
+          height: height || "auto",
           border: 0,
           background: "transparent",
           display: "block",
