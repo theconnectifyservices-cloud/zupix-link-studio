@@ -1211,7 +1211,27 @@ export type Block =
   | ContactFormBlock
   | MiniStoreBlock
   | BookingBlock
+  | SocialEmbedBlock
   | GenericBlock;
+
+export type SocialEmbedPlatform = "auto" | "facebook" | "instagram";
+export type SocialEmbedContentType = "post" | "video" | "reel";
+
+export interface SocialEmbedBlock extends BaseBlock {
+  type: "socialEmbed";
+  platform: SocialEmbedPlatform;
+  originalUrl: string;
+  normalizedUrl: string;
+  contentType?: SocialEmbedContentType;
+  fullWidth?: boolean;
+  rounded?: boolean;
+  showPlatformLabel?: boolean;
+  caption?: string;
+  align?: "left" | "center" | "right";
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 
 
 import type { PageTheme } from "./theme";
