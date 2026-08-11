@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchPublicBioPage } from "@/features/public/api";
 import { PublicBioRenderer } from "@/features/public/public-bio-renderer";
 import { PageLoader } from "@/shared/ui/page-loader";
+import { APP_CONFIG } from "@/config/app.config";
 
 /**
  * Reserved for multi-page bio websites (LS-08B+).
@@ -13,12 +14,23 @@ import { PageLoader } from "@/shared/ui/page-loader";
  */
 export const Route = createFileRoute("/$slug/$page")({
   ssr: false,
-  head: ({ params }) => ({
-    meta: [
-      { title: `@${params.slug}/${params.page}` },
-      { name: "robots", content: "index,follow" },
-    ],
-  }),
+  head: ({ params }) => {
+    const baseUrl = "https://zupix.site";
+    const profileUrl = `${baseUrl}/${params.slug}/${params.page}`;
+    return {
+      meta: [
+        { title: `@${params.slug}/${params.page} | ${APP_CONFIG.shortName}` },
+        { name: "description", content: `Digital profile page for @${params.slug} powered by ${APP_CONFIG.shortName}` },
+        { name: "robots", content: "index,follow" },
+        { property: "og:title", content: `@${params.slug}/${params.page}` },
+        { property: "og:description", content: `View this profile on ${APP_CONFIG.name}` },
+        { property: "og:type", content: "profile" },
+        { property: "og:url", content: profileUrl },
+        { property: "og:image", content: `${baseUrl}/og-fallback.png` },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    };
+  },
   component: PublicSubPage,
   notFoundComponent: SubNotFound,
 });
