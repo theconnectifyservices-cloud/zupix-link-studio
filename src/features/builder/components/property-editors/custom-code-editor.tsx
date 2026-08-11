@@ -321,8 +321,8 @@ export function CustomCodeEditor({ block, update }: Props) {
                 <Label className="text-xs">Min height (px)</Label>
                 <Input
                   type="number"
-                  value={block.minHeight ?? 120}
-                  onChange={(e) => set("minHeight", Number(e.target.value) || 120)}
+                  value={block.minHeight ?? 0}
+                  onChange={(e) => set("minHeight", Math.max(0, Number(e.target.value) || 0))}
                 />
               </div>
               <div className="space-y-1.5">

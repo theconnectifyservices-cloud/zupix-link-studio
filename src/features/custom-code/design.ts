@@ -152,7 +152,7 @@ function breakpointCss(d: CcBreakpointDesign): string {
   align-items:${ALIGN_ITEMS[align]};
   text-align:${align};
   width:${d.width || "100%"};
-  ${d.height && d.height !== "auto" ? `height:${d.height};` : ""}
+  ${d.height && d.height !== "auto" ? `height:${d.height}; min-height:${d.height};` : ""}
   padding:${px(d.paddingY)} ${px(d.paddingX)};
   margin:${px(d.marginY)} ${px(d.marginX)};
   ${d.fontSize ? `font-size:${d.fontSize}px;` : ""}
