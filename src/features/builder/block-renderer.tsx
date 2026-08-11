@@ -1846,11 +1846,15 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
 
   return (
     <div
+      className="zx-cc-wrapper"
       style={{
-        maxWidth,
+        maxWidth: maxWidth || "100%",
+        width: "100%",
         marginInline: maxWidth ? "auto" : undefined,
         borderRadius: block.borderRadius ?? 0,
-        overflow: "hidden",
+        overflow: "visible", // Changed from hidden to avoid clipping during resize
+        minWidth: 0,
+        position: "relative",
       }}
     >
       <iframe
@@ -1865,6 +1869,9 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
           border: 0,
           background: "transparent",
           display: "block",
+          minWidth: "100%",
+          maxWidth: "100%",
+          overflow: "hidden",
         }}
       />
       {jsBlocked && mode !== "public" && (
@@ -1875,7 +1882,6 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
           JavaScript in this block is disabled for safety — the HTML and CSS still render.
         </div>
       )}
-
     </div>
   );
 }
