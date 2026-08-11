@@ -36,7 +36,9 @@ export type FeatureKey =
   | "block.form"
   | "block.store"
   | "block.bookings"
+  | "block.social_embed"
   | "block.digital_products"
+
   | "block.membership"
   | "block.subscriptions"
   | "block.donations"
@@ -73,7 +75,9 @@ export const BLOCK_FEATURE_KEY: Partial<Record<BlockType, FeatureKey>> = {
   form: "block.form",
   store: "block.store",
   booking: "block.bookings",
+  socialEmbed: "block.social_embed",
 };
+
 
 export interface PlanDefinition {
   code: PlanCode;
@@ -117,8 +121,10 @@ const TEJAS_ADDITIONS: FeatureKey[] = [
   "block.file_download",
   "block.embed",
   "block.custom_code",
+  "block.social_embed",
   "block.form",
   "remove_branding",
+
   "custom_domain",
   "templates.premium",
 ];
