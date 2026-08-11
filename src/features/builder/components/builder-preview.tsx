@@ -117,16 +117,16 @@ export function BuilderPreview({
             <RendererModeProvider mode={previewMode ? "public" : "builder"}>
               <ThemeBackgroundLayer theme={theme} />
               <div
-                className={cn("relative", pageCls)}
+                className={cn("relative mx-auto w-full", pageCls)}
                 style={{
                   paddingInline: "var(--zx-page-pad-x)",
                   paddingBlock: "var(--zx-page-pad-y)",
                   display: "flex",
                   flexDirection: "column",
                   // Auto Layout: per-section spacing owns the gap.
-          gap: 0,
+                  gap: 0,
                   maxWidth: "var(--zx-content-max)",
-                  marginInline: "auto",
+                  minWidth: 0,
                 }}
               >
                 <SortableContext items={items} strategy={verticalListSortingStrategy}>

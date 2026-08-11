@@ -114,13 +114,14 @@ export function PublicBioRenderer({
     >
       <ThemeBackgroundLayer theme={theme} />
       <div
-        className={cn("relative mx-auto flex flex-col", pageCls)}
+        className={cn("relative mx-auto flex flex-col w-full", pageCls)}
         style={{
           paddingInline: "var(--zx-page-pad-x)",
           paddingBlock: "var(--zx-page-pad-y)",
           // Auto Layout: per-section spacing owns the gap.
           gap: 0,
           maxWidth: "var(--zx-content-max)",
+          minWidth: 0,
         }}
       >
         {blocks.length === 0 ? (
