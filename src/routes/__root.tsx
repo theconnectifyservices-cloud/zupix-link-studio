@@ -109,7 +109,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: `${APP_CONFIG.name} — Premium Bio Link Builder` },
       { property: "og:description", content: APP_CONFIG.description },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://zupix.site/og-main.png" },
+      { property: "og:url", content: "https://zupix.site" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://zupix.site/og-main.png" },
       { name: "theme-color", content: "#0a0a14" },
       // Chrome deprecated apple-mobile-web-app-capable and logs a console warning
       // unless the standard name is present alongside it.

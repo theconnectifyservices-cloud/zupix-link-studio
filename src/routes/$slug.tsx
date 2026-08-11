@@ -4,6 +4,7 @@ import { fetchPublicBioPage, type PublicBioPage } from "@/features/public/api";
 import { PublicBioRenderer } from "@/features/public/public-bio-renderer";
 import { buildJsonLd } from "@/features/seo/jsonld";
 import { APP_CONFIG } from "@/config/app.config";
+import { getOgMetadata } from "@/lib/og-metadata.functions";
 
 /** Normalize the incoming slug: URL-decode, trim, strip trailing slash, lowercase. */
 function normalizeSlug(raw: string): string {
@@ -73,7 +74,31 @@ export const Route = createFileRoute("/$slug")({
         ],
       };
     }
-    return buildHead(page, params.slug);
+
+    const head = buildHead(page, params.slug);
+    
+    // Inject dynamic OG metadata for social crawlers (LS-OG-FIX)
+    // We prioritize actual user content resolved in buildHead, 
+    // but ensure absolute URLs and profile types.
+    const baseUrl = "https://zupix.site"; // Hardcoded for OG stability as per request
+    const profileUrl = `${baseUrl}/${params.slug}`;
+    
+    // Find existing OG/Twitter meta and ensure they are correct
+    const meta = head.meta.map(m => {
+      if (m.property === "og:url") return { property: "og:url", content: profileUrl };
+      if (m.property === "og:type") return { property: "og:type", content: "profile" };
+      return m;
+    });
+
+    // Ensure twitter:card is summary_large_image
+    if (!meta.find(m => m.name === "twitter:card")) {
+      meta.push({ name: "twitter:card", content: "summary_large_image" });
+    }
+
+    return {
+      ...head,
+      meta
+    };
   },
   component: PublicBioPage,
   notFoundComponent: PageNotFound,
@@ -92,14 +117,22 @@ function PublicBioPage() {
 }
 
 function buildHead(page: PublicBioPage, slug: string) {
+  const content = page.content as any;
+  const profileBlock = content?.blocks?.find((b: any) => b.type === "profile");
+  
   const seo = page.seo ?? {};
-  const title = seo.title || page.name || `@${slug}`;
+  const title = seo.title || profileBlock?.displayName || page.name || `@${slug}`;
   const description =
-    seo.description || page.description || `${page.name} — powered by ${APP_CONFIG.shortName}`;
-  const url = seo.canonicalUrl || `/${slug}`;
+    seo.description || profileBlock?.bio || page.description || `Digital profile powered by ${APP_CONFIG.shortName}`;
+  const url = seo.canonicalUrl || `https://zupix.site/${slug}`;
+  
   const ogTitle = seo.ogTitle || title;
   const ogDesc = seo.ogDescription || description;
-  const ogImage = seo.ogImage;
+  
+  // Image priority: SEO > Avatar > Cover > Fallback
+  const fallbackOg = "https://zupix.site/og-fallback.png"; // Defined fallback
+  const ogImage = seo.ogImage || profileBlock?.avatarUrl || profileBlock?.coverUrl || fallbackOg;
+  
   const twTitle = seo.twitterTitle || ogTitle;
   const twDesc = seo.twitterDescription || ogDesc;
   const twImage = seo.twitterImage || ogImage;
