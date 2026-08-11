@@ -137,12 +137,37 @@ export function buildSrcDoc(input: {
   const designCss = input.design ? buildDesignCss(input.design as Partial<CcDesign>) : "";
   const js = input.allowJs && input.js ? input.js : "";
   return `<!doctype html><html><head><meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"/>
 <base target="_blank"/>
 <style>
-  html,body{margin:0;padding:0;background:transparent;color:inherit;font-family:inherit}
-  .zx-cc-scope{max-width:100%}
-  img,video,iframe{max-width:100%}
+  html,body{
+    margin:0;
+    padding:0;
+    background:transparent;
+    color:inherit;
+    font-family:inherit;
+    width:100%;
+    overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
+    box-sizing:border-box;
+  }
+  *,*:before,*:after{box-sizing:inherit}
+  .zx-cc-scope{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    margin-left:auto;
+    margin-right:auto;
+    box-sizing:border-box;
+    overflow-x:hidden;
+  }
+  .zx-anim{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
+  }
+  img,video,iframe{max-width:100%;height:auto}
 ${designCss}
 ${css}
 </style></head>
@@ -153,14 +178,19 @@ ${css}
     function post(){
       try{
         var h = document.documentElement.scrollHeight;
-        parent.postMessage({__zxcc:true, height:h}, '*');
+        var h2 = document.body.offsetHeight;
+        var finalH = Math.max(h, h2);
+        parent.postMessage({__zxcc:true, height:finalH}, '*');
       }catch(e){}
     }
     var ro = new ResizeObserver(post);
     ro.observe(document.body);
+    ro.observe(document.documentElement);
     window.addEventListener('load', post);
+    window.addEventListener('resize', post);
     setTimeout(post, 50);
+    setTimeout(post, 500);
   })();
 ${js}
 </script></body></html>`;
-}
+},old_content:
