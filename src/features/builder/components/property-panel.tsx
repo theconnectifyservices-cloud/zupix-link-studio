@@ -58,6 +58,9 @@ import {
 import type { HighlightCardsBlock } from "../types";
 import { VideoSourceField } from "./video-source-field";
 import { MediaFileField } from "./media-file-field";
+import { SocialEmbedEditor } from "./property-editors/social-embed-editor";
+import type { SocialEmbedBlock } from "../types";
+
 
 export function PropertyPanel() {
   const block = useBuilderStore(selectedBlock);
@@ -981,6 +984,8 @@ export function PropertyPanel() {
       {block.type === "qrContact" && <QrContactEditor block={block} set={set} />}
       {block.type === "embed" && <EmbedEditor block={block} set={set} />}
       {block.type === "customCode" && <CustomCodeEditor block={block} update={update} />}
+      {block.type === "socialEmbed" && <SocialEmbedEditor block={block as SocialEmbedBlock} update={update as any} />}
+
       {block.type === "integration" && <IntegrationEditor block={block} update={update} />}
       {block.type === "form" && <ContactFormEditor block={block} set={set} />}
       {block.type === "store" && <MiniStoreEditor block={block} set={set} />}

@@ -145,12 +145,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
+      { rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@300;400;500;600;700&display=swap",
       },
     ],
+    scripts: [
+      { src: "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0", async: true, defer: true, crossOrigin: "anonymous" },
+      { src: "https://www.instagram.com/embed.js", async: true },
+    ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
