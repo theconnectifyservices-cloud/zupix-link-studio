@@ -3,19 +3,31 @@ import { Facebook, Instagram, ExternalLink } from "lucide-react";
 import { SocialEmbedBlock } from "../types";
 import { cn } from "@/lib/utils";
 
+// Define a safe interface for the FB global
+interface FBGlobal {
+  XFBML: {
+    parse: (element?: HTMLElement | null) => void;
+  };
+}
+
+declare global {
+  interface Window {
+    FB?: FBGlobal;
+  }
+}
+
 export const SocialEmbedRender = ({ block }: { block: SocialEmbedBlock }) => {
   const [height, setHeight] = useState<number | string>(0);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const isFB = block.platform === "facebook";
-  const isIG = block.platform === "instagram";
   
   useEffect(() => {
     // Height observer for Instagram iframes which often postMessage their size
     const handleMessage = (event: MessageEvent) => {
       if (event.origin === "https://www.instagram.com" || event.origin === "https://www.facebook.com") {
         try {
-          const data = JSON.parse(event.data);
+          const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
           if (data.type === 'MEASURE' || data.type === 'resize') {
             if (data.details?.height) {
               setHeight(data.details.height);

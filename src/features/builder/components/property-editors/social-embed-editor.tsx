@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Facebook, Instagram, AlertCircle, CheckCircle2, Maximize2, Square, Type, AlignLeft, LayoutHorizontal } from "lucide-react";
+import React, { useState } from "react";
+import { Facebook, Instagram, AlertCircle, CheckCircle2, Type, AlignLeft, Layout } from "lucide-react";
 import { SocialEmbedBlock } from "../../types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 export const SocialEmbedEditor = ({
@@ -65,7 +64,7 @@ export const SocialEmbedEditor = ({
         <div className="flex items-center gap-2 mb-1">
           {block.platform === 'facebook' ? <Facebook className="w-4 h-4 text-[#1877F2]" /> : 
            block.platform === 'instagram' ? <Instagram className="w-4 h-4 text-[#E4405F]" /> : 
-           <LayoutHorizontal className="w-4 h-4 text-muted-foreground" />}
+           <Layout className="w-4 h-4 text-muted-foreground" />}
           <span className="text-xs font-semibold uppercase tracking-wider">Social Media Embed</span>
         </div>
         
@@ -138,7 +137,7 @@ export const SocialEmbedEditor = ({
           <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-md">
             {[
               { id: 'left', icon: <AlignLeft className="w-3.5 h-3.5" /> },
-              { id: 'center', icon: <LayoutHorizontal className="w-3.5 h-3.5 rotate-90" /> },
+              { id: 'center', icon: <Layout className="w-3.5 h-3.5 rotate-90" /> },
               { id: 'right', icon: <AlignLeft className="w-3.5 h-3.5 rotate-180" /> },
             ].map((align) => (
               <Button
