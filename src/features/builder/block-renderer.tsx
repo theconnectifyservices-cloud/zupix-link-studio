@@ -431,13 +431,8 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
     case "highlightCards":
       return <HighlightCardsRender block={block as HighlightCardsBlock} viewport={viewport} />;
     case "embed":
-
-      return <EmbedRender block={block} />;
+      return <EmbedRender block={block as any} />;
     case "customCode":
-      return <CustomCodeRender block={block as any} />;
-    case "socialEmbed":
-      return <SocialEmbedRender block={block as SocialEmbedBlock} />;
-
       return (
         <ErrorBoundary
           fallback={
@@ -449,9 +444,12 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
             </div>
           }
         >
-          <CustomCodeRender block={block} />
+          <CustomCodeRender block={block as any} />
         </ErrorBoundary>
       );
+    case "socialEmbed":
+      return <SocialEmbedRender block={block as SocialEmbedBlock} />;
+
 
 
 
