@@ -1150,6 +1150,26 @@ function IconBtn({
 function VideoEditor({ block, set }: { block: VideoBlock; set: (k: string, v: unknown) => void }) {
   return (
     <>
+      <Field label="Orientation">
+        <div className="grid grid-cols-4 gap-1">
+          {[
+            ["auto", "Auto"],
+            ["landscape", "16:9"],
+            ["vertical", "9:16"],
+            ["square", "1:1"],
+          ].map(([v, l]) => (
+            <Button
+              key={v}
+              variant={block.orientation === v || (!block.orientation && v === "auto") ? "secondary" : "ghost"}
+              size="sm"
+              className="h-8 px-0 text-[10px]"
+              onClick={() => set("orientation", v)}
+            >
+              {l}
+            </Button>
+          ))}
+        </div>
+      </Field>
       <Field label="Video Provider">
         <SelectSimple
           value={block.provider || "youtube"}

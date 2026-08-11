@@ -87,6 +87,9 @@ export function AutoplayVideo({
           objectFit === "cover" ? "object-cover" : "object-contain",
           background && "pointer-events-none",
         )}
+        style={{
+          objectFit: objectFit,
+        }}
       />
       {blocked && (
         <div

@@ -450,6 +450,8 @@ export interface SocialBlock extends BaseBlock {
 
 // ── Video ────────────────────────────────────────────────────────────────
 export type VideoProvider = "youtube" | "vimeo" | "mp4";
+export type VideoOrientation = "auto" | "landscape" | "vertical" | "square";
+
 export interface VideoBlock extends BaseBlock {
   type: "video";
   provider: VideoProvider;
@@ -459,6 +461,8 @@ export interface VideoBlock extends BaseBlock {
   loop?: boolean;
   muted?: boolean;
   rounded?: "none" | "sm" | "md" | "lg" | "xl";
+  /** @default "auto" */
+  orientation?: VideoOrientation;
 }
 
 // ── Gallery ──────────────────────────────────────────────────────────────
