@@ -31,8 +31,10 @@ export type BlockType =
   | "qrContact"
   | "integration"
   | "highlightCards"
+  | "socialEmbed"
 
   | "buttonGroup"
+
   | "embed"
   | "customCode"
   // reserved for later phases
