@@ -73,8 +73,11 @@ import { useBuilderStore } from "./store";
 import { DEFAULT_PROFILE } from "./theme";
 import { HighlightCardsRender } from "./components/highlight-cards-render";
 import { SocialIconsRender } from "./components/social-icons-render";
+import { SocialEmbedRender } from "./components/social-embed-render";
+import type { SocialEmbedBlock } from "./types";
 import {
   ContactActionRender,
+
   FollowCardRender,
   QrContactRender,
   SocialButtonsRender,
@@ -428,8 +431,7 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
     case "highlightCards":
       return <HighlightCardsRender block={block as HighlightCardsBlock} viewport={viewport} />;
     case "embed":
-
-      return <EmbedRender block={block} />;
+      return <EmbedRender block={block as any} />;
     case "customCode":
       return (
         <ErrorBoundary
@@ -442,9 +444,12 @@ function renderInner(block: Block, reduceMotion: boolean, viewport: Viewport = "
             </div>
           }
         >
-          <CustomCodeRender block={block} />
+          <CustomCodeRender block={block as any} />
         </ErrorBoundary>
       );
+    case "socialEmbed":
+      return <SocialEmbedRender block={block as SocialEmbedBlock} />;
+
 
 
 

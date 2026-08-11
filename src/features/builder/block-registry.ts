@@ -718,6 +718,24 @@ export const BLOCK_DEFS: BlockDef[] = [
   },
   // Reserved / later phases
   {
+    type: "socialEmbed",
+    label: "Social Media Embed",
+    description: "Embed FB/IG posts & reels",
+    icon: Share2,
+    group: "advanced",
+    available: true,
+    create: () => ({
+      id: newId(),
+      type: "socialEmbed",
+      platform: "auto",
+      originalUrl: "",
+      normalizedUrl: "",
+      fullWidth: true,
+      rounded: true,
+    } as any),
+  },
+  // Reserved / later phases
+  {
     type: "customCode",
     label: "HTML Builder",
     description: "Visual HTML & CSS",
@@ -740,3 +758,4 @@ export function blockLabel(block: Block): string {
   const def = getBlockDef(block.type);
   return def?.label ?? block.type;
 }
+
