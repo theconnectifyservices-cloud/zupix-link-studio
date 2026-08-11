@@ -1744,7 +1744,7 @@ function ProfileRender({ block }: { block: Extract<Block, { type: "profile" }> }
 function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
   const mode = useRendererMode();
   const ref = useRef<HTMLIFrameElement>(null);
-  const [height, setHeight] = useState<number>(block.minHeight ?? 120);
+  const [height, setHeight] = useState<number>(0);
   const [visible, setVisible] = useState<boolean>(!block.lazy);
   const [allowJs, setAllowJs] = useState<boolean>(false);
 
@@ -1802,7 +1802,7 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
       const d = e.data as { __zxcc?: boolean; height?: number } | undefined;
       if (!d || !d.__zxcc || typeof d.height !== "number") return;
       if (e.source !== ref.current?.contentWindow) return;
-      setHeight(Math.max(block.minHeight ?? 60, Math.ceil(d.height)));
+      setHeight(Math.max(block.minHeight ?? 0, Math.ceil(d.height)));
     }
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
@@ -1882,7 +1882,7 @@ function CustomCodeRender({ block }: { block: CustomCodeBlock }) {
         loading={block.lazy ? "lazy" : "eager"}
         style={{
           width: "100%",
-          height,
+          height: height || "auto",
           border: 0,
           background: "transparent",
           display: "block",

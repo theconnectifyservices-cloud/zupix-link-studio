@@ -147,6 +147,7 @@ export function buildSrcDoc(input: {
     color:inherit;
     font-family:inherit;
     width:100%;
+    min-height: 0;
     overflow-x:hidden;
     -webkit-text-size-adjust:100%;
     box-sizing:border-box;
@@ -179,7 +180,7 @@ ${css}
       try{
         var h = document.documentElement.scrollHeight;
         var h2 = document.body.offsetHeight;
-        var finalH = Math.max(h, h2);
+        var finalH = Math.max(h, h2, document.body.scrollHeight);
         parent.postMessage({__zxcc:true, height:finalH}, '*');
       }catch(e){}
     }
