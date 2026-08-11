@@ -932,12 +932,22 @@ function VideoRender({ block }: { block: VideoBlock }) {
             ? "rounded"
             : "rounded-none";
 
+  const orientation = block.orientation ?? "auto";
+  const aspectCls = cn(
+    "relative w-full overflow-hidden bg-black",
+    roundedCls,
+    orientation === "auto" && "aspect-video",
+    orientation === "landscape" && "aspect-video",
+    orientation === "vertical" && "aspect-[9/16] max-w-[400px] mx-auto",
+    orientation === "square" && "aspect-square",
+  );
+
   if (!block.url) {
     return (
       <div
         className={cn(
-          "flex aspect-video items-center justify-center border border-dashed text-xs text-muted-foreground",
-          roundedCls,
+          "flex items-center justify-center border border-dashed text-xs text-muted-foreground",
+          aspectCls,
         )}
       >
         <div className="flex flex-col items-center gap-2">
@@ -971,6 +981,8 @@ function VideoRender({ block }: { block: VideoBlock }) {
     );
   }
 
+  const objectFit = orientation === "vertical" ? "contain" : "cover";
+
   if (embed.kind === "video") {
     const wantAutoplay = block.autoplay !== false;
     if (wantAutoplay) {
@@ -980,8 +992,8 @@ function VideoRender({ block }: { block: VideoBlock }) {
           poster={block.thumbnailUrl}
           loop={block.loop !== false}
           controls
-          objectFit="contain"
-          className={cn("aspect-video w-full bg-black", roundedCls)}
+          objectFit={objectFit}
+          className={aspectCls}
         />
       );
     }
@@ -994,16 +1006,16 @@ function VideoRender({ block }: { block: VideoBlock }) {
         playsInline
         preload="metadata"
         poster={block.thumbnailUrl}
-        className={cn("aspect-video w-full bg-black", roundedCls)}
+        className={cn(aspectCls, objectFit === "cover" ? "object-cover" : "object-contain")}
       />
     );
   }
 
   return (
-    <div className={cn("aspect-video w-full overflow-hidden bg-black", roundedCls)}>
+    <div className={aspectCls}>
       <iframe
         src={embed.src}
-        className="h-full w-full"
+        className="absolute inset-0 h-full w-full"
         allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
         allowFullScreen
         title="Video"
