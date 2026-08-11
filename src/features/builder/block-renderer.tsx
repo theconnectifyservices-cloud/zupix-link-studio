@@ -276,7 +276,12 @@ export function BlockRenderer({
   return (
     <div
       className="zx-section"
-      style={layoutStyle}
+      style={{
+        ...layoutStyle,
+        width: "100%",
+        minWidth: 0,
+        boxSizing: "border-box",
+      }}
       data-block-id={block.id}
       data-block-type={block.type}
       data-hide-mobile={vis.mobile === false || undefined}
