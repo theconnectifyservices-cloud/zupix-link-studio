@@ -80,12 +80,15 @@ export function IntegrationRender({ block }: { block: IntegrationBlock }) {
   if (display === "embed") {
     if (!action.embedSrc) return notConfigured;
     return (
-      <div className={visibility}>
+      <div className={cn("w-full overflow-hidden rounded-xl border", visibility)}>
         <iframe
           src={action.embedSrc}
           title={`${def.label} embed`}
-          className="w-full overflow-hidden rounded-xl border"
-          style={{ height }}
+          className="w-full border-0"
+          style={{ 
+            height,
+            maxWidth: "100%",
+          }}
           loading="lazy"
           allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
           allowFullScreen
@@ -117,20 +120,20 @@ export function IntegrationRender({ block }: { block: IntegrationBlock }) {
           {btn}
         </button>
         {popupOpen && (
-          <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 p-4">
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
             <div className="relative w-full max-w-3xl overflow-hidden rounded-2xl bg-background shadow-2xl">
               <button
                 type="button"
                 aria-label="Close"
                 onClick={() => setPopupOpen(false)}
-                className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-background/90 shadow"
+                className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-background/90 shadow transition-colors hover:bg-muted"
               >
                 <X className="h-4 w-4" />
               </button>
               <iframe
                 src={action.embedSrc}
                 title={`${def.label} popup`}
-                className="w-full"
+                className="w-full border-0"
                 style={{ height: Math.min(height, 680) }}
                 loading="lazy"
                 allowFullScreen
