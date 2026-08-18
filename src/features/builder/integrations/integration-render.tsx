@@ -346,6 +346,7 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
                   )}
                   style={{
                     ...buttonStyle(String(cfg.style ?? "filled"), color, textColor),
+                    paddingBottom: "1.5rem", // Standard padding for the floating bar
                   }}
                 >
                   {cfg.showIcon !== false && <Icon className="h-5 w-5" />}
