@@ -490,23 +490,22 @@ function StickyTriggerWrapper({
   const mode = useRendererMode();
   const height = Number(cfg.height) > 0 ? Number(cfg.height) : (action.height ?? 420);
 
-  // If it's a link mode, just use an <a> tag
-  if (block.mode !== "popup" && block.mode !== "stickyBottom") {
-     return (
-       <a 
-         href={action.href} 
-         target="_blank" 
-         rel="noopener noreferrer" 
-         className="block"
-         onClick={mode === "builder" ? (e) => e.preventDefault() : undefined}
-       >
-         {children}
-       </a>
-     );
-  }
+  const isPopup = block.mode === "popup" || (block.mode === "stickyBottom" && block.provider === "calendly");
 
-  // For stickyBottom, we might want it to act as a popup trigger if it's Calendly or similar
-  const isPopup = block.provider === "calendly" || block.mode === "popup";
+  // If it's not a popup-triggering mode, use a standard link
+  if (!isPopup) {
+    return (
+      <a
+        href={action.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+        onClick={mode === "builder" ? (e) => e.preventDefault() : undefined}
+      >
+        {children}
+      </a>
+    );
+  }
 
   return (
     <>
