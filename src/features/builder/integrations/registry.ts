@@ -524,7 +524,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
     defaults: { buttonText: "Connect on LinkedIn", color: "#0A66C2" },
     build: (c) => {
       const u = s(c.url);
-      return u ? { href: u.startsWith("http") ? u : `https://${u}` } : {};
+      const href = u ? (u.startsWith("http") ? u : `https://${u}`) : "";
+      return { href, embedSrc: href };
     },
   },
   {
