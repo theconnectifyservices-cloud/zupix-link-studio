@@ -446,11 +446,8 @@ function FloatingItem({ item }: { item: IntegrationBlock }) {
   const isBubble = item.mode === "floatingBubble";
   const isIconMode = cfg.floatingMode === "icon" || isBubble;
 
-  return (
-    <a
-      href={action.href}
-      target="_blank"
-      rel="noopener noreferrer"
+  const content = (
+    <div
       className={cn(
         "group relative flex items-center shadow-xl transition-all hover:scale-105 active:scale-95",
         radius,
@@ -475,7 +472,13 @@ function FloatingItem({ item }: { item: IntegrationBlock }) {
           {Number(cfg.badge)}
         </span>
       )}
-    </a>
+    </div>
+  );
+
+  return (
+    <StickyTriggerWrapper block={item} def={def} cfg={cfg} action={action}>
+      {content}
+    </StickyTriggerWrapper>
   );
 }
 
