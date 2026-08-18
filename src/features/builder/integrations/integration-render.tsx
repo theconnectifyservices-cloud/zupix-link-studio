@@ -63,6 +63,12 @@ export function IntegrationRender({ block }: { block: IntegrationBlock }) {
   const height = Number(cfg.height) > 0 ? Number(cfg.height) : (action.height ?? 420);
   const isBuilder = mode === "builder";
 
+  const notConfigured = (
+    <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+      Configure your {def.label} integration
+    </div>
+  );
+
   // Validation: don't render publicly if missing required fields
   if (display !== "hidden" && !action.href && !action.embedSrc) {
     if (isBuilder) return notConfigured;
@@ -74,12 +80,6 @@ export function IntegrationRender({ block }: { block: IntegrationBlock }) {
   const visibility = cn(
     cfg.showOnMobile === false && "hidden sm:block",
     cfg.showOnDesktop === false && "sm:hidden",
-  );
-
-  const notConfigured = (
-    <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
-      Configure your {def.label} integration
-    </div>
   );
 
   /* ── embed ─────────────────────────────────────────────────────────── */
