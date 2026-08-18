@@ -320,7 +320,7 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
     <>
        {/* ── Sticky Bottom Bar ── */}
        {stickyItems.length > 0 && (
-         <div className="fixed bottom-4 left-1/2 z-[9999] flex w-[calc(100%-32px)] max-w-[var(--zx-content-max,1200px)] -translate-x-1/2 flex-col gap-2 p-0 safe-bottom rounded-2xl pointer-events-none">
+         <div className="fixed bottom-0 left-1/2 z-[9999] flex w-[calc(100%-32px)] max-w-[var(--zx-content-max,1200px)] -translate-x-1/2 flex-col gap-2 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] pointer-events-none">
             {stickyItems.map(item => {
               const def = getIntegration(item.provider);
               if (!def) return null;
