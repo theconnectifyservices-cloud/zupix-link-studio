@@ -256,6 +256,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     brand: "#006BFF",
     modes: [
       "popup",
+      "inlineEmbed",
       "embed",
       "newTab",
       "button",
