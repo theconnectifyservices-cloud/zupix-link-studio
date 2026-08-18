@@ -135,7 +135,7 @@ export const STYLE_FIELDS: IntegrationField[] = [
     key: "style",
     label: "Style",
     type: "select",
-    modes: ["button", "popup", "newTab", "stickyBottom", "headerAction"],
+    modes: ["button", "popup", "newTab", "stickyBottom", "headerAction", "floating", "floatingBubble"],
     options: [
       { value: "filled", label: "Filled" },
       { value: "outline", label: "Outline" },
