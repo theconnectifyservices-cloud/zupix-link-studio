@@ -243,7 +243,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
       const p = digits(c.phone);
       if (!p) return {};
       const text = s(c.message) ? `?text=${encodeURIComponent(s(c.message))}` : "";
-      return { href: `https://wa.me/${p}${text}` };
+      const href = `https://wa.me/${p}${text}`;
+      return { href, embedSrc: href };
     },
   },
   {
