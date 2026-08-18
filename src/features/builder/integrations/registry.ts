@@ -439,9 +439,13 @@ export const INTEGRATIONS: IntegrationDef[] = [
     defaults: { buttonText: "Leave a Google review", color: "#FBBC05" },
     build: (c) => {
       const pid = s(c.placeId);
-      if (pid) return { href: `https://search.google.com/local/writereview?placeid=${encodeURIComponent(pid)}` };
-      const url = s(c.url);
-      return url ? { href: url } : {};
+      let href = "";
+      if (pid) {
+        href = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(pid)}`;
+      } else {
+        href = s(c.url);
+      }
+      return { href, embedSrc: href };
     },
   },
   {
