@@ -507,7 +507,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
     defaults: { buttonText: "Follow on X", color: "#0F1419" },
     build: (c) => {
       const u = s(c.username).replace(/^@/, "");
-      return u ? { href: `https://x.com/${u}` } : {};
+      const href = u ? `https://x.com/${u}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
