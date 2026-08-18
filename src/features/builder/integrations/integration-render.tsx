@@ -362,21 +362,9 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
               // Use standard wrapper for interaction (Popup vs Link)
               return (
                 <div key={item.id} className="w-full">
-                   {item.mode === "stickyBottom" && (item.provider === "calendly" || def.modes.includes("popup")) ? (
-                      <StickyTriggerWrapper block={item} def={def} cfg={cfg} action={action}>
-                        {content}
-                      </StickyTriggerWrapper>
-                   ) : (
-                     <a
-                       href={action.href}
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       className="block w-full"
-                       onClick={mode === "builder" ? (e) => e.preventDefault() : undefined}
-                     >
-                       {content}
-                     </a>
-                   )}
+                    <StickyTriggerWrapper block={item} def={def} cfg={cfg} action={action}>
+                      {content}
+                    </StickyTriggerWrapper>
                 </div>
               );
             })}
