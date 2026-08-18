@@ -39,7 +39,8 @@ export type IntegrationDisplayMode =
   | "headerAction"
   | "iconOnly"
   | "card"
-  | "hidden";
+  | "hidden"
+  | "inlineEmbed";
 
 export type IntegrationFieldType =
   | "text"
@@ -563,7 +564,8 @@ export function visibleFields(def: IntegrationDef, mode: IntegrationDisplayMode)
 
 export const MODE_LABEL: Record<IntegrationDisplayMode, string> = {
   button: "Section button",
-  embed: "Inline embed",
+  embed: "Responsive embed",
+  inlineEmbed: "Inline embed",
   popup: "Popup",
   newTab: "Open in new tab",
   floating: "Floating button",
