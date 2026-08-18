@@ -543,7 +543,10 @@ function StickyTriggerWrapper({
               src={action.embedSrc}
               title={`${def.label} popup`}
               className="w-full"
-              style={{ height: Math.min(height, 680) }}
+              style={{ 
+                height: Math.min(height, 680),
+                maxWidth: "100%",
+              }}
               loading="lazy"
               allowFullScreen
             />
