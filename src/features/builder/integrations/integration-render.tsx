@@ -356,7 +356,7 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
               // Use standard wrapper for interaction (Popup vs Link)
               return (
                 <div key={item.id} className="w-full">
-                   {item.mode === "stickyBottom" && item.provider === "calendly" || item.mode === "stickyBottom" && def.modes.includes("popup") ? (
+                   {item.mode === "stickyBottom" && (item.provider === "calendly" || def.modes.includes("popup")) ? (
                       <StickyTriggerWrapper block={item} def={def} cfg={cfg} action={action}>
                         {content}
                       </StickyTriggerWrapper>
