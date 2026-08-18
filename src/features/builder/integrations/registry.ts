@@ -145,7 +145,7 @@ export const STYLE_FIELDS: IntegrationField[] = [
   },
   { key: "color", label: "Colour", type: "color" },
   { key: "textColor", label: "Text Colour", type: "color", modes: ["button", "floating", "stickyBottom", "card"] },
-  { key: "showIcon", label: "Show icon", type: "switch", modes: ["button", "floating", "stickyBottom", "card", "headerAction"] },
+  { key: "showIcon", label: "Show icon", type: "switch", modes: ["button", "floating", "stickyBottom", "card", "headerAction", "floatingBubble"] },
   {
     key: "animation",
     label: "Animation",
