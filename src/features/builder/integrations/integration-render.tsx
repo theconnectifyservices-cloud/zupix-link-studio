@@ -63,6 +63,12 @@ export function IntegrationRender({ block }: { block: IntegrationBlock }) {
   const height = Number(cfg.height) > 0 ? Number(cfg.height) : (action.height ?? 420);
   const isBuilder = mode === "builder";
 
+  // Validation: don't render publicly if missing required fields
+  if (display !== "hidden" && !action.href && !action.embedSrc) {
+    if (isBuilder) return notConfigured;
+    return null;
+  }
+
   if (display === "hidden") return null;
 
   const visibility = cn(
