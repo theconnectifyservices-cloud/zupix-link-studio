@@ -39,7 +39,8 @@ export type IntegrationDisplayMode =
   | "headerAction"
   | "iconOnly"
   | "card"
-  | "hidden";
+  | "hidden"
+  | "inlineEmbed";
 
 export type IntegrationFieldType =
   | "text"
@@ -129,13 +130,13 @@ export const STYLE_FIELDS: IntegrationField[] = [
     key: "buttonText",
     label: "Button text / Label",
     type: "text",
-    modes: ["button", "popup", "newTab", "floating", "stickyBottom", "headerAction", "card"],
+    modes: ["button", "popup", "newTab", "floating", "stickyBottom", "headerAction", "card", "floatingBubble"],
   },
   {
     key: "style",
     label: "Style",
     type: "select",
-    modes: ["button", "popup", "newTab", "stickyBottom", "headerAction"],
+    modes: ["button", "popup", "newTab", "stickyBottom", "headerAction", "floating", "floatingBubble"],
     options: [
       { value: "filled", label: "Filled" },
       { value: "outline", label: "Outline" },
@@ -145,7 +146,7 @@ export const STYLE_FIELDS: IntegrationField[] = [
   },
   { key: "color", label: "Colour", type: "color" },
   { key: "textColor", label: "Text Colour", type: "color", modes: ["button", "floating", "stickyBottom", "card"] },
-  { key: "showIcon", label: "Show icon", type: "switch", modes: ["button", "floating", "stickyBottom", "card", "headerAction"] },
+  { key: "showIcon", label: "Show icon", type: "switch", modes: ["button", "floating", "stickyBottom", "card", "headerAction", "floatingBubble"] },
   {
     key: "animation",
     label: "Animation",
@@ -233,7 +234,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Chat button or floating bubble",
     icon: MessageCircle,
     brand: "#25D366",
-    modes: ["button", "floating", "floatingBubble", "newTab", "stickyBottom", "headerAction", "iconOnly", "card", "hidden"],
+    modes: ["button", "floating", "floatingBubble", "newTab", "stickyBottom", "headerAction", "iconOnly", "card", "popup", "hidden"],
     fields: [
       { key: "phone", label: "Phone number", type: "tel", placeholder: "+91 98765 43210", required: true },
       { key: "message", label: "Default message", type: "textarea", placeholder: "Hi! I'd like to know more…" },
@@ -243,7 +244,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
       const p = digits(c.phone);
       if (!p) return {};
       const text = s(c.message) ? `?text=${encodeURIComponent(s(c.message))}` : "";
-      return { href: `https://wa.me/${p}${text}` };
+      const href = `https://wa.me/${p}${text}`;
+      return { href, embedSrc: href };
     },
   },
   {
@@ -252,9 +254,26 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Booking popup or inline embed",
     icon: CalendarClock,
     brand: "#006BFF",
-    modes: ["popup", "embed", "newTab", "button", "floating", "floatingBubble", "card", "hidden"],
+    modes: [
+      "popup",
+      "inlineEmbed",
+      "embed",
+      "newTab",
+      "button",
+      "floating",
+      "floatingBubble",
+      "stickyBottom",
+      "card",
+      "hidden",
+    ],
     fields: [
-      { key: "url", label: "Calendly URL", type: "url", placeholder: "https://calendly.com/your-name/30min", required: true },
+      {
+        key: "url",
+        label: "Calendly URL",
+        type: "url",
+        placeholder: "https://calendly.com/your-name/30min",
+        required: true,
+      },
       {
         key: "theme",
         label: "Theme",
@@ -283,7 +302,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Location embed or directions button",
     icon: MapPin,
     brand: "#1A73E8",
-    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "stickyBottom", "card", "popup", "hidden"],
     fields: [
       { key: "businessName", label: "Business name", type: "text", placeholder: "ZUPIX Studio" },
       { key: "address", label: "Address", type: "textarea", placeholder: "MG Road, Bengaluru" },
@@ -306,14 +325,15 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Open a chat or channel",
     icon: Send,
     brand: "#229ED9",
-    modes: ["button", "floating", "floatingBubble", "newTab", "stickyBottom", "headerAction", "iconOnly", "card", "hidden"],
+    modes: ["button", "floating", "floatingBubble", "newTab", "stickyBottom", "headerAction", "iconOnly", "card", "popup", "hidden"],
     fields: [
       { key: "username", label: "Username or channel", type: "text", placeholder: "zupixstudio", required: true },
     ],
     defaults: { buttonText: "Message on Telegram", color: "#229ED9" },
     build: (c) => {
       const u = s(c.username).replace(/^@/, "");
-      return u ? { href: `https://t.me/${u}` } : {};
+      const href = u ? `https://t.me/${u}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
@@ -322,12 +342,13 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "One-tap call button",
     icon: Phone,
     brand: "#0F172A",
-    modes: ["button", "floating", "floatingBubble", "stickyBottom", "headerAction", "iconOnly", "card", "hidden"],
+    modes: ["button", "floating", "floatingBubble", "stickyBottom", "headerAction", "iconOnly", "card", "popup", "hidden"],
     fields: [{ key: "phone", label: "Phone number", type: "tel", placeholder: "+91 98765 43210", required: true }],
     defaults: { buttonText: "Call now", color: "#0F172A" },
     build: (c) => {
       const p = s(c.phone).replace(/[^\d+]/g, "");
-      return p ? { href: `tel:${p}` } : {};
+      const href = p ? `tel:${p}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
@@ -336,7 +357,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Prefilled mail composer",
     icon: Mail,
     brand: "#EA4335",
-    modes: ["button", "floating", "floatingBubble", "stickyBottom", "headerAction", "iconOnly", "card", "hidden"],
+    modes: ["button", "floating", "floatingBubble", "stickyBottom", "headerAction", "iconOnly", "card", "popup", "hidden"],
     fields: [
       { key: "email", label: "Email address", type: "email", placeholder: "hello@zupix.app", required: true },
       { key: "subject", label: "Subject", type: "text" },
@@ -350,7 +371,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
       if (s(c.subject)) params.set("subject", s(c.subject));
       if (s(c.body)) params.set("body", s(c.body));
       const qs = params.toString();
-      return { href: `mailto:${e}${qs ? `?${qs}` : ""}` };
+      const href = `mailto:${e}${qs ? `?${qs}` : ""}`;
+      return { href, embedSrc: href };
     },
   },
   {
@@ -359,7 +381,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Video player or channel link",
     icon: Youtube,
     brand: "#FF0000",
-    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "stickyBottom", "card", "popup", "hidden"],
     fields: [
       { key: "url", label: "Video or channel URL", type: "url", placeholder: "https://youtu.be/…", required: true },
     ],
@@ -377,7 +399,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Track, album or playlist player",
     icon: Music2,
     brand: "#1DB954",
-    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "stickyBottom", "card", "popup", "hidden"],
     fields: [
       { key: "url", label: "Spotify URL", type: "url", placeholder: "https://open.spotify.com/…", required: true },
     ],
@@ -394,7 +416,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Inline form or link",
     icon: ClipboardList,
     brand: "#673AB7",
-    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "stickyBottom", "card", "popup", "hidden"],
     fields: [
       { key: "url", label: "Form URL", type: "url", placeholder: "https://docs.google.com/forms/…", required: true },
     ],
@@ -411,7 +433,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Send customers to review you",
     icon: Star,
     brand: "#FBBC05",
-    modes: ["button", "newTab", "floating", "floatingBubble", "card", "hidden"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "stickyBottom", "card", "popup", "hidden"],
     fields: [
       { key: "placeId", label: "Google Place ID", type: "text", placeholder: "ChIJ…" },
       { key: "url", label: "Review link", type: "url", placeholder: "Used when no Place ID", help: "Paste your Google review short link." },
@@ -419,9 +441,13 @@ export const INTEGRATIONS: IntegrationDef[] = [
     defaults: { buttonText: "Leave a Google review", color: "#FBBC05" },
     build: (c) => {
       const pid = s(c.placeId);
-      if (pid) return { href: `https://search.google.com/local/writereview?placeid=${encodeURIComponent(pid)}` };
-      const url = s(c.url);
-      return url ? { href: url } : {};
+      let href = "";
+      if (pid) {
+        href = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(pid)}`;
+      } else {
+        href = s(c.url);
+      }
+      return { href, embedSrc: href };
     },
   },
   {
@@ -430,14 +456,15 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Link to your Trustpilot profile",
     icon: ShieldCheck,
     brand: "#00B67A",
-    modes: ["button", "newTab", "floating", "floatingBubble", "card", "hidden"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "stickyBottom", "card", "popup", "hidden"],
     fields: [
       { key: "domain", label: "Business domain", type: "text", placeholder: "zupix.app", required: true },
     ],
     defaults: { buttonText: "Read our reviews", color: "#00B67A" },
     build: (c) => {
       const d = s(c.domain).replace(/^https?:\/\//, "").replace(/\/$/, "");
-      return d ? { href: `https://www.trustpilot.com/review/${d}` } : {};
+      const href = d ? `https://www.trustpilot.com/review/${d}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
@@ -446,12 +473,13 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Profile or post link",
     icon: Instagram,
     brand: "#E1306C",
-    modes: ["button", "newTab", "floating", "floatingBubble", "iconOnly", "card", "hidden"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "stickyBottom", "iconOnly", "card", "popup", "hidden"],
     fields: [{ key: "username", label: "Username", type: "text", placeholder: "zupix.studio", required: true }],
     defaults: { buttonText: "Follow on Instagram", color: "#E1306C" },
     build: (c) => {
       const u = s(c.username).replace(/^@/, "");
-      return u ? { href: `https://instagram.com/${u}` } : {};
+      const href = u ? `https://instagram.com/${u}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
@@ -460,13 +488,14 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Page or profile link",
     icon: Facebook,
     brand: "#1877F2",
-    modes: ["button", "newTab", "floating", "floatingBubble", "iconOnly", "card", "hidden"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "stickyBottom", "iconOnly", "card", "popup", "hidden"],
     fields: [{ key: "username", label: "Page name or URL", type: "text", placeholder: "zupixstudio", required: true }],
     defaults: { buttonText: "Follow on Facebook", color: "#1877F2" },
     build: (c) => {
       const u = s(c.username);
       if (!u) return {};
-      return { href: u.startsWith("http") ? u : `https://facebook.com/${u.replace(/^@/, "")}` };
+      const href = u.startsWith("http") ? u : `https://facebook.com/${u.replace(/^@/, "")}`;
+      return { href, embedSrc: href };
     },
   },
   {
@@ -475,12 +504,13 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Profile link",
     icon: Twitter,
     brand: "#0F1419",
-    modes: ["button", "newTab", "floating", "floatingBubble", "iconOnly", "card", "hidden"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "stickyBottom", "iconOnly", "card", "popup", "hidden"],
     fields: [{ key: "username", label: "Username", type: "text", placeholder: "zupix", required: true }],
     defaults: { buttonText: "Follow on X", color: "#0F1419" },
     build: (c) => {
       const u = s(c.username).replace(/^@/, "");
-      return u ? { href: `https://x.com/${u}` } : {};
+      const href = u ? `https://x.com/${u}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
@@ -489,14 +519,15 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Profile or company page",
     icon: Linkedin,
     brand: "#0A66C2",
-    modes: ["button", "newTab", "floating", "floatingBubble", "iconOnly", "card", "hidden"],
+    modes: ["button", "newTab", "floating", "floatingBubble", "stickyBottom", "iconOnly", "card", "popup", "hidden"],
     fields: [
       { key: "url", label: "LinkedIn URL", type: "url", placeholder: "https://linkedin.com/company/zupix", required: true },
     ],
     defaults: { buttonText: "Connect on LinkedIn", color: "#0A66C2" },
     build: (c) => {
       const u = s(c.url);
-      return u ? { href: u.startsWith("http") ? u : `https://${u}` } : {};
+      const href = u ? (u.startsWith("http") ? u : `https://${u}`) : "";
+      return { href, embedSrc: href };
     },
   },
   {
@@ -505,7 +536,7 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Any trusted iframe URL",
     icon: Code2,
     brand: "#6366F1",
-    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "card", "hidden"],
+    modes: ["embed", "button", "newTab", "floating", "floatingBubble", "stickyBottom", "card", "popup", "hidden"],
     fields: [
       { key: "url", label: "Embed URL", type: "url", placeholder: "https://…", required: true },
       { key: "title", label: "Accessible title", type: "text", placeholder: "Booking widget" },
@@ -534,7 +565,8 @@ export function visibleFields(def: IntegrationDef, mode: IntegrationDisplayMode)
 
 export const MODE_LABEL: Record<IntegrationDisplayMode, string> = {
   button: "Section button",
-  embed: "Inline embed",
+  embed: "Responsive embed",
+  inlineEmbed: "Inline embed",
   popup: "Popup",
   newTab: "Open in new tab",
   floating: "Floating button",
