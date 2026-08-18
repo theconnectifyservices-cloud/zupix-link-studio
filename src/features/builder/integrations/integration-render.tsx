@@ -305,14 +305,17 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
   }, [blocks]);
 
   const stickyItems = useMemo(() => {
-    return (blocks ?? []).filter(b => 
-      b.type === "integration" && 
-      !b.hidden && 
-      b.mode === "stickyBottom"
-    ) as IntegrationBlock[];
+    // Audit: some blocks might have displayAs or displayMode instead of mode
+    // We normalize this to ensure the renderer finds them.
+    return (blocks ?? []).filter(b => {
+      if (b.type !== "integration" || b.hidden) return false;
+      const displayMode = b.mode || b.displayMode || b.displayAs;
+      return displayMode === "stickyBottom" || displayMode === "sticky";
+    }) as IntegrationBlock[];
   }, [blocks]);
 
   if (floatingItems.length === 0 && stickyItems.length === 0) return null;
+
 
   // Group by position
   const groups: Record<string, IntegrationBlock[]> = {};
