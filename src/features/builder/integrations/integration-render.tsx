@@ -82,8 +82,8 @@ export function IntegrationRender({ block }: { block: IntegrationBlock }) {
     cfg.showOnDesktop === false && "sm:hidden",
   );
 
-  /* ── embed ─────────────────────────────────────────────────────────── */
-  if (display === "embed") {
+  /* ── embed / inlineEmbed ─────────────────────────────────────────── */
+  if (display === "embed" || display === "inlineEmbed") {
     if (!action.embedSrc) return notConfigured;
     return (
       <div className={cn("w-full overflow-hidden rounded-xl border", visibility)}>
