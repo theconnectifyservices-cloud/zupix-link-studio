@@ -121,9 +121,14 @@ export function PublicBioRenderer({
           paddingBlock: "var(--zx-page-pad-y)",
           // LS-STICKY-FIX: ensure enough bottom padding to prevent the last block 
           // from being hidden behind the sticky bar (approx height of the bar).
-          paddingBottom: blocks.some(b => (b.mode || b.displayMode || b.displayAs) === "stickyBottom") 
+          paddingBottom: blocks.some(b => {
+            const anyB = b as any;
+            const displayMode = anyB.mode || anyB.displayMode || anyB.displayAs;
+            return displayMode === "stickyBottom" || displayMode === "sticky";
+          }) 
             ? "calc(var(--zx-page-pad-y) + 100px)" 
             : "var(--zx-page-pad-y)",
+
           // Auto Layout: per-section spacing owns the gap.
           gap: 0,
           maxWidth: "var(--zx-content-max)",
