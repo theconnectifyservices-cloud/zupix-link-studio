@@ -492,7 +492,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
     build: (c) => {
       const u = s(c.username);
       if (!u) return {};
-      return { href: u.startsWith("http") ? u : `https://facebook.com/${u.replace(/^@/, "")}` };
+      const href = u.startsWith("http") ? u : `https://facebook.com/${u.replace(/^@/, "")}`;
+      return { href, embedSrc: href };
     },
   },
   {
