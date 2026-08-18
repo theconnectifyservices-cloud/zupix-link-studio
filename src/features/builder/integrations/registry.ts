@@ -476,7 +476,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
     defaults: { buttonText: "Follow on Instagram", color: "#E1306C" },
     build: (c) => {
       const u = s(c.username).replace(/^@/, "");
-      return u ? { href: `https://instagram.com/${u}` } : {};
+      const href = u ? `https://instagram.com/${u}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
