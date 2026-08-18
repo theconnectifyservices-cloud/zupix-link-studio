@@ -119,6 +119,16 @@ export function PublicBioRenderer({
         style={{
           paddingInline: "var(--zx-page-pad-x)",
           paddingBlock: "var(--zx-page-pad-y)",
+          // LS-STICKY-FIX: ensure enough bottom padding to prevent the last block 
+          // from being hidden behind the sticky bar (approx height of the bar).
+          paddingBottom: blocks.some(b => {
+            const anyB = b as any;
+            const displayMode = anyB.mode || anyB.displayMode || anyB.displayAs;
+            return displayMode === "stickyBottom" || displayMode === "sticky";
+          }) 
+            ? "calc(var(--zx-page-pad-y) + 100px)" 
+            : "var(--zx-page-pad-y)",
+
           // Auto Layout: per-section spacing owns the gap.
           gap: 0,
           maxWidth: "var(--zx-content-max)",
@@ -155,6 +165,7 @@ export function PublicBioRenderer({
         />
       </div>
       <IntegrationStack blocks={blocks} />
+
       <ContactWidget config={content.contactWidget} />
     </div>
   );

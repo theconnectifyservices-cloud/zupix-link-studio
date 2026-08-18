@@ -305,14 +305,17 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
   }, [blocks]);
 
   const stickyItems = useMemo(() => {
-    return (blocks ?? []).filter(b => 
-      b.type === "integration" && 
-      !b.hidden && 
-      b.mode === "stickyBottom"
-    ) as IntegrationBlock[];
+    // Audit: some blocks might have displayAs or displayMode instead of mode
+    // We normalize this to ensure the renderer finds them.
+    return (blocks ?? []).filter(b => {
+      if (b.type !== "integration" || b.hidden) return false;
+      const displayMode = b.mode || b.displayMode || b.displayAs;
+      return displayMode === "stickyBottom" || displayMode === "sticky";
+    }) as IntegrationBlock[];
   }, [blocks]);
 
   if (floatingItems.length === 0 && stickyItems.length === 0) return null;
+
 
   // Group by position
   const groups: Record<string, IntegrationBlock[]> = {};
@@ -324,52 +327,60 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
 
   return (
     <>
-       {/* ── Sticky Bottom Bar ── */}
+       {/* ── Sticky Bottom Bar Container ── */}
        {stickyItems.length > 0 && (
-         <div className="fixed bottom-0 left-1/2 z-[9999] flex w-[calc(100%-32px)] max-w-[var(--zx-content-max,1200px)] -translate-x-1/2 flex-col gap-2 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] pointer-events-none">
-            {stickyItems.map(item => {
-              const def = getIntegration(item.provider);
-              if (!def) return null;
-              const cfg: IntegrationConfig = item.config ?? {};
-              const action = def.build(cfg);
-              
-              // Validation: don't render if missing required fields
-              if (!action.href && !action.embedSrc) return null;
+         <div 
+           className="fixed bottom-0 left-0 right-0 z-[10000] flex w-full flex-col pointer-events-none"
+           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+         >
+            <div className="mx-auto w-full max-w-[var(--zx-content-max,1200px)] px-4 py-4 md:px-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-center gap-3 w-full">
+                {stickyItems.map(item => {
+                  const def = getIntegration(item.provider);
+                  if (!def) return null;
+                  const cfg: IntegrationConfig = item.config ?? {};
+                  const action = def.build(cfg);
+                  
+                  // Validation: don't render if missing required fields
+                  if (!action.href && !action.embedSrc) return null;
 
-              const color = typeof cfg.color === "string" && cfg.color ? cfg.color : def.brand;
-              const textColor = typeof cfg.textColor === "string" && cfg.textColor ? cfg.textColor : undefined;
-              const label = typeof cfg.buttonText === "string" && cfg.buttonText ? cfg.buttonText : def.label;
-              const Icon = def.icon;
-              const anim = ANIM[String(cfg.animation ?? "none")] ?? "";
+                  const color = typeof cfg.color === "string" && cfg.color ? cfg.color : def.brand;
+                  const textColor = typeof cfg.textColor === "string" && cfg.textColor ? cfg.textColor : undefined;
+                  const label = typeof cfg.buttonText === "string" && cfg.buttonText ? cfg.buttonText : def.label;
+                  const Icon = def.icon;
+                  const anim = ANIM[String(cfg.animation ?? "none")] ?? "";
 
-              const content = (
-                <div
-                  className={cn(
-                    "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 shadow-2xl transition-all active:scale-95 pointer-events-auto",
-                    "bg-background/90 backdrop-blur-md border border-border/50",
-                    buttonClasses(String(cfg.style ?? "filled")),
-                    anim
-                  )}
-                  style={{
-                    ...buttonStyle(String(cfg.style ?? "filled"), color, textColor),
-                  }}
-                >
-                  {cfg.showIcon !== false && <Icon className="h-5 w-5" />}
-                  <span className="font-semibold">{label}</span>
-                </div>
-              );
+                  const content = (
+                    <div
+                      className={cn(
+                        "flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 shadow-2xl transition-all active:scale-[0.98] pointer-events-auto",
+                        "bg-background/95 backdrop-blur-xl border border-white/10",
+                        buttonClasses(String(cfg.style ?? "filled")),
+                        anim
+                      )}
+                      style={{
+                        ...buttonStyle(String(cfg.style ?? "filled"), color, textColor),
+                        minHeight: "56px"
+                      }}
+                    >
+                      {cfg.showIcon !== false && <Icon className="h-5 w-5 shrink-0" />}
+                      <span className="font-bold text-base whitespace-nowrap">{label}</span>
+                    </div>
+                  );
 
-              // Use standard wrapper for interaction (Popup vs Link)
-              return (
-                <div key={item.id} className="w-full">
-                    <StickyTriggerWrapper block={item} def={def} cfg={cfg} action={action}>
-                      {content}
-                    </StickyTriggerWrapper>
-                </div>
-              );
-            })}
+                  return (
+                    <div key={item.id} className="w-full md:w-auto md:min-w-[280px]">
+                        <StickyTriggerWrapper block={item} def={def} cfg={cfg} action={action}>
+                          {content}
+                        </StickyTriggerWrapper>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
          </div>
        )}
+
 
        {/* ── Floating Action Stacks ── */}
        {Object.entries(groups).map(([pos, items]) => {

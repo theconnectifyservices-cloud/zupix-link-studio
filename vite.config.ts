@@ -54,15 +54,14 @@ export default defineConfig({
 
         workbox: {
           globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff,woff2}"],
-          // NOTE: no navigateFallback. This app is server-rendered, so the build
-          // emits zero HTML files — Workbox's createHandlerBoundToURL("/") would
-          // throw `non-precached-url: /` and abort service-worker installation.
-          // Navigations are served by the NetworkFirst runtime route below, which
-          // also provides the offline cache for previously visited pages.
-
+          // LS-PWA-FIX: explicitly exclude index.html from precaching to avoid "non-precached-url" errors
+          // in server-rendered environments where index.html is generated at runtime.
+          globIgnores: ["index.html", "200.html", "404.html"],
+          
           cleanupOutdatedCaches: true,
           clientsClaim: true,
           skipWaiting: false,
+
           runtimeCaching: [
             {
               // HTML navigations — always NetworkFirst. OAuth callbacks, API
