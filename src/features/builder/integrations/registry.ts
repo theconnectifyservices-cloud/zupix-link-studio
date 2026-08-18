@@ -129,7 +129,7 @@ export const STYLE_FIELDS: IntegrationField[] = [
     key: "buttonText",
     label: "Button text / Label",
     type: "text",
-    modes: ["button", "popup", "newTab", "floating", "stickyBottom", "headerAction", "card"],
+    modes: ["button", "popup", "newTab", "floating", "stickyBottom", "headerAction", "card", "floatingBubble"],
   },
   {
     key: "style",
