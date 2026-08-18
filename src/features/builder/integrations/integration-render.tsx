@@ -317,36 +317,58 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
     <>
        {/* ── Sticky Bottom Bar ── */}
        {stickyItems.length > 0 && (
-         <div className="fixed bottom-4 left-1/2 z-[9999] flex w-[calc(100%-32px)] max-w-[var(--zx-content-max,1200px)] -translate-x-1/2 flex-col gap-2 bg-background/80 p-4 backdrop-blur-md safe-bottom border border-border/50 rounded-2xl shadow-2xl">
+         <div className="fixed bottom-4 left-1/2 z-[9999] flex w-[calc(100%-32px)] max-w-[var(--zx-content-max,1200px)] -translate-x-1/2 flex-col gap-2 p-0 safe-bottom rounded-2xl pointer-events-none">
             {stickyItems.map(item => {
               const def = getIntegration(item.provider);
               if (!def) return null;
               const cfg: IntegrationConfig = item.config ?? {};
               const action = def.build(cfg);
+              
+              // Validation: don't render if missing required fields
+              if (!action.href && !action.embedSrc) return null;
+
               const color = typeof cfg.color === "string" && cfg.color ? cfg.color : def.brand;
               const textColor = typeof cfg.textColor === "string" && cfg.textColor ? cfg.textColor : undefined;
               const label = typeof cfg.buttonText === "string" && cfg.buttonText ? cfg.buttonText : def.label;
               const Icon = def.icon;
-              return (
-                <a
-                  key={item.id}
-                  href={action.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              const anim = ANIM[String(cfg.animation ?? "none")] ?? "";
+
+              const content = (
+                <div
                   className={cn(
-                    "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 shadow-lg transition-transform active:scale-95",
+                    "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 shadow-2xl transition-all active:scale-95 pointer-events-auto",
+                    "bg-background/80 backdrop-blur-md border border-border/50",
                     buttonClasses(String(cfg.style ?? "filled")),
-                    ANIM[String(cfg.animation ?? "none")]
+                    anim
                   )}
                   style={{
                     ...buttonStyle(String(cfg.style ?? "filled"), color, textColor),
-                    paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.875rem)"
                   }}
-                  onClick={mode === "builder" ? (e) => e.preventDefault() : undefined}
                 >
                   {cfg.showIcon !== false && <Icon className="h-5 w-5" />}
                   <span className="font-semibold">{label}</span>
-                </a>
+                </div>
+              );
+
+              // Use standard wrapper for interaction (Popup vs Link)
+              return (
+                <div key={item.id} className="w-full">
+                   {item.mode === "stickyBottom" && item.provider === "calendly" || item.mode === "stickyBottom" && def.modes.includes("popup") ? (
+                      <StickyTriggerWrapper block={item} def={def} cfg={cfg} action={action}>
+                        {content}
+                      </StickyTriggerWrapper>
+                   ) : (
+                     <a
+                       href={action.href}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="block w-full"
+                       onClick={mode === "builder" ? (e) => e.preventDefault() : undefined}
+                     >
+                       {content}
+                     </a>
+                   )}
+                </div>
               );
             })}
          </div>
@@ -445,5 +467,86 @@ function FloatingItem({ item }: { item: IntegrationBlock }) {
         </span>
       )}
     </a>
+  );
+}
+
+/**
+ * Handles clicks for fixed-position elements that might need to open a popup.
+ */
+function StickyTriggerWrapper({ 
+  block, 
+  def, 
+  cfg, 
+  action, 
+  children 
+}: { 
+  block: IntegrationBlock; 
+  def: any; 
+  cfg: IntegrationConfig; 
+  action: any;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  const mode = useRendererMode();
+  const height = Number(cfg.height) > 0 ? Number(cfg.height) : (action.height ?? 420);
+
+  // If it's a link mode, just use an <a> tag
+  if (block.mode !== "popup" && block.mode !== "stickyBottom") {
+     return (
+       <a 
+         href={action.href} 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         className="block"
+         onClick={mode === "builder" ? (e) => e.preventDefault() : undefined}
+       >
+         {children}
+       </a>
+     );
+  }
+
+  // For stickyBottom, we might want it to act as a popup trigger if it's Calendly or similar
+  const isPopup = block.provider === "calendly" || block.mode === "popup";
+
+  return (
+    <>
+      <button 
+        type="button" 
+        className="block w-full text-left"
+        onClick={() => {
+          if (mode === "builder") return;
+          if (isPopup && action.embedSrc) {
+            setOpen(true);
+          } else if (action.href) {
+            window.open(action.href, "_blank", "noopener,noreferrer");
+          }
+        }}
+      >
+        {children}
+      </button>
+
+      {open && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-3xl overflow-hidden rounded-2xl bg-background shadow-2xl">
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setOpen(false)}
+              className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-background/90 shadow transition-colors hover:bg-muted"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <iframe
+              src={action.embedSrc}
+              title={`${def.label} popup`}
+              className="w-full"
+              style={{ height: Math.min(height, 680) }}
+              loading="lazy"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

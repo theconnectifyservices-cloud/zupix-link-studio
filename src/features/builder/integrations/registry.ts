@@ -252,9 +252,25 @@ export const INTEGRATIONS: IntegrationDef[] = [
     description: "Booking popup or inline embed",
     icon: CalendarClock,
     brand: "#006BFF",
-    modes: ["popup", "embed", "newTab", "button", "floating", "floatingBubble", "card", "hidden"],
+    modes: [
+      "popup",
+      "embed",
+      "newTab",
+      "button",
+      "floating",
+      "floatingBubble",
+      "stickyBottom",
+      "card",
+      "hidden",
+    ],
     fields: [
-      { key: "url", label: "Calendly URL", type: "url", placeholder: "https://calendly.com/your-name/30min", required: true },
+      {
+        key: "url",
+        label: "Calendly URL",
+        type: "url",
+        placeholder: "https://calendly.com/your-name/30min",
+        required: true,
+      },
       {
         key: "theme",
         label: "Theme",
