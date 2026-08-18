@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { ThemeBackgroundLayer } from "@/features/builder/components/theme-background-layer";
 import { BlockRenderer } from "@/features/builder/block-renderer";
+import { IntegrationStack } from "@/features/builder/integrations/integration-render";
 import { RendererModeProvider } from "@/features/builder/renderer-mode";
 import { PublicPageProvider } from "@/features/business/page-context";
 import {
