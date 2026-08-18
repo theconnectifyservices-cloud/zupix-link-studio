@@ -317,7 +317,7 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
     <>
        {/* ── Sticky Bottom Bar ── */}
        {stickyItems.length > 0 && (
-         <div className="fixed bottom-0 left-0 right-0 z-[100] flex w-full flex-col gap-2 bg-background/80 p-4 backdrop-blur-md safe-bottom sm:hidden">
+         <div className="fixed bottom-0 left-0 right-0 z-[9999] flex w-full flex-col gap-2 bg-background/80 p-4 backdrop-blur-md safe-bottom border-t border-border/50">
             {stickyItems.map(item => {
               const def = getIntegration(item.provider);
               if (!def) return null;
@@ -338,7 +338,11 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
                     buttonClasses(String(cfg.style ?? "filled")),
                     ANIM[String(cfg.animation ?? "none")]
                   )}
-                  style={buttonStyle(String(cfg.style ?? "filled"), color, textColor)}
+                  style={{
+                    ...buttonStyle(String(cfg.style ?? "filled"), color, textColor),
+                    paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.875rem)"
+                  }}
+                  onClick={mode === "builder" ? (e) => e.preventDefault() : undefined}
                 >
                   {cfg.showIcon !== false && <Icon className="h-5 w-5" />}
                   <span className="font-semibold">{label}</span>
