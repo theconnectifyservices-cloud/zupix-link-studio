@@ -153,6 +153,7 @@ export function PublicBioRenderer({
           pageDescription={pageDescription}
         />
       </div>
+      <IntegrationStack blocks={blocks} />
       <ContactWidget config={content.contactWidget} />
     </div>
   );
