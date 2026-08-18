@@ -330,7 +330,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
     defaults: { buttonText: "Message on Telegram", color: "#229ED9" },
     build: (c) => {
       const u = s(c.username).replace(/^@/, "");
-      return u ? { href: `https://t.me/${u}` } : {};
+      const href = u ? `https://t.me/${u}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
