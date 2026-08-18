@@ -368,7 +368,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
       if (s(c.subject)) params.set("subject", s(c.subject));
       if (s(c.body)) params.set("body", s(c.body));
       const qs = params.toString();
-      return { href: `mailto:${e}${qs ? `?${qs}` : ""}` };
+      const href = `mailto:${e}${qs ? `?${qs}` : ""}`;
+      return { href, embedSrc: href };
     },
   },
   {
