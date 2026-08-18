@@ -376,7 +376,29 @@ export const INTEGRATIONS: IntegrationDef[] = [
     },
   },
   {
+    key: "sms",
+    label: "SMS",
+    description: "Send a text message",
+    icon: MessageCircle,
+    brand: "#10B981",
+    modes: ["button", "floating", "floatingBubble", "stickyBottom", "headerAction", "iconOnly", "card", "popup", "hidden"],
+    fields: [
+      { key: "phone", label: "Phone number", type: "tel", placeholder: "+91 98765 43210", required: true },
+      { key: "message", label: "Initial message", type: "textarea" },
+    ],
+    defaults: { buttonText: "Text us", color: "#10B981" },
+    build: (c) => {
+      const p = digits(c.phone);
+      if (!p) return {};
+      const body = s(c.message) ? `&body=${encodeURIComponent(s(c.message))}` : "";
+      // Standard SMS link; some devices prefer ?body= but &body is common for cross-platform
+      const href = `sms:${p}${body}`;
+      return { href, embedSrc: href };
+    },
+  },
+  {
     key: "youtube",
+
     label: "YouTube",
     description: "Video player or channel link",
     icon: Youtube,
