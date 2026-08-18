@@ -292,7 +292,6 @@ export function BlockRenderer({
       data-hide-desktop={vis.desktop === false || undefined}
     >
       {content}
-      {allBlocks && <IntegrationStack blocks={allBlocks} />}
     </div>
   );
 }
