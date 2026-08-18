@@ -461,7 +461,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
     defaults: { buttonText: "Read our reviews", color: "#00B67A" },
     build: (c) => {
       const d = s(c.domain).replace(/^https?:\/\//, "").replace(/\/$/, "");
-      return d ? { href: `https://www.trustpilot.com/review/${d}` } : {};
+      const href = d ? `https://www.trustpilot.com/review/${d}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
