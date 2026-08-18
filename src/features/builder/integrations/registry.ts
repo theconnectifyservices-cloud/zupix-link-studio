@@ -344,7 +344,8 @@ export const INTEGRATIONS: IntegrationDef[] = [
     defaults: { buttonText: "Call now", color: "#0F172A" },
     build: (c) => {
       const p = s(c.phone).replace(/[^\d+]/g, "");
-      return p ? { href: `tel:${p}` } : {};
+      const href = p ? `tel:${p}` : "";
+      return { href, embedSrc: href };
     },
   },
   {
