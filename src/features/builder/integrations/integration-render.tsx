@@ -340,7 +340,7 @@ export function IntegrationStack({ blocks }: { blocks: any[] }) {
                 <div
                   className={cn(
                     "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 shadow-2xl transition-all active:scale-95 pointer-events-auto",
-                    "bg-background/80 backdrop-blur-md border border-border/50",
+                    "bg-background/90 backdrop-blur-md border border-border/50",
                     buttonClasses(String(cfg.style ?? "filled")),
                     anim
                   )}
